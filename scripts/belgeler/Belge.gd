@@ -183,17 +183,10 @@ func _v(x: float, y: float) -> Vector2:
 	return Vector2(x, y) * _k
 
 
-func _kagit_ciz(renk: Color, kenar: Color, kose: int = 2) -> void:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = renk
-	sb.border_color = kenar
-	sb.set_border_width_all(1)
-	sb.set_corner_radius_all(roundi(kose * _k))
-	sb.anti_aliasing = true
-	sb.shadow_color = Color(0, 0, 0, 0.30 if _surukleniyor or buyuk else 0.38)
-	sb.shadow_size = roundi((12 if _surukleniyor or buyuk else 4) * _k)
-	sb.shadow_offset = Vector2(3, 5) * _k * (2.0 if _surukleniyor or buyuk else 1.0)
-	draw_style_box(sb, Rect2(Vector2.ZERO, size))
+## Belgenin kâğıdını (boyama doku + gölge) çizer. Elde ya da sürüklenirken gölge büyür.
+func _kagit_ciz(doku_adi: String, yedek: Color, tasma: float = 2.0) -> void:
+	var havada := _surukleniyor or buyuk
+	Kagit.ciz(self, Rect2(Vector2.ZERO, size), doku_adi, yedek, (11.0 if havada else 4.0) * _k, tasma * _k)
 
 
 ## Basılı formlardaki noktalı doldurma çizgisi.
@@ -259,7 +252,20 @@ func _masada_sinirla(p: Vector2) -> Vector2:
 	var yari := _taban / 2.0
 	var en_az := sinir.position + yari
 	var en_cok := sinir.end - yari
-	return Vector2(clampf(p.x, en_az.x, maxf(en_az.x, en_cok.x)), clampf(p.y, en_az.y, maxf(en_az.y, en_cok.y)))
+	var q := Vector2(clampf(p.x, en_az.x, maxf(en_az.x, en_cok.x)), clampf(p.y, en_az.y, maxf(en_az.y, en_cok.y)))
+	# Teleks cihazının altına girmesin: en az yer değiştirmeyle aşağı ya da sola it.
+	var engel: Rect2 = Yerlesim.TELEKS_ENGEL
+	var kutu := Rect2(q - yari, _taban)
+	if kutu.intersects(engel):
+		var asagi := engel.end.y - kutu.position.y
+		var sola := kutu.end.x - engel.position.x
+		var asagi_olur := q.y + asagi <= en_cok.y
+		var sola_olur := q.x - sola >= en_az.x
+		if asagi_olur and (asagi <= sola or not sola_olur):
+			q.y += asagi
+		elif sola_olur:
+			q.x -= sola
+	return q
 
 
 ## Elde tutulan (büyütülmüş) belgenin ortasını ekranın içinde tutar.

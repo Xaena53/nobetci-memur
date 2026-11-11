@@ -37,7 +37,7 @@ func yukle(gun: Dictionary) -> void:
 
 	var kurallar: Array = gun.get("kurallar", [])
 	var genislik := KAGIT_YERI.size.x - 2.0 * KENAR
-	var alt_sinir := KAGIT_YERI.size.y - 14.0
+	var alt_sinir := KAGIT_YERI.size.y - 16.0
 
 	# --- Kural sayfaları ---
 	var s := _yeni_sayfa("KURALLAR")
@@ -125,31 +125,35 @@ func _yeni_sayfa(baslik: String) -> Control:
 
 func _sayfa_ciz(s: Control) -> void:
 	var r := Rect2(Vector2.ZERO, s.size)
-	s.draw_rect(Rect2(r.position + Vector2(3, 4), r.size), Color(0, 0, 0, 0.28))
-	s.draw_rect(r, Stil.KAGIT)
-	s.draw_rect(r, Color(0.45, 0.40, 0.30, 0.8), false, 1.0)
-	# delgeç delikleri ve raptiyeler
-	for x: float in [18.0, r.size.x - 18.0]:
-		s.draw_circle(Vector2(x, 12), 5.5, Color(0, 0, 0, 0.25))
-		s.draw_circle(Vector2(x - 0.6, 10.6), 5.0, Stil.BORDO)
-		s.draw_circle(Vector2(x - 1.8, 9.2), 1.6, Color(1, 1, 1, 0.45))
+	Kagit.ciz(s, r, "daktilo_sayfa", Stil.KAGIT, 5.0, 3.0)
+	# sayfayı panoya tutturan raptiyeler (delgeç deliklerinden)
+	for x: float in [r.size.x * 0.243, r.size.x * 0.757]:
+		var m := Vector2(x, r.size.y * 0.062)
+		s.draw_circle(m + Vector2(1.5, 2.5), 6.5, Color(0, 0, 0, 0.30))
+		s.draw_circle(m, 6.0, Stil.BORDO)
+		s.draw_circle(m + Vector2(-0.6, -0.6), 4.6, Stil.BORDO.lightened(0.14))
+		s.draw_circle(m + Vector2(-2.0, -2.2), 1.7, Color(1, 1, 1, 0.5))
 
 
 func _baslik_yaz(s: Control, baslik: String, alt: String) -> float:
 	var b := Stil.etiket(baslik, BASLIK_PUNTO, Stil.MUREKKEP, Stil.daktilo_kalin())
-	b.position = Vector2(KENAR + 22.0, 5.0)
+	b.position = Vector2(0, 30.0)
+	b.size = Vector2(KAGIT_YERI.size.x, 18.0)
+	b.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	s.add_child(b)
 	if alt != "":
 		var a := Stil.etiket(alt, 10, Stil.MUREKKEP_SOLUK)
-		a.position = Vector2(KENAR + 22.0, 22.0)
+		a.position = Vector2(0, 46.0)
+		a.size = Vector2(KAGIT_YERI.size.x, 14.0)
+		a.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		s.add_child(a)
 	var cizgi := ColorRect.new()
 	cizgi.color = Color(Stil.MUREKKEP, 0.7)
-	cizgi.position = Vector2(KENAR, 39.0)
+	cizgi.position = Vector2(KENAR, 62.0)
 	cizgi.size = Vector2(KAGIT_YERI.size.x - 2.0 * KENAR, 1.0)
 	cizgi.mouse_filter = MOUSE_FILTER_IGNORE
 	s.add_child(cizgi)
-	return 48.0
+	return 70.0
 
 
 func _satir_yaz(s: Control, yazi: String, y: float, genislik: float, yuk: float, kural: Dictionary,

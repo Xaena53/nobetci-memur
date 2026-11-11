@@ -44,20 +44,16 @@ func _kur() -> void:
 
 
 func _draw() -> void:
-	var kapak := KAPAK_KADIN if metin("cinsiyet") == "K" else KAPAK_ERKEK
-	_kagit_ciz(kapak, kapak.darkened(0.35), 5)
-	# iki iç sayfa ve sırt
-	draw_rect(_r(7, 7, 157, 198), SAYFA)
-	draw_rect(_r(172, 7, 157, 198), SAYFA)
-	draw_rect(_r(164, 7, 8, 198), kapak.darkened(0.22))
-	draw_line(_v(168, 7), _v(168, 205), kapak.darkened(0.45), maxf(1.0, _k))
+	var kadin := metin("cinsiyet") == "K"
+	var kapak := KAPAK_KADIN if kadin else KAPAK_ERKEK
+	_kagit_ciz("cuzdan_pembe" if kadin else "cuzdan_mavi", SAYFA, 1.0)
 	# emniyet deseni: ince dalgalı çizgiler
-	var desen := Color(kapak, 0.20)
-	for sayfa_x: float in [7.0, 172.0]:
-		for i in 9:
+	var desen := Color(kapak, 0.16)
+	for sayfa_x: float in [12.0, 176.0]:
+		for i in 8:
 			var noktalar := PackedVector2Array()
-			var y0 := 20.0 + i * 22.0
-			for j in 27:
+			var y0 := 26.0 + i * 22.0
+			for j in 25:
 				var px := sayfa_x + 2.0 + j * 5.9
 				noktalar.append(_v(px, y0 + 3.2 * sin(j * 0.85 + i)))
 			draw_polyline(noktalar, desen, maxf(1.0, 0.7 * _k), true)
@@ -68,4 +64,4 @@ func _draw() -> void:
 	draw_arc(_v(124, 138), 15.0 * _k, 0.0, TAU, 40, damga, 0.8 * _k, true)
 	# değerlerin altındaki basılı çizgiler
 	for i in 6:
-		_noktali(181, 321, 12.0 + i * 32.0 + 28.0, Color(0, 0, 0, 0.22))
+		_noktali(181, 319, 12.0 + i * 32.0 + 28.0, Color(0, 0, 0, 0.22))

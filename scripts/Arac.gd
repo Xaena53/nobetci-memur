@@ -110,13 +110,13 @@ func _fis_ciz() -> void:
 	if not _surukleniyor:
 		# koçan: alttaki fişlerin kenarları
 		draw_rect(Rect2(r.position + Vector2(4, 5), r.size), Color(0, 0, 0, 0.28))
-		draw_rect(Rect2(r.position + Vector2(3, 3), r.size), Stil.KAGIT_ESKI)
-		draw_rect(Rect2(r.position + Vector2(1.5, 1.5), r.size), Stil.KAGIT)
+		Kagit.parca_ciz(self, Rect2(r.position + Vector2(3, 3), r.size), "sayfa", Stil.KAGIT_ESKI, Color(0.86, 0.86, 0.86))
+		Kagit.parca_ciz(self, Rect2(r.position + Vector2(1.5, 1.5), r.size), "sayfa", Stil.KAGIT, Color(0.93, 0.93, 0.93))
 	else:
 		draw_rect(Rect2(r.position + Vector2(7, 11), r.size), Color(0, 0, 0, 0.22))
-	draw_rect(r, Stil.KAGIT_BEYAZ)
-	draw_rect(Rect2(0, 0, size.x, 18), kenar)
-	draw_rect(r, kenar, false, 2.0)
+	Kagit.parca_ciz(self, r, "sayfa", Stil.KAGIT_BEYAZ)
+	draw_rect(Rect2(0, 0, size.x, 18), Color(kenar, 0.92))
+	draw_rect(r, Color(kenar, 0.9), false, 1.5)
 	draw_string(Stil.daktilo_kalin(), Vector2(0, 14), BASLIKLAR.get(tur, ""), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13,
 		Stil.KAGIT_BEYAZ)
 	var alt := "belgeye bırak"

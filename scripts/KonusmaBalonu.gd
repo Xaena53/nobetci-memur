@@ -2,8 +2,9 @@ class_name KonusmaBalonu
 extends Control
 ## Gişe camının yanındaki konuşma balonu. Metni harf harf yazar; kuyruğu cama bakar.
 
+signal basladi          ## yazmaya başladı (vatandaşın ağzı oynar)
 signal harf_yazildi
-signal bitti
+signal bitti            ## yazı tamamlandı
 
 const HIZ := 42.0            ## saniyede harf
 const PUNTO := 15
@@ -45,9 +46,12 @@ func soyle(metin: String, sure: float = 0.0) -> void:
 	visible = true
 	modulate.a = 1.0
 	queue_redraw()
+	basladi.emit()
 
 
 func sus() -> void:
+	if _yaziyor:
+		bitti.emit()
 	_yaziyor = false
 	visible = false
 

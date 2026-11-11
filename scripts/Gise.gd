@@ -1,18 +1,23 @@
 class_name Gise
 extends Control
-## Gişe camı: vatandaşın büstü camın ardında belirir, işi bitince çekilir.
+## Gişe camı: vatandaşın büstü camın ardında yürüyerek gelir, bekler, konuşur, işi bitince çekilir.
+## Büst CanliPortre ile canlandırılır; bekledikçe sabrı taşar ve öfleyip pöfler.
 ## İnceleme modunda yüz, nüfus cüzdanındaki fotoğrafla karşılaştırılabilen bir hedeftir.
 
 signal hedef_tiklandi(hedef: Hedef)
+signal efekt(ad: String)        ## portreden gelen ses olayları ("adim", "hece", "ofle")
 
-const OLCEK := 0.46          ## portre dokusunun camdaki ölçeği
-const GELIS_SURESI := 0.6
+const OLCEK := 0.46             ## portre dokusunun camdaki ölçeği
+const GELIS_SURESI := 0.85
+const ILK_SABIR := Vector2(24.0, 36.0)     ## ilk öflemeye kadar geçen süre aralığı (sn)
+const SONRAKI_SABIR := Vector2(15.0, 26.0)
 
 var yuz: Hedef
+var portre: CanliPortre
 var kimlik := ""
 
-var _portre: TextureRect
 var _hareket: Tween
+var _sabir := 30.0
 
 
 func _ready() -> void:
@@ -21,12 +26,11 @@ func _ready() -> void:
 	clip_contents = true
 	mouse_filter = MOUSE_FILTER_IGNORE
 
-	_portre = TextureRect.new()
-	_portre.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_portre.stretch_mode = TextureRect.STRETCH_SCALE
-	_portre.mouse_filter = MOUSE_FILTER_IGNORE
-	_portre.visible = false
-	add_child(_portre)
+	portre = CanliPortre.new()
+	portre.name = "Portre"
+	portre.visible = false
+	portre.efekt.connect(func(ad: String) -> void: efekt.emit(ad))
+	add_child(portre)
 
 	var cam := Control.new()
 	cam.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
@@ -49,47 +53,81 @@ func bos_mu() -> bool:
 ## Vatandaş soldan yürüyerek cama gelir.
 func gelsin(portre_kimligi: String) -> void:
 	kimlik = portre_kimligi
-	var doku := Portreler.doku(portre_kimligi)
-	var boyut := doku.get_size() * OLCEK
+	portre.ayarla(portre_kimligi, OLCEK)
+	var boyut := portre.size
 	var yer := Vector2((size.x - boyut.x) / 2.0, size.y - boyut.y + 3.0)
-	_portre.texture = doku
-	_portre.size = boyut
-	_portre.position = Vector2(-boyut.x - 12.0, yer.y)
-	_portre.modulate = Color(0.78, 0.80, 0.80)
-	_portre.visible = true
+	portre.position = Vector2(-boyut.x - 14.0, yer.y)
+	portre.modulate = Color(0.74, 0.77, 0.78)
+	portre.visible = true
+	portre.yuruyor = true
 	yuz.deger = portre_kimligi
 	yuz.position = Vector2(yer.x + boyut.x * 0.18, maxf(4.0, yer.y))
 	yuz.size = Vector2(boyut.x * 0.64, minf(boyut.y * 0.74, size.y - yuz.position.y - 8.0))
 	yuz.durum = Hedef.Durum.BOS
 	yuz.visible = false
-	_yuru(yer, GELIS_SURESI, true)
+	_sabir = randf_range(ILK_SABIR.x, ILK_SABIR.y)
+	if _hareket != null:
+		_hareket.kill()
+	_hareket = create_tween()
+	_hareket.tween_property(portre, "position:x", yer.x, GELIS_SURESI).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	_hareket.parallel().tween_property(portre, "modulate", Color.WHITE, GELIS_SURESI)
+	_hareket.tween_callback(func() -> void:
+		portre.yuruyor = false
+		yuz.visible = true)
 
 
-## İşi biten vatandaş sağa doğru çekilir.
+## İşi biten vatandaş sağa doğru yürüyüp çekilir.
 func gitsin() -> void:
 	if kimlik == "":
 		return
 	kimlik = ""
 	yuz.visible = false
 	yuz.durum = Hedef.Durum.BOS
-	_yuru(Vector2(size.x + 14.0, _portre.position.y), GELIS_SURESI * 0.9, false)
-
-
-func _yuru(hedef: Vector2, sure: float, gelis: bool) -> void:
+	portre.konusuyor = false
+	portre.yuruyor = true
 	if _hareket != null:
 		_hareket.kill()
-	var taban_y := hedef.y
 	_hareket = create_tween()
-	_hareket.tween_property(_portre, "position:x", hedef.x, sure) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT if gelis else Tween.EASE_IN)
-	# adım atarken hafif inip kalkma
-	_hareket.parallel().tween_method(func(t: float) -> void:
-		_portre.position.y = taban_y + absf(sin(t * PI * 3.0)) * 5.0 * (1.0 - t if gelis else t), 0.0, 1.0, sure)
-	if gelis:
-		_hareket.parallel().tween_property(_portre, "modulate", Color.WHITE, sure)
-		_hareket.tween_callback(func() -> void: yuz.visible = true)
-	else:
-		_hareket.tween_callback(func() -> void: _portre.visible = false)
+	_hareket.tween_property(portre, "position:x", size.x + 16.0, GELIS_SURESI * 0.9) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	_hareket.parallel().tween_property(portre, "modulate", Color(0.74, 0.77, 0.78), GELIS_SURESI * 0.9)
+	_hareket.tween_callback(func() -> void:
+		portre.visible = false
+		portre.yuruyor = false
+		portre.sifirla())
+
+
+## Konuşma balonu yazarken ağız oynar.
+func konus(acik: bool) -> void:
+	if kimlik != "":
+		portre.konusuyor = acik
+
+
+## Karara verilen tepki: "onay" sevinir, "eksik" üzülür, "havale" şaşırır.
+func tepki(karar: String) -> void:
+	if kimlik == "":
+		return
+	match karar:
+		"onay":
+			portre.sevin()
+		"eksik":
+			portre.uzul()
+		"havale":
+			portre.sas()
+
+
+## Sabır sayacını baştan kurar (oyuncu vatandaşla ilgilenince).
+func sabri_tazele() -> void:
+	_sabir = maxf(_sabir, randf_range(SONRAKI_SABIR.x, SONRAKI_SABIR.y) * 0.6)
+
+
+func _process(delta: float) -> void:
+	if kimlik == "" or portre.yuruyor or portre.konusuyor:
+		return
+	_sabir -= delta
+	if _sabir <= 0.0:
+		_sabir = randf_range(SONRAKI_SABIR.x, SONRAKI_SABIR.y)
+		portre.ofle()
 
 
 ## Camın yansıması: iki çapraz ışık şeridi ve üstte çerçeve gölgesi.

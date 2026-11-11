@@ -3,7 +3,7 @@ extends Control
 ##
 ## Akış: vatandaş cama gelir → belgeleri yarıktan masaya kayar → oyuncu inceler ve bir araç
 ## (mühür / eksik evrak fişi / havale pusulası) bırakarak karar verir → Dogrulayici kararı
-## değerlendirir → doğruysa prim yazılır, yanlışsa müdürden ihtar pusulası gelir.
+## değerlendirir → doğruysa prim yazılır, yanlışsa müdürün ihtarı teleksten satır satır çıkar.
 
 const ARKA_PLAN := "res://assets/img/masa_arkaplan.webp"
 const BUYUTEC := "res://assets/img/nesne/buyutec.webp"
@@ -30,6 +30,7 @@ var balon: KonusmaBalonu
 var saat: DuvarSaati
 var kural_kitabi: KuralKitabi
 var inceleme: IncelemeKatmani
+var teleks: Teleks
 var araclar: Dictionary = {}            ## tür -> Arac
 
 var _tepsi_katmani: Node2D
@@ -114,8 +115,8 @@ func _belgeleri_getir() -> void:
 		b.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
 		b.inceleme_ac(inceleme.aktif)
 		var yer: Vector2 = Yerlesim.BELGE_YERI.get(b.tur, Vector2(450, 230))
-		yer += Vector2(randf_range(-8, 8), randf_range(-2, 2))
-		b.tutucu.yatis_acisi = deg_to_rad(randf_range(-1.2, 1.2))
+		yer += Vector2(randf_range(-4, 4), randf_range(-2, 2))
+		b.tutucu.yatis_acisi = deg_to_rad(randf_range(-1.0, 1.0))
 		b.gel(Yerlesim.GISE_YARIK, yer, 0.15 + i * 0.2)
 		belgeler.append(b)
 		i += 1
@@ -124,6 +125,7 @@ func _belgeleri_getir() -> void:
 func _vatandasi_ugurla(karar: String) -> void:
 	_mesgul = true
 	_araclari_ayarla()
+	gise.tepki(karar)
 	for b in belgeler:
 		b.kilitli = true
 	await get_tree().create_timer(0.7).timeout
@@ -223,17 +225,12 @@ func _sonucu_isle(karar: String, d: Dictionary) -> void:
 				_bekleyen_fis = {"cesit": "not", "metin": str(d.mesaj)}
 
 
-## Bekleyen pusulayı (ihtar / uyarı / not) müdürün odasından masaya indirir.
+## Bekleyen pusulayı (ihtar / uyarı / not) teleksten bastırır.
 func _fisi_goster() -> void:
 	if _bekleyen_fis.is_empty():
 		return
-	var f := IhtarFisi.new()
-	f.goster(str(_bekleyen_fis.metin), gunluk_ihtar, str(_bekleyen_fis.cesit), _fis_katmani,
-		Yerlesim.MUDUR_CAMI.get_center() + Vector2(0, 60),
-		Yerlesim.IHTAR_YERI + Vector2(randf_range(-30, 30), randf_range(-12, 12)),
-		Perspektif.ekrana(Yerlesim.IGNE_YERI) + Vector2(0, -30))
+	teleks.yazdir(str(_bekleyen_fis.metin), gunluk_ihtar, str(_bekleyen_fis.cesit))
 	_bekleyen_fis = {}
-	_igneyi_guncelle()
 
 
 func _fis_satirlari(gerekce: String) -> PackedStringArray:
@@ -339,6 +336,8 @@ func _sahneyi_kur() -> void:
 	balon = KonusmaBalonu.new()
 	balon.name = "Balon"
 	add_child(balon)
+	balon.basladi.connect(gise.konus.bind(true))
+	balon.bitti.connect(gise.konus.bind(false))
 
 	kural_kitabi = KuralKitabi.new()
 	kural_kitabi.name = "KuralKitabi"
@@ -349,8 +348,13 @@ func _sahneyi_kur() -> void:
 	_tepsi_katmani = _katman("Tepsi")
 	_belge_katmani = _katman("Belgeler")
 	_fis_katmani = _katman("Fisler")
+	teleks = Teleks.new()
+	teleks.name = "Teleks"
+	add_child(teleks)
 	_arac_katmani = _katman("Araclar")
 	_tepsiyi_kur()
+	teleks.kur(_fis_katmani, Perspektif.ekrana(Yerlesim.IGNE_YERI) + Vector2(0, -30))
+	teleks.fis_koptu.connect(func(_f: IhtarFisi) -> void: _igneyi_guncelle())
 	var yerler := {"onay": Yerlesim.MUHUR_YERI, "eksik": Yerlesim.EKSIK_YERI, "havale": Yerlesim.HAVALE_YERI}
 	for tur: String in yerler:
 		var a := Arac.new()

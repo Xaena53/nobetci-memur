@@ -28,17 +28,21 @@ const PANO := Rect2(933, 21, 326, 369)          ## mantar pano: genelge defteri
 
 # --- Masa düzlemi: plan dikdörtgeni ↔ ekrandaki yamuk (yeşil sümenin dört köşesi) ---
 const MASA_DUZ := [Vector2(30, 22), Vector2(905, 22), Vector2(905, 436), Vector2(30, 436)]
-const MASA_EKRAN := [Vector2(83, 339.4), Vector2(863.6, 339.4), Vector2(903, 704), Vector2(32, 704)]
+const MASA_EKRAN := [Vector2(84, 339.4), Vector2(864.6, 339.4), Vector2(904, 704.5), Vector2(33, 704.5)]
 
 # --- Masa (masa koordinatı) ---
 const MASA_BELGE_ALANI := Rect2(24, 4, 884, 448)   ## belgelerin gezebildiği alan
 ## Belgelerin gişeden gelince kondukları yerler (ortaları).
 const BELGE_YERI := {
-	"nufus_cuzdani": Vector2(215, 122),
-	"harc_makbuzu": Vector2(205, 350),
-	"ikametgah": Vector2(560, 236),
+	"nufus_cuzdani": Vector2(194, 120),
+	"harc_makbuzu": Vector2(196, 356),
+	"ikametgah": Vector2(516, 263),
 }
-const IHTAR_YERI := Vector2(690, 150)           ## müdürden gelen pusulanın düştüğü yer
+
+# --- Teleks cihazı (masanın sağ arka köşesinde, müdür camının altında) ---
+const TELEKS_YARIK := Rect2(670, 360, 186, 13)  ## kâğıdın çıktığı yarık (ekran koordinatı)
+const TELEKS_LAMBA := Vector2(847, 325)         ## kırmızı lamba (ekran koordinatı)
+const TELEKS_ENGEL := Rect2(636, -12, 280, 85)  ## cihazın masada kapladığı yer: belgeler giremez (masa)
 
 # --- Araç tepsisi (masa koordinatı) ---
 const TEPSI := Rect2(968, 142, 297, 273)

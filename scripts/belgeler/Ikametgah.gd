@@ -30,7 +30,7 @@ func _kur() -> void:
 
 
 func _draw() -> void:
-	_kagit_ciz(Stil.KAGIT_BEYAZ, Color(0.45, 0.42, 0.36))
+	_kagit_ciz("sayfa", Stil.KAGIT_BEYAZ, 3.0)
 	# basılı çift çerçeve
 	var cizgi := Color(0.25, 0.24, 0.22, 0.75)
 	draw_rect(_r(8, 8, 276, 362), cizgi, false, maxf(1.0, 1.4 * _k))

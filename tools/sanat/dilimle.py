@@ -92,6 +92,24 @@ def para_guncelle() -> None:
     print("zarf ve para: portresiz sürümle değiştirildi")
 
 
+KAGITLAR = ["sayfa", "makbuz", "cuzdan_mavi", "cuzdan_pembe", "teleks", "daktilo_sayfa"]
+
+
+def kagitlari_dilimle() -> None:
+    """Belgelerin zemini olan boş kâğıt dokuları (kagitlar.png: 3 sütun x 2 satır)."""
+    yol = HAM / "kagitlar.png"
+    if not yol.exists():
+        return
+    hedef = KOK / "assets" / "img" / "kagit"
+    hedef.mkdir(parents=True, exist_ok=True)
+    im = Image.open(yol).convert("RGBA")
+    kutular = bilesenler(im, 6, 2)
+    for kutu, ad in zip(kutular, KAGITLAR):
+        w, h = kaydet(im, kutu, 1.0, hedef / f"{ad}.webp", pay=3)
+        print(f"  {ad}: {w}x{h}")
+    print("kâğıt dokuları: 6 parça")
+
+
 def main() -> None:
     PORTRE.mkdir(parents=True, exist_ok=True)
     NESNE.mkdir(parents=True, exist_ok=True)
@@ -136,5 +154,8 @@ if __name__ == "__main__":
     if "--para" in sys.argv:
         NESNE.mkdir(parents=True, exist_ok=True)
         para_guncelle()
+    elif "--kagit" in sys.argv:
+        kagitlari_dilimle()
     else:
         main()
+        kagitlari_dilimle()
