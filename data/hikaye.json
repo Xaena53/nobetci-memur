@@ -1,0 +1,306 @@
+{
+	"_aciklama": "Hikâyenin gişe dışındaki bölümü: her sabahın gazetesi, akşam ev sahneleri, gece olayları ve sonlar. Bütün kişi, kurum ve olaylar kurmacadır. Karakterler ve diyaloglar data/karakterler.json içindedir. Aynı güne birden çok kayıt yazılabilir; koşulu tutan ilk kayıt kullanılır.",
+	"gazete": [
+		{
+			"gun": 1,
+			"manset": "İLDE BANKA SOYGUNU",
+			"metin": "Dört maskeli kişi cuma günü il merkezindeki bir banka şubesini soydu. Soyguncuların kaçtığı araç sahte nüfus cüzdanıyla kiralanmış. Emniyet, kendine \"Kara Ardıç\" diyen çeteden şüpheleniyor."
+		},
+		{
+			"gun": 2,
+			"manset": "ESKİ GİŞE MEMURU KAYIP",
+			"metin": "Nüfus müdürlüğünün 2 numaralı gişesinde yıllarca çalışan memur Ş.K.'den bir haftadır haber alınamıyor. Sahte cüzdan soruşturmasında ifadesine başvurulacaktı. Gişeye yeni memur atandı."
+		},
+		{
+			"gun": 3,
+			"manset": "SAVCI ALTAY DOSYAYI ALDI",
+			"metin": "Sahte cüzdan dosyasına Savcı Hikmet Altay bakacak. Savcı: \"Bu kâğıtlar birinin masasından geçti; o masayı bulacağım.\" Öte yandan nüfus işlemlerine harç geldi; kuyruktaki vatandaş söyleniyor.",
+			"foto": "v07",
+			"foto_alt": "Savcı Hikmet Altay"
+		},
+		{
+			"gun": 4,
+			"manset": "ADLİYE ARŞİVİNDE PATLAMA",
+			"metin": "Gece yarısı adliye binasının arşivinde bomba patladı. Sahte cüzdan dosyalarının durduğu oda kül oldu; gece bekçisi yaralı. Görgü tanıkları patlamadan önce sokakta beyaz bir Murat gördüklerini söyledi."
+		},
+		{
+			"gun": 5,
+			"manset": "SAVCI: DOSYA YANAR, SUÇ YANMAZ",
+			"metin": "Savcı Altay, yanan dosyaların suretlerinin kendisinde olduğunu açıkladı; pazartesi Ardıçlı'da keşif yapacak. Emniyet iki kişiyi arıyor: \"Kasap\" lakaplı Bekir Yaman ve \"Terzi\" Naciye.",
+			"foto": "v27",
+			"foto_alt": "Aranan Bekir Yaman (“Kasap”)"
+		},
+		{
+			"gun": 6,
+			"kosul": {
+				"kasap": "yakalandi"
+			},
+			"manset": "TETİKÇİ GİŞEDE YAKALANDI",
+			"metin": "Aranan Bekir Yaman, cuma günü nüfus müdürlüğü gişesinde sahte cüzdanla işlem yaptırırken yakalandı. Gişe memurunun dikkati övgü topladı. Savcı Altay bugün ilçede; \"Terzi\" Naciye hâlâ aranıyor.",
+			"foto": "v27",
+			"foto_alt": "Yakalanan Bekir Yaman"
+		},
+		{
+			"gun": 6,
+			"manset": "SAVCI BUGÜN ARDIÇLI'DA",
+			"metin": "Savcı Altay bugün hükümet konağında keşif yapacak. Konağın çevresinde sıkı güvenlik var. Arananlardan \"Kasap\" ve \"Terzi\"den iz yok; halk tedirgin.",
+			"foto": "v07",
+			"foto_alt": "Savcı Hikmet Altay"
+		},
+		{
+			"gun": 7,
+			"kosul": {
+				"savci": "sag"
+			},
+			"manset": "SUİKAST PLANI ÇÖKTÜ",
+			"metin": "Savcı Altay'a kurulan pusu, iki tetikçinin önceden yakalanmasıyla boşa çıktı. \"Kara Ardıç\"ın ilçedeki adamı olduğu öne sürülen müteahhit K.D. gözaltında. Bugün nüfus müdürlüğünde teftiş var.",
+			"foto": "rusvetci",
+			"foto_alt": "Gözaltına alınan müteahhit K.D."
+		},
+		{
+			"gun": 7,
+			"kosul": {
+				"savci": "yarali"
+			},
+			"manset": "SAVCIYA SİLAHLI SALDIRI",
+			"metin": "Savcı Altay dün akşam hükümet konağı çıkışında silahlı saldırıya uğradı. Koruması yaralandı; savcı yara almadan kurtuldu. Saldırganlardan biri kaçtı. Bugün nüfus müdürlüğünde teftiş var.",
+			"foto": "v07",
+			"foto_alt": "Savcı Hikmet Altay"
+		},
+		{
+			"gun": 7,
+			"kosul": {
+				"savci": "oldu"
+			},
+			"manset": "SAVCI ALTAY SUİKASTTA ÖLDÜ",
+			"metin": "Savcı Hikmet Altay dün akşam hükümet konağı çıkışında uğradığı silahlı saldırıda hayatını kaybetti. Saldırganların ilçeye sahte kimlikle yerleştiği anlaşıldı; kimliklerin hangi gişeden geçtiği araştırılıyor.",
+			"foto": "v07",
+			"foto_alt": "Savcı Hikmet Altay (1929–1984)"
+		}
+	],
+	"aksam": [
+		{
+			"gun": 1,
+			"metin": "Elif kapıda karşıladı: \"Mühür bastın mı? Kaç tane?\" Anneniz çorbayı ocaktan indirdi; Can paçanıza yapıştı."
+		},
+		{
+			"gun": 2,
+			"kosul": {
+				"nermin": "kayirildi"
+			},
+			"metin": "Nermin Hanım'ın fasulyesi sofrada. Anneniz kaşığı bıraktı: \"Bu tencere neyin karşılığı evladım?\""
+		},
+		{
+			"gun": 2,
+			"kosul": {
+				"nermin": "reddedildi"
+			},
+			"metin": "Nermin Hanım balkondan baktı, selam vermeden içeri girdi. Anneniz: \"Komşuyla aran mı açıldı?\""
+		},
+		{
+			"gun": 2,
+			"metin": "Anneniz radyoyu kıstı: \"Senden önceki memur kaybolmuş diyorlar. Sen kimsenin işine karışma evladım.\""
+		},
+		{
+			"gun": 3,
+			"kosul": {
+				"kenan1": "aldi"
+			},
+			"metin": "Ceketinizin cebindeki zarfı anneniz gördü. Bir şey sormadı; yalnız uzun uzun baktı. Elif ödevini okudu: \"Evimizin direği gişede çalışır.\""
+		},
+		{
+			"gun": 3,
+			"metin": "Elif ödevini okudu: \"Benim ailem. Evimizde dört kişiyiz. Evimizin direği gişede çalışır, hiç yalan söylemez.\" Can alkışladı."
+		},
+		{
+			"gun": 4,
+			"kosul": {
+				"izzet": "kayirildi"
+			},
+			"metin": "Ev sahibi bu akşam kapıyı çalmadı. Anneniz kapıyı yine de iki kere kilitledi: \"Adliyeyi bombalayan nüfusu da bombalar.\""
+		},
+		{
+			"gun": 4,
+			"metin": "Anneniz kapıyı iki kere kilitledi: \"Adliyeyi bombalayan nüfusu da bombalar. Sen o gişede ne iş yapıyorsun evladım?\""
+		},
+		{
+			"gun": 5,
+			"kosul": {
+				"kasap": "yakalandi"
+			},
+			"metin": "Hafta sonu. Cumartesi Elif'le pazara çıktınız; Can ilk kardan adamını yaptı. Pazar sabahı kapının altında bir kâğıt buldunuz: \"GÖRDÜĞÜNÜ UNUT.\" Annenize göstermediniz."
+		},
+		{
+			"gun": 5,
+			"kosul": {
+				"kenan2": "aldi"
+			},
+			"metin": "Hafta sonu. Cumartesi pazardan et aldınız. Anneniz sofrada rahmetliyi andı: \"O hakkı olmayan lokmayı yemezdi.\" Et tabakta kaldı."
+		},
+		{
+			"gun": 5,
+			"metin": "Hafta sonu. Cumartesi Elif'le pazara çıktınız; Can ilk kardan adamını yaptı. Pazar akşamı anneniz rahmetliyi andı: \"O da senin gibiydi; akşam eve hep yorgun, hep alnı açık gelirdi.\""
+		},
+		{
+			"gun": 6,
+			"kosul": {
+				"savci_tanisti": true
+			},
+			"metin": "Elif sordu: \"Savcı amcayı sen de gördün mü? İyi biri mi?\" \"İyi biri\" dediniz. Anneniz pencereden hükümet konağına baktı."
+		},
+		{
+			"gun": 6,
+			"metin": "Sokakta jandarma devriyesi dolaşıyor. Anneniz perdeyi kapattı: \"Bu akşam kimse cama çıkmasın.\""
+		},
+		{
+			"gun": 7,
+			"metin": "Son akşam. Soba çıtırdıyor, Can dizinizde uyudu. Yarın müdürlükten bir yazı gelecek; içinde ne yazacağını bu bir hafta belirledi."
+		}
+	],
+	"gece": [
+		{
+			"gun": 3,
+			"metin": "Gece yarısı bir patlamayla yataktan fırladınız. Camlar zangırdadı; adliye tarafında gökyüzü kızardı. Can sabaha kadar koynunuzdan çıkmadı."
+		},
+		{
+			"gun": 6,
+			"kosul": {
+				"savci": "sag"
+			},
+			"metin": "Akşam hükümet konağının önü sakindi. Savcının arabası jandarma eşliğinde ilçeden ayrıldı. İlk kez erken uyudunuz."
+		},
+		{
+			"gun": 6,
+			"kosul": {
+				"savci": "yarali"
+			},
+			"metin": "Akşam ezanından sonra iki el silah sesi duyuldu. Radyo geç saatte verdi haberi: Savcı yara almadan kurtulmuş."
+		},
+		{
+			"gun": 6,
+			"kosul": {
+				"savci": "oldu"
+			},
+			"metin": "Akşam ezanından sonra üç el silah sesi duyuldu. Sokak lambaları söndü. Radyo gece yarısı verdi haberi: Savcı Hikmet Altay hayatını kaybetmiş."
+		}
+	],
+	"son": {
+		"gazete_tarihi": "18 Ocak 1984 Çarşamba",
+		"ana": {
+			"terfi": {
+				"manset": "GİŞE MEMURUNA TERFİ",
+				"metin": "Ardıçlı Nüfus Müdürlüğü'nün 2 numaralı gişesine bir hafta önce atanan memur, teftişten yüzünün akıyla çıktı. Müdür Cevdet Bey: \"Bir haftada bu kadar az ihtar, bu dairede görülmüş şey değil.\" Memur, şefliğe yükseltildi; gişe camına artık öbür taraftan bakacak.",
+				"foto": "mudur",
+				"foto_alt": "Müdür Cevdet Bey",
+				"damga": "TERFİ"
+			},
+			"olagan": {
+				"manset": "NÜFUS MÜDÜRLÜĞÜNDE HAYAT OLAĞAN",
+				"metin": "Teftiş sona erdi. 2 numaralı gişenin yeni memuru hakkında \"vasat\" kanaati bildirildi; görevine aynı masada devam edecek. Kuyruk yarın da kapıya kadar uzayacak, mühür yarın da ıstampaya batacak.",
+				"foto": "cayci",
+				"foto_alt": "Çaycı Rıfkı: “Yeni memur çayı açık içiyor.”",
+				"damga": "YERİNDE"
+			},
+			"surgun_ihtar": {
+				"manset": "HATALI MEMURA UZAK TAYİN",
+				"metin": "2 numaralı gişenin memuru, bir haftada aldığı ihtarların ardından ilin en uzak bucağına tayin edildi. Müdür Cevdet Bey: \"Mührü çok bastı; ama neye bastığına az baktı.\" Ailenin eşyası bugün bir kamyonete yüklendi.",
+				"foto": "mudur",
+				"foto_alt": "Müdür Cevdet Bey",
+				"damga": "SÜRGÜN"
+			},
+			"surgun_suphe": {
+				"manset": "GİŞE MEMURU AÇIĞA ALINDI",
+				"metin": "2 numaralı gişenin memuru, hakkındaki rüşvet ve kayırma iddiaları üzerine açığa alındı. Müfettişler çekmecede izahı yapılamayan para bulunduğunu bildirdi. Memurun ailesi evden çıkarken komşular perdelerini kapattı.",
+				"foto": "mufettis",
+				"foto_alt": "Soruşturmayı yürüten Başkomiser T. Ersoy",
+				"damga": "AÇIĞA ALINDI"
+			},
+			"iflas": {
+				"manset": "BORCA BATAN MEMUR İSTİFA ETTİ",
+				"metin": "2 numaralı gişenin memuru, maaşı kesintilerden sonra borcunu karşılamayınca görevinden ayrıldı. Ailenin memlekete, anne tarafının köyüne döndüğü öğrenildi. Gişeye bir haftada ikinci kez yeni memur aranıyor.",
+				"foto": "nermin",
+				"foto_alt": "Komşusu N.A.: “Kimseye yük olmadılar.”",
+				"damga": "İSTİFA"
+			},
+			"aile": {
+				"manset": "MEMURUN EVİNDE HASTALIK",
+				"metin": "2 numaralı gişenin memuru, ağır hastalanan yakınının başında beklemek üzere izne ayrıldı. Hastanın soğuk evde ve ilaçsız kaldığı öğrenildi. Müdürlük, memurun yerine vekil görevlendirdi.",
+				"damga": "İZİNDE"
+			},
+			"tahliye": {
+				"manset": "KİRASINI ÖDEYEMEYEN MEMUR SOKAKTA",
+				"metin": "2 numaralı gişenin memuru, üç akşam üst üste ödenmeyen kira yüzünden evinden çıkarıldı. Aile bir süre akraba yanında kalacak. Ev sahibi İ.B.: \"Mühür basana mühür basılmaz mı sanıyordu?\"",
+				"foto": "evsahibi",
+				"foto_alt": "Ev sahibi İ.B.",
+				"damga": "TAHLİYE"
+			}
+		},
+		"yan": [
+			{
+				"kosul": {
+					"savci": "sag"
+				},
+				"baslik": "SAVCI ALTAY DOSYAYI TAMAMLADI",
+				"metin": "\"Kara Ardıç\" davasında iddianame hazır. Savcı Altay: \"Bu işte bir gişe memurunun dikkati, bir bölük askerden çok iş gördü.\""
+			},
+			{
+				"kosul": {
+					"savci": "yarali"
+				},
+				"baslik": "SAVCI GÖREVİNİN BAŞINDA",
+				"metin": "Saldırıdan yara almadan kurtulan Savcı Altay soruşturmayı sürdürüyor. Kaçan saldırganın izi sürülüyor."
+			},
+			{
+				"kosul": {
+					"savci": "oldu"
+				},
+				"baslik": "SAVCI ALTAY TOPRAĞA VERİLDİ",
+				"metin": "Savcı Hikmet Altay bugün toprağa verildi. Dosyası yeni bir savcıya devredildi; saldırganların kullandığı kimliklerin geçtiği gişe soruşturuluyor."
+			},
+			{
+				"kosul": {
+					"husnu_onay": [
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7
+					]
+				},
+				"baslik": "DERE MAHALLESİ'NDEN BİR YATILI",
+				"metin": "Parasız yatılı sınavını kazanan Yusuf Karaca (10), dedesinin bir haftada tamamladığı evrakla okuluna kaydoldu. Dede Hüsnü Karaca: \"Yedi gün gittim geldim; sekizincide torunum gitti.\""
+			},
+			{
+				"kosul": {
+					"husnu_onay": -1
+				},
+				"baslik": "KAYIT SÜRESİ DOLDU",
+				"metin": "Parasız yatılı sınavını kazanan Yusuf Karaca'nın (10) kaydı, evrakı süresinde tamamlanamadığı için yapılamadı. Dedesi: \"Kural kuraldır demişler. Yusuf seneye yine kazanır.\""
+			},
+			{
+				"kosul": {
+					"tarik_sonuc": "ovgu"
+				},
+				"baslik": "BAŞKOMİSERDEN TAKDİR",
+				"metin": "Sahte cüzdan şebekesini izleyen Başkomiser Tarık Ersoy, raporunda 2 numaralı gişeyi \"ilçenin en güvenilir masası\" diye andı."
+			}
+		],
+		"mektup": "Sayın Memur,\n\nYusuf'un kaydı oldu. Okuma yazmam yok; bunu Yusuf'a ben söyledim, o yazdı.\n\nKâğıdımın eksiği vardı, biliyorum. Siz de biliyordunuz. Beni yine de geri çevirmediniz. Başınıza iş açtıysam hakkınızı helal edin.\n\nYusuf büyüyünce memur olacakmış. \"Cama öbür taraftan bakacağım\" diyor.\n\nEllerinizden öper.\nHüsnü Karaca",
+		"ilanlar": [
+			{
+				"baslik": "KAYIP",
+				"metin": "Nüfus cüzdanımı kaybettim, hükümsüzdür. Yenisi için üç gündür gişe kuyruğundayım. H.T."
+			},
+			{
+				"baslik": "SATILIK",
+				"metin": "Az yanmış kömür sobası, borusuyla. Müracaat: Yukarı Mahalle, Çeşme Sokak."
+			},
+			{
+				"baslik": "ELEMAN ARANIYOR",
+				"metin": "Nüfus Müdürlüğü'ne sabırlı gişe memuru alınacaktır. Mühür ve ıstampa idareden."
+			}
+		]
+	}
+}

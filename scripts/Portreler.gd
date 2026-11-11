@@ -49,6 +49,15 @@ static func doku(kimlik: String) -> Texture2D:
 	return _onbellek[kimlik]
 
 
+## Konuşma kareleri (hafif açık / açık ağız, yan yana); yoksa null.
+static func agiz_dokusu(kimlik: String) -> Texture2D:
+	var anahtar := "agiz/" + kimlik
+	if not _onbellek.has(anahtar):
+		var yol := KLASOR + "agiz/" + kimlik + ".webp"
+		_onbellek[anahtar] = load(yol) if ResourceLoader.exists(yol) else null
+	return _onbellek[anahtar]
+
+
 ## Görseli bulunmayan kimlikler için düz bir siluet.
 static func _yedek_doku() -> Texture2D:
 	if _yedek == null:

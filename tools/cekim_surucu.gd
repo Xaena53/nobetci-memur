@@ -234,3 +234,114 @@ func _senaryo_font() -> void:
 				y += punto + 12.0
 	await cek("font_deneme")
 	kok.queue_free()
+
+
+## Hikâye ekranları: sabah gazetesi, arananlar, zarf, müdür denetimi, ev, gece, sonlar (h_*.png).
+func _senaryo_hikaye() -> void:
+	# 4. gün sabahı: gazete + genelge
+	var masa: Node = await _gune_git(4)
+	await bekle(2.4)
+	await cek("h_01_sabah_gazete")
+	_one_al(masa, "izzet4")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	masa.kural_kitabi.sayfaya_gec(99)
+	masa.dakika = 575.0
+	await bekle(2.6)
+	await cek("h_02_arananlar_denetim")
+
+	# 3. gün: müteahhit ve zarf
+	masa = await _gune_git(3)
+	_one_al(masa, "kenan3")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	await bekle(2.6)
+	await cek("h_03_zarf")
+	masa.zarf.al()
+	await bekle(1.2)
+	await cek("h_04_zarf_alindi")
+
+	# 5. gün: aranan şahıs camda, inceleme
+	masa = await _gune_git(5)
+	_one_al(masa, "kasap5")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	masa.kural_kitabi.sayfaya_gec(99)
+	await bekle(1.5)
+	masa.inceleme.aktif = true
+	await kare(3)
+	masa.inceleme.hedef_tiklandi(masa.gise.yuz)
+	for h: Hedef in masa.kural_kitabi.hedefler:
+		if h.anahtar == "v27":
+			masa.inceleme.hedef_tiklandi(h)
+	await bekle(0.5)
+	await cek("h_05_aranan_inceleme")
+	masa.inceleme.aktif = false
+	var b: Belge = masa.belgeler[0]
+	masa.karar_ver("havale", b, b.get_global_transform() * (b.size * 0.5))
+	await bekle(7.5)
+	await cek("h_06_aranan_yakalandi")
+
+	# 7. gün: evraksız ziyaretçi (Yusuf)
+	masa = await _gune_git(7, {"husnu_onay": 3})
+	_one_al(masa, "yusuf")
+	bas("GiseyiAc")
+	await bekle(4.2)
+	await cek("h_07_yusuf")
+
+	# ev: tam boy aile
+	Oyun.yeni_oyun()
+	Oyun.gun = 2
+	Oyun.para = 1400
+	Oyun.bayraklar = {"nermin": "kayirildi"}
+	Oyun.aile["ikram"] = true
+	Oyun.sahneye_gec("aile")
+	await sahneyi_bekle("Aile")
+	await bekle(1.0)
+	await cek("h_08_ev")
+	var aile := sahne()
+	aile.sec("komur", true)
+	aile.sec("yemek", true)
+	aile.sec("okul", true)
+	await bekle(1.0)
+	await cek("h_09_ev_secili")
+
+	# ev: hastalık ve çok kalem
+	Oyun.yeni_oyun()
+	Oyun.gun = 6
+	Oyun.para = 900
+	Oyun.aile["saglik"] = {"anne": 1, "elif": 2, "can": 0}
+	Oyun.aile["kira_borcu"] = 2
+	Oyun.bayraklar = {"kasap": "yakalandi", "naciye": "gecti", "savci_tanisti": true}
+	Oyun.sahneye_gec("aile")
+	await sahneyi_bekle("Aile")
+	await bekle(1.0)
+	await cek("h_10_ev_hasta")
+	aile = sahne()
+	aile.sec("kira", true)
+	aile.sec("komur", true)
+	bas("Yat")
+	await bekle(2.0)
+	await cek("h_11_gece_olay")
+
+	# sonlar
+	Oyun.yeni_oyun()
+	Oyun.gun = 7
+	Oyun.para = 2350
+	Oyun.ihtar = 4
+	Oyun.toplam = {"islenen": 61, "dogru": 52, "yanlis": 4, "kazanc": 7400}
+	Oyun.bayraklar = {"savci": "sag", "husnu_onay": 7, "mektup": true, "tarik_sonuc": "ovgu"}
+	Oyun.son = {"tur": "terfi", "neden": "basari"}
+	Oyun.sahneye_gec("son")
+	await sahneyi_bekle("Son")
+	await bekle(3.0)
+	await cek("h_12_son_terfi")
+	Oyun.bayraklar = {"savci": "oldu", "husnu_onay": -1}
+	Oyun.suphe = 5
+	Oyun.son = {"tur": "surgun", "neden": "suphe"}
+	Oyun.sahneye_gec("menu")
+	await sahneyi_bekle("AnaMenu")
+	Oyun.sahneye_gec("son")
+	await sahneyi_bekle("Son")
+	await bekle(3.0)
+	await cek("h_13_son_surgun")

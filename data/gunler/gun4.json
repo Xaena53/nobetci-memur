@@ -18,7 +18,7 @@
 	"genelge": {
 		"sayi": "1984/4",
 		"konu": "Sahte cüzdan ihbarı",
-		"metin": "İlçemizde sahte nüfus cüzdanı dolaştığı ihbar edilmiştir. Cüzdanın seri numarası geçerli seriler arasında olacak, fotoğraf da karşınızdaki şahsa ait olacaktır. Şüphelendiğiniz kişiyi bana havale edin; böyle işlerin altından gişede kalkılmaz."
+		"metin": "Dün gece adliye arşivi bombalandı; sahte cüzdan dosyaları yandı. Bugünden itibaren cüzdanın seri numarası geçerli seriler arasında olacak, fotoğraf da karşınızdaki şahsa ait olacaktır. Emniyetin aradığı kişilerin resimleri defterinizin son sayfasında. Biri gişeye gelirse evrakı ne kadar düzgün olursa olsun bana havale edin; kendiniz bir şey yapmayın."
 	},
 	"kurallar": [
 		{
@@ -89,6 +89,36 @@
 			"tur": "foto_eslesme",
 			"metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır.",
 			"yeni": true
+		},
+		{
+			"id": "arananlar",
+			"tur": "arananlar",
+			"metin": "Arananlar listesindeki şahıs, evrakı ne olursa olsun müdüre havale edilir.",
+			"liste": [
+				{
+					"portre": "v27",
+					"ad": "Bekir YAMAN",
+					"lakap": "Kasap",
+					"bayrak": "kasap"
+				},
+				{
+					"portre": "v22",
+					"ad": "Naciye SARAÇ",
+					"lakap": "Terzi",
+					"bayrak": "naciye"
+				}
+			],
+			"yeni": true
 		}
+	],
+	"denetim": [
+		[
+			570,
+			630
+		],
+		[
+			840,
+			900
+		]
 	]
 }

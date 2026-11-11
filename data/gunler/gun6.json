@@ -23,7 +23,7 @@
 	"genelge": {
 		"sayi": "1984/6",
 		"konu": "Mahalle sınırları",
-		"metin": "Hafta sonu çıkan kararla ilçe sınırları yeniden düzenlendi: Dere ve Değirmen mahalleleri Kavaklı'ya bağlandı. Yalnızca tarife sayfasındaki mahallelerin muhtarlarından alınmış ikametgâh geçerlidir. Yeni basılan B serisi cüzdanlar da kabul edilecektir."
+		"metin": "Hafta sonu çıkan kararla ilçe sınırları yeniden düzenlendi: Dere ve Değirmen mahalleleri Kavaklı'ya bağlandı. Yalnızca tarife sayfasındaki mahallelerin muhtarlarından alınmış ikametgâh geçerlidir. Yeni basılan B serisi cüzdanlar da kabul edilecektir. Savcı Altay bugün hükümet konağında; arananlar sayfasına bir kez daha bakın."
 	},
 	"kurallar": [
 		{
@@ -121,6 +121,35 @@
 			],
 			"metin": "İkametgâh, ilçemize bağlı bir mahalleden alınmış olmalıdır.",
 			"yeni": true
+		},
+		{
+			"id": "arananlar",
+			"tur": "arananlar",
+			"metin": "Arananlar listesindeki şahıs, evrakı ne olursa olsun müdüre havale edilir.",
+			"liste": [
+				{
+					"portre": "v27",
+					"ad": "Bekir YAMAN",
+					"lakap": "Kasap",
+					"bayrak": "kasap"
+				},
+				{
+					"portre": "v22",
+					"ad": "Naciye SARAÇ",
+					"lakap": "Terzi",
+					"bayrak": "naciye"
+				}
+			]
 		}
+	],
+	"denetim": [
+		[
+			600,
+			660
+		],
+		[
+			870,
+			930
+		]
 	]
 }

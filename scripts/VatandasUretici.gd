@@ -46,7 +46,7 @@ static func uret(gun: Dictionary, rng: RandomNumberGenerator, kullanilan: Array 
 		"kimlik": kimlik,
 		"islem": islem,
 		"yas": yas,
-		"belgeler": _belgeleri_kur(kimlik, portre, islem, gun, rng),
+		"belgeler": belgeleri_kur(kimlik, portre, islem, gun, rng),
 		"uretilen": [],
 	}
 
@@ -94,7 +94,7 @@ static func _gecerli_seri(gun: Dictionary, rng: RandomNumberGenerator) -> String
 	return "%s-%06d" % [str(a.onek), rng.randi_range(int(a.min) + 500, int(a.max) - 500)]
 
 
-static func _belgeleri_kur(kimlik: Dictionary, portre: String, islem: String, gun: Dictionary,
+static func belgeleri_kur(kimlik: Dictionary, portre: String, islem: String, gun: Dictionary,
 		rng: RandomNumberGenerator) -> Array:
 	var adlar := Veri.adlar()
 	var bugun := str(gun.get("tarih", "09.01.1984"))

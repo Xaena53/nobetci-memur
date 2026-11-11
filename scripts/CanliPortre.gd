@@ -1,20 +1,23 @@
 class_name CanliPortre
 extends Control
-## Tek görselden canlandırılan büst: nefes alır, göz kırpar, konuşurken ağzı oynar, başını
-## sallar, yürürken sallanır, sabrı taşınca öfleyip pöfler.
+## Canlandırılan figür (büst ya da tam boy): nefes alır, göz kırpar, konuşurken ağzı oynar,
+## başını sallar, yürürken sallanır, sabrı taşınca öfleyip pöfler.
 ##
-## Hareketlerin hepsi assets/shader/portre.gdshader ile, portrenin yüz noktalarından
-## (data/portreler.json: göz, ağız, çene) hesaplanır; ek görsel gerekmez.
+## Hareketler assets/shader/portre.gdshader ile, figürün yüz noktalarından (data/portreler.json:
+## göz, ağız, çene) hesaplanır. Konuşmada ağız, elle boyanmış iki kareyle oynar
+## (assets/img/portre/agiz/<kimlik>.webp: hafif açık ve açık ağız).
 
 signal efekt(ad: String)   ## "ofle", "adim", "hece" — ses için
 
 const GOLGELEYICI := preload("res://assets/shader/portre.gdshader")
 const DOLGU := 0.08
 const OFLEMELER := ["Öf...", "Pöf!", "Hıh!", "Offf...", "Cık cık...", "Ay ay..."]
+const AGIZ_PAYI := 3.0        ## ağız atlasında karelerin çevresindeki saydam pay (piksel)
 
 var kimlik := ""
 var konusuyor := false        ## true iken ağız heceler hâlinde açılıp kapanır
 var yuruyor := false          ## true iken adım atar gibi sallanır
+var canlilik := 1.0           ## nefes ve baş salınımının genliği (hasta ya da uykulu figürde düşer)
 
 var _gorsel: TextureRect
 var _malzeme: ShaderMaterial
@@ -32,6 +35,8 @@ var _agiz_hedef := 0.0
 var _hece_kalan := 0.0
 var _yurume := 0.0
 var _adim := 0.0
+var _nefes_gucu := 1.0
+var _bas_gucu := 1.0
 
 # Tepkilerin (sevinç, üzüntü, öfleme) geçici katkıları; tween ile sürülür.
 var ek_bas := Vector2.ZERO
@@ -89,6 +94,21 @@ func ayarla(portre_kimligi: String, olcek: float) -> void:
 	_malzeme.set_shader_parameter("agiz", Vector2(agiz[0], agiz[1]))
 	_malzeme.set_shader_parameter("agiz_yari", float(bilgi.get("agiz_gen", 0.12)) * 0.5)
 	_malzeme.set_shader_parameter("cene", float(bilgi.get("cene", 0.58)))
+	# tam boy figürlerde baş görselin küçük bir bölümüdür: boyun geçişi daralır, nefes belde biter
+	_malzeme.set_shader_parameter("boyun_olcegi", float(bilgi.get("boyun_olcegi", 1.0)))
+	_malzeme.set_shader_parameter("nefes_alti", float(bilgi.get("nefes_alti", 1.0)))
+	_nefes_gucu = float(bilgi.get("nefes_gucu", 1.0))
+	_bas_gucu = float(bilgi.get("boyun_olcegi", 1.0))
+	var kare: Array = bilgi.get("agiz_kare", [])
+	var kareler := Portreler.agiz_dokusu(kimlik)
+	var kareli := kare.size() == 4 and kareler != null
+	_malzeme.set_shader_parameter("agiz_kareli", kareli)
+	if kareli:
+		var b := kareler.get_size()
+		_malzeme.set_shader_parameter("agiz_dokusu", kareler)
+		_malzeme.set_shader_parameter("agiz_kare", Vector4(kare[0], kare[1], kare[2], kare[3]))
+		_malzeme.set_shader_parameter("agiz_atlas", Vector4(AGIZ_PAYI / b.x, AGIZ_PAYI / b.y,
+			(b.x * 0.5 - 2.0 * AGIZ_PAYI) / b.x, (b.y - 2.0 * AGIZ_PAYI) / b.y))
 	_faz = randf() * TAU
 	_kirpma_bekleme = randf_range(0.8, 2.5)
 	sifirla()
@@ -235,17 +255,25 @@ func _process(delta: float) -> void:
 		if _kirpma_bekleme <= 0.0 and _goz_var:
 			_kirpma_suresi = 0.0
 
-	# Konuşma: heceler hâlinde açılıp kapanan ağız.
+	# Konuşma: ağız üç durum arasında gezer (kapalı, hafif açık, açık); her hece kısa sürer.
+	# Aynı durum üst üste gelmez, kapalıdan açığa doğrudan sıçrama seyrektir.
 	if konusuyor:
 		_hece_kalan -= delta
 		if _hece_kalan <= 0.0:
-			_hece_kalan = randf_range(0.07, 0.14)
-			_agiz_hedef = 0.0 if _agiz_hedef > 0.2 else randf_range(0.30, 0.78)
-			if _agiz_hedef > 0.2:
+			_hece_kalan = randf_range(0.085, 0.16)
+			var onceki := _agiz_hedef
+			var zar := randf()
+			if onceki < 0.25:
+				_agiz_hedef = 0.5 if zar < 0.62 else 1.0
+			elif onceki < 0.75:
+				_agiz_hedef = 1.0 if zar < 0.55 else 0.0
+			else:
+				_agiz_hedef = 0.5 if zar < 0.68 else 0.0
+			if _agiz_hedef > onceki:
 				efekt.emit("hece")
 	else:
 		_agiz_hedef = 0.0
-	_agiz = lerpf(_agiz, _agiz_hedef, clampf(delta * 26.0, 0.0, 1.0))
+	_agiz = lerpf(_agiz, _agiz_hedef, clampf(delta * 30.0, 0.0, 1.0))
 
 	# Yürüme: adım atarken inip kalkma ve iki yana sallanma.
 	_yurume = move_toward(_yurume, 1.0 if yuruyor else 0.0, delta * 5.0)
@@ -255,9 +283,9 @@ func _process(delta: float) -> void:
 		if onceki < 0.0 and sin(_adim) >= 0.0:
 			efekt.emit("adim")
 
-	var nefes := 0.5 + 0.5 * sin(_zaman * 1.45 + _faz)
-	var bas := Vector2(0.0034 * sin(_zaman * 0.63 + _faz * 2.0), 0.0018 * sin(_zaman * 0.9 + _faz))
-	var egim := 0.011 * sin(_zaman * 0.41 + _faz * 1.7)
+	var nefes := (0.5 + 0.5 * sin(_zaman * 1.45 + _faz)) * _nefes_gucu * canlilik
+	var bas := Vector2(0.0034 * sin(_zaman * 0.63 + _faz * 2.0), 0.0018 * sin(_zaman * 0.9 + _faz)) * _bas_gucu * canlilik
+	var egim := 0.011 * sin(_zaman * 0.41 + _faz * 1.7) * canlilik
 	var kas := 0.0
 	if konusuyor:
 		bas.y += 0.0045 * _agiz

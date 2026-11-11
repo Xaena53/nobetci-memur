@@ -23,7 +23,7 @@
 	"genelge": {
 		"sayi": "1984/7",
 		"konu": "Teftiş",
-		"metin": "Bugün bakanlık müfettişi dairemizi teftiş edecektir. Bütün kurallar harfiyen uygulanacaktır. Ayrıca ikametgâhın geçerlilik süresi 3 aya indirilmiştir. Bir haftadır nasıl çalıştığınız bugün belli olacak; yüzümüzü kara çıkarmayın."
+		"metin": "Bugün dairemizde teftiş var. Bütün kurallar harfiyen uygulanacaktır; ikametgâhın geçerlilik süresi 3 aya indirilmiştir. Bir haftadır nasıl çalıştığınız bugün belli olacak. Kolay gelsin."
 	},
 	"kurallar": [
 		{
@@ -120,6 +120,35 @@
 				"Yeni"
 			],
 			"metin": "İkametgâh, ilçemize bağlı bir mahalleden alınmış olmalıdır."
+		},
+		{
+			"id": "arananlar",
+			"tur": "arananlar",
+			"metin": "Arananlar listesindeki şahıs, evrakı ne olursa olsun müdüre havale edilir.",
+			"liste": [
+				{
+					"portre": "v27",
+					"ad": "Bekir YAMAN",
+					"lakap": "Kasap",
+					"bayrak": "kasap"
+				},
+				{
+					"portre": "v22",
+					"ad": "Naciye SARAÇ",
+					"lakap": "Terzi",
+					"bayrak": "naciye"
+				}
+			]
 		}
+	],
+	"denetim": [
+		[
+			570,
+			660
+		],
+		[
+			780,
+			870
+		]
 	]
 }

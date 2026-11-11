@@ -50,7 +50,7 @@ func yukle(gun: Dictionary) -> void:
 		var yazi := "%d. %s" % [no, str(k.metin)]
 		var yuk := _yukseklik(yazi, genislik, Stil.daktilo(), PUNTO)
 		if y + yuk > alt_sinir:
-			s = _yeni_sayfa("KURALLAR-%d" % (_sayfalar.size() + 1))
+			s = _yeni_sayfa("-%d-" % (_sayfalar.size() + 1))
 			y = _baslik_yaz(s, "GENELGE DEFTERİ", "(devam)")
 		var yeni := bool(k.get("yeni", false))
 		_satir_yaz(s, yazi, y, genislik, yuk, k, Stil.BORDO if yeni else Stil.MUREKKEP)
@@ -71,6 +71,13 @@ func yukle(gun: Dictionary) -> void:
 		y = _baslik_yaz(s, "TARİFE VE LİSTELER", "")
 		for k in tablolar:
 			y = _tablo_yaz(s, k, y, genislik) + 10.0
+
+	# --- Arananlar ---
+	var arananlar := Veri.kural(gun, "arananlar")
+	if not arananlar.is_empty():
+		s = _yeni_sayfa("ARANANLAR")
+		y = _baslik_yaz(s, "ARANANLAR", "Emniyet Müdürlüğü tebliği")
+		_arananlari_yaz(s, arananlar, y, genislik)
 
 	_sekmeleri_kur()
 	sayfaya_gec(0, false)
@@ -204,6 +211,57 @@ func _tablo_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> float:
 			_satir_yaz(s, yazi, y, genislik, yuk, k)
 			y += yuk + 2.0
 	return y
+
+
+## Arananlar sayfası: yan yana resimler, altlarında ad ve lakap. Her resim, inceleme modunda
+## camdaki yüzle karşılaştırılabilen bir hedeftir. Yakalananın üstüne damga vurulur.
+func _arananlari_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> void:
+	var liste: Array = k.get("liste", [])
+	var foto := Vector2(104, 126)
+	var aralik := (genislik - foto.x * liste.size()) / maxf(1.0, liste.size() + 1.0)
+	var x := KENAR + aralik
+	y += 6.0
+	for a: Dictionary in liste:
+		var portre := str(a.get("portre", ""))
+		Gazete.foto_ekle(s, portre, Rect2(x, y, foto.x, foto.y))
+		var ad := Stil.etiket(str(a.get("ad", "")), 12, Stil.MUREKKEP, Stil.daktilo_kalin())
+		ad.position = Vector2(x - 14.0, y + foto.y + 4.0)
+		ad.size = Vector2(foto.x + 28.0, 16.0)
+		ad.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		s.add_child(ad)
+		var lakap := Stil.etiket("lakabı \"%s\"" % str(a.get("lakap", "")), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
+		lakap.position = Vector2(x - 14.0, y + foto.y + 20.0)
+		lakap.size = Vector2(foto.x + 28.0, 15.0)
+		lakap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		s.add_child(lakap)
+		if str(Oyun.bayrak(str(a.get("bayrak", "")), "")) == "yakalandi":
+			var damga := Stil.etiket("YAKALANDI", 15, Stil.BORDO, Stil.daktilo_kalin())
+			damga.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Color(0.95, 0.92, 0.84, 0.82), Stil.BORDO, 2, 2), 5, 1))
+			s.add_child(damga)
+			damga.size = damga.get_combined_minimum_size()
+			damga.pivot_offset = damga.size / 2.0
+			damga.position = Vector2(x + (foto.x - damga.size.x) / 2.0, y + foto.y * 0.42)
+			damga.rotation = deg_to_rad(-14.0)
+		else:
+			var h := Hedef.new()
+			h.tip = "kural"
+			h.anahtar = portre
+			h.kural = k
+			h.etiket = "Aranan şahıs"
+			h.position = Vector2(x - 3.0, y - 3.0)
+			h.size = foto + Vector2(6, 6)
+			h.aktif = _inceleme
+			h.tiklandi.connect(func(hedef: Hedef) -> void: hedef_tiklandi.emit(hedef))
+			s.add_child(h)
+			hedefler.append(h)
+		x += foto.x + aralik
+	var uyari := "Bu şahıslardan biri gişenize gelirse evrakına bakmadan müdüre havale edin. Kendiniz bir şey yapmayın."
+	var uyari_y := y + foto.y + 46.0
+	var l := Stil.etiket(uyari, 11, Stil.BORDO)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.position = Vector2(KENAR, uyari_y)
+	l.size = Vector2(genislik, _yukseklik(uyari, genislik, Stil.daktilo(), 11))
+	s.add_child(l)
 
 
 func _ara_baslik(s: Control, yazi: String, y: float) -> float:

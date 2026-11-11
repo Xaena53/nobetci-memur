@@ -4,6 +4,10 @@ extends Control
 ## Akış: vatandaş cama gelir → belgeleri yarıktan masaya kayar → oyuncu inceler ve bir araç
 ## (mühür / eksik evrak fişi / havale pusulası) bırakarak karar verir → Dogrulayici kararı
 ## değerlendirir → doğruysa prim yazılır, yanlışsa müdürün ihtarı teleksten satır satır çıkar.
+##
+## Hikâye karakterleri (data/hikaye.json) kuyruğa belirli sıralarda girer. Bazıları evraksız gelir,
+## yalnızca konuşur; bazıları masaya zarf bırakır. Müdür, günün belirli saatlerinde jaluziyi açıp
+## gişeyi izler: o sırada yapılan hata çift ihtar sayılır.
 
 const ARKA_PLAN := "res://assets/img/masa_arkaplan.webp"
 const BUYUTEC := "res://assets/img/nesne/buyutec.webp"
@@ -24,6 +28,8 @@ var tespitler: Array[String] = []       ## incelemede yakalanan gerekçeler (cam
 var ozet: Dictionary = {}               ## günün sayaçları (Gün Sonu ekranına gider)
 var havale_kalan := 2
 var gunluk_ihtar := 0
+var zarf: Zarf                          ## masadaki rüşvet zarfı (varsa)
+var denetimde := false                  ## müdür camdan izliyor mu
 
 var gise: Gise
 var balon: KonusmaBalonu
@@ -45,6 +51,12 @@ var _igne: Control
 var _igne_dokusu: Texture2D             ## çizim komutu dokuyu tutmaz; başvuru burada yaşamalı
 var _bekleyen_fis: Dictionary = {}
 var _mesgul := true                     ## vatandaş gelip giderken karar verilemez
+var _jaluzi: Control
+var _jaluzi_acik := 0.0                 ## 0 inik .. 1 açık
+var _mudur_odasi: Control
+var _mudur: CanliPortre
+var _denetim_seridi: Label
+var _saat_durdu := false                ## mektup gibi tam ekran bir kâğıt okunurken saat bekler
 
 
 func _ready() -> void:
@@ -63,7 +75,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if not mesai_acik:
+	if not mesai_acik or _saat_durdu:
 		return
 	# Ayarlardaki saat hızı: bir oyun dakikasının kaç gerçek saniye sürdüğü.
 	dakika += delta / maxf(0.05, float(Oyun.ayar("saat_hizi")))
@@ -71,6 +83,7 @@ func _process(delta: float) -> void:
 		dakika = MESAI_SONU
 		mesaiyi_bitir()
 	saat.dakika = dakika
+	_denetimi_guncelle()
 
 
 ## Gün, müdürün genelgesiyle başlar; "Gişeyi Aç" denince saat işlemeye ve vatandaş gelmeye başlar.
@@ -97,11 +110,22 @@ func _unhandled_input(event: InputEvent) -> void:
 
 # --- Vatandaş akışı ---
 
+## Günün kuyruğu: rastgele vatandaşlar ve aralarına, hikâyedeki sıralarına göre giren özel karakterler.
 func _kuyrugu_kur() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = Oyun.gun_tohumu()
-	for i in int(gun.get("vatandas_sayisi", 8)):
+	var ozel := Hikaye.ozel_vatandaslar(Oyun.gun, gun, Oyun.bayraklar, rng)
+	var evrakli := 0
+	for o in ozel:
+		if not bool(o.vatandas.get("belgesiz", false)):
+			evrakli += 1
+	for i in maxi(0, int(gun.get("vatandas_sayisi", 8)) - evrakli):
 		kuyruk.append(VatandasUretici.uret(gun, rng, Oyun.gorulen_portreler))
+	var son_yer := -1
+	for o in ozel:
+		var yer := clampi(maxi(int(o.sira) - 1, son_yer + 1), 0, kuyruk.size())
+		kuyruk.insert(yer, o.vatandas)
+		son_yer = yer
 
 
 func _sonraki_vatandas() -> void:
@@ -117,10 +141,126 @@ func _sonraki_vatandas() -> void:
 	await get_tree().create_timer(Gise.GELIS_SURESI + 0.1).timeout
 	if not mesai_acik:
 		return
+	if bool(vatandas.get("belgesiz", false)):
+		_belgesiz_ziyaret()
+		return
 	balon.soyle(str(vatandas.konusma.giris))
 	_belgeleri_getir()
+	if int(vatandas.get("zarf", 0)) > 0:
+		_zarfi_getir(0.9)
 	_mesgul = false
 	_araclari_ayarla()
+
+
+## Evraksız gelen hikâye karakteri: söyleyeceğini söyler (varsa zarfını bırakır) ve gider.
+func _belgesiz_ziyaret() -> void:
+	var z := vatandas
+	var kod := str(z.get("kod", ""))
+	for satir: String in z.get("satirlar", []):
+		balon.soyle(satir)
+		await balon.bitti
+		await get_tree().create_timer(1.1 + satir.length() * 0.03).timeout
+		if not _ziyaret_suruyor(kod):
+			return
+	Hikaye.etki_uygula((z.get("etki", {}) as Dictionary).get("ziyaret", null))
+	if bool(z.get("mektup", false)):
+		await _mektubu_goster()
+		if not _ziyaret_suruyor(kod):
+			return
+	if int(z.get("zarf", 0)) > 0:
+		_zarfi_getir(0.0)
+		var bekleme := 14.0
+		while bekleme > 0.0 and is_instance_valid(zarf) and not zarf.sonuclandi:
+			await get_tree().process_frame
+			bekleme -= get_process_delta_time()
+		if not _ziyaret_suruyor(kod):
+			return
+		if is_instance_valid(zarf) and not zarf.sonuclandi:
+			zarf.geri_git()
+			balon.soyle(str((z.get("konusma", {}) as Dictionary).get("zarf_bekledi", "Düşünürsünüz.")), 1.4)
+		await get_tree().create_timer(1.6).timeout
+		if not _ziyaret_suruyor(kod):
+			return
+	balon.sus()
+	gise.gitsin()
+	vatandas = {}
+	_fisi_goster()
+	await get_tree().create_timer(1.3).timeout
+	_sonraki_vatandas()
+
+
+## Ziyaretçinin getirdiği mektup masanın üstünde açılır; oyuncu katlayınca ziyaret sürer.
+func _mektubu_goster() -> void:
+	var katman := Control.new()
+	katman.name = "MektupEkrani"
+	katman.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	katman.mouse_filter = MOUSE_FILTER_STOP
+	_ust_katman.add_child(katman)
+	var perde := ColorRect.new()
+	perde.color = Color(0.07, 0.06, 0.05, 0.6)
+	perde.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	perde.mouse_filter = MOUSE_FILTER_IGNORE
+	katman.add_child(perde)
+	var kagit := Mektup.new()
+	katman.add_child(kagit)
+	kagit.kur(Hikaye.mektup())
+	kagit.position = Vector2(560, 120)
+	kagit.rotation = deg_to_rad(-2.0)
+	var kapat := Button.new()
+	kapat.name = "MektubuKatla"
+	kapat.text = "Mektubu Katla"
+	kapat.focus_mode = FOCUS_NONE
+	kapat.custom_minimum_size = Vector2(210, 42)
+	kapat.position = Vector2(560 + (Mektup.BOYUT.x - 210.0) / 2.0, 552)
+	katman.add_child(kapat)
+	katman.modulate.a = 0.0
+	create_tween().tween_property(katman, "modulate:a", 1.0, 0.3)
+	_saat_durdu = true            # mektup okunurken mesai saati işlemez
+	await kapat.pressed
+	_saat_durdu = false
+	var t := create_tween()
+	t.tween_property(katman, "modulate:a", 0.0, 0.2)
+	t.tween_callback(katman.queue_free)
+
+
+func _ziyaret_suruyor(kod: String) -> bool:
+	return mesai_acik and str(vatandas.get("kod", "")) == kod
+
+
+# --- Rüşvet zarfı ---
+
+func _zarfi_getir(gecikme: float) -> void:
+	zarf = Zarf.new()
+	zarf.kur(int(vatandas.get("zarf", 0)), _belge_katmani, _ust_katman)
+	zarf.alindi.connect(_zarf_alindi)
+	zarf.geri_itildi.connect(_zarf_geri_itildi)
+	zarf.gel(Yerlesim.GISE_YARIK, Yerlesim.ZARF_YERI, gecikme)
+
+
+## Zarf çekmeceye atıldı: para cebe girer, şüphe artar. Müdür izliyorsa para müsadere edilir.
+func _zarf_alindi(tutar: int) -> void:
+	var konusma: Dictionary = vatandas.get("konusma", {})
+	Hikaye.etki_uygula((vatandas.get("etki", {}) as Dictionary).get("zarf", null))
+	if denetimde:
+		Oyun.suphe += 1
+		gunluk_ihtar += 2
+		ozet.ihtar = gunluk_ihtar
+		var mesaj := "Zarfı çekmecenize atarken sizi gördüm. Para müsadere edildi; iki ihtar yazdım."
+		(ozet.ihtarlar as Array).append(mesaj)
+		teleks.yazdir(mesaj, gunluk_ihtar, "ihtar")
+		_mudur.uzul()
+		_igneyi_guncelle()
+	else:
+		Oyun.para += tutar
+		ozet["zarf"] = int(ozet.get("zarf", 0)) + tutar
+	gise.portre.sevin()
+	balon.soyle(str(konusma.get("zarf", "Anlaştık.")), 1.4)
+
+
+func _zarf_geri_itildi() -> void:
+	var konusma: Dictionary = vatandas.get("konusma", {})
+	gise.portre.sas()
+	balon.soyle(str(konusma.get("zarf_geri", "Siz bilirsiniz.")), 1.4)
 
 
 func _belgeleri_getir() -> void:
@@ -144,6 +284,8 @@ func _vatandasi_ugurla(karar: String) -> void:
 	_mesgul = true
 	_araclari_ayarla()
 	gise.tepki(karar)
+	if is_instance_valid(zarf) and not zarf.sonuclandi:
+		zarf.geri_git()            # dokunulmayan zarf sahibiyle birlikte gider
 	for b in belgeler:
 		b.kilitli = true
 	await get_tree().create_timer(0.7).timeout
@@ -212,7 +354,23 @@ func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = ""
 
 	var sonuc := Dogrulayici.kontrol(vatandas, gun)
 	var degerlendirme := Dogrulayici.degerlendir(karar, gerekce, sonuc)
+	# Hikâye karakterlerinde kararın ayrıca bir bedeli ya da karşılığı olur.
+	var etki: Dictionary = {}
+	if str(vatandas.get("tur", "")) == "hikaye":
+		var e: Variant = (vatandas.get("etki", {}) as Dictionary).get(karar, null)
+		if typeof(e) == TYPE_DICTIONARY:
+			etki = e
+	if etki.has("sonuc"):
+		degerlendirme = {"sonuc": str(etki.sonuc), "mesaj": ""}
 	_sonucu_isle(karar, degerlendirme)
+	if not etki.is_empty():
+		Hikaye.etki_uygula(etki)
+		if etki.has("not"):
+			_bekleyen_fis = {"cesit": "not", "metin": str(etki["not"])}
+		# arananlardan biri yakalandıysa defterdeki resmine damga vurulur
+		var acik_sayfa := kural_kitabi.sayfa
+		kural_kitabi.yukle(gun)
+		kural_kitabi.sayfaya_gec(acik_sayfa, false)
 	kararlar.append({"karar": karar, "gerekce": gerekce, "sonuc": degerlendirme.sonuc, "dogru_karar": sonuc.karar,
 		"vatandas": vatandas})
 	_vatandasi_ugurla(karar)
@@ -231,10 +389,16 @@ func _sonucu_isle(karar: String, d: Dictionary) -> void:
 				_bekleyen_fis = {"cesit": "not", "metin": "Şüpheniz yerindeymiş; evrak sahte çıktı. Dikkatiniz sicilinize işlendi."}
 		"yanlis":
 			ozet.yanlis += 1
-			gunluk_ihtar += 1
+			var mesaj := str(d.mesaj)
+			if denetimde:
+				gunluk_ihtar += 2
+				mesaj += " Camdan izliyordum: çift ihtar."
+				_mudur.uzul()
+			else:
+				gunluk_ihtar += 1
 			ozet.ihtar = gunluk_ihtar
-			(ozet.ihtarlar as Array).append(str(d.mesaj))
-			_bekleyen_fis = {"cesit": "ihtar", "metin": str(d.mesaj)}
+			(ozet.ihtarlar as Array).append(mesaj)
+			_bekleyen_fis = {"cesit": "ihtar", "metin": mesaj}
 		"yarim":
 			ozet.yarim += 1
 			_bekleyen_fis = {"cesit": "uyari", "metin": str(d.mesaj)}
@@ -296,9 +460,14 @@ func mesaiyi_bitir() -> void:
 	_araclari_ayarla()
 	inceleme.aktif = false
 	inceleme.temizle()
+	if is_instance_valid(zarf) and not zarf.sonuclandi:
+		zarf.geri_git()
 	if not vatandas.is_empty():
-		ozet.yarida += 1
-		balon.soyle("Saat beş mi oldu? Ama daha işim bitmemişti!", 1.6)
+		if bool(vatandas.get("belgesiz", false)):
+			balon.soyle("Kapatıyorsunuz demek. Sonra konuşuruz.", 1.6)
+		else:
+			ozet.yarida += 1
+			balon.soyle("Saat beş mi oldu? Ama daha işim bitmemişti!", 1.6)
 		gise.tepki("eksik")
 		var i := 0
 		for b in belgeler:
@@ -421,7 +590,8 @@ func _katman(ad: String) -> Node2D:
 	return k
 
 
-## Müdür odasının camlı bölmesi: plaket yazısı ve inik jaluzi.
+## Müdür odasının camlı bölmesi: plaket, camın ardındaki müdür ve jaluzi. Jaluzi çoğu zaman iniktir;
+## müdür denetim saatlerinde açar ve gişeyi izler.
 func _mudur_bolmesini_kur() -> void:
 	var p := Yerlesim.MUDUR_PLAKET
 	var yazi := Stil.etiket("MÜDÜR", 12, Color("3a2a14"), Stil.serif_kalin())
@@ -431,21 +601,84 @@ func _mudur_bolmesini_kur() -> void:
 	yazi.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	add_child(yazi)
 
-	var jaluzi := Control.new()
-	jaluzi.name = "Jaluzi"
-	jaluzi.position = Yerlesim.MUDUR_CAMI.position
-	jaluzi.size = Yerlesim.MUDUR_CAMI.size
-	jaluzi.mouse_filter = MOUSE_FILTER_IGNORE
-	jaluzi.draw.connect(func() -> void:
-		var y := 0.0
-		while y < jaluzi.size.y:
-			jaluzi.draw_rect(Rect2(0, y, jaluzi.size.x, 7.0), Color("b9b6a2"))
-			jaluzi.draw_rect(Rect2(0, y + 5.5, jaluzi.size.x, 1.5), Color("8f8c7a"))
-			jaluzi.draw_rect(Rect2(0, y + 7.0, jaluzi.size.x, 2.0), Color(0.08, 0.10, 0.10, 0.85))
-			y += 9.0
-		for x: float in [jaluzi.size.x * 0.22, jaluzi.size.x * 0.78]:
-			jaluzi.draw_line(Vector2(x, 0), Vector2(x, jaluzi.size.y), Color(0.25, 0.24, 0.20, 0.7), 1.0))
-	add_child(jaluzi)
+	_mudur_odasi = Control.new()
+	_mudur_odasi.name = "MudurOdasi"
+	_mudur_odasi.position = Yerlesim.MUDUR_CAMI.position
+	_mudur_odasi.size = Yerlesim.MUDUR_CAMI.size
+	_mudur_odasi.clip_contents = true
+	_mudur_odasi.mouse_filter = MOUSE_FILTER_IGNORE
+	_mudur_odasi.visible = false
+	_mudur_odasi.draw.connect(func() -> void:
+		var b := _mudur_odasi.size
+		_mudur_odasi.draw_rect(Rect2(Vector2.ZERO, b), Color("3a3626"))
+		_mudur_odasi.draw_rect(Rect2(0, b.y * 0.62, b.x, b.y * 0.38), Color("2c2a1f"))
+		_mudur_odasi.draw_circle(Vector2(b.x * 0.5, b.y * 0.30), b.x * 0.62, Color(1.0, 0.86, 0.55, 0.10))
+		_mudur_odasi.draw_circle(Vector2(b.x * 0.5, b.y * 0.26), b.x * 0.36, Color(1.0, 0.86, 0.55, 0.10)))
+	add_child(_mudur_odasi)
+	_mudur = CanliPortre.new()
+	_mudur.name = "Mudur"
+	_mudur_odasi.add_child(_mudur)
+	_mudur.ayarla("mudur", 0.335)
+	_mudur.position = Vector2((_mudur_odasi.size.x - _mudur.size.x) / 2.0, _mudur_odasi.size.y - _mudur.size.y + 8.0)
+	_mudur.set_process(false)
+
+	_jaluzi = Control.new()
+	_jaluzi.name = "Jaluzi"
+	_jaluzi.position = Yerlesim.MUDUR_CAMI.position
+	_jaluzi.size = Yerlesim.MUDUR_CAMI.size
+	_jaluzi.mouse_filter = MOUSE_FILTER_IGNORE
+	_jaluzi.draw.connect(_jaluzi_ciz)
+	add_child(_jaluzi)
+
+	_denetim_seridi = Stil.etiket("MÜDÜR İZLİYOR", 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	_denetim_seridi.name = "DenetimSeridi"
+	_denetim_seridi.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Stil.BORDO, Color(0, 0, 0, 0.45), 1, 2, 2), 4, 2))
+	_denetim_seridi.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_denetim_seridi.position = Yerlesim.DENETIM_ETIKETI.position
+	_denetim_seridi.size = Yerlesim.DENETIM_ETIKETI.size
+	_denetim_seridi.visible = false
+	add_child(_denetim_seridi)
+
+
+## Jaluzi: yatay latalar. Açıldıkça latalar incelir, aralarından oda görünür.
+func _jaluzi_ciz() -> void:
+	var w := _jaluzi.size.x
+	var kalin := lerpf(7.0, 1.4, _jaluzi_acik)
+	var y := 0.0
+	while y < _jaluzi.size.y:
+		_jaluzi.draw_rect(Rect2(0, y, w, kalin), Color("b9b6a2"))
+		_jaluzi.draw_rect(Rect2(0, y + kalin - 1.2, w, 1.2), Color("8f8c7a"))
+		_jaluzi.draw_rect(Rect2(0, y + kalin, w, 9.0 - kalin), Color(0.08, 0.10, 0.10, 0.85 * (1.0 - _jaluzi_acik)))
+		y += 9.0
+	for x: float in [w * 0.22, w * 0.78]:
+		_jaluzi.draw_line(Vector2(x, 0), Vector2(x, _jaluzi.size.y), Color(0.25, 0.24, 0.20, 0.7), 1.0)
+	# camın yansıması
+	_jaluzi.draw_colored_polygon(PackedVector2Array([Vector2(w * 0.55, 0), Vector2(w * 0.78, 0),
+		Vector2(w * 0.40, _jaluzi.size.y), Vector2(w * 0.17, _jaluzi.size.y)]), Color(1, 1, 1, 0.05 * _jaluzi_acik))
+
+
+## Günün denetim saatlerine (data/gunler: "denetim": [[başlangıç, bitiş] dakika]) göre jaluziyi açar/kapatır.
+func _denetimi_guncelle() -> void:
+	var simdi := false
+	if mesai_acik:
+		for aralik: Array in gun.get("denetim", []):
+			if dakika >= float(aralik[0]) and dakika < float(aralik[1]):
+				simdi = true
+	if simdi == denetimde:
+		return
+	denetimde = simdi
+	_denetim_seridi.visible = simdi
+	if simdi:
+		_mudur_odasi.visible = true
+		_mudur.set_process(true)
+	var t := create_tween()
+	t.tween_method(func(a: float) -> void:
+		_jaluzi_acik = a
+		_jaluzi.queue_redraw(), _jaluzi_acik, 1.0 if simdi else 0.0, 0.7).set_trans(Tween.TRANS_SINE)
+	if not simdi:
+		t.tween_callback(func() -> void:
+			_mudur_odasi.visible = false
+			_mudur.set_process(false))
 
 
 ## Araç tepsisi: büyüteç (inceleme modu düğmesi), ihtar iğnesi ve şerit etiketler.

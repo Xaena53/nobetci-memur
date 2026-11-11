@@ -37,6 +37,7 @@ static func yeni() -> Dictionary:
 		"kira_borcu": 0,      ## ödenmemiş akşam sayısı
 		"okul_eksigi": 0,
 		"ikram": false,       ## komşudan yemek geldiyse o akşam yiyecek parasızdır
+		"kira_affi": false,   ## ev sahibi o akşam kirayı istemiyorsa
 	}
 
 
@@ -52,6 +53,7 @@ static func onar(v: Variant) -> Dictionary:
 	a.kira_borcu = int(v.get("kira_borcu", 0))
 	a.okul_eksigi = int(v.get("okul_eksigi", 0))
 	a.ikram = bool(v.get("ikram", false))
+	a.kira_affi = bool(v.get("kira_affi", false))
 	return a
 
 
@@ -73,7 +75,10 @@ static func masraflar(aile: Dictionary, gun: int) -> Array[Dictionary]:
 		kira_notu = "Ev sahibi dün de bekledi."
 	elif borc >= 2:
 		kira_notu = "Son uyarı: bu akşam ödenmezse tahliye."
-	liste.append({"kod": "kira", "ad": "Kira", "tutar": KIRA, "not": kira_notu})
+	if bool(aile.get("kira_affi", false)):
+		liste.append({"kod": "kira", "ad": "Kira", "tutar": 0, "not": "Ev sahibi bu akşam kirayı istemedi."})
+	else:
+		liste.append({"kod": "kira", "ad": "Kira", "tutar": KIRA, "not": kira_notu})
 	liste.append({"kod": "komur", "ad": "Kömür", "tutar": KOMUR, "not": ""})
 	if bool(aile.get("ikram", false)):
 		liste.append({"kod": "yemek", "ad": "Yiyecek", "tutar": 0, "not": "Nermin Hanım bir tencere yemek getirdi."})
@@ -127,6 +132,7 @@ static func geceyi_gecir(aile: Dictionary, gun: int, odenen: Array) -> Dictionar
 	if not yemek:
 		satirlar.append("Sofraya bu akşam yalnız çay kondu. Çocuklar aç yattı.")
 	aile.ikram = false
+	aile.kira_affi = false
 
 	# okul
 	if kodlar.has("okul"):

@@ -32,7 +32,13 @@ func _ready() -> void:
 ## Metni yazmaya başlar. `sure` > 0 ise yazı bittikten o kadar saniye sonra balon kapanır.
 func soyle(metin: String, sure: float = 0.0) -> void:
 	var genislik := size.x - 2.0 * IC_BOSLUK.x
-	var boyut := Stil.daktilo().get_multiline_string_size(metin, HORIZONTAL_ALIGNMENT_LEFT, genislik, PUNTO)
+	# Uzun söz balona sığmıyorsa punto küçülür.
+	var punto := PUNTO
+	var boyut := Stil.daktilo().get_multiline_string_size(metin, HORIZONTAL_ALIGNMENT_LEFT, genislik, punto)
+	while punto > 11 and boyut.y + 2.0 * IC_BOSLUK.y + 6.0 + punto > size.y:
+		punto -= 1
+		boyut = Stil.daktilo().get_multiline_string_size(metin, HORIZONTAL_ALIGNMENT_LEFT, genislik, punto)
+	_yazi.add_theme_font_size_override("font_size", punto)
 	var yukseklik := minf(size.y, boyut.y + 2.0 * IC_BOSLUK.y + 4.0)
 	_kutu = Rect2(0, 0, minf(size.x, maxf(120.0, boyut.x + 2.0 * IC_BOSLUK.x + 6.0)), yukseklik)
 	_yazi.position = IC_BOSLUK

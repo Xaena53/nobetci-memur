@@ -1,15 +1,22 @@
 extends Control
-## Akşam — ev. Soba, sofra ve aile solda; akşam hesabı defteri sağda.
+## Akşam — ev. Solda oda: soba, sofra ve kilimin üstünde aile (anne örgü örer, Elif ödev yapar,
+## Can kamyonuyla oynar). Sağda akşam defteri: o akşam evde olanlar ve günün hesabı.
 ## Oyuncu eldeki parayla neyi ödeyeceğini seçer: kira, kömür, yiyecek, ilaç, okul masrafı.
 ## Seçim anında odaya yansır (soba yanar, sofraya ekmek gelir); ödenmeyenlerin bedeli gece ödenir.
 
 const ARKA_PLAN := "res://assets/img/ev_arkaplan.webp"
 const NESNE := "res://assets/img/nesne/%s.webp"
 const MASA_UST := 412.0                       ## sofranın üst kenarı (ekran y)
-const MASA_ONU := Rect2(20, 412, 548, 210)    ## büstlerin önünü kapatan sofra parçası
 const SOBA_CAMI := Rect2(602, 442, 64, 37)
-const UYE_YERI := {"anne": 150.0, "elif": 302.0, "can": 438.0}
 const DEFTER := Rect2(772, 24, 460, 672)
+const FIGUR_OLCEGI := 0.4875                  ## tam boy figür dokularının ekrandaki ölçeği
+## Aile üyelerinin odadaki yeri: figürün yatay ortası ve ayaklarının bastığı yer (ekran).
+## Sıra, çizim sırasıdır: arkadaki önce.
+const FIGURLER := [
+	{"uye": "anne", "kimlik": "anne_boy", "orta": 480.0, "alt": 698.0},
+	{"uye": "elif", "kimlik": "elif_boy", "orta": 276.0, "alt": 706.0},
+	{"uye": "can", "kimlik": "can_boy", "orta": 102.0, "alt": 712.0},
+]
 
 var kalemler: Array[Dictionary] = []
 var secili: Dictionary = {}                   ## kod -> bool
@@ -22,7 +29,7 @@ var _satirlar: Dictionary = {}                ## kod -> Control
 var _toplam_yazi: Label
 var _kalan_yazi: Label
 var _yat: Button
-var _portreler: Dictionary = {}
+var _figurler: Dictionary = {}                ## üye -> CanliPortre
 var _dokular: Dictionary = {}
 
 
@@ -73,6 +80,10 @@ func _lambayi_sondur() -> void:
 			odenen.append(kod)
 	Oyun.para -= toplam()
 	gece = AileDurumu.geceyi_gecir(Oyun.aile, Oyun.gun, odenen)
+	# Savcının akıbeti, altıncı günün gecesinde belli olur.
+	if Oyun.gun == 6:
+		Oyun.bayraklar["savci"] = Hikaye.savci_akibeti(Oyun.bayraklar)
+	gece["olay"] = Hikaye.gece(Oyun.gun, Oyun.bayraklar) if str(gece.get("son", "")) == "" else ""
 	_geceyi_goster()
 
 
@@ -86,27 +97,29 @@ func _geceyi_goster() -> void:
 	t.tween_property(perde, "color:a", 0.94, 0.7)
 
 	var baslik := Stil.etiket("GECE", 30, Color("d9cfb4"), Stil.daktilo_kalin())
-	baslik.position = Vector2(0, 150)
+	baslik.position = Vector2(0, 130)
 	baslik.size = Vector2(1280, 40)
 	baslik.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	perde.add_child(baslik)
 
+	var icerik := Control.new()
+	icerik.mouse_filter = MOUSE_FILTER_IGNORE
+	icerik.modulate.a = 0.0
+	perde.add_child(icerik)
+	var y := 200.0
+	var olay := str(gece.get("olay", ""))
+	if olay != "":
+		y = Gazete.blok_ekle(icerik, olay, 19, Stil.daktilo_italik(), Color("e6b98a"), Rect2(240, y, 800, 0), true, 3) + 26.0
 	var metin := "\n\n".join(PackedStringArray(gece.get("satirlar", [])))
-	var yazi := Stil.etiket(metin, 19, Color("e8dfc8"), Stil.daktilo())
-	yazi.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	yazi.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	yazi.position = Vector2(240, 220)
-	yazi.size = Vector2(800, 300)
-	yazi.modulate.a = 0.0
-	perde.add_child(yazi)
-	t.tween_property(yazi, "modulate:a", 1.0, 0.6)
+	Gazete.blok_ekle(icerik, metin, 19, Stil.daktilo(), Color("e8dfc8"), Rect2(240, y, 800, 0), true, 3)
+	t.tween_property(icerik, "modulate:a", 1.0, 0.6)
 
 	var sabah := Button.new()
 	sabah.name = "SabahOldu"
 	sabah.text = "Sabah Oldu" if str(gece.get("son", "")) == "" else "Devam"
 	sabah.focus_mode = FOCUS_NONE
 	sabah.custom_minimum_size = Vector2(210, 46)
-	sabah.position = Vector2(535, 590)
+	sabah.position = Vector2(535, 610)
 	sabah.pressed.connect(_sabah)
 	perde.add_child(sabah)
 
@@ -133,38 +146,46 @@ func _odayi_kur() -> void:
 		zemin.texture = load(ARKA_PLAN)
 	add_child(zemin)
 
-	# sofranın arkasında oturan aile (ağır hasta olan yataktadır, sofrada görünmez)
-	for uye: String in AileDurumu.UYELER:
-		var saglik := AileDurumu.saglik(Oyun.aile, uye)
-		if saglik <= 0:
-			continue
-		var p := CanliPortre.new()
-		p.name = "Uye_" + uye
-		add_child(p)
-		p.ayarla(uye, 0.42)
-		p.position = Vector2(float(UYE_YERI[uye]) - p.size.x / 2.0, MASA_UST + 44.0 - p.size.y)
-		_portreler[uye] = p
-
-	# büstlerin önünü kapatan sofra: arka plan görselinin aynı parçası
-	if zemin.texture != null:
-		var parca := AtlasTexture.new()
-		parca.atlas = zemin.texture
-		var olcek := zemin.texture.get_size() / Yerlesim.EKRAN.size
-		parca.region = Rect2(MASA_ONU.position * olcek, MASA_ONU.size * olcek)
-		var on := TextureRect.new()
-		on.name = "SofraOnu"
-		on.texture = parca
-		on.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		on.position = MASA_ONU.position
-		on.size = MASA_ONU.size
-		on.mouse_filter = MOUSE_FILTER_IGNORE
-		add_child(on)
-
+	# sofradakiler figürlerin arkasında kalır
 	_sofra = Control.new()
 	_sofra.name = "Sofra"
 	_sofra.mouse_filter = MOUSE_FILTER_IGNORE
 	_sofra.draw.connect(_sofrayi_ciz)
 	add_child(_sofra)
+
+	var golgeler := Control.new()
+	golgeler.name = "Golgeler"
+	golgeler.mouse_filter = MOUSE_FILTER_IGNORE
+	add_child(golgeler)
+
+	# aile: tam boy figürler (ağır hasta olan yataktadır, odada görünmez)
+	var etiket_yerleri: Dictionary = {}
+	for f: Dictionary in FIGURLER:
+		var uye := str(f.uye)
+		var p := CanliPortre.new()
+		p.name = "Uye_" + uye
+		add_child(p)
+		p.ayarla(str(f.kimlik), FIGUR_OLCEGI)
+		p.position = Vector2(float(f.orta) - p.size.x / 2.0, float(f.alt) - p.size.y)
+		var bas_x := p.position.x + float((Portreler.bilgi(str(f.kimlik)).get("agiz", [0.5, 0.2]) as Array)[0]) * p.size.x
+		if AileDurumu.saglik(Oyun.aile, uye) <= 0:
+			p.visible = false
+			etiket_yerleri[uye] = Vector2(float(f.orta), float(f.alt) - 54.0)
+		else:
+			_figurler[uye] = p
+			etiket_yerleri[uye] = Vector2(bas_x, p.position.y - 21.0)
+	golgeler.draw.connect(func() -> void:
+		# figürlerin yere düşen yumuşak gölgesi
+		for f: Dictionary in FIGURLER:
+			if not _figurler.has(str(f.uye)):
+				continue
+			var p: CanliPortre = _figurler[str(f.uye)]
+			var m := Vector2(float(f.orta), float(f.alt) - 5.0)
+			for i in 4:
+				var r := p.size.x * (0.50 - i * 0.07)
+				golgeler.draw_set_transform(m, 0.0, Vector2(1.0, 0.16))
+				golgeler.draw_circle(Vector2.ZERO, r, Color(0, 0, 0, 0.075))
+			golgeler.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE))
 
 	_soba = Control.new()
 	_soba.name = "Soba"
@@ -179,15 +200,18 @@ func _odayi_kur() -> void:
 	_soguk.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(_soguk)
 
-	# aile üyelerinin durumu: sofra örtüsünün önündeki etiketler
+	# aile üyelerinin durumu: başlarının üstündeki şerit etiketler
 	for uye: String in AileDurumu.UYELER:
 		var saglik := AileDurumu.saglik(Oyun.aile, uye)
 		var renk := Color("1d1b19") if saglik >= 3 else (Color("6b4a12") if saglik == 2 else Stil.BORDO)
-		var l := Stil.etiket(Stil.buyuk(AileDurumu.durum_metni(Oyun.aile, uye)), 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+		var yazi := AileDurumu.durum_metni(Oyun.aile, uye) if saglik > 0 else "%s: yatakta" % str(AileDurumu.BILGI[uye].hitap)
+		var l := Stil.etiket(Stil.buyuk(yazi), 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+		l.name = "Durum_" + uye
 		l.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(renk, Color(0, 0, 0, 0.45), 1, 2, 2), 6, 2))
 		add_child(l)
 		l.size = l.get_combined_minimum_size()
-		l.position = Vector2(float(UYE_YERI[uye]) - l.size.x / 2.0, MASA_UST + 62.0)
+		var yer: Vector2 = etiket_yerleri.get(uye, Vector2(200, 400))
+		l.position = Vector2(clampf(yer.x - l.size.x / 2.0, 6.0, DEFTER.position.x - l.size.x - 8.0), yer.y)
 
 	for ad: String in ["ekmek", "ilac", "defter"]:
 		var yol := NESNE % ad
@@ -215,18 +239,18 @@ func _sobayi_ciz() -> void:
 ## Seçilen kalemler sofrada görünür: ekmek, ilaç şişesi, okul defteri.
 func _sofrayi_ciz() -> void:
 	if bool(secili.get("yemek", false)) and _dokular.has("ekmek"):
-		_sofra.draw_texture_rect(_dokular["ekmek"], Rect2(218, MASA_UST - 58.0, 92, 83), false)
+		_sofra.draw_texture_rect(_dokular["ekmek"], Rect2(126, MASA_UST - 58.0, 92, 83), false)
 	var ilac_var := false
 	for kod: String in secili:
 		if kod.begins_with("ilac_") and bool(secili[kod]):
 			ilac_var = true
 	if ilac_var and _dokular.has("ilac"):
-		_sofra.draw_texture_rect(_dokular["ilac"], Rect2(96, MASA_UST - 62.0, 34, 70), false)
+		_sofra.draw_texture_rect(_dokular["ilac"], Rect2(64, MASA_UST - 62.0, 34, 70), false)
 	if bool(secili.get("okul", false)) and _dokular.has("defter"):
-		_sofra.draw_texture_rect(_dokular["defter"], Rect2(356, MASA_UST - 40.0, 46, 62), false)
+		_sofra.draw_texture_rect(_dokular["defter"], Rect2(262, MASA_UST - 40.0, 46, 62), false)
 
 
-# --- Akşam hesabı defteri ---
+# --- Akşam defteri ---
 
 func _defteri_kur() -> void:
 	var defter := Control.new()
@@ -242,41 +266,65 @@ func _defteri_kur() -> void:
 
 	var x := 44.0
 	var w := DEFTER.size.x - 2.0 * x
-	var baslik := Stil.etiket("AKŞAM HESABI", 22, Stil.MUREKKEP, Stil.daktilo_kalin())
-	baslik.position = Vector2(0, 36)
+	var baslik := Stil.etiket("AKŞAM DEFTERİ", 22, Stil.MUREKKEP, Stil.daktilo_kalin())
+	baslik.position = Vector2(0, 34)
 	baslik.size = Vector2(DEFTER.size.x, 28)
 	baslik.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	defter.add_child(baslik)
 	var gun := Veri.gun(Oyun.gun)
 	var tarih := Stil.etiket("%s akşamı" % Tarih.uzun(str(gun.get("tarih", ""))), 12, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
-	tarih.position = Vector2(0, 66)
+	tarih.position = Vector2(0, 62)
 	tarih.size = Vector2(DEFTER.size.x, 16)
 	tarih.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	defter.add_child(tarih)
 
-	var eldeki := Stil.etiket("Eldeki para: %s" % Stil.tl(Oyun.para), 16, Stil.MUREKKEP, Stil.daktilo_kalin())
-	eldeki.position = Vector2(x, 100)
-	defter.add_child(eldeki)
+	# o akşam evde olanlar: deftere dolma kalemle düşülmüş not
+	var y := 88.0
+	var olan := Hikaye.aksam(Oyun.gun, Oyun.bayraklar)
+	if olan != "":
+		var notu := Stil.etiket(olan, 18, Stil.MAVI_MUREKKEP, Stil.el_yazisi())
+		notu.name = "AksamNotu"
+		notu.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		notu.add_theme_constant_override("line_spacing", -3)
+		var yuk := Stil.el_yazisi().get_multiline_string_size(olan, HORIZONTAL_ALIGNMENT_LEFT, w, 18).y
+		var satir := maxi(1, roundi(yuk / Stil.el_yazisi().get_height(18)))
+		yuk -= 3.0 * (satir - 1)
+		notu.position = Vector2(x, y)
+		notu.size = Vector2(w, yuk + 4.0)
+		defter.add_child(notu)
+		y += yuk + 12.0
 
-	var y := 138.0
+	var eldeki := Stil.etiket("Eldeki para: %s" % Stil.tl(Oyun.para), 16, Stil.MUREKKEP, Stil.daktilo_kalin())
+	eldeki.position = Vector2(x, y)
+	defter.add_child(eldeki)
+	y += 30.0
+
+	# kalemler çok olduğunda satırlar sıkışır ki düğmeye yer kalsın
+	var dugme_ust := DEFTER.size.y - 82.0
+	var notlu := 0
 	for k in kalemler:
-		var satir := _kalem_satiri(k, w)
+		if str(k.get("not", "")) != "":
+			notlu += 1
+	var gereken := notlu * 46.0 + (kalemler.size() - notlu) * 32.0 + kalemler.size() * 6.0 + 64.0
+	var sikisma := clampf((dugme_ust - y) / gereken, 0.78, 1.0)
+	for k in kalemler:
+		var satir := _kalem_satiri(k, w, sikisma)
 		satir.position = Vector2(x, y)
 		defter.add_child(satir)
 		_satirlar[str(k.kod)] = satir
-		y += satir.size.y + 6.0
+		y += satir.size.y + 6.0 * sikisma
 
 	var cizgi := ColorRect.new()
 	cizgi.color = Color(Stil.MUREKKEP, 0.7)
-	cizgi.position = Vector2(x, y + 4.0)
+	cizgi.position = Vector2(x, y + 2.0)
 	cizgi.size = Vector2(w, 1.5)
 	cizgi.mouse_filter = MOUSE_FILTER_IGNORE
 	defter.add_child(cizgi)
 	_toplam_yazi = Stil.etiket("", 15, Stil.MUREKKEP, Stil.daktilo())
-	_toplam_yazi.position = Vector2(x, y + 14.0)
+	_toplam_yazi.position = Vector2(x, y + 10.0)
 	defter.add_child(_toplam_yazi)
 	_kalan_yazi = Stil.etiket("", 16, Stil.MUREKKEP, Stil.daktilo_kalin())
-	_kalan_yazi.position = Vector2(x, y + 38.0)
+	_kalan_yazi.position = Vector2(x, y + 32.0)
 	defter.add_child(_kalan_yazi)
 
 	_yat = Button.new()
@@ -284,19 +332,19 @@ func _defteri_kur() -> void:
 	_yat.text = "Lambayı Söndür"
 	_yat.focus_mode = FOCUS_NONE
 	_yat.custom_minimum_size = Vector2(220, 46)
-	_yat.position = Vector2((DEFTER.size.x - 220.0) / 2.0, DEFTER.size.y - 82.0)
+	_yat.position = Vector2((DEFTER.size.x - 220.0) / 2.0, dugme_ust)
 	_yat.pressed.connect(_lambayi_sondur)
 	defter.add_child(_yat)
 
 
 ## Defterdeki bir masraf satırı: işaret kutusu, ad, tutar ve (varsa) not.
-func _kalem_satiri(k: Dictionary, w: float) -> Control:
+func _kalem_satiri(k: Dictionary, w: float, sikisma: float = 1.0) -> Control:
 	var kod := str(k.kod)
 	var notu := str(k.get("not", ""))
 	var d := Button.new()
 	d.name = "Kalem_" + kod
 	d.focus_mode = FOCUS_NONE
-	d.size = Vector2(w, 46.0 if notu != "" else 32.0)
+	d.size = Vector2(w, roundf((46.0 if notu != "" else 32.0) * sikisma))
 	d.custom_minimum_size = d.size
 	d.mouse_default_cursor_shape = CURSOR_POINTING_HAND
 	d.add_theme_stylebox_override("normal", Stil.kutu(Color(0, 0, 0, 0)))
@@ -305,9 +353,10 @@ func _kalem_satiri(k: Dictionary, w: float) -> Control:
 	d.add_theme_stylebox_override("disabled", Stil.kutu(Color(0, 0, 0, 0)))
 	d.pressed.connect(_tikla.bind(kod))
 
+	var ust := 5.0 * sikisma
 	var kutu := Control.new()
 	kutu.name = "Kutu"
-	kutu.position = Vector2(6, 6)
+	kutu.position = Vector2(6, ust + 1.0)
 	kutu.size = Vector2(20, 20)
 	kutu.mouse_filter = MOUSE_FILTER_IGNORE
 	kutu.draw.connect(func() -> void:
@@ -318,17 +367,17 @@ func _kalem_satiri(k: Dictionary, w: float) -> Control:
 
 	var ad := Stil.etiket(str(k.ad), 15, Stil.MUREKKEP)
 	ad.name = "Ad"
-	ad.position = Vector2(36, 5)
+	ad.position = Vector2(36, ust)
 	d.add_child(ad)
-	var tutar := Stil.etiket("ikram" if int(k.tutar) == 0 else Stil.tl(int(k.tutar)), 15, Stil.MUREKKEP, Stil.daktilo_kalin())
+	var tutar := Stil.etiket("—" if int(k.tutar) == 0 else Stil.tl(int(k.tutar)), 15, Stil.MUREKKEP, Stil.daktilo_kalin())
 	tutar.name = "Tutar"
-	tutar.position = Vector2(w - 96.0, 5)
+	tutar.position = Vector2(w - 96.0, ust)
 	tutar.size = Vector2(90, 20)
 	tutar.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	d.add_child(tutar)
 	if notu != "":
 		var n := Stil.etiket(notu, 11, Stil.BORDO, Stil.daktilo_italik())
-		n.position = Vector2(36, 26)
+		n.position = Vector2(36, ust + 20.0 * sikisma)
 		d.add_child(n)
 	return d
 
@@ -353,8 +402,9 @@ func _guncelle() -> void:
 	var hedef := 0.0 if isinacak else 0.20
 	var t := create_tween()
 	t.tween_property(_soguk, "color:a", hedef, 0.4)
-	# hasta ya da üşüyen aile üyesi solgun görünür
-	for uye: String in _portreler:
+	# hasta ya da üşüyen aile üyesi solgun ve durgun görünür
+	for uye: String in _figurler:
 		var saglik := AileDurumu.saglik(Oyun.aile, uye)
-		var p: CanliPortre = _portreler[uye]
-		p.modulate = Color(0.86, 0.92, 0.90) if saglik <= 1 else (Color(0.94, 0.96, 0.97) if saglik == 2 else Color.WHITE)
+		var p: CanliPortre = _figurler[uye]
+		p.modulate = Color(0.84, 0.90, 0.89) if saglik <= 1 else (Color(0.93, 0.96, 0.97) if saglik == 2 else Color.WHITE)
+		p.canlilik = 0.45 if saglik <= 1 else (0.75 if saglik == 2 else 1.0)

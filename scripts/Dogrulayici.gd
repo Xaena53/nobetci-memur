@@ -101,6 +101,10 @@ static func kontrol(v: Dictionary, gun: Dictionary) -> Dictionary:
 					if not mahalle_gecerli(mahalle, k):
 						hatalar.append(_hata("mahalle_gecersiz", "mahalle",
 							"%s Mahallesi ilçemize bağlı değil." % mahalle, k, "ikametgah", "mahalle"))
+			"arananlar":
+				var aranan := aranan_kaydi(str(v.get("portre", "")), k)
+				if not aranan.is_empty():
+					hatalar.append(_hata("aranan", "aranan", "Gişeye gelen şahıs arananlar listesindeydi (%s)." % str(aranan.ad), k))
 
 	var gerekceler: Array[String] = []
 	for h in hatalar:
@@ -115,6 +119,19 @@ static func degerlendir(karar: String, gerekce: String, sonuc: Dictionary) -> Di
 	var hatalar: Array = sonuc.get("hatalar", [])
 	var gerekceler: Array = sonuc.get("gerekceler", [])
 	var ilk := str(hatalar[0].aciklama) if not hatalar.is_empty() else ""
+	# Aranan şahıs: tek doğru karar müdüre havaledir.
+	if gerekceler.has("aranan"):
+		var kim := ""
+		for h: Dictionary in hatalar:
+			if str(h.gerekce) == "aranan":
+				kim = str(h.aciklama)
+		match karar:
+			"havale":
+				return {"sonuc": "dogru", "mesaj": "", "supheli_yakalandi": true}
+			"onay":
+				return {"sonuc": "yanlis", "mesaj": "Aranan bir şahsın evrakını onayladınız! " + kim}
+			_:
+				return {"sonuc": "yanlis", "mesaj": "Aranan şahsı geri çevirip elinizden kaçırdınız. " + kim}
 	match karar:
 		"onay":
 			if hatalar.is_empty():
@@ -160,6 +177,18 @@ static func gunun_gerekceleri(gun: Dictionary) -> Array[String]:
 static func karsilastir(a: Dictionary, b: Dictionary, v: Dictionary, gun: Dictionary) -> Dictionary:
 	if a.tip == "alan" and b.tip == "alan":
 		return _alan_alan(a, b, gun)
+	# vatandaşın yüzü ↔ arananlar sayfasındaki fotoğraf
+	var yuz := a if a.tip == "yuz" else (b if b.tip == "yuz" else {})
+	var kural_hedefi := a if a.tip == "kural" else (b if b.tip == "kural" else {})
+	if not yuz.is_empty() and not kural_hedefi.is_empty() and str(kural_hedefi.kural.get("tur", "")) == "arananlar":
+		var portre := str(v.get("portre", ""))
+		var listede := not aranan_kaydi(portre, kural_hedefi.kural).is_empty()
+		# kural satırına tıklandıysa bütün liste, resme tıklandıysa yalnızca o şahıs sorulur
+		if str(kural_hedefi.anahtar) == portre or (str(kural_hedefi.anahtar) == "arananlar" and listede):
+			return {"durum": "uyusmaz", "gerekce": "aranan", "mesaj": "DİKKAT: Camdaki kişi arananlar listesinde. Müdüre havale edin."}
+		if str(kural_hedefi.anahtar) == "arananlar":
+			return {"durum": "uyumlu", "mesaj": "Sorun yok: camdaki kişi arananlar listesinde görünmüyor."}
+		return {"durum": "uyumlu", "mesaj": "Sorun yok: camdaki kişi resimdeki şahsa benzemiyor."}
 	if a.tip != "alan" and b.tip != "alan":
 		return ILGISIZ
 	var alan := a if a.tip == "alan" else b
@@ -221,6 +250,10 @@ static func _alan_kural(alan: Dictionary, kural: Dictionary, v: Dictionary, gun:
 			return {"durum": "ilgisiz", "mesaj": "Bu kural için iki ayrı belgedeki aynı bilgiyi seçin."}
 		"belge_zorunlu":
 			return {"durum": "ilgisiz", "mesaj": "Eksik belge varsa fişle doğrudan geri çevirin."}
+		"arananlar":
+			if alan.anahtar == "foto":
+				return {"durum": "ilgisiz", "mesaj": "Cüzdan fotoğrafı yanıltabilir; aranan resmini camdaki yüzle karşılaştırın."}
+			return {"durum": "ilgisiz", "mesaj": "Aranan resmini, camın ardındaki vatandaşın yüzüyle karşılaştırın."}
 		"foto_eslesme":
 			return {"durum": "ilgisiz", "mesaj": "Fotoğrafı, camın ardındaki vatandaşın yüzüyle karşılaştırın."}
 		"tarih_sure":
@@ -281,6 +314,14 @@ static func seri_gecerli(seri: String, kural: Dictionary) -> bool:
 		if str(a.onek) == p[0] and no >= int(a.min) and no <= int(a.max):
 			return true
 	return false
+
+
+## Portre arananlar listesindeyse o kaydı döndürür (yoksa boş sözlük).
+static func aranan_kaydi(portre: String, kural: Dictionary) -> Dictionary:
+	for a: Dictionary in kural.get("liste", []):
+		if str(a.get("portre", "")) == portre:
+			return a
+	return {}
 
 
 static func mahalle_gecerli(mahalle: String, kural: Dictionary) -> bool:

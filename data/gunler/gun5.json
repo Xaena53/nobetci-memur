@@ -23,7 +23,7 @@
 	"genelge": {
 		"sayi": "1984/5",
 		"konu": "Harç zammı",
-		"metin": "Harçlara zam gelmiştir; yeni tarife bu sabah yürürlüğe girdi. Eski tarifeden yatırılmış makbuz kabul edilmez, vatandaş farkı vezneye yatıracaktır. Ayrıca makbuz en çok 3 gün önce kesilmiş olmalıdır. Zammı ben yapmadım; şikâyeti bana getirmeyin."
+		"metin": "Harçlara zam gelmiştir; yeni tarife bu sabah yürürlüğe girdi. Eski tarifeden yatırılmış makbuz kabul edilmez, vatandaş farkı vezneye yatıracaktır. Makbuz en çok 3 gün önce kesilmiş olmalıdır. Zammı ben yapmadım; şikâyeti bana getirmeyin. Savcı Bey pazartesi ilçemizde olacak; daire tertemiz olsun."
 	},
 	"kurallar": [
 		{
@@ -101,6 +101,31 @@
 			"gun": 3,
 			"metin": "Harç makbuzu en çok 3 gün önce kesilmiş olmalıdır.",
 			"yeni": true
+		},
+		{
+			"id": "arananlar",
+			"tur": "arananlar",
+			"metin": "Arananlar listesindeki şahıs, evrakı ne olursa olsun müdüre havale edilir.",
+			"liste": [
+				{
+					"portre": "v27",
+					"ad": "Bekir YAMAN",
+					"lakap": "Kasap",
+					"bayrak": "kasap"
+				},
+				{
+					"portre": "v22",
+					"ad": "Naciye SARAÇ",
+					"lakap": "Terzi",
+					"bayrak": "naciye"
+				}
+			]
 		}
+	],
+	"denetim": [
+		[
+			660,
+			720
+		]
 	]
 }

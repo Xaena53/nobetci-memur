@@ -73,5 +73,11 @@
 			"metin": "Makbuzdaki tutar, işlemin tarifedeki harcıyla aynı olmalıdır.",
 			"yeni": true
 		}
+	],
+	"denetim": [
+		[
+			690,
+			750
+		]
 	]
 }

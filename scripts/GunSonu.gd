@@ -60,6 +60,14 @@ func _ready() -> void:
 	y = _cizgi(kagit, x, y)
 	y = _satir(kagit, "GÜNÜN KAZANCI", Stil.tl(int(maas.net)), x, y, Stil.MUREKKEP, true)
 	y = _satir(kagit, "Eldeki para", Stil.tl(Oyun.para), x, y, Stil.BORDO if Oyun.para < 0 else Stil.MUREKKEP, true)
+	if int(o.get("zarf", 0)) > 0:
+		# puantajda yeri olmayan para: kenara kurşun kalemle düşülmüş not
+		var zarf := Stil.etiket("(çekmecedeki zarf: %s — bunu kimse bilmiyor)" % Stil.tl(int(o.zarf)), 17, Stil.MAVI_MUREKKEP, Stil.el_yazisi())
+		zarf.position = Vector2(x + 8.0, y - 6.0)
+		zarf.rotation = deg_to_rad(-1.2)
+		kagit.add_child(zarf)
+		_satirlar.append(zarf)
+		y += 16.0
 	y += 12.0
 
 	var notu := Stil.etiket(_mudur_notu(o), 12, Stil.MAVI_MUREKKEP, Stil.daktilo_italik())
@@ -120,7 +128,7 @@ func _mudur_notu(o: Dictionary) -> String:
 	if ihtar == 0 and dogru >= 6:
 		return "Müdürün notu: Bugün gişenizden şikâyet gelmedi. Buna alışabilirim."
 	if dogru <= 2:
-		return "Müdürün notu: Gişe vatandaş içindir, çay ocağı için değil. Yarın daha çok işlem bekliyorum."
+		return "Müdürün notu: Gişede çay demlenmez, vatandaşın işi görülür. Yarın daha çok işlem bekliyorum."
 	if ihtar == 0:
 		return "Müdürün notu: Hatasız, ama ağır. Kuyruk kapıya kadar uzadı."
 	return "Müdürün notu: İdare eder. Yarın genelgeyi iki kere okuyun."

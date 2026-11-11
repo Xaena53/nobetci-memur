@@ -15,6 +15,7 @@ func _calistir() -> void:
 	await _ekonomi_testi()
 	await _kural_testi()
 	await _belge_testi()
+	await _hikaye_testi()
 	print("")
 	if _hata == 0:
 		print("DUMAN TESTİ: BAŞARILI (%d denetim)" % _adim)
@@ -382,3 +383,206 @@ func esit(gercek: Variant, beklenen: Variant, aciklama: String) -> void:
 	else:
 		_hata += 1
 		print("  ✗ HATA: %s (beklenen %s, gelen %s)" % [aciklama, str(beklenen), str(gercek)])
+
+
+# --- Aşama 4: hikâye karakterleri, zarf, arananlar, denetim, sonlar ---
+
+func _one_al(masa: Node, kod: String) -> bool:
+	for i in masa.kuyruk.size():
+		if str(masa.kuyruk[i].get("kod", "")) == kod:
+			var v: Dictionary = masa.kuyruk[i]
+			masa.kuyruk.remove_at(i)
+			masa.kuyruk.insert(0, v)
+			return true
+	return false
+
+
+func _gune_git(gun_no: int, bayraklar: Dictionary = {}) -> Node:
+	Oyun.yeni_oyun()
+	Oyun.gun = gun_no
+	Oyun.bayraklar = bayraklar
+	Oyun.sahneye_gec("masa")
+	await sahneyi_bekle("Masa")
+	await bekle(0.5)
+	return sahne()
+
+
+func _hikaye_testi() -> void:
+	print("== Hikâye ==")
+	# koşullar
+	dogru(Hikaye.kosul_tutar({"husnu_onay": 0}, {}), "yazılmamış sayı bayrağı 0 sayılır")
+	dogru(not Hikaye.kosul_tutar({"husnu_onay": 0}, {"husnu_onay": 3}), "  yazılmışsa değeri geçerli")
+	dogru(Hikaye.kosul_tutar({"husnu_onay": [1, 2, 3]}, {"husnu_onay": 2.0}), "liste koşulu: biri yeter (kayıttan gelen ondalık dahil)")
+	dogru(Hikaye.kosul_tutar({"tarik2": ["onay", ""]}, {}), "yazılmamış metin bayrağı boş sayılır")
+	dogru(not Hikaye.kosul_tutar({"nermin": "kayirildi"}, {"nermin": "reddedildi"}), "metin koşulu tutmuyor")
+
+	# her günün özel karakterleri ve evraklarındaki kusur
+	var beklenen := {
+		"husnu1": "sure", "husnu2": "muhur", "husnu3": "belge_eksik", "husnu4": "harc", "husnu5": "harc",
+		"husnu6": "mahalle", "husnu7": "sure", "nermin2": "muhur", "kenan3": "harc", "izzet4": "sure",
+		"tarik2": "", "tarik4": "", "savci5": "", "kasap5": "aranan", "naciye6": "aranan",
+		"nermin6a": "", "nermin6b": "foto",
+	}
+	var gorulen := {}
+	for gun_no in range(1, 8):
+		var gun := Veri.gun(gun_no)
+		for bayraklar: Dictionary in [{}, {"nermin": "kayirildi"}, {"nermin": "reddedildi"}]:
+			var rng := RandomNumberGenerator.new()
+			rng.seed = 7 + gun_no
+			for o: Dictionary in Hikaye.ozel_vatandaslar(gun_no, gun, bayraklar, rng):
+				var v: Dictionary = o.vatandas
+				var kod := str(v.kod)
+				if bool(v.get("belgesiz", false)) or gorulen.has(kod):
+					continue
+				gorulen[kod] = true
+				var sonuc := Dogrulayici.kontrol(v, gun)
+				var kusur := str(beklenen.get(kod, "?"))
+				if kusur == "":
+					esit(sonuc.gerekceler.size(), 0, "%s: evrakı kusursuz %s" % [kod, str(sonuc.gerekceler)])
+				else:
+					dogru(sonuc.gerekceler.size() == 1 and sonuc.gerekceler.has(kusur),
+						"%s: tek kusur '%s' (bulunan: %s)" % [kod, kusur, str(sonuc.gerekceler)])
+	esit(gorulen.size(), beklenen.size(), "evraklı bütün hikâye ziyaretleri denendi")
+
+	# aranan şahıs: tek doğru karar havale
+	var rng5 := RandomNumberGenerator.new()
+	var kasap: Dictionary = {}
+	for o: Dictionary in Hikaye.ozel_vatandaslar(5, Veri.gun(5), {}, rng5):
+		if str(o.vatandas.kod) == "kasap5":
+			kasap = o.vatandas
+	var ks := Dogrulayici.kontrol(kasap, Veri.gun(5))
+	esit(str(Dogrulayici.degerlendir("havale", "", ks).sonuc), "dogru", "aranan şahıs: havale doğru")
+	esit(str(Dogrulayici.degerlendir("onay", "", ks).sonuc), "yanlis", "  onay yanlış")
+	esit(str(Dogrulayici.degerlendir("eksik", "seri", ks).sonuc), "yanlis", "  geri çevirmek de yanlış")
+
+	# savcının akıbeti ve gazeteler
+	esit(Hikaye.savci_akibeti({}), "oldu", "kimse yakalanmadı: savcı öldürülür")
+	esit(Hikaye.savci_akibeti({"kasap": "yakalandi"}), "yarali", "biri yakalandı: saldırıdan kurtulur")
+	esit(Hikaye.savci_akibeti({"kasap": "yakalandi", "naciye": "yakalandi"}), "sag", "ikisi de yakalandı: saldırı olmaz")
+	for gun_no in range(1, 8):
+		var b := {"savci": "yarali"} if gun_no == 7 else {}
+		dogru(str(Hikaye.gazete(gun_no, b).get("manset", "")) != "", "%d. gün gazetesi var" % gun_no)
+		dogru(Hikaye.aksam(gun_no, {}) != "", "  akşam sahnesi var")
+	dogru(str(Hikaye.gazete(6, {"kasap": "yakalandi"}).manset).contains("YAKALANDI"), "tetikçi yakalanınca manşet değişir")
+	dogru(Hikaye.gece(3, {}) != "", "3. gece: patlama")
+	dogru(Hikaye.gece(6, {"savci": "oldu"}).contains("hayatını kaybetmiş"), "6. gece: suikast")
+
+	# sonlar
+	for s: Array in [["terfi", "basari"], ["olagan", "yerinde"], ["surgun", "ihtar"], ["surgun", "suphe"],
+			["kotu", "iflas"], ["kotu", "aile"], ["kotu", "tahliye"]]:
+		var son := Hikaye.son({"tur": s[0], "neden": s[1]}, {})
+		dogru(str(son.manset) != "" and str(son.metin) != "" and str(son.damga) != "", "son '%s/%s' yazılı" % s)
+	dogru(str(Hikaye.son({"tur": "surgun", "neden": "suphe"}, {}).manset) != str(Hikaye.son({"tur": "surgun", "neden": "ihtar"}, {}).manset),
+		"iki sürgün sonu ayrı")
+	esit(str(Hikaye.son({"tur": "terfi"}, {}).mektup), "", "mektup bayrağı yoksa mektup yok")
+	dogru(str(Hikaye.son({"tur": "terfi"}, {"mektup": true}).mektup).contains("Hüsnü"), "  varsa Hüsnü Amca'nın mektubu eklenir")
+	esit((Hikaye.son({"tur": "terfi"}, {"savci": "sag", "husnu_onay": 7.0, "tarik_sonuc": "ovgu"}).yan as Array).size(), 3, "yan haberler bayraklara göre seçilir")
+
+	# etkiler
+	Oyun.yeni_oyun()
+	Hikaye.etki_uygula({"bayrak": {"izzet": "kayirildi"}, "kira_affi": true, "suphe": 1})
+	esit(Oyun.suphe, 1, "kayırma şüpheyi artırır")
+	esit(int(AileDurumu.masraflar(Oyun.aile, 4)[0].tutar), 0, "ev sahibi kayırılınca o akşam kira istenmez")
+	Hikaye.etki_uygula({"suphe": -3})
+	esit(Oyun.suphe, 0, "şüphe sıfırın altına inmez")
+
+	# kuyruk: özel karakterler günün sayısına eklenmez, evraksızlar hariç
+	for gun_no in range(1, 8):
+		var m: Node = await _gune_git(gun_no)
+		var evraksiz := 0
+		var ozel := 0
+		for v: Dictionary in m.kuyruk:
+			if str(v.get("tur", "")) == "hikaye":
+				ozel += 1
+				if bool(v.get("belgesiz", false)):
+					evraksiz += 1
+		esit(m.kuyruk.size(), int(m.gun.vatandas_sayisi) + evraksiz, "%d. gün kuyruğu: %d kişi, %d özel" % [gun_no, m.kuyruk.size(), ozel])
+		dogru(ozel >= 1, "  hikâyeden en az bir kişi var")
+
+	# zarf: çekmeceye atılınca para ve şüphe
+	var masa: Node = await _gune_git(3)
+	dogru(_one_al(masa, "kenan3"), "3. gün müteahhit kuyrukta")
+	bas("GiseyiAc")
+	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul), "müteahhit camda")
+	dogru(await kosulu_bekle(func() -> bool: return dugme("ZarfAl") != null and dugme("ZarfAl").is_visible_in_tree(), 6.0), "zarf masada, seçenekler çıktı")
+	var para_once := Oyun.para
+	bas("ZarfAl")
+	await bekle(0.3)
+	esit(Oyun.para, para_once + 600, "zarf çekmeceye: +600 TL")
+	esit(Oyun.suphe, 1, "  şüphe arttı")
+	esit(str(Oyun.bayrak("kenan1", "")), "aldi", "  bayrak yazıldı")
+	var b: Belge = masa.belgeler[0]
+	masa.karar_ver("eksik", b, b.get_global_transform() * (b.size * 0.5), "harc")
+	esit(int(masa.ozet.dogru), 1, "zarfı alıp yine de geri çevirmek: işlem doğru")
+	await bekle(0.3)
+
+	# zarf: geri itilince bir şey olmaz; havale edilince müdür takdir eder
+	masa = await _gune_git(3)
+	_one_al(masa, "kenan3")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	await kosulu_bekle(func() -> bool: return dugme("ZarfGeri") != null and dugme("ZarfGeri").is_visible_in_tree(), 6.0)
+	para_once = Oyun.para
+	bas("ZarfGeri")
+	await bekle(0.3)
+	esit(Oyun.para, para_once, "zarf geri itildi: para değişmedi")
+	b = masa.belgeler[0]
+	masa.karar_ver("havale", b, b.get_global_transform() * (b.size * 0.5))
+	esit(int(masa.ozet.dogru), 1, "rüşvetçiyi havale etmek doğru sayılır")
+	esit(str(Oyun.bayrak("kenan_tavir", "")), "havale", "  bayrak yazıldı")
+	await bekle(0.3)
+
+	# müdür denetimi: izlerken yapılan hata çift ihtar
+	masa = await _gune_git(2)
+	_one_al(masa, "tarik2")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	dogru(not masa.denetimde, "sabah jaluzi inik")
+	masa.dakika = float(masa.gun.denetim[0][0]) + 1.0
+	dogru(await kosulu_bekle(func() -> bool: return masa.denetimde, 3.0), "denetim saatinde müdür izliyor")
+	b = masa.belgeler[0]
+	masa.karar_ver("eksik", b, b.get_global_transform() * (b.size * 0.5), "ad_soyad")
+	esit(masa.gunluk_ihtar, 2, "müdür izlerken hata: çift ihtar")
+	esit(str(Oyun.bayrak("tarik1", "")), "eksik", "sivil başkomiserin ilk ziyareti kaydedildi")
+	masa.dakika = float(masa.gun.denetim[0][1]) + 1.0
+	dogru(await kosulu_bekle(func() -> bool: return not masa.denetimde, 3.0), "denetim bitince jaluzi iner")
+	await bekle(0.3)
+
+	# aranan şahıs yakalanınca
+	masa = await _gune_git(5)
+	_one_al(masa, "kasap5")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	b = masa.belgeler[0]
+	masa.karar_ver("havale", b, b.get_global_transform() * (b.size * 0.5))
+	esit(str(Oyun.bayrak("kasap", "")), "yakalandi", "aranan şahıs havale edildi: yakalandı")
+	esit(int(masa.ozet.kazanc), Oyun.PRIM + Oyun.SUPHELI_PRIMI, "  prim ve şüpheli primi yazıldı")
+	await bekle(0.3)
+
+	# evraksız ziyaretçi: Yusuf mektubu getirir
+	masa = await _gune_git(7, {"husnu_onay": 3})
+	dogru(_one_al(masa, "yusuf"), "Hüsnü Amca'ya onay verildiyse 7. gün Yusuf gelir")
+	bas("GiseyiAc")
+	dogru(await kosulu_bekle(func() -> bool: return dugme("MektubuKatla") != null, 20.0), "Yusuf mektubu masaya bıraktı")
+	var saat_once: float = masa.dakika
+	await bekle(0.4)
+	esit(masa.dakika, saat_once, "mektup okunurken saat işlemiyor")
+	dogru(bool(Oyun.bayrak("mektup", false)), "mektup bayrağı yazıldı")
+	bas("MektubuKatla")
+	dogru(await kosulu_bekle(func() -> bool: return masa.vatandas.is_empty() or str(masa.vatandas.get("kod", "")) != "yusuf", 6.0), "Yusuf gitti")
+	esit(int(masa.ozet.islenen), 0, "evraksız ziyaret işlem sayılmaz")
+	masa = await _gune_git(7)
+	dogru(not _one_al(masa, "yusuf") and _one_al(masa, "husnu7"), "onay verilmediyse 7. gün Hüsnü Amca kendisi gelir")
+
+	# son ekranı
+	Oyun.yeni_oyun()
+	Oyun.gun = 7
+	Oyun.bayraklar = {"savci": "yarali", "mektup": true, "husnu_onay": 7}
+	Oyun.son = {"tur": "olagan", "neden": "yerinde"}
+	Oyun.sahneye_gec("son")
+	bekle_dogru(await sahneyi_bekle("Son"), "son ekranı açıldı")
+	var son_sahne := sahne()
+	dogru(son_sahne.find_child("Gazete", true, false) != null, "  gazete sayfası var")
+	dogru(son_sahne.find_child("Mektup", true, false) != null, "  mektup var")
+	dogru(dugme("AnaMenu") != null, "  ana menü düğmesi var")
+

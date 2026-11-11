@@ -1,0 +1,801 @@
+{
+	"_aciklama": "Hikâye karakterleri ve gişe ziyaretleri (diyaloglar dahil). Bütün kişi, kurum ve olaylar kurmacadır. 'kosul' sözlüğündeki her bayrak Oyun.bayraklar ile eşleşmelidir; değer liste ise içindekilerden biri yeter. 'alan' evraktaki tek tek alanları değiştirir, 'sil' belgeyi çıkarır. 'etki' karara göre uygulanır: bayrak, suphe (fark), para (fark), ikram, kira_affi, not (teleksten çıkan müdür notu), sonuc (değerlendirmeyi ezer). 'belgesiz' ziyaretçi evrak getirmez; 'satirlar'ını söyleyip gider.",
+	"kisiler": {
+		"husnu": {
+			"portre": "husnu",
+			"ad": "HÜSNÜ",
+			"soyad": "KARACA",
+			"baba_adi": "RECEP",
+			"ana_adi": "ZELİHA",
+			"dogum_yeri": "ÇANKIRI",
+			"dogum_tarihi": "03.05.1910",
+			"seri_no": "A-104417",
+			"cinsiyet": "E",
+			"yas": 74,
+			"mahalle": "Dere",
+			"muhtar": "Bekir Sezer",
+			"adres": "Değirmen Yolu No: 7"
+		},
+		"nermin": {
+			"portre": "nermin",
+			"ad": "NERMİN",
+			"soyad": "AKSU",
+			"baba_adi": "MUHARREM",
+			"ana_adi": "SANİYE",
+			"dogum_yeri": "BOLU",
+			"dogum_tarihi": "14.09.1935",
+			"seri_no": "A-233871",
+			"cinsiyet": "K",
+			"yas": 48,
+			"mahalle": "Yukarı",
+			"muhtar": "Kâzım Türkmen",
+			"adres": "Çeşme Sok. No: 12"
+		},
+		"kenan": {
+			"portre": "rusvetci",
+			"ad": "KENAN",
+			"soyad": "DALGIÇ",
+			"baba_adi": "ŞEVKET",
+			"ana_adi": "NEZİHE",
+			"dogum_yeri": "İSTANBUL",
+			"dogum_tarihi": "22.08.1941",
+			"seri_no": "A-377620",
+			"cinsiyet": "E",
+			"yas": 42,
+			"mahalle": "Cumhuriyet",
+			"muhtar": "Sabri Güneş",
+			"adres": "Hükümet Cad. No: 21"
+		},
+		"izzet": {
+			"portre": "evsahibi",
+			"ad": "İZZET",
+			"soyad": "BAKIRCI",
+			"baba_adi": "TAHSİN",
+			"ana_adi": "HAMİDE",
+			"dogum_yeri": "KONYA",
+			"dogum_tarihi": "11.11.1920",
+			"seri_no": "A-140902",
+			"cinsiyet": "E",
+			"yas": 63,
+			"mahalle": "Yukarı",
+			"muhtar": "Kâzım Türkmen",
+			"adres": "Çeşme Sok. No: 14"
+		},
+		"selim": {
+			"portre": "murat",
+			"ad": "SELİM",
+			"soyad": "AKTUĞ",
+			"baba_adi": "NİHAT",
+			"ana_adi": "MELEK",
+			"dogum_yeri": "ESKİŞEHİR",
+			"dogum_tarihi": "02.04.1946",
+			"seri_no": "A-318455",
+			"cinsiyet": "E",
+			"yas": 38,
+			"mahalle": "İstasyon",
+			"muhtar": "Hamdi Ersoy",
+			"adres": "Garaj Cad. No: 5"
+		},
+		"nail": {
+			"portre": "murat",
+			"ad": "NAİL",
+			"soyad": "DURU",
+			"baba_adi": "EKREM",
+			"ana_adi": "SAADET",
+			"dogum_yeri": "BURSA",
+			"dogum_tarihi": "19.10.1945",
+			"seri_no": "A-402716",
+			"cinsiyet": "E",
+			"yas": 38,
+			"mahalle": "Bağlar",
+			"muhtar": "Şükrü Akın",
+			"adres": "Bağ Yolu No: 33"
+		},
+		"savci": {
+			"portre": "v07",
+			"ad": "HİKMET",
+			"soyad": "ALTAY",
+			"baba_adi": "ZİYA",
+			"ana_adi": "MÜNEVVER",
+			"dogum_yeri": "SİVAS",
+			"dogum_tarihi": "27.03.1929",
+			"seri_no": "A-161280",
+			"cinsiyet": "E",
+			"yas": 55,
+			"mahalle": "Cumhuriyet",
+			"muhtar": "Sabri Güneş",
+			"adres": "Hükümet Cad. No: 2"
+		},
+		"kasap": {
+			"portre": "v27",
+			"ad": "HALİL",
+			"soyad": "TOPRAK",
+			"baba_adi": "DURMUŞ",
+			"ana_adi": "GÜLLÜ",
+			"dogum_yeri": "ADANA",
+			"dogum_tarihi": "08.06.1939",
+			"seri_no": "A-312044",
+			"cinsiyet": "E",
+			"yas": 45,
+			"mahalle": "Cumhuriyet",
+			"muhtar": "Sabri Güneş",
+			"adres": "Hükümet Cad. No: 3"
+		},
+		"naciye": {
+			"portre": "v22",
+			"ad": "MÜNEVVER",
+			"soyad": "ÖZER",
+			"baba_adi": "RIFAT",
+			"ana_adi": "FERİDE",
+			"dogum_yeri": "İZMİR",
+			"dogum_tarihi": "30.01.1944",
+			"seri_no": "B-241190",
+			"cinsiyet": "K",
+			"yas": 40,
+			"mahalle": "Cumhuriyet",
+			"muhtar": "Sabri Güneş",
+			"adres": "Hükümet Cad. No: 3"
+		},
+		"muammer": {
+			"portre": "nermin",
+			"ad": "MUAMMER",
+			"soyad": "AKSU",
+			"baba_adi": "MUHARREM",
+			"ana_adi": "SANİYE",
+			"dogum_yeri": "BOLU",
+			"dogum_tarihi": "06.02.1938",
+			"seri_no": "A-251004",
+			"cinsiyet": "E",
+			"yas": 46,
+			"mahalle": "Yukarı",
+			"muhtar": "Kâzım Türkmen",
+			"adres": "Çeşme Sok. No: 12"
+		}
+	},
+	"ziyaretler": [
+		{
+			"kod": "husnu1",
+			"gun": 1,
+			"sira": 3,
+			"kisi": "husnu",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"husnu_onay": 0
+			},
+			"alan": {
+				"ikametgah.tarih": "14.02.1982"
+			},
+			"konusma": {
+				"giris": "Selamünaleyküm evladım. Torunum Yusuf için bir kayıt örneği alacaktım. Kâğıtlarım tamam, hepsi burada.",
+				"onay": "Allah senden razı olsun evladım! Koşup Yusuf'a müjdeyi vereyim.",
+				"eksik": "Eski mi? İki sene önce aldım, daha gıcır gıcır... Peki evladım, muhtara bir daha gideyim.",
+				"havale": "Müdüre mi? Ben ne kabahat işledim evladım?"
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"husnu_onay": 1
+					}
+				}
+			}
+		},
+		{
+			"kod": "husnu2",
+			"gun": 2,
+			"sira": 4,
+			"kisi": "husnu",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"husnu_onay": 0
+			},
+			"alan": {
+				"ikametgah.tarih": "09.01.1984",
+				"ikametgah.muhtar_muhur": false
+			},
+			"konusma": {
+				"giris": "Dediğini yaptım evladım, muhtar yenisini yazdı. Mührü köye götürmüş; \"imzam yeter\" dedi.",
+				"onay": "Elin dert görmesin evladım. Yusuf'un yüzü gülecek.",
+				"eksik": "Mühür ha... Muhtar köyden cumaya döner. Yusuf'un kaydı salıya kadar bekler, inşallah yetişir.",
+				"havale": "Peki evladım. Müdür Bey de insaf sahibidir inşallah."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"husnu_onay": 2
+					}
+				}
+			}
+		},
+		{
+			"kod": "husnu3",
+			"gun": 3,
+			"sira": 5,
+			"kisi": "husnu",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"husnu_onay": 0
+			},
+			"alan": {
+				"ikametgah.tarih": "09.01.1984"
+			},
+			"sil": [
+				"harc_makbuzu"
+			],
+			"konusma": {
+				"giris": "Mührü bastırdım, bak mosmor. Yusuf parasız yatılıyı kazandı evladım; kaydına bu kâğıt lazım. Makbuz mu? O da neymiş?",
+				"onay": "Makbuzsuz mu oldu? Allah devlete zeval vermesin, sana da.",
+				"eksik": "Demek artık kâğıdın da harcı var. Oğlumla gelinimi toprağa verirken bile bu kadar kâğıt istememişlerdi.",
+				"havale": "Yine mi müdür? Olsun, yol bildim artık."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"husnu_onay": 3
+					}
+				}
+			}
+		},
+		{
+			"kod": "husnu4",
+			"gun": 4,
+			"sira": 6,
+			"kisi": "husnu",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"husnu_onay": 0
+			},
+			"alan": {
+				"ikametgah.tarih": "09.01.1984",
+				"harc_makbuzu.tutar": 25,
+				"harc_makbuzu.tarih": "11.01.1984"
+			},
+			"konusma": {
+				"giris": "Vezneye gittim evladım. Memur \"iki yüz elli\" dedi; kulağım ağır işitir, yirmi beş verdim, aldı. Olmuştur herhalde?",
+				"onay": "Yirmi beş lirayla oldu ha! Rahmetli hanım görse \"pazarlıkçı\" derdi.",
+				"eksik": "İki yüz elli mi? Bu parayla Yusuf'a iki pabuç alınır. Neyse... Yarın tamamlarım.",
+				"havale": "Müdür Bey'e selam götüreyim bari."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"husnu_onay": 4
+					}
+				}
+			}
+		},
+		{
+			"kod": "husnu5",
+			"gun": 5,
+			"sira": 2,
+			"kisi": "husnu",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"husnu_onay": 0
+			},
+			"alan": {
+				"ikametgah.tarih": "09.01.1984",
+				"harc_makbuzu.tutar": 250,
+				"harc_makbuzu.tarih": "12.01.1984"
+			},
+			"konusma": {
+				"giris": "Bu sefer tamam evladım: iki yüz elli lira, kuruşu kuruşuna. Dün akşam yatırdım. ...Zam mı? Bir gecede mi?",
+				"onay": "Elli liranın lafı mı olur diyen çıktı sonunda. Sağ ol evladım.",
+				"eksik": "Dün iki yüz elli, bugün üç yüz. Ben yaşlandım, harç gençleşti. Farkı yatırıp gelirim.",
+				"havale": "Zammı müdür mü yaptı evladım? Sorarım ona."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"husnu_onay": 5
+					}
+				}
+			}
+		},
+		{
+			"kod": "husnu6",
+			"gun": 6,
+			"sira": 3,
+			"kisi": "husnu",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"husnu_onay": 0
+			},
+			"alan": {
+				"ikametgah.tarih": "09.01.1984",
+				"harc_makbuzu.tutar": 300,
+				"harc_makbuzu.tarih": "13.01.1984"
+			},
+			"konusma": {
+				"giris": "Farkı da yatırdım evladım, cuma günü. Şimdi de mahallem başka ilçeye mi gitmiş? Ben yerimden kıpırdamadım ki!",
+				"onay": "Dere Mahallesi nereye bağlıysa bağlı olsun; Yusuf okula bağlı kalsın yeter.",
+				"eksik": "Yetmiş dört yıldır aynı evdeyim. İlçe benden taşınmış, haberim yok. Yarın son gün evladım.",
+				"havale": "Müdür Bey mahalleyi geri getirir mi dersin?"
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"husnu_onay": 6
+					}
+				}
+			}
+		},
+		{
+			"kod": "husnu7",
+			"gun": 7,
+			"sira": 5,
+			"kisi": "husnu",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"husnu_onay": 0
+			},
+			"alan": {
+				"ikametgah.tarih": "16.01.1984",
+				"ikametgah.mahalle": "Çarşı",
+				"ikametgah.muhtar": "Rıza Aksoy",
+				"ikametgah.adres": "Pazar Sok. No: 4",
+				"harc_makbuzu.tutar": 300,
+				"harc_makbuzu.tarih": "13.01.1984"
+			},
+			"konusma": {
+				"giris": "Bugün son gün evladım; Yusuf'un kaydı akşama kapanıyor. Kendimi kızımın evine, Çarşı'ya yazdırdım. Makbuz cumadan kalma, dört gün olmuş diyorlar. Bir gün için torunum okulsuz mu kalacak?",
+				"onay": "...Bastın mı? Evladım, sen bu mührü Yusuf'un ömrüne bastın.",
+				"eksik": "Anladım evladım. Sen de emir kulusun. Yusuf'a \"seneye\" derim. Seneye ben sağ olursam.",
+				"havale": "Müdür Bey'e ha... Peki. O da \"kural\" derse kural."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"husnu_onay": 7,
+						"mektup": true
+					}
+				},
+				"eksik": {
+					"bayrak": {
+						"husnu_onay": -1
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"husnu_onay": 7,
+						"mektup": true,
+						"mudur_insafi": true
+					},
+					"sonuc": "dogru",
+					"not": "Karaca'nın evrakını kendi imzamla tamamladım. Bir günlük makbuz için bir çocuk okulsuz bırakılmaz. Bunu genelgeye yazmam; siz de kimseye söylemezsiniz."
+				}
+			}
+		},
+		{
+			"kod": "yusuf",
+			"gun": 7,
+			"sira": 4,
+			"portre": "yusuf",
+			"belgesiz": true,
+			"kosul": {
+				"husnu_onay": [
+					1,
+					2,
+					3,
+					4,
+					5,
+					6
+				]
+			},
+			"satirlar": [
+				"Ben Yusuf. Dedem Hüsnü Karaca hasta yatıyor, gelemedi.",
+				"Bu mektubu size yolladı. \"Elinden öp\" dedi. Ben yarın yatılı okula gidiyorum."
+			],
+			"etki": {
+				"ziyaret": {
+					"bayrak": {
+						"mektup": true
+					}
+				}
+			},
+			"mektup": true
+		},
+		{
+			"kod": "nermin2",
+			"gun": 2,
+			"sira": 6,
+			"kisi": "nermin",
+			"islem": "kayit_ornegi",
+			"alan": {
+				"ikametgah.muhtar_imza": false
+			},
+			"konusma": {
+				"giris": "Aa, komşum! Gişe sana ne de yakışmış. Kızıma kayıt örneği lazım. İmza mı? Muhtarı evde bulamadım; aramızda kalsın, basıver şunu.",
+				"onay": "Canım komşum! Akşama sana bir tencere kuru fasulye yolluyorum.",
+				"eksik": "Öyle olsun. Komşu komşunun külüne muhtaçtır, unutma.",
+				"havale": "Müdüre mi? Ayıp ettin komşu."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"nermin": "kayirildi"
+					},
+					"ikram": true
+				},
+				"eksik": {
+					"bayrak": {
+						"nermin": "reddedildi"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"nermin": "reddedildi"
+					}
+				}
+			}
+		},
+		{
+			"kod": "nermin4",
+			"gun": 4,
+			"sira": 7,
+			"portre": "nermin",
+			"belgesiz": true,
+			"kosul": {
+				"nermin": "kayirildi"
+			},
+			"satirlar": [
+				"Bugün evrak işim yok komşu; sana bir haber getirdim.",
+				"Dün gece patlamadan önce adliyenin oralarda beyaz bir Murat görmüşler. İçinde gözlüklü bir adam varmış. Senin gişeye de uğruyormuş diyorlar; gözünü dört aç."
+			]
+		},
+		{
+			"kod": "nermin6a",
+			"gun": 6,
+			"sira": 7,
+			"kisi": "nermin",
+			"islem": "kayit_ornegi",
+			"kosul": {
+				"nermin": "reddedildi"
+			},
+			"konusma": {
+				"giris": "Muhtarı evinde bastırdım. Bak, bu sefer eksiksiz. ...O gün ben de fazla üstüne vardım komşu, hakkını helal et.",
+				"onay": "Oh. Akşama bir tencere yemek yolluyorum; bu sefer karşılıksız.",
+				"eksik": "Yine mi? Sen benimle uğraşıyorsun komşu.",
+				"havale": "Eksiksiz kâğıdı da müdüre mi yolluyorsun?"
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"nermin": "barisildi"
+					},
+					"ikram": true
+				}
+			}
+		},
+		{
+			"kod": "nermin6b",
+			"gun": 6,
+			"sira": 7,
+			"kisi": "muammer",
+			"islem": "kayit_ornegi",
+			"foto": "v17",
+			"kosul": {
+				"nermin": "kayirildi"
+			},
+			"konusma": {
+				"giris": "Kardeşim Muammer İzmir'de, gelemedi; cüzdanını bana bıraktı. Geçen sefer idare etmiştin, bu da öyle olsun komşu.",
+				"onay": "Senin gibi komşu bulunmaz. Fasulyenin yanına bu sefer pilav da var.",
+				"eksik": "Demek o gün gönlünden kopmuş, bugün kopmadı. Anladım.",
+				"havale": "Kardeşimin cüzdanını müdüre mi götürüyorsun? Vay komşu vay."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"nermin": "aliskanlik"
+					},
+					"ikram": true,
+					"suphe": 1
+				},
+				"eksik": {
+					"bayrak": {
+						"nermin": "sinir"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"nermin": "sinir"
+					}
+				}
+			}
+		},
+		{
+			"kod": "kenan3",
+			"gun": 3,
+			"sira": 7,
+			"kisi": "kenan",
+			"islem": "nakil",
+			"zarf": 600,
+			"alan": {
+				"harc_makbuzu.tutar": 500
+			},
+			"konusma": {
+				"giris": "Hayırlı işler. Kenan Dalgıç, müteahhit; bu ilçede kimi sorsanız tanır. Harçta ufak bir eksik varmış. Şu zarf farkı da kapatır, çay paranızı da.",
+				"onay": "Anlaşacağımızı biliyordum. Yine görüşürüz.",
+				"eksik": "Dik durmak güzeldir. Aç karnına zordur ama.",
+				"havale": "Müdüre mi? Küçük hesap yapıyorsunuz memur.",
+				"zarf": "Akıllıca. Mührü de basarsınız artık.",
+				"zarf_geri": "Geri mi itiyorsunuz? Siz bilirsiniz."
+			},
+			"etki": {
+				"zarf": {
+					"bayrak": {
+						"kenan1": "aldi"
+					},
+					"suphe": 1
+				},
+				"eksik": {
+					"bayrak": {
+						"kenan_tavir": "reddetti"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"kenan_tavir": "havale"
+					},
+					"suphe": -1,
+					"sonuc": "dogru",
+					"not": "Zarfı tutanakla teslim aldım. Böyle adam bir kere gelmez; gözünüzü açık tutun."
+				}
+			}
+		},
+		{
+			"kod": "kenan5",
+			"gun": 5,
+			"sira": 4,
+			"portre": "rusvetci",
+			"belgesiz": true,
+			"zarf": 2000,
+			"satirlar": [
+				"Yine ben. Birazdan yeğenim Halil gelecek; nakil yaptıracak.",
+				"Evrakında pürüz çıkarsa görmeyiverin. Zarf masanızda kalsın; kimse bir şey görmedi."
+			],
+			"etki": {
+				"zarf": {
+					"bayrak": {
+						"kenan2": "aldi"
+					},
+					"suphe": 2
+				}
+			},
+			"konusma": {
+				"zarf": "Güzel. Yeğenim sizden memnun kalacak.",
+				"zarf_geri": "Peki. Yeğenim yine de gelecek.",
+				"zarf_bekledi": "Düşünürsünüz. Yeğenim birazdan burada."
+			}
+		},
+		{
+			"kod": "izzet4",
+			"gun": 4,
+			"sira": 3,
+			"kisi": "izzet",
+			"islem": "nakil",
+			"alan": {
+				"ikametgah.tarih": "02.05.1983"
+			},
+			"konusma": {
+				"giris": "Ooo, kiracım! Demek burada mühür basıyorsun. Şu nakil işimi görüver. İlmühaber biraz eski, ama ev sahibine de zorluk çıkarılmaz ya. Kirayı sonra konuşuruz.",
+				"onay": "Aferin. Bu akşam kapını çalmam.",
+				"eksik": "Vay. Kiranın gününü de ben böyle şaşmaz hesaplarım.",
+				"havale": "Beni müdüre mi çıkarıyorsun? Akşam görüşürüz kiracı."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"izzet": "kayirildi"
+					},
+					"kira_affi": true,
+					"suphe": 1
+				},
+				"eksik": {
+					"bayrak": {
+						"izzet": "reddedildi"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"izzet": "reddedildi"
+					}
+				}
+			}
+		},
+		{
+			"kod": "tarik2",
+			"gun": 2,
+			"sira": 7,
+			"kisi": "selim",
+			"islem": "kayit_ornegi",
+			"konusma": {
+				"giris": "Kayıt örneği.",
+				"onay": "Sağ olun.",
+				"eksik": "Eksik mi? İlginç.",
+				"havale": "Buyurun, götürün."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"tarik1": "onay"
+					}
+				},
+				"eksik": {
+					"bayrak": {
+						"tarik1": "eksik"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"tarik1": "havale"
+					}
+				}
+			}
+		},
+		{
+			"kod": "tarik4",
+			"gun": 4,
+			"sira": 5,
+			"kisi": "nail",
+			"islem": "kayit_ornegi",
+			"konusma": {
+				"giris": "Kayıt örneği. Geçen sefer çabuk olmuştu.",
+				"onay": "Yine çabuk oldu.",
+				"eksik": "Demek bugün titizsiniz.",
+				"havale": "Müdüre mi? Nihayet."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"tarik2": "onay"
+					}
+				},
+				"eksik": {
+					"bayrak": {
+						"tarik2": "eksik"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"tarik2": "havale"
+					},
+					"sonuc": "dogru",
+					"not": "Havale ettiğiniz şahsı odama aldım. Evrakı kusursuzdu; yine de aynı yüzü iki ayrı adla fark etmeniz not edildi."
+				}
+			}
+		},
+		{
+			"kod": "tarik7",
+			"gun": 7,
+			"sira": 7,
+			"portre": "mufettis",
+			"belgesiz": true,
+			"kosul": {
+				"tarik2": "havale"
+			},
+			"satirlar": [
+				"Başkomiser Tarık Ersoy. Gişenize iki ayrı adla geldim; ikincisinde beni müdüre yolladınız.",
+				"Sizden önceki memur çetenin kâğıtlarını bu masadan geçiriyordu. Sahte cüzdan aranınca ilk bu gişeye bakılırdı.",
+				"Raporuma şunu yazıyorum: Artık bakılmayacak."
+			],
+			"etki": {
+				"ziyaret": {
+					"bayrak": {
+						"tarik_sonuc": "ovgu"
+					},
+					"suphe": -1
+				}
+			}
+		},
+		{
+			"kod": "tarik7b",
+			"gun": 7,
+			"sira": 7,
+			"portre": "mufettis",
+			"belgesiz": true,
+			"kosul": {
+				"tarik2": [
+					"onay",
+					"eksik",
+					""
+				]
+			},
+			"satirlar": [
+				"Başkomiser Tarık Ersoy. Selim Aktuğ da bendim, Nail Duru da.",
+				"İki ayrı adla geldim; evrakıma baktınız, yüzüme bakmadınız.",
+				"Sizden önceki memur da kâğıda bakar, yüze bakmazdı. Onu şimdi sorguluyoruz."
+			],
+			"etki": {
+				"ziyaret": {
+					"bayrak": {
+						"tarik_sonuc": "elestiri"
+					}
+				}
+			}
+		},
+		{
+			"kod": "savci5",
+			"gun": 5,
+			"sira": 7,
+			"kisi": "savci",
+			"islem": "kayit_ornegi",
+			"konusma": {
+				"giris": "İyi günler. Savcı Hikmet Altay. Soruşturma dosyası için kendi kayıt örneğim gerekti; sıramı bekledim, evrakım burada.",
+				"onay": "Teşekkür ederim. Bu ilçede kâğıda dikkatle bakan az memur kaldı. Siz bakmaya devam edin; pazartesi görüşürüz.",
+				"eksik": "Öyle mi? Demek savcıya da kolaylık yok. Güzel; yeniden bakarım.",
+				"havale": "Müdürünüze selamımı götüreyim o hâlde."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"savci_tanisti": true
+					}
+				}
+			}
+		},
+		{
+			"kod": "kasap5",
+			"gun": 5,
+			"sira": 5,
+			"kisi": "kasap",
+			"islem": "nakil",
+			"konusma": {
+				"giris": "Nakil. Çabuk olsun.",
+				"onay": "...",
+				"eksik": "Kenan Bey'e selamınızı söylerim.",
+				"havale": "Ne müdürü? Bırak kolumu!"
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"kasap": "gecti"
+					},
+					"suphe": 1
+				},
+				"eksik": {
+					"bayrak": {
+						"kasap": "kacti"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"kasap": "yakalandi"
+					},
+					"not": "Havale ettiğiniz şahıs, aranan Bekir Yaman çıktı. Jandarma arka kapıdan teslim aldı. Bugün bu gişe ilk kez yüzümü ağarttı."
+				}
+			}
+		},
+		{
+			"kod": "naciye6",
+			"gun": 6,
+			"sira": 6,
+			"kisi": "naciye",
+			"islem": "nakil",
+			"konusma": {
+				"giris": "Adres naklim için geldim. Yeni evim Hükümet Caddesi'nde, konağın tam karşısı. Manzarası güzel.",
+				"onay": "Elinize sağlık. Bu akşam perdeleri asarım.",
+				"eksik": "Eksik mi? Kâğıtlarımı ben hazırlamıştım hâlbuki. Neyse.",
+				"havale": "Müdür mü? Durun, bir yanlışlık var!"
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"naciye": "gecti"
+					},
+					"suphe": 1
+				},
+				"eksik": {
+					"bayrak": {
+						"naciye": "kacti"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"naciye": "yakalandi"
+					},
+					"not": "Havale ettiğiniz kadın, aranan \"Terzi\" Naciye. Çantasından konağın krokisi çıktı. Savcıya haber verildi."
+				}
+			}
+		}
+	]
+}

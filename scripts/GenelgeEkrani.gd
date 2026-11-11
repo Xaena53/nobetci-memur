@@ -1,7 +1,7 @@
 class_name GenelgeEkrani
 extends Control
-## Sabah genelgesi: gün başında müdürün daktiloyla yazılmış yazısı okunur, sonra gişe açılır.
-## Metin daktilo gibi harf harf belirir; tıklayınca tamamı görünür.
+## Sabah: masada günün gazetesinden bir kupür ve müdürün daktiloyla yazılmış genelgesi durur.
+## Genelge daktilo gibi harf harf belirir; tıklayınca tamamı görünür. Okununca gişe açılır.
 
 signal kapandi
 signal harf_yazildi
@@ -31,6 +31,15 @@ func ac(gun: Dictionary, gun_no: int) -> void:
 	kagit.name = "Kagit"
 	kagit.size = KAGIT
 	kagit.position = (Yerlesim.EKRAN.size - KAGIT) / 2.0 + Vector2(0, -8)
+	var haber := Hikaye.gazete(gun_no, Oyun.bayraklar)
+	if not haber.is_empty():
+		kagit.position.x = 652.0
+		var gazete := Gazete.new()
+		gazete.name = "Gazete"
+		add_child(gazete)
+		gazete.kur(424.0, str(gun.get("tarih", "")), haber)
+		gazete.position = Vector2(118.0, (Yerlesim.EKRAN.size.y - gazete.size.y) / 2.0 - 10.0)
+		gazete.rotation = deg_to_rad(-2.4)
 	kagit.mouse_filter = MOUSE_FILTER_IGNORE
 	kagit.draw.connect(func() -> void: Kagit.ciz(kagit, Rect2(Vector2.ZERO, KAGIT), "daktilo_sayfa", Stil.KAGIT, 14.0, 4.0))
 	add_child(kagit)
