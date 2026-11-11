@@ -1,0 +1,17 @@
+# Godot 4 önbelleği (her makinede yeniden üretilir)
+.godot/
+*.translation
+
+# Dışa aktarım çıktıları
+build/
+*.exe
+*.pck
+*.zip
+
+# Geliştirme sırasında alınan geçici ekran görüntüleri
+tools/cikti/
+
+# İşletim sistemi artıkları
+Thumbs.db
+.DS_Store
+override.cfg
