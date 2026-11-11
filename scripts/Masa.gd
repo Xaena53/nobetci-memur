@@ -10,12 +10,12 @@ const BUYUTEC := "res://assets/img/nesne/buyutec.webp"
 const IGNE := "res://assets/img/nesne/igne.webp"
 const MESAI_BASI := 9 * 60     ## 09:00 (dakika)
 const MESAI_SONU := 17 * 60    ## 17:00
-const DAKIKA_SURESI := 1.0     ## gerçek 1 sn = oyun 1 dk
 const KARAR_ADLARI := {"onay": "ONAY", "eksik": "EKSİK EVRAK", "havale": "MÜDÜRE HAVALE"}
 
 var gun: Dictionary = {}                ## günün genelgesi ve kuralları (data/gunler)
 var dakika := float(MESAI_BASI)
-var mesai_acik := true
+var mesai_acik := false                 ## sabah genelgesi okunup gişe açılınca true olur
+var gun_bitti := false
 var vatandas: Dictionary = {}           ## şu an camdaki vatandaş (yoksa boş)
 var belgeler: Array[Belge] = []
 var kuyruk: Array[Dictionary] = []      ## sırada bekleyenler
@@ -50,7 +50,8 @@ var _mesgul := true                     ## vatandaş gelip giderken karar verile
 func _ready() -> void:
 	gun = Veri.gun(Oyun.gun)
 	havale_kalan = int(gun.get("havale_hakki", 2))
-	ozet = {"islenen": 0, "dogru": 0, "yanlis": 0, "yarim": 0, "havale": 0, "kazanc": 0, "ihtar": 0, "ihtarlar": []}
+	ozet = {"islenen": 0, "dogru": 0, "yanlis": 0, "yarim": 0, "havale": 0, "yarida": 0, "kazanc": 0, "ihtar": 0,
+		"ihtarlar": []}
 	_sahneyi_kur()
 	inceleme.karsilastir = _karsilastir
 	kural_kitabi.yukle(gun)
@@ -58,17 +59,34 @@ func _ready() -> void:
 	saat.dakika = dakika
 	_kuyrugu_kur()
 	_araclari_ayarla()
-	get_tree().create_timer(0.9).timeout.connect(_sonraki_vatandas)
+	_genelgeyi_goster()
 
 
 func _process(delta: float) -> void:
 	if not mesai_acik:
 		return
-	dakika += delta / DAKIKA_SURESI
+	# Ayarlardaki saat hızı: bir oyun dakikasının kaç gerçek saniye sürdüğü.
+	dakika += delta / maxf(0.05, float(Oyun.ayar("saat_hizi")))
 	if dakika >= MESAI_SONU:
 		dakika = MESAI_SONU
 		mesaiyi_bitir()
 	saat.dakika = dakika
+
+
+## Gün, müdürün genelgesiyle başlar; "Gişeyi Aç" denince saat işlemeye ve vatandaş gelmeye başlar.
+func _genelgeyi_goster() -> void:
+	var g := GenelgeEkrani.new()
+	g.name = "GenelgeEkrani"
+	_ust_katman.add_child(g)
+	g.ac(gun, Oyun.gun)
+	g.kapandi.connect(giseyi_ac)
+
+
+func giseyi_ac() -> void:
+	if mesai_acik or gun_bitti:
+		return
+	mesai_acik = true
+	get_tree().create_timer(0.8).timeout.connect(_sonraki_vatandas)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -91,7 +109,7 @@ func _sonraki_vatandas() -> void:
 		return
 	if kuyruk.is_empty():
 		balon.sus()
-		get_tree().create_timer(1.2).timeout.connect(mesaiyi_bitir)
+		get_tree().create_timer(1.0).timeout.connect(mesaiyi_bitir)
 		return
 	vatandas = kuyruk.pop_front()
 	tespitler.clear()
@@ -268,15 +286,32 @@ func _araclari_ayarla() -> void:
 		a.etkin = acik and a.kalan != 0
 
 
+## Mesai biter (saat 17:00 oldu ya da kuyruk tükendi): gişe kapanır, camdaki vatandaş yarıda kalır.
 func mesaiyi_bitir() -> void:
-	if not mesai_acik:
+	if gun_bitti:
 		return
+	gun_bitti = true
 	mesai_acik = false
 	_mesgul = true
 	_araclari_ayarla()
-	Oyun.para += int(ozet.kazanc)
-	Oyun.ihtar += gunluk_ihtar
-	Oyun.gun_ozeti = ozet
+	inceleme.aktif = false
+	inceleme.temizle()
+	if not vatandas.is_empty():
+		ozet.yarida += 1
+		balon.soyle("Saat beş mi oldu? Ama daha işim bitmemişti!", 1.6)
+		gise.tepki("eksik")
+		var i := 0
+		for b in belgeler:
+			b.git(Yerlesim.GISE_YARIK, 0.3 + i * 0.12)
+			i += 1
+		belgeler.clear()
+		vatandas = {}
+		await get_tree().create_timer(1.3).timeout
+		gise.gitsin()
+	gise.kepengi_indir()
+	await get_tree().create_timer(1.9).timeout
+	ozet.ihtar = gunluk_ihtar
+	Oyun.mesaiyi_kapat(ozet)
 	Oyun.sahneye_gec("gun_sonu")
 
 

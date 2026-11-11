@@ -12,6 +12,7 @@ func _ready() -> void:
 
 func _calistir() -> void:
 	await _akis_testi()
+	await _ekonomi_testi()
 	await _kural_testi()
 	await _belge_testi()
 	print("")
@@ -23,10 +24,10 @@ func _calistir() -> void:
 	get_tree().quit(1 if _hata > 0 else 0)
 
 
-# --- Aşama 0: sahne akışı ve kayıt ---
+# --- Aşama 0 ve 3: sahne akışı, gün döngüsü ve kayıt ---
 
 func _akis_testi() -> void:
-	print("== Sahne akışı ==")
+	print("== Sahne akışı ve gün döngüsü ==")
 	Oyun.kaydi_sil()
 	Oyun.sahneye_gec("menu")
 	bekle_dogru(await sahneyi_bekle("AnaMenu"), "ana menü açıldı")
@@ -36,21 +37,101 @@ func _akis_testi() -> void:
 	bekle_dogru(await sahneyi_bekle("Masa"), "Yeni Oyun → Masa")
 	esit(Oyun.gun, 1, "ilk gün")
 	dogru(Oyun.kayit_var_mi(), "gün başında otomatik kayıt")
+	var masa := sahne()
+	dogru(dugme("GiseyiAc") != null, "gün sabah genelgesiyle başlıyor")
+	dogru(not masa.mesai_acik, "genelge okunmadan saat işlemiyor")
+	var saat_once: float = masa.dakika
+	await bekle(0.4)
+	esit(masa.dakika, saat_once, "genelge açıkken saat duruyor")
+	bas("GiseyiAc")
+	dogru(await kosulu_bekle(func() -> bool: return masa.mesai_acik), "Gişeyi Aç → mesai başladı")
+	await bekle(0.4)
+	dogru(masa.dakika > saat_once, "saat işliyor")
 
-	var para_once := Oyun.para
-	get_tree().current_scene.mesaiyi_bitir()
-	bekle_dogru(await sahneyi_bekle("GunSonu"), "mesai bitti → Gün Sonu")
-	dogru(Oyun.para >= para_once, "mesai sonunda para azalmadı")
+	# saat 17:00 olunca gişe kendiliğinden kapanır
+	masa.dakika = masa.MESAI_SONU - 0.2
+	bekle_dogru(await sahneyi_bekle("GunSonu", 12.0), "17:00 → gişe kapandı → Gün Sonu")
+	var maas: Dictionary = Oyun.gun_ozeti.get("maas", {})
+	esit(int(maas.get("yevmiye", 0)), Oyun.YEVMIYE, "yevmiye yazıldı")
+	esit(Oyun.para, Oyun.BASLANGIC_PARASI + int(maas.get("net", 0)), "günün kazancı paraya eklendi")
 
 	bas("EveGit")
 	bekle_dogru(await sahneyi_bekle("Aile"), "Gün Sonu → Aile")
+	var aile := sahne()
+	var para_once := Oyun.para
+	dogru(aile.sec("kira", true), "kira işaretlendi")
+	dogru(aile.sec("komur", true), "kömür işaretlendi")
+	esit(aile.toplam(), AileDurumu.KIRA + AileDurumu.KOMUR, "akşam toplamı doğru")
 	bas("Yat")
-	bekle_dogru(await sahneyi_bekle("Masa"), "Aile → ertesi gün Masa")
+	await kare(3)
+	esit(Oyun.para, para_once - AileDurumu.KIRA - AileDurumu.KOMUR, "ödenenler paradan düştü")
+	dogru(dugme("SabahOldu") != null, "gece özeti gösterildi")
+	bas("SabahOldu")
+	bekle_dogru(await sahneyi_bekle("Masa"), "sabah → ertesi gün Masa")
 	esit(Oyun.gun, 2, "ikinci güne geçildi")
 
 	Oyun.gun = 5
 	dogru(Oyun.yukle(), "kayıt yüklendi")
 	esit(Oyun.gun, 2, "yükleme günü geri getirdi")
+	esit(Oyun.para, para_once - AileDurumu.KIRA - AileDurumu.KOMUR, "yükleme parayı geri getirdi")
+
+
+# --- Aşama 3: maaş ve aile mantığı ---
+
+func _ekonomi_testi() -> void:
+	print("== Maaş ve aile ==")
+	var m := Oyun.maas_hesapla({"kazanc": 700, "ihtar": 0})
+	esit(int(m.net), Oyun.YEVMIYE + 700, "ihtarsız gün: yevmiye + prim")
+	esit(int(Oyun.maas_hesapla({"kazanc": 300, "ihtar": 2}).kesinti), 0, "iki ihtarda kesinti yok")
+	esit(int(Oyun.maas_hesapla({"kazanc": 300, "ihtar": 3}).kesinti), Oyun.KESINTI_ILK, "üçüncü ihtarda maaş kesilir")
+	esit(int(Oyun.maas_hesapla({"kazanc": 0, "ihtar": 5}).kesinti), Oyun.KESINTI_ILK + 2 * Oyun.KESINTI_SONRAKI, "sonraki ihtarlar da kesilir")
+
+	var a := AileDurumu.yeni()
+	var g := AileDurumu.geceyi_gecir(a, 1, ["kira", "komur", "yemek"])
+	esit(str(g.son), "", "her şey ödendi: sakin gece")
+	esit(AileDurumu.saglik(a, "anne"), 3, "  herkes iyi")
+
+	a = AileDurumu.yeni()
+	AileDurumu.geceyi_gecir(a, 1, ["kira", "yemek"])
+	esit(AileDurumu.saglik(a, "anne"), 2, "kömürsüz gece: anne halsiz")
+	esit(AileDurumu.saglik(a, "elif"), 3, "  ilk soğuk gecede Elif dayanır")
+	AileDurumu.geceyi_gecir(a, 2, ["kira", "yemek"])
+	esit(AileDurumu.saglik(a, "anne"), 1, "ikinci soğuk gece: anne hasta")
+	esit(AileDurumu.saglik(a, "elif"), 2, "  Elif de üşüdü")
+	var kalemler := AileDurumu.masraflar(a, 5)
+	var kodlar: Array = []
+	for k in kalemler:
+		kodlar.append(k.kod)
+	dogru(kodlar.has("ilac_anne") and kodlar.has("ilac_can"), "hastalar için ilaç kalemi çıktı")
+	AileDurumu.geceyi_gecir(a, 5, ["kira", "komur", "yemek", "ilac_anne"])
+	esit(AileDurumu.saglik(a, "anne"), 2, "ilaç + sıcak ev: anne toparlandı")
+	esit(AileDurumu.saglik(a, "can"), 0, "ilaçsız kalan Can ağırlaştı")
+
+	a = AileDurumu.yeni()
+	g = AileDurumu.geceyi_gecir(a, 1, ["komur", "yemek"])
+	g = AileDurumu.geceyi_gecir(a, 2, ["komur", "yemek"])
+	esit(str(g.son), "", "iki akşam kira ödenmedi: son uyarı")
+	g = AileDurumu.geceyi_gecir(a, 3, ["komur", "yemek"])
+	esit(str(g.son), "tahliye", "üçüncü akşam: tahliye")
+
+	a = AileDurumu.yeni()
+	a.saglik["can"] = 1
+	g = AileDurumu.geceyi_gecir(a, 1, ["kira"])
+	esit(str(g.son), "aile", "hasta çocuk soğukta ve aç: kötü son")
+	dogru(AileDurumu.masraflar(AileDurumu.yeni(), 2).any(func(k: Dictionary) -> bool: return k.kod == "okul"), "2. akşam okul masrafı var")
+
+	# son denetimi
+	Oyun.yeni_oyun()
+	Oyun.para = -50
+	esit(str(Oyun.son_denetle().get("neden", "")), "iflas", "para eksiye düştü: kötü son")
+	Oyun.para = 100
+	Oyun.ihtar = Oyun.SURGUN_IHTARI
+	esit(str(Oyun.son_denetle().get("tur", "")), "surgun", "çok ihtar: sürgün")
+	Oyun.ihtar = 2
+	Oyun.gun = Oyun.TOPLAM_GUN
+	esit(str(Oyun.son_denetle(true).get("tur", "")), "terfi", "7 gün, az ihtar, düşük şüphe: terfi")
+	Oyun.suphe = Oyun.SURGUN_SUPHESI
+	esit(str(Oyun.son_denetle(true).get("neden", "")), "suphe", "yüksek şüphe: sürgün")
 
 
 # --- Aşama 1: belgeler, inceleme modu, karar araçları ---
@@ -61,6 +142,7 @@ func _belge_testi() -> void:
 	Oyun.sahneye_gec("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
+	bas("GiseyiAc")
 	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul), "vatandaş geldi, belgeler masada")
 	await bekle(1.0)
 

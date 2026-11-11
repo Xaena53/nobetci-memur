@@ -16,8 +16,15 @@ var yuz: Hedef
 var portre: CanliPortre
 var kimlik := ""
 
+var kepenk := 0.0:              ## 0 açık .. 1 tamamen inik
+	set(k):
+		kepenk = clampf(k, 0.0, 1.0)
+		if _kepenk_cizimi != null:
+			_kepenk_cizimi.queue_redraw()
+
 var _hareket: Tween
 var _sabir := 30.0
+var _kepenk_cizimi: Control
 
 
 func _ready() -> void:
@@ -37,6 +44,12 @@ func _ready() -> void:
 	cam.mouse_filter = MOUSE_FILTER_IGNORE
 	cam.draw.connect(_cam_ciz.bind(cam))
 	add_child(cam)
+
+	_kepenk_cizimi = Control.new()
+	_kepenk_cizimi.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	_kepenk_cizimi.mouse_filter = MOUSE_FILTER_IGNORE
+	_kepenk_cizimi.draw.connect(_kepenk_ciz)
+	add_child(_kepenk_cizimi)
 
 	yuz = Hedef.new()
 	yuz.tip = "yuz"
@@ -128,6 +141,38 @@ func _process(delta: float) -> void:
 	if _sabir <= 0.0:
 		_sabir = randf_range(SONRAKI_SABIR.x, SONRAKI_SABIR.y)
 		portre.ofle()
+
+
+## Mesai bitince ahşap kepenk iner.
+func kepengi_indir(sure: float = 1.1) -> void:
+	var t := create_tween()
+	t.tween_property(self, "kepenk", 1.0, sure).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+
+
+## İnen kepenk: yatay ahşap latalar ve altında tutamak çıtası.
+func _kepenk_ciz() -> void:
+	if kepenk <= 0.001:
+		return
+	var w := size.x
+	var alt := size.y * kepenk
+	var y := alt
+	var i := 0
+	while y > -14.0:
+		var ust := y - 13.0
+		var ton := Color("7a5334") if i % 2 == 0 else Color("71492d")
+		_kepenk_cizimi.draw_rect(Rect2(0, ust, w, 13.0), ton)
+		_kepenk_cizimi.draw_rect(Rect2(0, ust, w, 2.0), Color(1, 0.9, 0.7, 0.10))
+		_kepenk_cizimi.draw_rect(Rect2(0, y - 2.5, w, 2.5), Color(0, 0, 0, 0.30))
+		y -= 13.0
+		i += 1
+	_kepenk_cizimi.draw_rect(Rect2(0, alt - 7.0, w, 7.0), Color("4a3222"))
+	_kepenk_cizimi.draw_rect(Rect2(0, alt, w, 9.0), Color(0, 0, 0, 0.22))
+	if kepenk > 0.96:
+		var levha := Rect2(w / 2.0 - 52.0, size.y * 0.44, 104.0, 30.0)
+		_kepenk_cizimi.draw_rect(levha, Color("efe6cd"))
+		_kepenk_cizimi.draw_rect(levha, Color("4a3222"), false, 2.0)
+		_kepenk_cizimi.draw_string(Stil.daktilo_kalin(), levha.position + Vector2(0, 21), "KAPALI",
+			HORIZONTAL_ALIGNMENT_CENTER, levha.size.x, 18, Stil.BORDO)
 
 
 ## Camın yansıması: iki çapraz ışık şeridi ve üstte çerçeve gölgesi.

@@ -62,24 +62,37 @@ void fragment() {
 	float r = length(m) / (agiz_yari * 3.4 * oran);
 	k = mix(k, agiz + (k - agiz) * (1.0 - 0.22 * yanak), 1.0 - smoothstep(0.15, 1.0, r));
 
-	// Çene: ağız çizgisinin altı aşağı iner.
-	float acik = agiz_acik * agiz_yari * 0.50 * oran;
-	float alt_m = smoothstep(agiz.y - 0.002, agiz.y + 0.006, k.y) * (1.0 - smoothstep(cene + 0.01, cene + 0.08, k.y));
-	float yan_m = 1.0 - smoothstep(agiz_yari * 1.6, agiz_yari * 3.2, abs(k.x - agiz.x));
-	k.y -= acik * alt_m * yan_m;
+	// Ağız: yüz, dudak çizgisinden ikiye ayrılır. Alt dudak ve çene aşağı iner; ağzın köşeleri
+	// yerinde kalır (açıklık ortada en çok, köşelerde sıfır). Aradaki badem biçimli boşluk ağız içidir.
+	float dx = (k.x - agiz.x) / agiz_yari;                  // köşeden köşeye −1 .. 1
+	float dar = max(0.0, 1.0 - dx * dx);                    // dudak açıklığının yatay biçimi
+	float genis = 1.0 - smoothstep(1.0, 2.8, abs(dx));      // çenenin inişi daha geniş bir alana yayılır
+	float tam = agiz_acik * agiz_yari * 0.58 * oran;        // ortadaki en büyük açıklık
+	float bosluk = tam * dar;
+	float asagi = k.y - agiz.y;                             // dudak çizgisinin altında artı
+	float ic = 0.0;
+	if (asagi > 0.0 && tam > 0.0002) {
+		float yumusak = 0.0022;
+		ic = smoothstep(0.0, yumusak, asagi) * (1.0 - smoothstep(bosluk - yumusak, bosluk, asagi));
+		if (asagi >= bosluk) {
+			float inis = clamp(asagi / max(cene - agiz.y, 0.001), 0.0, 1.0);
+			float bicim = mix(dar, genis, smoothstep(0.0, 1.0, inis));
+			k.y -= tam * bicim * (1.0 - smoothstep(cene, cene + 0.08, k.y));
+		}
+	}
 
 	vec4 renk = texture(TEXTURE, k);
 	if (k.x < 0.0 || k.x > 1.0 || k.y < 0.0 || k.y > 1.0) {
 		renk.a = 0.0;
 	}
 
-	// Ağız içi: dudakların arasında yumuşak kenarlı, koyu kızıl bir aralık.
-	if (acik > 0.0004) {
-		vec2 am = yuz - (agiz + vec2(0.0, acik * 0.5));
-		am.x /= agiz_yari * 0.60;
-		am.y /= max(acik * 0.5, 0.0004);
-		float ic = 1.0 - smoothstep(0.45, 1.10, length(am));
-		renk.rgb = mix(renk.rgb, vec3(0.24, 0.08, 0.07), ic * 0.82 * renk.a);
+	// Ağız içi: koyu; ağız iyice açılınca üstte dişlerin ucu seçilir.
+	if (ic > 0.0) {
+		vec3 agiz_ici = vec3(0.18, 0.06, 0.06);
+		float dis = (1.0 - smoothstep(0.18, 0.42, asagi / max(bosluk, 0.0005)))
+			* smoothstep(0.55, 0.9, agiz_acik) * (1.0 - smoothstep(0.45, 0.8, abs(dx)));
+		agiz_ici = mix(agiz_ici, vec3(0.86, 0.82, 0.72), dis * 0.75);
+		renk.rgb = mix(renk.rgb, agiz_ici, ic * renk.a);
 	}
 
 	// Göz kapakları: yukarıdan aşağı kapanır. Kapak, gözü kirpik çizgisiyle birlikte örtecek kadar

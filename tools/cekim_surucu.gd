@@ -33,14 +33,37 @@ func _senaryo_akis() -> void:
 	await cek("00_menu")
 	bas("YeniOyun")
 	await sahneyi_bekle("Masa")
-	await bekle(0.5)
-	await cek("01_masa")
-	sahne().mesaiyi_bitir()
-	await sahneyi_bekle("GunSonu")
-	await cek("02_gun_sonu")
+	Oyun.gun = int(_arg("gun", "1"))
+	await bekle(1.6)
+	await cek("01_genelge")
+	bas("GiseyiAc")
+	var masa := sahne()
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	# birkaç karar: biri doğru, biri yanlış
+	for i in 3:
+		await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 14.0)
+		await bekle(0.6)
+		var b: Belge = masa.belgeler[0]
+		masa.karar_ver("onay", b, b.get_global_transform() * (b.size * 0.5))
+		await bekle(0.5)
+	masa.dakika = masa.MESAI_SONU - 0.5
+	await bekle(2.2)
+	await cek("02_kepenk")
+	await sahneyi_bekle("GunSonu", 12.0)
+	await bekle(2.6)
+	await cek("03_gun_sonu")
 	bas("EveGit")
 	await sahneyi_bekle("Aile")
-	await cek("03_aile")
+	await bekle(0.6)
+	await cek("04_aile_bos")
+	var aile := sahne()
+	aile.sec("komur", true)
+	aile.sec("yemek", true)
+	await bekle(0.8)
+	await cek("05_aile_secili")
+	bas("Yat")
+	await bekle(1.8)
+	await cek("06_gece")
 
 
 func _senaryo_masa() -> void:
@@ -49,6 +72,7 @@ func _senaryo_masa() -> void:
 	Oyun.sahneye_gec("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
+	bas("GiseyiAc")
 	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
 	await bekle(1.6)
 	await cek("10_masa_vatandas")
@@ -107,6 +131,7 @@ func _senaryo_portre() -> void:
 	Oyun.sahneye_gec("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
+	bas("GiseyiAc")
 	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
 	var p: CanliPortre = masa.gise.portre
 	await kosulu_bekle(func() -> bool: return not p.konusuyor, 10.0)
@@ -152,6 +177,31 @@ func _senaryo_portre() -> void:
 	await cek("p_8_ofleme")
 	await bekle(0.35)
 	await cek("p_9_ofleme_sonu")
+
+
+## Ağız denemesi: belirli portrelerde kapalı / yarı açık / tam açık ağız (kareler a_*.png).
+func _senaryo_agiz() -> void:
+	Oyun.yeni_oyun()
+	Oyun.sahneye_gec("masa")
+	await sahneyi_bekle("Masa")
+	var masa := sahne()
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	var p: CanliPortre = masa.gise.portre
+	await kosulu_bekle(func() -> bool: return not p.konusuyor, 10.0)
+	p.set_process(false)
+	var m: ShaderMaterial = p._malzeme
+	var no := 0
+	for kimlik: String in ["v01", "v06", "v19", "husnu", "v41", "nermin"]:
+		p.ayarla(kimlik, Gise.OLCEK)
+		p.position = Vector2((masa.gise.size.x - p.size.x) / 2.0, masa.gise.size.y - p.size.y + 3.0)
+		for ad: String in ["kirpma", "yanak", "bas_egim", "nefes", "kas"]:
+			m.set_shader_parameter(ad, 0.0)
+		m.set_shader_parameter("bas", Vector2.ZERO)
+		for acik: float in [0.0, 0.4, 0.75, 1.0]:
+			m.set_shader_parameter("agiz_acik", acik)
+			await cek("a_%d_%d" % [no, roundi(acik * 100.0)])
+		no += 1
 
 
 func _arg(ad: String, yedek: String) -> String:
