@@ -1,0 +1,63 @@
+{
+	"gun": 2,
+	"tarih": "10.01.1984",
+	"vatandas_sayisi": 9,
+	"hata_orani": 0.4,
+	"zorluk": 1,
+	"havale_hakki": 2,
+	"islemler": [
+		"kayit_ornegi"
+	],
+	"belgeler": [
+		"nufus_cuzdani",
+		"ikametgah"
+	],
+	"genelge": {
+		"sayi": "1984/2",
+		"konu": "Muhtarlık belgeleri",
+		"metin": "Mühürsüz ilmühaberler yüzünden kaymakamlıktan yazı geldi. Bugünden itibaren ikametgâhta muhtarın mührü ve imzası zorunludur. Ayrıca baba adı da bütün belgelerde aynı olacaktır; \"muhtar öyle yazmış\" mazereti kabul edilmez."
+	},
+	"kurallar": [
+		{
+			"id": "belgeler",
+			"tur": "belge_zorunlu",
+			"belgeler": [
+				"nufus_cuzdani",
+				"ikametgah"
+			],
+			"metin": "Her başvuruda nüfus cüzdanı ve ikametgâh ilmühaberi aranır."
+		},
+		{
+			"id": "ad_soyad",
+			"tur": "alan_esit",
+			"alanlar": [
+				"ad",
+				"soyad"
+			],
+			"metin": "Ad ve soyad bütün belgelerde aynı olmalıdır."
+		},
+		{
+			"id": "ikametgah_sure",
+			"tur": "tarih_sure",
+			"belge": "ikametgah",
+			"ay": 6,
+			"metin": "İkametgâh son 6 ay içinde alınmış olmalıdır."
+		},
+		{
+			"id": "muhur",
+			"tur": "muhur_zorunlu",
+			"imza": true,
+			"metin": "İkametgâhta muhtarın mührü ve imzası bulunmalıdır.",
+			"yeni": true
+		},
+		{
+			"id": "baba_adi",
+			"tur": "alan_esit",
+			"alanlar": [
+				"baba_adi"
+			],
+			"metin": "Baba adı bütün belgelerde aynı olmalıdır.",
+			"yeni": true
+		}
+	]
+}

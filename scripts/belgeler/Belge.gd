@@ -3,6 +3,8 @@ extends Control
 ## Masadaki bir evrakın ortak davranışı: sözlükten dolma, sürükleme, çift tıkla büyütme,
 ## gişe yarığından kayarak gelme ve inceleme modunda tıklanabilir alanlar.
 ##
+## Belge masada bir MasaNesnesi taşıyıcısının içinde durur: masadayken perspektife uyup hafifçe
+## yatık görünür; çift tıklanınca oyuncunun eline kalkar, düzleşir ve büyür.
 ## Alt sınıflar _kur() içinde öğelerini TABAN ölçüde (k = 1) tanımlar; büyütülünce yazılar
 ## bulanmasın diye öğeler ölçeklenmez, yeni puntoyla yeniden yerleştirilir (_olcekle).
 
@@ -26,7 +28,8 @@ const BASLIK_RENGI := Color("5a5f66")
 var tur := ""
 var veri: Dictionary = {}
 var alanlar: Dictionary = {}          ## anahtar -> Hedef
-var sinir: Rect2 = Yerlesim.MASA_ALANI  ## normal boyutta gezebildiği alan (ebeveyn koordinatı)
+var tutucu: MasaNesnesi               ## masadaki taşıyıcısı (masaya_koy ile kurulur)
+var sinir: Rect2 = Yerlesim.MASA_BELGE_ALANI  ## masada gezebildiği alan (masa koordinatı)
 var buyuk := false
 var kilitli := false                   ## karar verildikten sonra yerinden oynamaz
 
@@ -50,6 +53,16 @@ static func olustur(v: Dictionary) -> Belge:
 
 static func tur_adi(t: String) -> String:
 	return ADLAR.get(t, t)
+
+
+## Belgeyi bir taşıyıcıya koyup verilen katmana (masaya) ekler.
+func masaya_koy(katman: Node) -> MasaNesnesi:
+	tutucu = MasaNesnesi.new()
+	tutucu.name = "Tutucu_" + tur
+	katman.add_child(tutucu)
+	tutucu.add_child(self)
+	tutucu.ortala()
+	return tutucu
 
 
 ## Belgeyi sözlükten doldurur: {tur, alanlar: {...}, ...}
@@ -155,6 +168,8 @@ func _olcekle(k: float) -> void:
 		d.position = r.position * k
 		d.size = r.size * k
 	pivot_offset = size / 2.0
+	if tutucu != null:
+		tutucu.ortala()
 	queue_redraw()
 
 
@@ -211,17 +226,18 @@ func _imza_ciz(alan: Rect2, tohum: int, renk: Color) -> void:
 # --- Sürükleme ve büyütme ---
 
 func _gui_input(event: InputEvent) -> void:
-	if kilitli:
+	if kilitli or tutucu == null:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		var fare: Vector2 = get_global_transform() * event.position
 		if event.pressed:
 			if event.double_click:
 				_surukleniyor = false
 				buyut(not buyuk)
 			else:
 				_surukleniyor = true
-				_tutma = get_transform() * event.position - position
-				move_to_front()
+				_tutma = (fare - tutucu.ekran_konumu) if buyuk else (Perspektif.masaya(fare) - tutucu.masa_konumu)
+				tutucu.move_to_front()
 				queue_redraw()
 				alindi.emit(self)
 		elif _surukleniyor:
@@ -230,61 +246,92 @@ func _gui_input(event: InputEvent) -> void:
 			birakildi.emit(self)
 		accept_event()
 	elif event is InputEventMouseMotion and _surukleniyor:
-		position = _sinirla(get_transform() * event.position - _tutma)
+		var fare: Vector2 = get_global_transform() * event.position
+		if buyuk:
+			tutucu.ekran_konumu = _ekranda_sinirla(fare - _tutma)
+		else:
+			tutucu.masa_konumu = _masada_sinirla(Perspektif.masaya(fare) - _tutma)
 		accept_event()
 
 
-func _sinirla(p: Vector2) -> Vector2:
-	var alan: Rect2 = Yerlesim.EKRAN if buyuk else sinir
-	var maks := alan.end - size
-	return Vector2(clampf(p.x, alan.position.x, maxf(alan.position.x, maks.x)),
-		clampf(p.y, alan.position.y, maxf(alan.position.y, maks.y)))
+## Belgenin ortasını masadaki gezinme alanının içinde tutar (masa koordinatı).
+func _masada_sinirla(p: Vector2) -> Vector2:
+	var yari := _taban / 2.0
+	var en_az := sinir.position + yari
+	var en_cok := sinir.end - yari
+	return Vector2(clampf(p.x, en_az.x, maxf(en_az.x, en_cok.x)), clampf(p.y, en_az.y, maxf(en_az.y, en_cok.y)))
 
 
-## Çift tıklayınca: belge yerinde büyür (yazılar yeni puntoyla keskin kalır).
+## Elde tutulan (büyütülmüş) belgenin ortasını ekranın içinde tutar.
+func _ekranda_sinirla(p: Vector2) -> Vector2:
+	var e: Rect2 = Yerlesim.EKRAN
+	var yari := size / 2.0
+	var x := e.get_center().x if size.x >= e.size.x else clampf(p.x, e.position.x + yari.x, e.end.x - yari.x)
+	var y := e.get_center().y if size.y >= e.size.y else clampf(p.y, e.position.y + yari.y, e.end.y - yari.y)
+	return Vector2(x, y)
+
+
+## Çift tıklayınca: belge masadan kalkar, düzleşir ve büyür (yazılar yeni puntoyla keskin kalır).
 func buyut(b: bool) -> void:
-	if b == buyuk:
+	if b == buyuk or tutucu == null:
 		return
 	buyuk = b
 	var eski := _k
 	var yeni := BUYUTME if b else 1.0
-	var orta := position + size / 2.0
-	_olcekle(yeni)
-	position = _sinirla(orta - size / 2.0)
-	move_to_front()
+	if b:
+		var simdi := Perspektif.ekrana(tutucu.masa_konumu)
+		_olcekle(yeni)
+		tutucu.ekran_konumu = _ekranda_sinirla(simdi + Vector2(0, -30))
+		tutucu.kalkisa_gec(1.0)
+	else:
+		_olcekle(yeni)
+		tutucu.masa_konumu = _masada_sinirla(Perspektif.masaya(tutucu.ekran_konumu))
+		tutucu.kalkisa_gec(0.0)
+	tutucu.move_to_front()
 	scale = Vector2.ONE * (eski / yeni)
 	if _gecis != null:
 		_gecis.kill()
 	_gecis = create_tween()
-	_gecis.tween_property(self, "scale", Vector2.ONE, 0.14).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_gecis.tween_property(self, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 
 # --- Gişe yarığından geliş / gidiş ---
 
-func gel(yarik: Vector2, hedef_konum: Vector2, gecikme: float = 0.0) -> void:
-	position = yarik - size / 2.0
+## `yarik`: yarığın ekrandaki yeri; `hedef`: belgenin ortasının masada konacağı yer (masa koordinatı).
+func gel(yarik: Vector2, hedef: Vector2, gecikme: float = 0.0) -> void:
+	tutucu.ekran_konumu = yarik
+	tutucu.masa_konumu = _masada_sinirla(hedef)
+	tutucu.kalkis = 1.0
 	scale = Vector2(0.30, 0.08)
 	modulate.a = 0.0
 	var t := create_tween()
 	t.tween_interval(gecikme)
 	t.tween_property(self, "modulate:a", 1.0, 0.06)
-	t.parallel().tween_property(self, "position", _sinirla(hedef_konum), 0.46) \
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	t.parallel().tween_property(self, "scale", Vector2.ONE, 0.40) \
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(tutucu, "kalkis", 0.0, 0.46).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(self, "scale", Vector2.ONE, 0.40) 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func git(yarik: Vector2, gecikme: float = 0.0) -> void:
 	kilitli = true
 	_surukleniyor = false
+	tutucu.gecisi_durdur()
+	if _gecis != null:
+		_gecis.kill()
+	if buyuk:
+		buyuk = false
+		_olcekle(1.0)
 	var t := create_tween()
 	t.tween_interval(gecikme)
-	t.tween_property(self, "position", yarik - size / 2.0, 0.34) \
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	t.parallel().tween_property(self, "scale", Vector2(0.30, 0.08), 0.34) \
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	if tutucu.kalkis >= 0.5:        # eldeyse doğrudan yarığa süzülür
+		tutucu.kalkis = 1.0
+		t.tween_property(tutucu, "ekran_konumu", yarik, 0.34).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	else:
+		tutucu.kalkis = 0.0
+		tutucu.ekran_konumu = yarik
+		t.tween_property(tutucu, "kalkis", 1.0, 0.34).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	t.parallel().tween_property(self, "scale", Vector2(0.30, 0.08), 0.34) 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	t.tween_property(self, "modulate:a", 0.0, 0.05)
-	t.tween_callback(queue_free)
+	t.tween_callback(tutucu.queue_free)
 
 
 # --- Karar izleri (mühür, fiş) ---

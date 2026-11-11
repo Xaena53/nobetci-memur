@@ -30,6 +30,7 @@ window/stretch/aspect="keep"
 
 [gui]
 
+theme/custom_font="res://assets/font/CourierPrime-Regular.ttf"
 theme/default_font_multichannel_signed_distance_field=false
 
 [rendering]

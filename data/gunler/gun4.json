@@ -1,0 +1,94 @@
+{
+	"gun": 4,
+	"tarih": "12.01.1984",
+	"vatandas_sayisi": 10,
+	"hata_orani": 0.45,
+	"zorluk": 2,
+	"havale_hakki": 2,
+	"islemler": [
+		"kayit_ornegi",
+		"cuzdan_yenileme",
+		"nakil"
+	],
+	"belgeler": [
+		"nufus_cuzdani",
+		"ikametgah",
+		"harc_makbuzu"
+	],
+	"genelge": {
+		"sayi": "1984/4",
+		"konu": "Sahte cüzdan ihbarı",
+		"metin": "İlçemizde sahte nüfus cüzdanı dolaştığı ihbar edilmiştir. Cüzdanın seri numarası geçerli seriler arasında olacak, fotoğraf da karşınızdaki şahsa ait olacaktır. Şüphelendiğiniz kişiyi bana havale edin; böyle işlerin altından gişede kalkılmaz."
+	},
+	"kurallar": [
+		{
+			"id": "belgeler",
+			"tur": "belge_zorunlu",
+			"belgeler": [
+				"nufus_cuzdani",
+				"ikametgah",
+				"harc_makbuzu"
+			],
+			"metin": "Her başvuruda nüfus cüzdanı, ikametgâh ve harç makbuzu aranır."
+		},
+		{
+			"id": "ad_soyad",
+			"tur": "alan_esit",
+			"alanlar": [
+				"ad",
+				"soyad"
+			],
+			"metin": "Ad ve soyad bütün belgelerde aynı olmalıdır."
+		},
+		{
+			"id": "ikametgah_sure",
+			"tur": "tarih_sure",
+			"belge": "ikametgah",
+			"ay": 6,
+			"metin": "İkametgâh son 6 ay içinde alınmış olmalıdır."
+		},
+		{
+			"id": "muhur",
+			"tur": "muhur_zorunlu",
+			"imza": true,
+			"metin": "İkametgâhta muhtarın mührü ve imzası bulunmalıdır."
+		},
+		{
+			"id": "baba_adi",
+			"tur": "alan_esit",
+			"alanlar": [
+				"baba_adi"
+			],
+			"metin": "Baba adı bütün belgelerde aynı olmalıdır."
+		},
+		{
+			"id": "harc",
+			"tur": "harc_tutar",
+			"tutarlar": {
+				"kayit_ornegi": 250,
+				"cuzdan_yenileme": 1250,
+				"nakil": 750
+			},
+			"metin": "Makbuzdaki tutar, işlemin tarifedeki harcıyla aynı olmalıdır."
+		},
+		{
+			"id": "seri",
+			"tur": "seri_aralik",
+			"araliklar": [
+				{
+					"onek": "A",
+					"min": 100000,
+					"max": 499999
+				}
+			],
+			"metin": "Cüzdanın seri numarası geçerli seriler arasında olmalıdır.",
+			"yeni": true
+		},
+		{
+			"id": "foto",
+			"tur": "foto_eslesme",
+			"metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır.",
+			"yeni": true
+		}
+	]
+}

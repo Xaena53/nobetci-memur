@@ -12,6 +12,7 @@ func _ready() -> void:
 
 func _calistir() -> void:
 	await _akis_testi()
+	await _kural_testi()
 	await _belge_testi()
 	print("")
 	if _hata == 0:
@@ -63,25 +64,29 @@ func _belge_testi() -> void:
 	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul), "vatandaş geldi, belgeler masada")
 	await bekle(1.0)
 
-	# sürükleme: gerçek fare olaylarıyla
-	var b: Belge = masa.belgeler[0]
-	var once := b.position
-	var tut := b.global_position + Vector2(20, 6)
+	# sürükleme: gerçek fare olaylarıyla (belge masa perspektifinde yatıyor)
+	var b: Belge = _belge(masa, "nufus_cuzdani")
+	var once := b.tutucu.masa_konumu
+	var tut: Vector2 = b.get_global_transform() * Vector2(30, 12)
 	fare_bas(tut)
 	await kare(2)
 	fare_tasi(tut + Vector2(60, 40))
 	await kare(2)
 	fare_birak(tut + Vector2(60, 40))
 	await kare(2)
-	dogru(b.position.distance_to(once + Vector2(60, 40)) < 2.0, "belge fareyle sürüklendi")
+	var tutulan: Vector2 = b.get_global_transform() * Vector2(30, 12)
+	dogru(b.tutucu.masa_konumu.distance_to(once) > 50.0, "belge fareyle sürüklendi")
+	dogru(tutulan.distance_to(tut + Vector2(60, 40)) < 4.0, "tutulan nokta imlecin altında kaldı")
+	dogru(b.get_global_transform().x.length() < 1.0, "masadaki belge perspektifle küçülüyor")
 
-	# çift tıkla büyütme
+	# çift tıkla büyütme: belge ele kalkar ve düzleşir
 	var boyut := b.size
 	b.buyut(true)
-	await bekle(0.2)
+	await bekle(0.3)
 	dogru(b.size.x > boyut.x * 1.4, "belge büyütüldü")
+	dogru(is_equal_approx(b.get_global_transform().x.length(), 1.0) and absf(b.get_global_transform().x.y) < 0.001, "eldeki belge dümdüz")
 	b.buyut(false)
-	await bekle(0.2)
+	await bekle(0.3)
 	dogru(is_equal_approx(b.size.x, boyut.x), "belge eski boyutuna döndü")
 
 	# inceleme modu: iki belgede aynı alan
@@ -91,25 +96,50 @@ func _belge_testi() -> void:
 	await kare(2)
 	var cuzdan := _belge(masa, "nufus_cuzdani")
 	var ikamet := _belge(masa, "ikametgah")
-	dogru(cuzdan != null and ikamet != null, "cüzdan ve ikametgâh var")
+	dogru(cuzdan != null, "nüfus cüzdanı masada")
 	dogru(cuzdan.alanlar["ad"].aktif, "inceleme modunda alanlar tıklanabilir")
-	masa.inceleme.hedef_tiklandi(cuzdan.alanlar["ad"])
-	masa.inceleme.hedef_tiklandi(ikamet.alanlar["ad"])
-	masa.inceleme.hedef_tiklandi(cuzdan.alanlar["soyad"])
-	masa.inceleme.hedef_tiklandi(ikamet.alanlar["soyad"])
-	await kare(2)
-	esit(sonuclar.size(), 2, "iki karşılaştırma yapıldı")
-	if sonuclar.size() == 2:
-		esit(sonuclar[0].durum, "uyumlu" if cuzdan.metin("ad") == ikamet.metin("ad") else "uyusmaz", "ad karşılaştırması doğru")
-		esit(sonuclar[1].durum, "uyumlu" if cuzdan.metin("soyad") == ikamet.metin("soyad") else "uyusmaz", "soyad karşılaştırması doğru")
+	if ikamet != null:
+		masa.inceleme.hedef_tiklandi(cuzdan.alanlar["soyad"])
+		masa.inceleme.hedef_tiklandi(ikamet.alanlar["soyad"])
+		await kare(2)
+		esit(sonuclar.size(), 1, "karşılaştırma yapıldı")
+		if sonuclar.size() == 1:
+			esit(sonuclar[0].durum, "uyumlu" if cuzdan.metin("soyad") == ikamet.metin("soyad") else "uyusmaz", "soyad karşılaştırması doğru")
 	masa.inceleme.aktif = false
 
-	# karar: mührü belgeye bırak
+	# karar: onay mührü; sonuç doğrulayıcıyla aynı olmalı
+	var beklenen: String = "dogru" if Dogrulayici.kontrol(masa.vatandas, masa.gun).karar == "onay" else "yanlis"
 	var adet: int = masa.kararlar.size()
-	masa.karar_ver("onay", cuzdan, cuzdan.global_position + Vector2(120, 80))
+	masa.karar_ver("onay", cuzdan, cuzdan.get_global_transform() * Vector2(120, 80))
 	await kare(3)
 	esit(masa.kararlar.size(), adet + 1, "karar kaydedildi")
-	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul, 12.0), "sıradaki vatandaş geldi")
+	esit(masa.kararlar[-1].sonuc, beklenen, "onay kararı doğru değerlendirildi")
+	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 12.0), "sıradaki vatandaş geldi")
+
+	# eksik evrak fişi: gerekçe penceresi açılır, seçilince karar verilir
+	await bekle(0.8)
+	var ilk: Belge = masa.belgeler[0]
+	var fis: Arac = masa.araclar["eksik"]
+	var fis_yeri: Vector2 = fis.get_global_transform() * (fis.size / 2.0)
+	var hedef_yer: Vector2 = ilk.get_global_transform() * (ilk.size / 2.0)
+	fare_bas(fis_yeri)
+	await kare(2)
+	fare_tasi(hedef_yer)
+	await kare(2)
+	fare_birak(hedef_yer)
+	await kare(3)
+	var pencere := masa.find_child("GerekcePenceresi", true, false)
+	dogru(pencere != null, "fiş belgeye bırakılınca gerekçe penceresi açıldı")
+	if pencere != null:
+		var gerekceler: Array[String] = Dogrulayici.gunun_gerekceleri(masa.gun)
+		var s2: Dictionary = Dogrulayici.kontrol(masa.vatandas, masa.gun)
+		var secilen: String = s2.gerekceler[0] if not (s2.gerekceler as Array).is_empty() else gerekceler[0]
+		var bek2: String = "dogru" if not (s2.gerekceler as Array).is_empty() else "yanlis"
+		adet = masa.kararlar.size()
+		(pencere.find_child("Gerekce_" + secilen, true, false) as Button).pressed.emit()
+		await kare(3)
+		esit(masa.kararlar.size(), adet + 1, "gerekçe seçilince karar kaydedildi")
+		esit(masa.kararlar[-1].sonuc, bek2, "eksik evrak kararı doğru değerlendirildi")
 
 
 func _belge(masa: Node, tur: String) -> Belge:
@@ -117,6 +147,61 @@ func _belge(masa: Node, tur: String) -> Belge:
 		if b.tur == tur:
 			return b
 	return null
+
+
+# --- Aşama 2: kural motoru ve vatandaş üreticisi ---
+
+func _kural_testi() -> void:
+	print("== Kural motoru ==")
+	esit(Tarih.haftanin_gunu("09.01.1984"), "Pazartesi", "9 Ocak 1984 pazartesi")
+	esit(Tarih.gun_ekle("28.02.1984", 2), "01.03.1984", "artık yıl: 28 Şubat + 2 gün")
+	esit(Tarih.ay_ekle("31.03.1984", -1), "29.02.1984", "31 Mart − 1 ay = 29 Şubat")
+	dogru(Tarih.ay_icinde_mi("09.07.1983", "09.01.1984", 6), "tam 6 ay önceki belge geçerli")
+	dogru(not Tarih.ay_icinde_mi("08.07.1983", "09.01.1984", 6), "6 ay 1 günlük belge geçersiz")
+	dogru(not Tarih.ay_icinde_mi("10.01.1984", "09.01.1984", 6), "ileri tarihli belge geçersiz")
+
+	var gun := Veri.gun(7)
+	dogru(not gun.is_empty(), "7. günün genelgesi okundu")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 42
+	var temiz := VatandasUretici.uret(gun, rng, [], 0)
+	var s := Dogrulayici.kontrol(temiz, gun)
+	esit(s.karar, "onay", "kusursuz vatandaş onay alır")
+	esit(Dogrulayici.degerlendir("onay", "", s).sonuc, "dogru", "kusursuzu onaylamak doğru")
+	esit(Dogrulayici.degerlendir("eksik", "sure", s).sonuc, "yanlis", "kusursuzu geri çevirmek ihtar")
+	esit(Dogrulayici.degerlendir("havale", "", s).sonuc, "notr", "kusursuzu havale etmek nötr")
+
+	# her kusur türü tek tek: doğrulayıcı yakalamalı
+	for tur: String in ["ad", "soyad", "baba_adi", "sure_ikametgah", "sure_harc_makbuzu", "muhur", "imza", "harc", "seri", "foto", "mahalle", "belge_eksik"]:
+		var v := VatandasUretici.uret(gun, rng, [], 0)
+		var gerekce := VatandasUretici.kusur_uygula(v, tur, gun, rng)
+		var sonuc := Dogrulayici.kontrol(v, gun)
+		dogru(gerekce != "" and sonuc.karar == "eksik" and (sonuc.gerekceler as Array) == [gerekce],
+			"kusur yakalandı: %s → %s" % [tur, gerekce])
+		esit(Dogrulayici.degerlendir("onay", "", sonuc).sonuc, "yanlis", "  kusurluyu onaylamak ihtar (%s)" % tur)
+		esit(Dogrulayici.degerlendir("eksik", gerekce, sonuc).sonuc, "dogru", "  doğru gerekçeyle geri çevirmek doğru (%s)" % tur)
+		var yanlis_gerekce := "harc" if gerekce != "harc" else "seri"
+		esit(Dogrulayici.degerlendir("eksik", yanlis_gerekce, sonuc).sonuc, "yarim", "  yanlış gerekçe uyarı (%s)" % tur)
+		esit(Dogrulayici.degerlendir("havale", "", sonuc).sonuc, "dogru" if Dogrulayici.SUPHELI.has(gerekce) else "notr",
+			"  havale değerlendirmesi (%s)" % tur)
+
+	# inceleme karşılaştırmaları
+	var v2 := VatandasUretici.uret(gun, rng, [], 0)
+	VatandasUretici.kusur_uygula(v2, "seri", gun, rng)
+	var cuzdan: Dictionary = Dogrulayici.belge_sozlugu(v2)["nufus_cuzdani"]
+	var seri_alani := {"tip": "alan", "anahtar": "seri_no", "deger": cuzdan.alanlar.seri_no, "belge": "nufus_cuzdani", "kural": {}, "etiket": ""}
+	var seri_kurali := {"tip": "kural", "anahtar": "seri", "deger": null, "belge": "", "kural": Veri.kural(gun, "seri_aralik"), "etiket": ""}
+	esit(Dogrulayici.karsilastir(seri_alani, seri_kurali, v2, gun).durum, "uyusmaz", "inceleme: geçersiz seri ↔ kural")
+	var foto := {"tip": "alan", "anahtar": "foto", "deger": cuzdan.foto, "belge": "nufus_cuzdani", "kural": {}, "etiket": ""}
+	var yuz := {"tip": "yuz", "anahtar": "", "deger": v2.portre, "belge": "", "kural": {}, "etiket": ""}
+	esit(Dogrulayici.karsilastir(yuz, foto, v2, gun).durum, "uyumlu", "inceleme: fotoğraf ↔ yüz (aynı kişi)")
+	esit(Dogrulayici.karsilastir(yuz, seri_alani, v2, gun).durum, "ilgisiz", "inceleme: yüz ↔ seri ilgisiz")
+
+	var rapor: Dictionary = load("res://scripts/UreticiTesti.gd").calistir(60, 7)
+	esit(rapor.tutarsiz, 0, "üretici ile doğrulayıcı 7 gün × 60 vatandaşta tutarlı")
+	for g: Dictionary in rapor.gunler:
+		var oran := float(g.eksik) / 60.0
+		dogru(oran > 0.2 and oran < 0.7, "  %d. gün kusurlu oranı makul (%%%d)" % [g.gun, roundi(oran * 100.0)])
 
 
 # --- Yardımcılar ---

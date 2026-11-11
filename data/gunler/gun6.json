@@ -1,0 +1,126 @@
+{
+	"gun": 6,
+	"tarih": "16.01.1984",
+	"vatandas_sayisi": 12,
+	"hata_orani": 0.48,
+	"zorluk": 3,
+	"havale_hakki": 2,
+	"islemler": [
+		"kayit_ornegi",
+		"cuzdan_yenileme",
+		"nakil"
+	],
+	"belgeler": [
+		"nufus_cuzdani",
+		"ikametgah",
+		"harc_makbuzu"
+	],
+	"eski_tarife": {
+		"kayit_ornegi": 250,
+		"cuzdan_yenileme": 1250,
+		"nakil": 750
+	},
+	"genelge": {
+		"sayi": "1984/6",
+		"konu": "Mahalle sınırları",
+		"metin": "Hafta sonu çıkan kararla ilçe sınırları yeniden düzenlendi: Dere ve Değirmen mahalleleri Kavaklı'ya bağlandı. Yalnızca tarife sayfasındaki mahallelerin muhtarlarından alınmış ikametgâh geçerlidir. Yeni basılan B serisi cüzdanlar da kabul edilecektir."
+	},
+	"kurallar": [
+		{
+			"id": "belgeler",
+			"tur": "belge_zorunlu",
+			"belgeler": [
+				"nufus_cuzdani",
+				"ikametgah",
+				"harc_makbuzu"
+			],
+			"metin": "Her başvuruda nüfus cüzdanı, ikametgâh ve harç makbuzu aranır."
+		},
+		{
+			"id": "ad_soyad",
+			"tur": "alan_esit",
+			"alanlar": [
+				"ad",
+				"soyad"
+			],
+			"metin": "Ad ve soyad bütün belgelerde aynı olmalıdır."
+		},
+		{
+			"id": "ikametgah_sure",
+			"tur": "tarih_sure",
+			"belge": "ikametgah",
+			"ay": 6,
+			"metin": "İkametgâh son 6 ay içinde alınmış olmalıdır."
+		},
+		{
+			"id": "muhur",
+			"tur": "muhur_zorunlu",
+			"imza": true,
+			"metin": "İkametgâhta muhtarın mührü ve imzası bulunmalıdır."
+		},
+		{
+			"id": "baba_adi",
+			"tur": "alan_esit",
+			"alanlar": [
+				"baba_adi"
+			],
+			"metin": "Baba adı bütün belgelerde aynı olmalıdır."
+		},
+		{
+			"id": "harc",
+			"tur": "harc_tutar",
+			"tutarlar": {
+				"kayit_ornegi": 300,
+				"cuzdan_yenileme": 1500,
+				"nakil": 900
+			},
+			"metin": "Makbuzdaki tutar, işlemin tarifedeki harcıyla aynı olmalıdır."
+		},
+		{
+			"id": "seri",
+			"tur": "seri_aralik",
+			"araliklar": [
+				{
+					"onek": "A",
+					"min": 100000,
+					"max": 499999
+				},
+				{
+					"onek": "B",
+					"min": 200000,
+					"max": 349999
+				}
+			],
+			"metin": "Cüzdanın seri numarası geçerli seriler arasında olmalıdır.",
+			"yeni": true
+		},
+		{
+			"id": "foto",
+			"tur": "foto_eslesme",
+			"metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır."
+		},
+		{
+			"id": "makbuz_sure",
+			"tur": "tarih_sure",
+			"belge": "harc_makbuzu",
+			"gun": 3,
+			"metin": "Harç makbuzu en çok 3 gün önce kesilmiş olmalıdır."
+		},
+		{
+			"id": "mahalle",
+			"tur": "mahalle_listesi",
+			"mahalleler": [
+				"Çarşı",
+				"Yukarı",
+				"Aşağı",
+				"İstasyon",
+				"Cumhuriyet",
+				"Bağlar",
+				"Hisar",
+				"Yeni"
+			],
+			"metin": "İkametgâh, ilçemize bağlı bir mahalleden alınmış olmalıdır.",
+			"yeni": true
+		}
+	]
+}

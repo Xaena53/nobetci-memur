@@ -1,7 +1,8 @@
 class_name Arac
 extends Control
-## Tepsideki sürüklenebilir karar araçları: onay mührü, "eksik evrak" fişi, "amire havale" pusulası.
-## Bir belgenin üstüne bırakılınca karar verilir; boşa bırakılırsa yerine döner.
+## Tepsideki sürüklenebilir karar araçları: onay mührü, "eksik evrak" fişi, "müdüre havale" pusulası.
+## Bir belgenin üstüne bırakılınca karar verilir; boşa bırakılırsa tepsideki yerine döner.
+## Araç tepside masa perspektifiyle yatar; ele alınınca düzleşip imleci izler (MasaNesnesi).
 
 signal alindi(arac: Arac)
 signal birakildi(arac: Arac, konum: Vector2)
@@ -10,7 +11,7 @@ const BASLIKLAR := {"eksik": "EKSİK EVRAK", "havale": "MÜDÜRE HAVALE"}
 const MUHUR_DOKUSU := "res://assets/img/nesne/muhur.webp"
 
 var tur := "onay"            ## "onay" | "eksik" | "havale"
-var ev := Vector2.ZERO       ## tepsideki yeri
+var tutucu: MasaNesnesi
 var kalan := -1:             ## kalan hak (−1: sınırsız)
 	set(k):
 		kalan = k
@@ -18,23 +19,28 @@ var kalan := -1:             ## kalan hak (−1: sınırsız)
 var etkin := true:
 	set(e):
 		etkin = e
-		modulate.a = 1.0 if e else 0.42
+		modulate.a = 1.0 if e else 0.45
 		mouse_default_cursor_shape = CURSOR_DRAG if e else CURSOR_ARROW
 
 var _surukleniyor := false
-var _donus: Tween
 var _doku: Texture2D
 
 
-func kur(arac_turu: String, yer: Vector2) -> void:
+## Aracı kurar ve tepsideki yerine (masa koordinatı, ortası) koyar.
+func kur(arac_turu: String, yer: Vector2, katman: Node) -> void:
 	tur = arac_turu
-	ev = yer
-	position = yer
-	size = Vector2(98, 98) if tur == "onay" else Vector2(172, 50)
+	name = "Arac_" + tur
+	size = Vector2(100, 90) if tur == "onay" else Vector2(136, 44)
 	pivot_offset = size / 2.0
 	mouse_default_cursor_shape = CURSOR_DRAG
 	if tur == "onay" and ResourceLoader.exists(MUHUR_DOKUSU):
 		_doku = load(MUHUR_DOKUSU)
+	tutucu = MasaNesnesi.new()
+	tutucu.name = "Tutucu_" + tur
+	katman.add_child(tutucu)
+	tutucu.add_child(self)
+	tutucu.ortala()
+	tutucu.masa_konumu = yer
 	queue_redraw()
 
 
@@ -46,36 +52,37 @@ func _gui_input(event: InputEvent) -> void:
 	if not kullanilabilir():
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		var fare: Vector2 = get_global_transform() * event.position
 		if event.pressed:
 			_surukleniyor = true
-			if _donus != null:
-				_donus.kill()
-			move_to_front()
-			scale = Vector2.ONE * 1.08
+			tutucu.gecisi_durdur()
+			tutucu.ekran_konumu = fare
+			tutucu.kalkis = 1.0
+			tutucu.move_to_front()
+			scale = Vector2.ONE * 1.1
 			queue_redraw()
 			alindi.emit(self)
 		elif _surukleniyor:
 			_surukleniyor = false
 			scale = Vector2.ONE
 			queue_redraw()
-			birakildi.emit(self, get_global_transform() * event.position)
+			birakildi.emit(self, fare)
 		accept_event()
 	elif event is InputEventMouseMotion and _surukleniyor:
-		global_position = get_global_transform() * event.position - size / 2.0
+		tutucu.ekran_konumu = get_global_transform() * event.position
 		accept_event()
 
 
-## Yerine döner. `aninda` ise canlandırma yapmaz (karar verildikten sonra).
+## Tepsideki yerine döner. `aninda` ise canlandırma yapmaz.
 func eve_don(aninda: bool = false) -> void:
 	_surukleniyor = false
 	scale = Vector2.ONE
-	if _donus != null:
-		_donus.kill()
+	queue_redraw()
 	if aninda:
-		position = ev
-		return
-	_donus = create_tween()
-	_donus.tween_property(self, "position", ev, 0.22).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tutucu.gecisi_durdur()
+		tutucu.kalkis = 0.0
+	else:
+		tutucu.kalkisa_gec(0.0, 0.26)
 
 
 func _draw() -> void:
@@ -88,13 +95,13 @@ func _draw() -> void:
 func _muhur_ciz() -> void:
 	var alan := Rect2(Vector2.ZERO, size)
 	if _surukleniyor:
-		draw_circle(size / 2.0 + Vector2(8, 12), size.x * 0.36, Color(0, 0, 0, 0.18))
+		draw_circle(size / 2.0 + Vector2(10, 16), size.x * 0.34, Color(0, 0, 0, 0.20))
 	if _doku != null:
 		draw_texture_rect(_doku, alan, false)
 	else:
-		draw_rect(Rect2(20, 54, 58, 26), Stil.BORDO)
-		draw_rect(Rect2(40, 12, 18, 44), Stil.MASA_KOYU)
-		draw_circle(Vector2(49, 14), 14, Stil.MASA_KOYU)
+		draw_rect(Rect2(20, 50, 58, 26), Stil.BORDO)
+		draw_rect(Rect2(40, 10, 18, 44), Stil.MASA_KOYU)
+		draw_circle(Vector2(49, 12), 13, Stil.MASA_KOYU)
 
 
 func _fis_ciz() -> void:
@@ -102,17 +109,17 @@ func _fis_ciz() -> void:
 	var r := Rect2(Vector2.ZERO, size)
 	if not _surukleniyor:
 		# koçan: alttaki fişlerin kenarları
-		draw_rect(Rect2(r.position + Vector2(4, 5), r.size), Color(0, 0, 0, 0.25))
+		draw_rect(Rect2(r.position + Vector2(4, 5), r.size), Color(0, 0, 0, 0.28))
 		draw_rect(Rect2(r.position + Vector2(3, 3), r.size), Stil.KAGIT_ESKI)
 		draw_rect(Rect2(r.position + Vector2(1.5, 1.5), r.size), Stil.KAGIT)
 	else:
-		draw_rect(Rect2(r.position + Vector2(6, 9), r.size), Color(0, 0, 0, 0.22))
+		draw_rect(Rect2(r.position + Vector2(7, 11), r.size), Color(0, 0, 0, 0.22))
 	draw_rect(r, Stil.KAGIT_BEYAZ)
-	draw_rect(Rect2(0, 0, size.x, 19), kenar)
+	draw_rect(Rect2(0, 0, size.x, 18), kenar)
 	draw_rect(r, kenar, false, 2.0)
-	var f := Stil.daktilo_kalin()
-	draw_string(f, Vector2(0, 14), BASLIKLAR.get(tur, ""), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Stil.KAGIT_BEYAZ)
-	var alt := "Belgenin üstüne bırakın"
+	draw_string(Stil.daktilo_kalin(), Vector2(0, 14), BASLIKLAR.get(tur, ""), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13,
+		Stil.KAGIT_BEYAZ)
+	var alt := "belgeye bırak"
 	if tur == "havale" and kalan >= 0:
-		alt = "Bugün kalan hak: %d" % kalan
-	draw_string(Stil.daktilo(), Vector2(0, 38), alt, HORIZONTAL_ALIGNMENT_CENTER, size.x, 11, Stil.MUREKKEP_SOLUK)
+		alt = "kalan hak: %d" % kalan
+	draw_string(Stil.daktilo(), Vector2(0, 35), alt, HORIZONTAL_ALIGNMENT_CENTER, size.x, 12, Stil.MUREKKEP_SOLUK)

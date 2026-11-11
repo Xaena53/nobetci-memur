@@ -152,7 +152,7 @@ static func etiket(metin: String, boyut: int = 16, renk: Color = MUREKKEP, font:
 	l.text = metin
 	l.add_theme_font_size_override("font_size", boyut)
 	l.add_theme_color_override("font_color", renk)
-	if font != null:
-		l.add_theme_font_override("font", font)
+	# Yazı tipi hep açıkça verilir: Node2D altındaki denetimler (masadaki nesneler) temayı miras almaz.
+	l.add_theme_font_override("font", font if font != null else daktilo())
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return l

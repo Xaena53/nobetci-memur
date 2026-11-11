@@ -7,6 +7,8 @@ signal durum_degisti
 const SURUM := 1
 const TOPLAM_GUN := 7
 const BASLANGIC_PARASI := 500
+const PRIM := 100               ## doğru sonuçlanan her işlem için
+const SUPHELI_PRIMI := 50       ## sahteciliği müdüre havale etmenin ek primi
 const SAHNELER := {
 	"menu": "res://scenes/AnaMenu.tscn",
 	"masa": "res://scenes/Masa.tscn",
@@ -19,6 +21,8 @@ var kayit_yolu := "user://kayit.json"  ## testler kendi dosyasını kullanır
 var gun: int = 1
 var para: int = BASLANGIC_PARASI
 var ihtar: int = 0            ## oyun boyunca alınan toplam ihtar
+var tohum: int = 0            ## bu oyunun rastgelelik tohumu (günler aynı kayıtta aynı çıkar)
+var gorulen_portreler: Array = []  ## gişeye gelmiş vatandaşların portreleri (yüzler tekrar etmesin)
 var gun_ozeti: Dictionary = {}  ## biten mesainin özeti (Gün Sonu ekranı okur)
 
 var _perde: ColorRect
@@ -37,6 +41,8 @@ func yeni_oyun() -> void:
 	gun = 1
 	para = BASLANGIC_PARASI
 	ihtar = 0
+	tohum = randi()
+	gorulen_portreler = []
 	gun_ozeti = {}
 	kaydet()
 	durum_degisti.emit()
@@ -53,6 +59,11 @@ func sonraki_gun() -> bool:
 	return true
 
 
+## O günün vatandaş kuyruğu için tohum: aynı kayıtta aynı gün hep aynı kuyruğu verir.
+func gun_tohumu() -> int:
+	return hash([tohum, gun])
+
+
 # --- Kayıt / yükleme (user://kayit.json) ---
 
 func kayit_var_mi() -> bool:
@@ -65,6 +76,8 @@ func kayit_verisi() -> Dictionary:
 		"gun": gun,
 		"para": para,
 		"ihtar": ihtar,
+		"tohum": tohum,
+		"gorulen_portreler": gorulen_portreler,
 	}
 
 
@@ -72,6 +85,8 @@ func kayittan_al(veri: Dictionary) -> void:
 	gun = clampi(int(veri.get("gun", 1)), 1, TOPLAM_GUN)
 	para = int(veri.get("para", BASLANGIC_PARASI))
 	ihtar = int(veri.get("ihtar", 0))
+	tohum = int(veri.get("tohum", 0))
+	gorulen_portreler = (veri.get("gorulen_portreler", []) as Array).duplicate()
 	gun_ozeti = {}
 
 

@@ -44,6 +44,11 @@ func _init() -> void:
 		queue_redraw())
 
 
+## Kural motorunun (Dogrulayici.karsilastir) beklediği sade özet.
+func ozet() -> Dictionary:
+	return {"tip": tip, "anahtar": anahtar, "deger": deger, "belge": belge_turu, "kural": kural, "etiket": etiket}
+
+
 ## Ekran (tuval) koordinatlarında orta nokta; inceleme çizgileri buraya bağlanır.
 func merkez() -> Vector2:
 	return get_global_transform() * (size / 2.0)

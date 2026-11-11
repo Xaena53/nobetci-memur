@@ -45,29 +45,62 @@ func _senaryo_akis() -> void:
 
 func _senaryo_masa() -> void:
 	Oyun.yeni_oyun()
+	Oyun.gun = int(_arg("gun", "1"))
 	Oyun.sahneye_gec("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
-	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul)
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
 	await bekle(1.6)
 	await cek("10_masa_vatandas")
 	masa.inceleme.aktif = true
 	await kare(2)
 	var cuzdan := _belge(masa, "nufus_cuzdani")
 	var ikamet := _belge(masa, "ikametgah")
-	masa.inceleme.hedef_tiklandi(cuzdan.alanlar["soyad"])
-	masa.inceleme.hedef_tiklandi(ikamet.alanlar["soyad"])
-	await bekle(0.3)
-	await cek("11_inceleme_uyusmazlik")
+	if ikamet != null:
+		masa.inceleme.hedef_tiklandi(cuzdan.alanlar["soyad"])
+		masa.inceleme.hedef_tiklandi(ikamet.alanlar["soyad"])
+		await bekle(0.3)
+		await cek("11_inceleme")
+		masa.inceleme.aktif = false
+		ikamet.buyut(true)
+		await bekle(0.5)
+		await cek("12_belge_buyuk")
+		ikamet.buyut(false)
+		await bekle(0.4)
 	masa.inceleme.aktif = false
-	ikamet.buyut(true)
+	# eksik evrak fişini sürükle: gerekçe penceresi
+	var fis: Arac = masa.araclar["eksik"]
+	var fis_yeri: Vector2 = fis.get_global_transform() * (fis.size / 2.0)
+	var hedef_yer: Vector2 = cuzdan.get_global_transform() * (cuzdan.size * Vector2(0.55, 0.6))
+	fare_bas(fis_yeri)
+	await kare(2)
+	fare_tasi(hedef_yer)
+	await kare(2)
+	await cek("13_fis_suruklenirken")
+	fare_birak(hedef_yer)
 	await bekle(0.4)
-	await cek("12_belge_buyuk")
-	ikamet.buyut(false)
-	await bekle(0.3)
-	masa.karar_ver("onay", cuzdan, cuzdan.global_position + Vector2(190, 120))
-	await bekle(0.45)
-	await cek("13_onay_muhru")
+	await cek("14_gerekce_penceresi")
+	var pencere := masa.find_child("GerekcePenceresi", true, false)
+	if pencere != null:
+		(pencere.find_child("Vazgec", true, false) as Button).pressed.emit()
+	await kare(3)
+	# yanlış karar: ihtar pusulası gelsin
+	var kusurlu: bool = Dogrulayici.kontrol(masa.vatandas, masa.gun).karar == "eksik"
+	if kusurlu:
+		masa.karar_ver("onay", cuzdan, cuzdan.get_global_transform() * (cuzdan.size * Vector2(0.6, 0.6)))
+	else:
+		masa.karar_ver("eksik", cuzdan, cuzdan.get_global_transform() * (cuzdan.size * Vector2(0.6, 0.6)), "ad_soyad")
+	await bekle(0.5)
+	await cek("15_karar_izi")
+	await bekle(2.4)
+	await cek("16_ihtar")
+
+
+func _arg(ad: String, yedek: String) -> String:
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with(ad + "="):
+			return a.substr(ad.length() + 1)
+	return yedek
 
 
 ## Yazı tipi denemesi: küçük puntolarda Türkçe harflerin noktaları, ipucu (hinting) ayarına göre.

@@ -3,34 +3,47 @@ extends RefCounted
 ## Masa sahnesinin sabit yerleşimi (1280x720 tasarım çözünürlüğü).
 ## Koordinatlar arka plan görselinden (assets/img/masa_arkaplan.webp) ölçüldü; görsel
 ## değişirse yalnızca buradaki değerler güncellenir (ölçmek için: tools/sanat/olc.py).
+##
+## İki koordinat takımı vardır:
+##  - EKRAN: duvardaki ve dolaptaki cepheden görünen öğeler (gişe, saat, pano).
+##  - MASA: masanın kuş bakışı planı (u, v). Ekrana Perspektif ile taşınır; masadaki her şey
+##    (belgeler, tepsideki araçlar) bu koordinatlarla yerleştirilir.
 
 const EKRAN := Rect2(0, 0, 1280, 720)
 
-# Duvar
-const GISE_ACIKLIK := Rect2(40, 31, 273, 229)   ## vatandaşın göründüğü cam
-const GISE_YARIK := Vector2(176, 280)           ## belgelerin çıktığı yarığın ortası
+# --- Duvar (ekran koordinatı) ---
+const GISE_ACIKLIK := Rect2(40, 32, 273, 230)   ## vatandaşın göründüğü cam
+const GISE_YARIK := Vector2(175.5, 296.5)       ## belgelerin çıktığı yarığın ortası
 const BALON := Rect2(354, 16, 276, 176)         ## konuşma balonunun en geniş alanı
-const SAAT_MERKEZ := Vector2(676.5, 60)
-const SAAT_YARICAP := 30.0                      ## kadranın yarıçapı
-const TAKVIM_YAPRAK := Rect2(647, 124, 60, 69)
-const SAAT_ETIKETI := Rect2(646, 199, 62, 17)   ## takvimin altındaki dijital saat şeridi
-const MUDUR_CAMI := Rect2(731, 50, 145, 140)
-const MUDUR_PLAKET := Rect2(762, 14, 84, 21)
-const RADYO := Rect2(385, 233, 155, 57)
+const SAAT_MERKEZ := Vector2(677.5, 57.5)
+const SAAT_YARICAP := 30.5                      ## kadranın yarıçapı
+const TAKVIM_YAPRAK := Rect2(648, 124, 60, 70)
+const SAAT_ETIKETI := Rect2(647, 200, 62, 17)   ## takvimin altındaki dijital saat şeridi
+const MUDUR_CAMI := Rect2(733, 50, 143, 140)
+const MUDUR_PLAKET := Rect2(762, 13, 84, 21)
+const RADYO := Rect2(382, 236, 162, 64)
 
-# Masa
-const MASA_ALANI := Rect2(4, 308, 888, 408)     ## belgelerin gezebildiği alan
-const SUMEN := Rect2(28, 330, 838, 364)
+# --- Sağdaki evrak dolabı (ekran koordinatı) ---
+const PANO := Rect2(933, 21, 326, 369)          ## mantar pano: genelge defteri
 
-# Sağ yan dolap
-const PANO := Rect2(916, 16, 344, 405)          ## mantar pano: genelge defteri
-const TEPSI := Rect2(920, 451, 340, 244)        ## çuha kaplı araç tepsisi
-const ISTAMPA := Rect2(940, 501, 108, 50)       ## ıstampanın mürekkepli yüzü
-const CAY := Vector2(1206, 639)                 ## çay bardağının ortası
+# --- Masa düzlemi: plan dikdörtgeni ↔ ekrandaki yamuk (yeşil sümenin dört köşesi) ---
+const MASA_DUZ := [Vector2(30, 22), Vector2(905, 22), Vector2(905, 436), Vector2(30, 436)]
+const MASA_EKRAN := [Vector2(83, 339.4), Vector2(863.6, 339.4), Vector2(903, 704), Vector2(32, 704)]
 
-## Belgelerin gişeden gelince kondukları yerler.
+# --- Masa (masa koordinatı) ---
+const MASA_BELGE_ALANI := Rect2(24, 4, 884, 448)   ## belgelerin gezebildiği alan
+## Belgelerin gişeden gelince kondukları yerler (ortaları).
 const BELGE_YERI := {
-	"nufus_cuzdani": Vector2(46, 322),
-	"harc_makbuzu": Vector2(62, 538),
-	"ikametgah": Vector2(410, 324),
+	"nufus_cuzdani": Vector2(215, 122),
+	"harc_makbuzu": Vector2(205, 350),
+	"ikametgah": Vector2(560, 236),
 }
+const IHTAR_YERI := Vector2(690, 150)           ## müdürden gelen pusulanın düştüğü yer
+
+# --- Araç tepsisi (masa koordinatı) ---
+const TEPSI := Rect2(968, 142, 297, 273)
+const MUHUR_YERI := Vector2(1047, 222)          ## ıstampanın üstü
+const EKSIK_YERI := Vector2(1188, 178)
+const HAVALE_YERI := Vector2(1185, 234)
+const BUYUTEC_YERI := Vector2(1036, 343)
+const IGNE_YERI := Vector2(1118, 372)           ## ihtarların takıldığı iğne

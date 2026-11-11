@@ -1,0 +1,77 @@
+{
+	"gun": 3,
+	"tarih": "11.01.1984",
+	"vatandas_sayisi": 10,
+	"hata_orani": 0.42,
+	"zorluk": 2,
+	"havale_hakki": 2,
+	"islemler": [
+		"kayit_ornegi",
+		"cuzdan_yenileme",
+		"nakil"
+	],
+	"belgeler": [
+		"nufus_cuzdani",
+		"ikametgah",
+		"harc_makbuzu"
+	],
+	"genelge": {
+		"sayi": "1984/3",
+		"konu": "Harç uygulaması",
+		"metin": "Bugünden itibaren her işlem için harç makbuzu aranacaktır. Makbuzdaki tutar, defterin tarife sayfasındaki tutarla aynı olmalıdır. Gişenizde artık cüzdan yenileme ve adres nakli işlemleri de yapılacaktır. Makbuzsuz vatandaşı vezneye yollayın."
+	},
+	"kurallar": [
+		{
+			"id": "belgeler",
+			"tur": "belge_zorunlu",
+			"belgeler": [
+				"nufus_cuzdani",
+				"ikametgah",
+				"harc_makbuzu"
+			],
+			"metin": "Her başvuruda nüfus cüzdanı, ikametgâh ve harç makbuzu aranır.",
+			"yeni": true
+		},
+		{
+			"id": "ad_soyad",
+			"tur": "alan_esit",
+			"alanlar": [
+				"ad",
+				"soyad"
+			],
+			"metin": "Ad ve soyad bütün belgelerde aynı olmalıdır."
+		},
+		{
+			"id": "ikametgah_sure",
+			"tur": "tarih_sure",
+			"belge": "ikametgah",
+			"ay": 6,
+			"metin": "İkametgâh son 6 ay içinde alınmış olmalıdır."
+		},
+		{
+			"id": "muhur",
+			"tur": "muhur_zorunlu",
+			"imza": true,
+			"metin": "İkametgâhta muhtarın mührü ve imzası bulunmalıdır."
+		},
+		{
+			"id": "baba_adi",
+			"tur": "alan_esit",
+			"alanlar": [
+				"baba_adi"
+			],
+			"metin": "Baba adı bütün belgelerde aynı olmalıdır."
+		},
+		{
+			"id": "harc",
+			"tur": "harc_tutar",
+			"tutarlar": {
+				"kayit_ornegi": 250,
+				"cuzdan_yenileme": 1250,
+				"nakil": 750
+			},
+			"metin": "Makbuzdaki tutar, işlemin tarifedeki harcıyla aynı olmalıdır.",
+			"yeni": true
+		}
+	]
+}

@@ -7,8 +7,8 @@ extends Control
 signal hedef_tiklandi(hedef: Hedef)
 signal sayfa_cevrildi
 
-const KAGIT_YERI := Rect2(10, 26, 324, 376)
-const KENAR := 16.0
+const KAGIT_YERI := Rect2(6, 24, 314, 342)
+const KENAR := 14.0
 const PUNTO := 12
 const BASLIK_PUNTO := 13
 

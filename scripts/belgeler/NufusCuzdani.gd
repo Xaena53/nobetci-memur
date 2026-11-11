@@ -1,5 +1,5 @@
 extends Belge
-## Nüfus hüviyet cüzdanı: açık defter. Solda fotoğraf ve seri no, sağda kimlik bilgileri.
+## Nüfus cüzdanı: açık defter. Solda fotoğraf ve seri no, sağda kimlik bilgileri.
 ## Alanlar: ad, soyad, baba_adi, ana_adi, dogum_yeri, dogum_tarihi, seri_no, cinsiyet (+ foto).
 
 const KAPAK_ERKEK := Color("5d7d9c")
@@ -11,9 +11,8 @@ const FOTO_GOLGELEYICI := preload("res://assets/shader/foto.gdshader")
 func _kur() -> void:
 	_taban = Vector2(336, 212)
 
-	_yazi("T.C.", Rect2(10, 12, 154, 13), 9.5, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
-	_yazi("NÜFUS HÜVİYET CÜZDANI", Rect2(10, 25, 154, 12), 8.5, BASLIK_RENGI, Stil.serif_kalin(),
-		HORIZONTAL_ALIGNMENT_CENTER)
+	_yazi("T.C.", Rect2(10, 11, 154, 13), 9.5, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
+	_yazi("NÜFUS CÜZDANI", Rect2(10, 23, 154, 15), 11, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
 
 	# Vesikalık fotoğraf (siyah-beyaz baskı)
 	var fon := ColorRect.new()
