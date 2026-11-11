@@ -7,7 +7,7 @@ var _devam: Button
 func _ready() -> void:
 	var zemin := ColorRect.new()
 	zemin.color = Stil.DUVAR_KOYU
-	zemin.set_anchors_preset(PRESET_FULL_RECT)
+	zemin.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(zemin)
 
 	var baslik := Stil.etiket("NÖBETÇİ MEMUR", 64, Stil.MUREKKEP, Stil.daktilo_kalin())

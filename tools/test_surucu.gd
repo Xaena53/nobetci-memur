@@ -12,6 +12,7 @@ func _ready() -> void:
 
 func _calistir() -> void:
 	await _akis_testi()
+	await _belge_testi()
 	print("")
 	if _hata == 0:
 		print("DUMAN TESTİ: BAŞARILI (%d denetim)" % _adim)
@@ -51,7 +52,113 @@ func _akis_testi() -> void:
 	esit(Oyun.gun, 2, "yükleme günü geri getirdi")
 
 
+# --- Aşama 1: belgeler, inceleme modu, karar araçları ---
+
+func _belge_testi() -> void:
+	print("== Belge sistemi ==")
+	Oyun.yeni_oyun()
+	Oyun.sahneye_gec("masa")
+	await sahneyi_bekle("Masa")
+	var masa := sahne()
+	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul), "vatandaş geldi, belgeler masada")
+	await bekle(1.0)
+
+	# sürükleme: gerçek fare olaylarıyla
+	var b: Belge = masa.belgeler[0]
+	var once := b.position
+	var tut := b.global_position + Vector2(20, 6)
+	fare_bas(tut)
+	await kare(2)
+	fare_tasi(tut + Vector2(60, 40))
+	await kare(2)
+	fare_birak(tut + Vector2(60, 40))
+	await kare(2)
+	dogru(b.position.distance_to(once + Vector2(60, 40)) < 2.0, "belge fareyle sürüklendi")
+
+	# çift tıkla büyütme
+	var boyut := b.size
+	b.buyut(true)
+	await bekle(0.2)
+	dogru(b.size.x > boyut.x * 1.4, "belge büyütüldü")
+	b.buyut(false)
+	await bekle(0.2)
+	dogru(is_equal_approx(b.size.x, boyut.x), "belge eski boyutuna döndü")
+
+	# inceleme modu: iki belgede aynı alan
+	var sonuclar: Array = []
+	masa.inceleme.bulgu.connect(func(s: Dictionary) -> void: sonuclar.append(s))
+	masa.inceleme.aktif = true
+	await kare(2)
+	var cuzdan := _belge(masa, "nufus_cuzdani")
+	var ikamet := _belge(masa, "ikametgah")
+	dogru(cuzdan != null and ikamet != null, "cüzdan ve ikametgâh var")
+	dogru(cuzdan.alanlar["ad"].aktif, "inceleme modunda alanlar tıklanabilir")
+	masa.inceleme.hedef_tiklandi(cuzdan.alanlar["ad"])
+	masa.inceleme.hedef_tiklandi(ikamet.alanlar["ad"])
+	masa.inceleme.hedef_tiklandi(cuzdan.alanlar["soyad"])
+	masa.inceleme.hedef_tiklandi(ikamet.alanlar["soyad"])
+	await kare(2)
+	esit(sonuclar.size(), 2, "iki karşılaştırma yapıldı")
+	if sonuclar.size() == 2:
+		esit(sonuclar[0].durum, "uyumlu" if cuzdan.metin("ad") == ikamet.metin("ad") else "uyusmaz", "ad karşılaştırması doğru")
+		esit(sonuclar[1].durum, "uyumlu" if cuzdan.metin("soyad") == ikamet.metin("soyad") else "uyusmaz", "soyad karşılaştırması doğru")
+	masa.inceleme.aktif = false
+
+	# karar: mührü belgeye bırak
+	var adet: int = masa.kararlar.size()
+	masa.karar_ver("onay", cuzdan, cuzdan.global_position + Vector2(120, 80))
+	await kare(3)
+	esit(masa.kararlar.size(), adet + 1, "karar kaydedildi")
+	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul, 12.0), "sıradaki vatandaş geldi")
+
+
+func _belge(masa: Node, tur: String) -> Belge:
+	for b: Belge in masa.belgeler:
+		if b.tur == tur:
+			return b
+	return null
+
+
 # --- Yardımcılar ---
+
+func kosulu_bekle(kosul: Callable, zaman_asimi: float = 8.0) -> bool:
+	var bitis := Time.get_ticks_msec() + int(zaman_asimi * 1000.0)
+	while Time.get_ticks_msec() < bitis:
+		if kosul.call():
+			return true
+		await get_tree().process_frame
+	return false
+
+
+## Fare olayları tasarım koordinatlarıyla (1280x720) doğrudan görünüme itilir; başsız kipte
+## pencere 64x64 olduğundan ekran dönüşümü atlanır (push_input'un ikinci argümanı).
+func fare_bas(konum: Vector2, cift: bool = false) -> void:
+	var e := InputEventMouseButton.new()
+	e.button_index = MOUSE_BUTTON_LEFT
+	e.pressed = true
+	e.double_click = cift
+	e.position = konum
+	e.global_position = konum
+	e.button_mask = MOUSE_BUTTON_MASK_LEFT
+	get_viewport().push_input(e, true)
+
+
+func fare_birak(konum: Vector2) -> void:
+	var e := InputEventMouseButton.new()
+	e.button_index = MOUSE_BUTTON_LEFT
+	e.pressed = false
+	e.position = konum
+	e.global_position = konum
+	get_viewport().push_input(e, true)
+
+
+func fare_tasi(konum: Vector2) -> void:
+	var e := InputEventMouseMotion.new()
+	e.position = konum
+	e.global_position = konum
+	e.button_mask = MOUSE_BUTTON_MASK_LEFT
+	get_viewport().push_input(e, true)
+
 
 func sahne() -> Node:
 	return get_tree().current_scene

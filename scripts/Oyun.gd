@@ -136,6 +136,6 @@ func _perde_kur() -> void:
 	add_child(katman)
 	_perde = ColorRect.new()
 	_perde.color = Color(Stil.GECE, 0.0)
-	_perde.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_perde.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_perde.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	katman.add_child(_perde)

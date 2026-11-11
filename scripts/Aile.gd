@@ -5,7 +5,7 @@ extends Control
 func _ready() -> void:
 	var zemin := ColorRect.new()
 	zemin.color = Stil.GECE
-	zemin.set_anchors_preset(PRESET_FULL_RECT)
+	zemin.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	add_child(zemin)
 
 	var baslik := Stil.etiket("AKŞAM — EV", 44, Stil.KAGIT, Stil.daktilo_kalin())
