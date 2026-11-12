@@ -28,7 +28,8 @@
 			"manset": "SAVCI: DOSYA YANAR, SUÇ YANMAZ",
 			"metin": "Savcı Altay, yanan dosyaların suretlerinin kendisinde olduğunu açıkladı; pazartesi Ardıçlı'da keşif yapacak. Emniyet iki kişiyi arıyor: \"Kasap\" lakaplı Bekir Yaman ve \"Terzi\" Naciye.",
 			"foto": "v27",
-			"foto_alt": "Aranan Bekir Yaman (“Kasap”)"
+			"foto_alt": "Aranan Bekir Yaman (“Kasap”), eski bir resminde",
+			"foto_tur": "aranan"
 		},
 		{
 			"gun": 6,
@@ -182,6 +183,13 @@
 				"savci": "oldu"
 			},
 			"metin": "Akşam ezanından sonra üç el silah sesi duyuldu. Sokak lambaları söndü. Radyo gece yarısı verdi haberi: Savcı Hikmet Altay hayatını kaybetmiş."
+		},
+		{
+			"gun": 7,
+			"kosul": {
+				"bomba": "kacti"
+			},
+			"metin": "Yatmadan önce bir patlama duyuldu; bu kez yakından. Hükümet Caddesi'nin üstünde duman vardı. Nüfus dairesi o yöndeydi."
 		}
 	],
 	"son": {
@@ -285,6 +293,20 @@
 				},
 				"baslik": "BAŞKOMİSERDEN TAKDİR",
 				"metin": "Sahte cüzdan şebekesini izleyen Başkomiser Tarık Ersoy, raporunda 2 numaralı gişeyi \"ilçenin en güvenilir masası\" diye andı."
+			},
+			{
+				"kosul": {
+					"bomba": "yakalandi"
+				},
+				"baslik": "BAVULDAN SAATLİ BOMBA ÇIKTI",
+				"metin": "Nüfus müdürlüğüne bırakılmak istenen bavuldaki saatli bomba, gişedeki röntgen cihazında fark edildi. Bavulu getiren genç gözaltında. Müdür: \"Cihaz valilikten, göz memurdan.\""
+			},
+			{
+				"kosul": {
+					"bomba": "kacti"
+				},
+				"baslik": "NÜFUS DAİRESİNDE PATLAMA",
+				"metin": "Teftiş günü mesai bitiminde arşiv odasında bir bavul patladı. Ölen yok; kırk yıllık nüfus kütükleri kül oldu. Bavulun röntgen cihazından nasıl geçtiği soruşturuluyor."
 			}
 		],
 		"mektup": "Sayın Memur,\n\nYusuf'un kaydı oldu. Okuma yazmam yok; bunu Yusuf'a ben söyledim, o yazdı.\n\nKâğıdımın eksiği vardı, biliyorum. Siz de biliyordunuz. Beni yine de geri çevirmediniz. Başınıza iş açtıysam hakkınızı helal edin.\n\nYusuf büyüyünce memur olacakmış. \"Cama öbür taraftan bakacağım\" diyor.\n\nEllerinizden öper.\nHüsnü Karaca",

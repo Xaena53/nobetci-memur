@@ -89,9 +89,9 @@ func _lambayi_sondur() -> void:
 	Ses.ortami_kes("soba", 1.5)
 	Ses.ortam("ruzgar", -13.0, 1.5)
 	if str(gece.olay) != "":
-		# gecenin sesi: üçüncü gece patlama, altıncı gece silah sesleri
-		if Oyun.gun == 3:
-			Ses.gecikmeli("patlama", 1.1, 1.0, 0.0)
+		# gecenin sesi: üçüncü gece (ve bavul kaçtıysa yedinci gece) patlama, altıncı gece silah sesleri
+		if Oyun.gun == 3 or Oyun.gun == 7:
+			Ses.gecikmeli("patlama", 1.1, 1.0 if Oyun.gun == 3 else 1.12, 0.0)
 		elif Oyun.gun == 6 and str(Oyun.bayrak("savci", "")) != "sag":
 			var el := 3 if str(Oyun.bayrak("savci", "")) == "oldu" else 2
 			for i in el:

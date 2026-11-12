@@ -14,14 +14,15 @@ func _kur() -> void:
 	_yazi("T.C.", Rect2(10, 11, 154, 13), 9.5, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
 	_yazi("NÜFUS CÜZDANI", Rect2(10, 23, 154, 15), 11, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
 
-	# Vesikalık fotoğraf (siyah-beyaz baskı)
+	# Vesikalık fotoğraf: yıllar önce çekilmiş, siyah-beyaz baskı. Sahibi bugün başka giyinir, saçı
+	# başkadır; aynı kişi olup olmadığı yüz hatlarından anlaşılır.
 	var fon := ColorRect.new()
 	fon.color = Color("c5c8c0")
 	_oge(fon, Rect2(49, 44, 76, 96))
 	var foto := TextureRect.new()
 	foto.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	foto.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	foto.texture = Portreler.doku(str(veri.get("foto", "")))
+	foto.texture = Portreler.vesikalik(str(veri.get("foto", "")))
 	var m := ShaderMaterial.new()
 	m.shader = FOTO_GOLGELEYICI
 	foto.material = m

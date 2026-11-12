@@ -1,5 +1,5 @@
 {
-	"_aciklama": "Hikâye karakterleri ve gişe ziyaretleri (diyaloglar dahil). Bütün kişi, kurum ve olaylar kurmacadır. 'kosul' sözlüğündeki her bayrak Oyun.bayraklar ile eşleşmelidir; değer liste ise içindekilerden biri yeter. 'alan' evraktaki tek tek alanları değiştirir, 'sil' belgeyi çıkarır. 'etki' karara göre uygulanır: bayrak, suphe (fark), para (fark), ikram, kira_affi, not (teleksten çıkan müdür notu), sonuc (değerlendirmeyi ezer). 'belgesiz' ziyaretçi evrak getirmez; 'satirlar'ını söyleyip gider.",
+	"_aciklama": "Hikâye karakterleri ve gişe ziyaretleri (diyaloglar dahil). Bütün kişi, kurum ve olaylar kurmacadır. 'kosul' sözlüğündeki her bayrak Oyun.bayraklar ile eşleşmelidir; değer liste ise içindekilerden biri yeter. 'alan' evraktaki tek tek alanları değiştirir, 'sil' belgeyi çıkarır. 'etki' karara göre uygulanır: bayrak, suphe (fark), para (fark), ikram, kira_affi, not (teleksten çıkan müdür notu), sonuc (değerlendirmeyi ezer). 'belgesiz' ziyaretçi evrak getirmez; 'satirlar'ını söyleyip gider. 'canta' ({tur, esyalar: [...]}) ziyaretçinin röntgenden geçecek çantasıdır (çanta denetimi olan günlerde); 'etki.alarm' çantadaki yasak eşya yakalanınca, 'etki.gecir' gözden kaçınca uygulanır.",
 	"kisiler": {
 		"husnu": {
 			"portre": "husnu",
@@ -150,6 +150,21 @@
 			"mahalle": "Yukarı",
 			"muhtar": "Kâzım Türkmen",
 			"adres": "Çeşme Sok. No: 12"
+		},
+		"bavullu": {
+			"portre": "v11",
+			"ad": "ERDAL",
+			"soyad": "YILDIRIM",
+			"baba_adi": "SALİH",
+			"ana_adi": "HATİCE",
+			"dogum_yeri": "MALATYA",
+			"dogum_tarihi": "17.07.1961",
+			"seri_no": "A-388215",
+			"cinsiyet": "E",
+			"yas": 22,
+			"mahalle": "İstasyon",
+			"muhtar": "Hamdi Ersoy",
+			"adres": "Garaj Cad. No: 18"
 		}
 	},
 	"ziyaretler": [
@@ -281,7 +296,8 @@
 				"giris": "Bu sefer tamam evladım: iki yüz elli lira, kuruşu kuruşuna. Dün akşam yatırdım. ...Zam mı? Bir gecede mi?",
 				"onay": "Elli liranın lafı mı olur diyen çıktı sonunda. Sağ ol evladım.",
 				"eksik": "Dün iki yüz elli, bugün üç yüz. Ben yaşlandım, harç gençleşti. Farkı yatırıp gelirim.",
-				"havale": "Zammı müdür mü yaptı evladım? Sorarım ona."
+				"havale": "Zammı müdür mü yaptı evladım? Sorarım ona.",
+				"alarm_bos": "Sucuk o evladım. Yusuf yatılıda yesin diye aldım; dinamit benim neyime?"
 			},
 			"etki": {
 				"onay": {
@@ -289,6 +305,15 @@
 						"husnu_onay": 5
 					}
 				}
+			},
+			"canta": {
+				"tur": "torba",
+				"esyalar": [
+					"sucuk",
+					"ekmek",
+					"yun",
+					"tespih"
+				]
 			}
 		},
 		{
@@ -309,7 +334,8 @@
 				"giris": "Farkı da yatırdım evladım, cuma günü. Şimdi de mahallem başka ilçeye mi gitmiş? Ben yerimden kıpırdamadım ki!",
 				"onay": "Dere Mahallesi nereye bağlıysa bağlı olsun; Yusuf okula bağlı kalsın yeter.",
 				"eksik": "Yetmiş dört yıldır aynı evdeyim. İlçe benden taşınmış, haberim yok. Yarın son gün evladım.",
-				"havale": "Müdür Bey mahalleyi geri getirir mi dersin?"
+				"havale": "Müdür Bey mahalleyi geri getirir mi dersin?",
+				"alarm_bos": "Saat o evladım; Yusuf yatılıda sabah kalksın diye. Mumlar da elektrik kesilirse..."
 			},
 			"etki": {
 				"onay": {
@@ -317,6 +343,15 @@
 						"husnu_onay": 6
 					}
 				}
+			},
+			"canta": {
+				"tur": "torba",
+				"esyalar": [
+					"calar_saat",
+					"kazak",
+					"ekmek",
+					"mum"
+				]
 			}
 		},
 		{
@@ -743,7 +778,8 @@
 				"giris": "Nakil. Çabuk olsun.",
 				"onay": "...",
 				"eksik": "Kenan Bey'e selamınızı söylerim.",
-				"havale": "Ne müdürü? Bırak kolumu!"
+				"havale": "Ne müdürü? Bırak kolumu!",
+				"alarm_bos": "Satır o. Ekmek teknem. Yasak mı?"
 			},
 			"etki": {
 				"onay": {
@@ -763,6 +799,15 @@
 					},
 					"not": "Havale ettiğiniz şahıs, aranan Bekir Yaman çıktı. Jandarma arka kapıdan teslim aldı. Bugün bu gişe ilk kez yüzümü ağarttı."
 				}
+			},
+			"canta": {
+				"tur": "torba",
+				"esyalar": [
+					"satir",
+					"kazak",
+					"sise",
+					"ekmek"
+				]
 			}
 		},
 		{
@@ -775,7 +820,8 @@
 				"giris": "Adres naklim için geldim. Yeni evim Hükümet Caddesi'nde, konağın tam karşısı. Manzarası güzel.",
 				"onay": "Elinize sağlık. Bu akşam perdeleri asarım.",
 				"eksik": "Eksik mi? Kâğıtlarımı ben hazırlamıştım hâlbuki. Neyse.",
-				"havale": "Müdür mü? Durun, bir yanlışlık var!"
+				"havale": "Müdür mü? Durun, bir yanlışlık var!",
+				"alarm": "Dikiş çantam o benim! Dokunmayın!"
 			},
 			"etki": {
 				"onay": {
@@ -794,6 +840,59 @@
 						"naciye": "yakalandi"
 					},
 					"not": "Havale ettiğiniz kadın, aranan \"Terzi\" Naciye. Çantasından konağın krokisi çıktı. Savcıya haber verildi."
+				},
+				"alarm": {
+					"bayrak": {
+						"naciye": "yakalandi"
+					},
+					"not": "El çantasından toplu tabanca ile konağın krokisi çıktı. Kadın, aranan \"Terzi\" Naciye. Savcıya haber verildi."
+				}
+			},
+			"canta": {
+				"tur": "el_cantasi",
+				"esyalar": [
+					"toplu",
+					"makas",
+					"yun",
+					"gozluk"
+				]
+			}
+		},
+		{
+			"kod": "bavullu7",
+			"gun": 7,
+			"sira": 9,
+			"kisi": "bavullu",
+			"islem": "nakil",
+			"canta": {
+				"tur": "bavul",
+				"esyalar": [
+					"saatli_bomba",
+					"kazak",
+					"ayakkabi",
+					"kitap",
+					"termos",
+					"kazak"
+				]
+			},
+			"konusma": {
+				"giris": "Nakil için geldim. Bavul mu? Kışlık çamaşır. İşim bitene kadar şuraya, arşivin yanına bırakayım.",
+				"onay": "Sağ olun. Bavulu sonra alırım.",
+				"eksik": "Yarın gelirim. Bavul kalsın burada, ağır.",
+				"havale": "Müdüre gerek yok, acelem var!",
+				"alarm": "Ben yalnızca taşıyorum! İçinde ne olduğunu bilmiyorum!"
+			},
+			"etki": {
+				"alarm": {
+					"bayrak": {
+						"bomba": "yakalandi"
+					},
+					"not": "Bavuldan saatli bomba çıktı; saat on yediye kuruluymuş. Arşiv odası, içindeki kırk yıllık kayıtla birlikte yerinde duruyor. Müfettiş Bey elinizi sıkmak istiyor."
+				},
+				"gecir": {
+					"bayrak": {
+						"bomba": "kacti"
+					}
 				}
 			}
 		}

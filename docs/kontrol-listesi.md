@@ -7,7 +7,7 @@ Yayından önce oyunun baştan sona oynanıp aşağıdaki maddelerin işaretlenm
 
 ```bash
 godot --headless --path . --import                              # varlıklar içe aktarılır
-godot --headless --path . res://tools/DumanTesti.tscn           # 294 denetim: sahne akışı, kurallar, hikâye, menü
+godot --headless --path . res://tools/DumanTesti.tscn           # 330 denetim: sahne akışı, kurallar, hikâye, menü, röntgen
 godot --headless --path . res://scenes/UreticiTesti.tscn -- --cik   # 7 gün x 100 vatandaş: üretici ile doğrulayıcı tutarlı mı
 godot --headless --path . res://tools/TamOyun.tscn              # yedi gün baştan sona, iki ayrı memurla
 ```
@@ -33,6 +33,19 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] Gün sonu puantajındaki sayılar gün içinde olanlarla tutuyor.
 - [ ] Evde seçilen kalem odaya yansıyor (soba, ekmek, ilaç, defter); "Lambayı Söndür" geceyi getiriyor.
 - [ ] ESC molası oyunu durduruyor; "Gişeye Dön" kaldığı yerden sürdürüyor.
+- [ ] Cüzdandaki vesikalık camdaki kişinin eski bir resmi: kıyafeti ve saçı başka, yüzü aynı.
+
+### Röntgen cihazı (5.–7. gün)
+
+- [ ] Çantalı vatandaş gelince çanta eşikte parlıyor, "ÇANTAYI RÖNTGENE ALIN" şeridi çıkıyor; evrak henüz gelmiyor.
+- [ ] Çantaya tıklayınca cihaz masanın önüne yükseliyor, bant sesi geliyor, görüntü sağdan kayarak oturuyor.
+- [ ] OLAĞAN / NEGATİF / YOĞUN tuşları görüntüyü değiştiriyor; seçili tuşta yeşil ışık yanıyor.
+- [ ] GEÇİR: cihaz iniyor, çanta eşiğe dönüyor, evrak geliyor.
+- [ ] ALARM (yasak eşya varken): ekran kızarıyor, alarm çalıyor, vatandaş götürülüyor, teleksten not çıkıyor.
+- [ ] ALARM (temiz çantada): saat 12 dakika ileri gidiyor, teleksten uyarı çıkıyor; ikincisinde ihtar.
+- [ ] Yasak eşyalı çanta geçirilirse vatandaş ayrılırken ihtar geliyor.
+- [ ] Genelge defterinde YASAK sayfası günün yasaklarını gösteriyor (6. günden itibaren kesici aletler de).
+- [ ] Yasak eşyalar tanınabiliyor; yanıltıcı eşyalar (saç kurutma makinesi, sucuk, mum) haksız yere zorlamıyor.
 
 ### Gün gün
 
@@ -42,9 +55,9 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 | 2 | Mühür ve imza, baba adı | Nermin Hanım "aramızda kalsın"; gözlüklü adam | [ ] Müdür denetimi: jaluzi açılıyor, "MÜDÜR İZLİYOR" |
 | 3 | Harç makbuzu ve tarife | Kenan Bey ve zarf | [ ] Zarf: "Çekmeceye At" / "Geri İt". [ ] Gece: patlama |
 | 4 | Seri numarası, fotoğraf, arananlar | Ev sahibi İzzet Bey; gözlüklü adam başka adla | [ ] ARANANLAR sayfası açıldı |
-| 5 | Harç zammı, makbuz 3 gün | Kenan Bey'in büyük zarfı, "Kasap", Savcı | [ ] Aranan havale edilince resmine YAKALANDI damgası |
-| 6 | Mahalle listesi, B serisi | "Terzi", Nermin Hanım'ın dönüşü | [ ] Gece: savcının akıbeti |
-| 7 | İlmühaber 3 ay | Hüsnü Amca ya da Yusuf ve mektup; Başkomiser | [ ] Son: gazetenin birinci sayfası |
+| 5 | Harç zammı, makbuz 3 gün, röntgen | Kenan Bey'in büyük zarfı, "Kasap" (torbasında satır), Savcı | [ ] Aranan havale edilince resmine YAKALANDI damgası |
+| 6 | Mahalle listesi, B serisi, kesici aletler | "Terzi" (el çantasında tabanca), Nermin Hanım'ın dönüşü | [ ] Gece: savcının akıbeti |
+| 7 | İlmühaber 3 ay | Hüsnü Amca ya da Yusuf ve mektup; Başkomiser; bavullu genç | [ ] Bavul yakalanırsa ya da kaçarsa son gazetede haberi var |
 
 ### Sonlar
 

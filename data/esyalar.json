@@ -1,0 +1,52 @@
+{
+	"_aciklama": "Röntgen cihazından geçen çantalar ve içlerindeki eşyalar. 'boy': eşyanın en uzun kenarı (cm; ekrandaki büyüklüğü belirler). 'yogun': röntgendeki parlaklık çarpanı (maden 1, kumaş ve yiyecek daha soluk). 'kategori': silah / patlayici / kesici (günün genelgesi hangilerini yasaklıyorsa onlar yasaktır; boşsa zararsızdır). 'benzer': yasak bir eşyayı andıran zararsız eşya (yanıltmaca). 'kucuk': el çantasına sığar. Görseller assets/img/rontgen/ altındadır.",
+	"esyalar": {
+		"kazak": {"ad": "kazak", "boy": 34, "yogun": 0.42},
+		"ayakkabi": {"ad": "bir çift ayakkabı", "boy": 29, "yogun": 0.6},
+		"ekmek": {"ad": "somun ekmek", "boy": 22, "yogun": 0.45},
+		"tursu": {"ad": "turşu kavanozu", "boy": 17, "yogun": 0.62},
+		"sise": {"ad": "gazoz şişesi", "boy": 22, "yogun": 0.62, "kucuk": true},
+		"calar_saat": {"ad": "çalar saat", "boy": 15, "yogun": 0.95, "benzer": "patlayici", "kucuk": true},
+		"radyo": {"ad": "el radyosu", "boy": 21, "yogun": 0.85},
+		"fon": {"ad": "saç kurutma makinesi", "boy": 24, "yogun": 0.9, "benzer": "silah"},
+		"utu": {"ad": "ütü", "boy": 25, "yogun": 1.0},
+		"caydanlik": {"ad": "çaydanlık", "boy": 24, "yogun": 0.85},
+		"makas": {"ad": "terzi makası", "boy": 24, "yogun": 1.0, "benzer": "kesici", "kucuk": true},
+		"anahtar": {"ad": "anahtar destesi", "boy": 12, "yogun": 1.0, "kucuk": true},
+		"gozluk": {"ad": "gözlük", "boy": 14, "yogun": 0.75, "kucuk": true},
+		"kitap": {"ad": "kitap", "boy": 21, "yogun": 0.5, "kucuk": true},
+		"semsiye": {"ad": "şemsiye", "boy": 30, "yogun": 0.8},
+		"sucuk": {"ad": "sucuk", "boy": 21, "yogun": 0.55, "benzer": "patlayici"},
+		"yun": {"ad": "yün yumağı", "boy": 17, "yogun": 0.45, "kucuk": true},
+		"catal_kasik": {"ad": "çatal kaşık", "boy": 19, "yogun": 1.0, "benzer": "kesici", "kucuk": true},
+		"termos": {"ad": "termos", "boy": 27, "yogun": 0.85},
+		"tespih": {"ad": "tespih", "boy": 15, "yogun": 0.7, "kucuk": true},
+		"matkap": {"ad": "el matkabı", "boy": 27, "yogun": 0.95, "benzer": "silah"},
+		"mum": {"ad": "bir bağ mum", "boy": 21, "yogun": 0.5, "benzer": "patlayici"},
+		"fotograf_makinesi": {"ad": "fotoğraf makinesi", "boy": 16, "yogun": 0.9, "kucuk": true},
+		"pense": {"ad": "pense ile tornavida", "boy": 19, "yogun": 1.0, "benzer": "kesici", "kucuk": true},
+		"tabaka": {"ad": "sigara tabakası ile çakmak", "boy": 16, "yogun": 0.9, "kucuk": true},
+		"para_destesi": {"ad": "deste deste para", "boy": 20, "yogun": 0.5, "ozel": true},
+		"kasa": {"ad": "para kutusu", "boy": 23, "yogun": 0.9, "ozel": true},
+		"tabanca": {"ad": "tabanca", "boy": 19, "yogun": 1.0, "kategori": "silah", "kucuk": true},
+		"toplu": {"ad": "toplu tabanca", "boy": 21, "yogun": 1.0, "kategori": "silah", "kucuk": true},
+		"mermi": {"ad": "şarjör ve mermi", "boy": 15, "yogun": 1.0, "kategori": "silah", "kucuk": true},
+		"el_bombasi": {"ad": "el bombası", "boy": 12, "yogun": 1.0, "kategori": "patlayici", "kucuk": true},
+		"saatli_bomba": {"ad": "saatli bomba", "boy": 25, "yogun": 0.8, "kategori": "patlayici"},
+		"dinamit": {"ad": "dinamit lokumu", "boy": 21, "yogun": 0.55, "kategori": "patlayici"},
+		"satir": {"ad": "satır", "boy": 29, "yogun": 1.0, "kategori": "kesici"},
+		"kama": {"ad": "kama", "boy": 27, "yogun": 1.0, "kategori": "kesici", "kucuk": true},
+		"bicak": {"ad": "ekmek bıçağı", "boy": 29, "yogun": 1.0, "kategori": "kesici"}
+	},
+	"cantalar": {
+		"bavul": {"ad": "bavul", "ic": [0.07, 0.25, 0.93, 0.93], "olcek": 1.0, "adet": [5, 7], "agirlik": 3},
+		"torba": {"ad": "bez çanta", "ic": [0.09, 0.22, 0.91, 0.80], "olcek": 1.0, "adet": [4, 6], "agirlik": 3},
+		"evrak_cantasi": {"ad": "evrak çantası", "ic": [0.07, 0.25, 0.93, 0.93], "olcek": 1.12, "adet": [3, 5], "agirlik": 2},
+		"el_cantasi": {"ad": "el çantası", "ic": [0.17, 0.47, 0.83, 0.92], "olcek": 1.3, "adet": [3, 4], "agirlik": 2, "kucuk": true}
+	},
+	"kategoriler": {
+		"silah": {"ad": "Ateşli silah ve mermi", "ornek": ["tabanca", "toplu", "mermi"]},
+		"patlayici": {"ad": "Patlayıcı madde", "ornek": ["saatli_bomba", "dinamit", "el_bombasi"]},
+		"kesici": {"ad": "Bıçak, kama, satır", "ornek": ["satir", "kama", "bicak"]}
+	}
+}

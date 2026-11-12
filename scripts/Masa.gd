@@ -8,6 +8,10 @@ extends Control
 ## Hikâye karakterleri (data/hikaye.json) kuyruğa belirli sıralarda girer. Bazıları evraksız gelir,
 ## yalnızca konuşur; bazıları masaya zarf bırakır. Müdür, günün belirli saatlerinde jaluziyi açıp
 ## gişeyi izler: o sırada yapılan hata çift ihtar sayılır.
+##
+## Çanta denetimi olan günlerde (kural türü "canta_kontrol") çantayla gelen vatandaşın evrakından önce
+## çantası röntgenden geçer: oyuncu eşikteki çantaya tıklar, cihaz açılır, ekrana bakıp "geçir" ya da
+## "alarm" der. Yasak eşyayı yakalamak prim, kaçırmak ihtar, boş yere alarm vermek zaman kaybıdır.
 
 const ARKA_PLAN := "res://assets/img/masa_arkaplan.webp"
 const BUYUTEC := "res://assets/img/nesne/buyutec.webp"
@@ -15,6 +19,11 @@ const IGNE := "res://assets/img/nesne/igne.webp"
 const MESAI_BASI := 9 * 60     ## 09:00 (dakika)
 const MESAI_SONU := 17 * 60    ## 17:00
 const KARAR_ADLARI := {"onay": "ONAY", "eksik": "EKSİK EVRAK", "havale": "MÜDÜRE HAVALE"}
+const ALARM_KAYBI := 12        ## boş yere verilen alarmın yediği mesai (dakika)
+const VARSAYILAN_SOZ := {
+	"alarm": "O çanta benim değil! Bir yanlışlık var!",
+	"alarm_bos": "Çantamı didik didik ettiniz; bulduğunuz bu mu?",
+}
 
 var gun: Dictionary = {}                ## günün genelgesi ve kuralları (data/gunler)
 var dakika := float(MESAI_BASI)
@@ -30,6 +39,8 @@ var havale_kalan := 2
 var gunluk_ihtar := 0
 var zarf: Zarf                          ## masadaki rüşvet zarfı (varsa)
 var denetimde := false                  ## müdür camdan izliyor mu
+var canta_asamasi := ""                 ## "" | "bekliyor" (eşikte, tıklanacak) | "taraniyor" (röntgende)
+var bos_alarm := 0                      ## bugün boş yere verilen alarm sayısı
 
 var gise: Gise
 var balon: KonusmaBalonu
@@ -37,6 +48,7 @@ var saat: DuvarSaati
 var kural_kitabi: KuralKitabi
 var inceleme: IncelemeKatmani
 var teleks: Teleks
+var rontgen: Rontgen
 var araclar: Dictionary = {}            ## tür -> Arac
 
 var _tepsi_katmani: Node2D
@@ -59,6 +71,8 @@ var _denetim_seridi: Label
 var _saat_durdu := false                ## mektup gibi tam ekran bir kâğıt okunurken saat bekler
 var _ses_perdesi := 1.0                 ## camdaki vatandaşın ses perdesi (yaşa ve cinsiyete göre)
 var _tik_sayaci := 0.0
+var _canta_seridi: Label
+var _ziyaret_no := 0                    ## her vatandaşta artar: bekleyen işlevler eski ziyareti sürdürmesin
 
 
 func _ready() -> void:
@@ -145,6 +159,7 @@ func _sonraki_vatandas() -> void:
 		Oyun.bekle(1.0).connect(mesaiyi_bitir)
 		return
 	vatandas = kuyruk.pop_front()
+	_ziyaret_no += 1
 	tespitler.clear()
 	Ses.cal("zil", 1.0, -9.0)
 	_ses_perdesi = _perde_bul(str(vatandas.portre))
@@ -156,11 +171,146 @@ func _sonraki_vatandas() -> void:
 		_belgesiz_ziyaret()
 		return
 	balon.soyle(str(vatandas.konusma.giris))
+	if vatandas.has("canta") and Canta.denetim_var(gun):
+		_cantayi_bekle()      # evrak, çanta röntgenden geçince gelir
+		return
+	_evraki_al()
+
+
+## Vatandaşın evrakı yarıktan masaya gelir; karar araçları açılır.
+func _evraki_al() -> void:
 	_belgeleri_getir()
 	if int(vatandas.get("zarf", 0)) > 0:
 		_zarfi_getir(0.9)
 	_mesgul = false
 	_araclari_ayarla()
+
+
+# --- Çanta denetimi ---
+
+## Vatandaş çantasını eşiğe koyar; oyuncu tıklayınca röntgene gider.
+func _cantayi_bekle() -> void:
+	canta_asamasi = "bekliyor"
+	gise.canta_goster(str((vatandas.canta as Dictionary).get("tur", "bavul")))
+	_canta_seridi.visible = true
+	Ses.gecikmeli("tik", 0.3, 0.6, -6.0)
+
+
+func _cantayi_tara() -> void:
+	if canta_asamasi != "bekliyor" or vatandas.is_empty() or not mesai_acik:
+		return
+	canta_asamasi = "taraniyor"
+	_canta_seridi.visible = false
+	gise.canta_gonder()
+	gise.sabri_tazele()
+	rontgen.ac(vatandas.canta)
+
+
+## Oyuncunun röntgendeki kararı: "gecir" ya da "alarm".
+func _canta_karari(karar: String) -> void:
+	if canta_asamasi != "taraniyor" or vatandas.is_empty():
+		rontgen.kapat()
+		return
+	canta_asamasi = ""
+	var canta: Dictionary = vatandas.canta
+	var yasak := Canta.yasaklar(canta, gun)
+	ozet["canta"] = int(ozet.get("canta", 0)) + 1
+	if yasak.is_empty():
+		if karar == "alarm":
+			_bos_alarm(canta)
+		else:
+			_cantadan_evraka(0.0)
+		return
+	# Hikâye karakterlerinde çantanın yakalanmasının ya da kaçmasının ayrıca bir sonucu olur.
+	var etki: Variant = (vatandas.get("etki", {}) as Dictionary).get(karar, null)
+	if karar == "alarm":
+		_canta_yakalandi(yasak, etki)
+	else:
+		vatandas["canta_kacti"] = yasak
+		Hikaye.etki_uygula(etki)
+		_cantadan_evraka(0.0)
+
+
+## Alarm yerindeydi: bekçi çantayı açar, şahıs götürülür. Evraka bakılmaz.
+func _canta_yakalandi(yasak: Array[String], etki: Variant) -> void:
+	_sonucu_isle("alarm", {"sonuc": "dogru", "supheli_yakalandi": true})
+	ozet["canta_yakalanan"] = int(ozet.get("canta_yakalanan", 0)) + 1
+	_bekleyen_fis = {"cesit": "not", "metin": "Bekçi çantadan %s çıkardı; şahıs jandarmaya teslim edildi. Dikkatiniz sicilinize işlendi." % Canta.adlari_yaz(yasak)}
+	if typeof(etki) == TYPE_DICTIONARY:
+		Hikaye.etki_uygula(etki)
+		if (etki as Dictionary).has("not"):
+			_bekleyen_fis.metin = str(etki["not"])
+		var acik_sayfa := kural_kitabi.sayfa
+		kural_kitabi.yukle(gun)
+		kural_kitabi.sayfaya_gec(acik_sayfa, false)
+	kararlar.append({"karar": "alarm", "gerekce": "", "sonuc": "dogru", "dogru_karar": "alarm", "vatandas": vatandas})
+	Oyun.bekle(0.9).connect(rontgen.kapat)
+	_vatandasi_ugurla("alarm")
+
+
+## Çantada yasak bir şey yoktu: bekçi boşuna aradı. Mesaiden zaman gider; günün ikinci boş alarmı ihtardır.
+func _bos_alarm(canta: Dictionary) -> void:
+	bos_alarm += 1
+	ozet["bos_alarm"] = bos_alarm
+	dakika = minf(dakika + ALARM_KAYBI, MESAI_SONU - 1.0)
+	saat.dakika = dakika
+	var mesaj := "Bekçi çantayı boşalttı: şüphelendiğiniz şey %s çıktı. Vatandaş boş yere bekledi, mesaiden %d dakika gitti." % [
+		Canta.yaniltan(canta, gun), ALARM_KAYBI]
+	if bos_alarm >= 2:
+		gunluk_ihtar += 2 if denetimde else 1
+		ozet.ihtar = gunluk_ihtar
+		mesaj += " Bugünkü %d. boş alarmınız: ihtar." % bos_alarm
+		(ozet.ihtarlar as Array).append(mesaj)
+		Ses.cal("ihtar", 1.0, -9.0)
+		teleks.yazdir(mesaj, gunluk_ihtar, "ihtar")
+		if denetimde:
+			_mudur.uzul()
+	else:
+		teleks.yazdir(mesaj, gunluk_ihtar, "uyari")
+	gise.portre.uzul()
+	balon.soyle(_soz("alarm_bos"), 1.6)
+	_cantadan_evraka(1.3)
+
+
+## Röntgen kapanır, çanta eşiğe döner, evrak gelir.
+func _cantadan_evraka(bekleme: float) -> void:
+	var ziyaret := _ziyaret_no
+	if bekleme > 0.0:
+		await Oyun.bekle(bekleme)
+	rontgen.kapat()
+	await Oyun.bekle(0.55)
+	if ziyaret != _ziyaret_no or not mesai_acik or vatandas.is_empty():
+		return
+	gise.canta_donsun()
+	await Oyun.bekle(0.35)
+	if ziyaret != _ziyaret_no or not mesai_acik or vatandas.is_empty():
+		return
+	_evraki_al()
+
+
+## Çantasındaki yasak eşya gözden kaçan vatandaş gişeden ayrılırken bekçi fark eder: ihtar.
+func _canta_kacagini_isle() -> void:
+	var yasak: Array = vatandas.get("canta_kacti", [])
+	ozet["canta_kacan"] = int(ozet.get("canta_kacan", 0)) + 1
+	var mesaj := "Röntgenden geçirdiğiniz çantada %s vardı; şahıs binaya onunla girdi." % Canta.adlari_yaz(yasak)
+	if denetimde:
+		gunluk_ihtar += 2
+		mesaj += " Camdan izliyordum: çift ihtar."
+		_mudur.uzul()
+	else:
+		gunluk_ihtar += 1
+	ozet.ihtar = gunluk_ihtar
+	(ozet.ihtarlar as Array).append(mesaj)
+	if str(_bekleyen_fis.get("cesit", "")) == "ihtar":
+		_bekleyen_fis.metin = str(_bekleyen_fis.metin) + " Üstelik: " + mesaj
+	else:
+		_bekleyen_fis = {"cesit": "ihtar", "metin": mesaj}
+
+
+## Vatandaşın duruma göre söyleyeceği söz (kendi sözü yoksa genel bir söz).
+func _soz(durum: String) -> String:
+	var konusma: Dictionary = vatandas.get("konusma", {})
+	return str(konusma.get(durum, VARSAYILAN_SOZ.get(durum, "")))
 
 
 ## Evraksız gelen hikâye karakteri: söyleyeceğini söyler (varsa zarfını bırakır) ve gider.
@@ -303,7 +453,7 @@ func _vatandasi_ugurla(karar: String) -> void:
 		zarf.geri_git()            # dokunulmayan zarf sahibiyle birlikte gider
 	_belgeleri_kilitle()
 	await Oyun.bekle(0.7)
-	balon.soyle(str(vatandas.konusma.get(karar, "")), 1.4)
+	balon.soyle(_soz(karar), 1.4)
 	inceleme.temizle()
 	kural_kitabi.isaretleri_temizle()
 	_belgeleri_gonder(0.25)
@@ -395,6 +545,9 @@ func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = ""
 	if etki.has("sonuc"):
 		degerlendirme = {"sonuc": str(etki.sonuc), "mesaj": ""}
 	_sonucu_isle(karar, degerlendirme)
+	# Çantasındaki yasak eşya röntgende gözden kaçtıysa (ve şahıs başka yoldan yakalanmadıysa) ihtar gelir.
+	if vatandas.has("canta_kacti") and not bool(degerlendirme.get("supheli_yakalandi", false)):
+		_canta_kacagini_isle()
 	if not etki.is_empty():
 		Hikaye.etki_uygula(etki)
 		if etki.has("not"):
@@ -495,6 +648,9 @@ func mesaiyi_bitir() -> void:
 	_araclari_ayarla()
 	inceleme.aktif = false
 	inceleme.temizle()
+	canta_asamasi = ""
+	_canta_seridi.visible = false
+	rontgen.kapat()
 	if is_instance_valid(zarf) and not zarf.sonuclandi:
 		zarf.geri_git()
 	if not vatandas.is_empty():
@@ -526,6 +682,7 @@ func _sesleri_bagla() -> void:
 	kural_kitabi.sayfa_cevrildi.connect(Ses.cal.bind("sayfa", 1.0, -4.0, 0.06))
 	for a: Arac in araclar.values():
 		a.alindi.connect(func(_a: Arac) -> void: Ses.cal("tik", 0.8, -5.0))
+	rontgen.efekt.connect(_rontgen_sesi)
 	Ses.yalniz(["radyo"])
 	Ses.ortam("radyo", -10.0, 2.5)
 
@@ -539,6 +696,16 @@ func _gise_sesi(ad: String) -> void:
 			Ses.cal("hece", _ses_perdesi, -8.0, 0.07)
 		"ofle":
 			Ses.cal("ofle", clampf(_ses_perdesi, 0.85, 1.25), -5.0)
+
+
+func _rontgen_sesi(ad: String) -> void:
+	match ad:
+		"bant":
+			Ses.cal("bant", 1.0, -7.0)
+		"dugme":
+			Ses.cal("dugme", 1.0, -4.0, 0.04)
+		"alarm":
+			Ses.cal("alarm", 1.0, -6.0)
 
 
 ## Portrenin yaşına ve cinsiyetine göre konuşma perdesi; kişiden kişiye biraz oynar.
@@ -658,6 +825,22 @@ func _sahneyi_kur() -> void:
 	gise.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
 	saat.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
 	kural_kitabi.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
+
+	_canta_seridi = Stil.etiket("ÇANTAYI RÖNTGENE ALIN", 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	_canta_seridi.name = "CantaSeridi"
+	_canta_seridi.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Stil.BORDO, Color(0, 0, 0, 0.45), 1, 2, 2), 4, 2))
+	_canta_seridi.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_canta_seridi.position = Yerlesim.CANTA_ETIKETI.position
+	_canta_seridi.size = Yerlesim.CANTA_ETIKETI.size
+	_canta_seridi.mouse_filter = MOUSE_FILTER_IGNORE
+	_canta_seridi.visible = false
+	add_child(_canta_seridi)
+
+	rontgen = Rontgen.new()
+	rontgen.name = "Rontgen"
+	add_child(rontgen)
+	rontgen.karar_verildi.connect(_canta_karari)
+	gise.canta_tiklandi.connect(_cantayi_tara)
 
 	_ust_katman = Control.new()
 	_ust_katman.name = "UstKatman"

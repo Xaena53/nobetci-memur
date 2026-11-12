@@ -6,6 +6,7 @@ extends Control
 
 signal hedef_tiklandi(hedef: Hedef)
 signal efekt(ad: String)        ## portreden gelen ses olayları ("adim", "hece", "ofle")
+signal canta_tiklandi           ## eşikteki çantaya tıklandı (röntgene alınacak)
 
 const OLCEK := 0.46             ## portre dokusunun camdaki ölçeği
 const GELIS_SURESI := 0.85
@@ -25,6 +26,11 @@ var kepenk := 0.0:              ## 0 açık .. 1 tamamen inik
 var _hareket: Tween
 var _sabir := 30.0
 var _kepenk_cizimi: Control
+var _canta: TextureRect             ## vatandaşın eşiğe koyduğu çanta
+var _canta_dugmesi: Button
+var _canta_hareketi: Tween
+var _canta_isigi: Tween
+var _canta_yeri := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -38,6 +44,24 @@ func _ready() -> void:
 	portre.visible = false
 	portre.efekt.connect(func(ad: String) -> void: efekt.emit(ad))
 	add_child(portre)
+
+	_canta = TextureRect.new()
+	_canta.name = "Canta"
+	_canta.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_canta.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_canta.mouse_filter = MOUSE_FILTER_IGNORE
+	_canta.visible = false
+	add_child(_canta)
+	_canta_dugmesi = Button.new()
+	_canta_dugmesi.name = "CantayiTara"
+	_canta_dugmesi.flat = true
+	_canta_dugmesi.focus_mode = FOCUS_NONE
+	_canta_dugmesi.mouse_default_cursor_shape = CURSOR_POINTING_HAND
+	for durum: String in ["normal", "hover", "pressed", "focus", "hover_pressed", "disabled"]:
+		_canta_dugmesi.add_theme_stylebox_override(durum, StyleBoxEmpty.new())
+	_canta_dugmesi.visible = false
+	_canta_dugmesi.pressed.connect(func() -> void: canta_tiklandi.emit())
+	add_child(_canta_dugmesi)
 
 	var cam := Control.new()
 	cam.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
@@ -96,6 +120,7 @@ func gitsin() -> void:
 	kimlik = ""
 	yuz.visible = false
 	yuz.durum = Hedef.Durum.BOS
+	canta_kaldir()
 	portre.konusuyor = false
 	portre.yuruyor = true
 	if _hareket != null:
@@ -108,6 +133,73 @@ func gitsin() -> void:
 		portre.visible = false
 		portre.yuruyor = false
 		portre.sifirla())
+
+
+# --- Çanta ---
+
+## Vatandaş çantasını eşiğe koyar; çanta tıklanınca röntgene gider.
+func canta_goster(tur: String) -> void:
+	var doku := Canta.dis_doku(tur)
+	if doku == null:
+		return
+	_canta.texture = doku
+	var boyut := doku.get_size() * (96.0 / maxf(1.0, doku.get_width()))
+	if boyut.y > 86.0:
+		boyut *= 86.0 / boyut.y
+	_canta.size = boyut
+	_canta_yeri = Vector2(size.x - boyut.x - 8.0, size.y - boyut.y + 5.0)
+	_canta.position = _canta_yeri + Vector2(0, boyut.y + 12.0)
+	_canta.modulate = Color.WHITE
+	_canta.visible = true
+	_canta_dugmesi.position = _canta_yeri - Vector2(6, 6)
+	_canta_dugmesi.size = boyut + Vector2(12, 12)
+	_canta_dugmesi.visible = true
+	_cantayi_oynat(_canta_yeri, 0.32, GELIS_SURESI * 0.2)
+	# tıklanmayı beklerken hafifçe parlayıp söner
+	if _canta_isigi != null:
+		_canta_isigi.kill()
+	_canta_isigi = create_tween().set_loops()
+	_canta_isigi.tween_property(_canta, "modulate", Color(1.28, 1.24, 1.12), 0.55).set_trans(Tween.TRANS_SINE)
+	_canta_isigi.tween_property(_canta, "modulate", Color.WHITE, 0.55).set_trans(Tween.TRANS_SINE)
+
+
+## Çanta eşikten aşağı, banda iner.
+func canta_gonder() -> void:
+	_canta_dugmesi.visible = false
+	if _canta_isigi != null:
+		_canta_isigi.kill()
+	_canta.modulate = Color.WHITE
+	_cantayi_oynat(_canta_yeri + Vector2(0, _canta.size.y + 12.0), 0.28)
+
+
+## Röntgenden geçen çanta eşiğe geri gelir; vatandaş giderken yanında götürür.
+func canta_donsun() -> void:
+	if _canta.visible:
+		_cantayi_oynat(_canta_yeri, 0.3)
+
+
+func canta_kaldir() -> void:
+	_canta_dugmesi.visible = false
+	if _canta_isigi != null:
+		_canta_isigi.kill()
+	if _canta_hareketi != null:
+		_canta_hareketi.kill()
+	if not _canta.visible:
+		return
+	# sahibiyle birlikte sağa doğru çekilir
+	_canta_hareketi = create_tween()
+	_canta_hareketi.tween_property(_canta, "position:x", size.x + 20.0, GELIS_SURESI * 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	_canta_hareketi.parallel().tween_property(_canta, "modulate:a", 0.0, GELIS_SURESI * 0.55)
+	_canta_hareketi.tween_callback(_canta.hide)
+
+
+func _cantayi_oynat(hedef: Vector2, sure: float, gecikme: float = 0.0) -> void:
+	if _canta_hareketi != null:
+		_canta_hareketi.kill()
+	_canta_hareketi = create_tween()
+	if gecikme > 0.0:
+		_canta_hareketi.tween_interval(gecikme)
+	_canta_hareketi.tween_property(_canta, "position", hedef, sure).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Konuşma balonu yazarken ağız oynar.
@@ -125,7 +217,7 @@ func tepki(karar: String) -> void:
 			portre.sevin()
 		"eksik":
 			portre.uzul()
-		"havale":
+		"havale", "alarm":
 			portre.sas()
 
 

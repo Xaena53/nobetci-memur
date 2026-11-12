@@ -71,6 +71,8 @@ gazetenin birinci sayfasına yansır.
 
 - **Evrak kontrolü:** nüfus cüzdanı, ikametgâh ilmühaberi ve harç makbuzu; her gün eklenen yeni kurallar.
 - **İnceleme modu:** iki bilgiyi seçin, oyun uyuşup uyuşmadığını söylesin. Yüzü fotoğrafla, tarihi takvimle, tutarı tarifeyle karşılaştırın.
+- **Eski fotoğraflar:** cüzdandaki vesikalık yıllar önce çekilmiştir; kıyafet de saç da çoktan değişmiştir, sahibini yüzünden tanırsınız. Sahte cüzdandaki fotoğraf, başvurana benzeyen birine aittir.
+- **Röntgen cihazı:** beşinci günden itibaren çantalar banttan geçer. Tabancayı saç kurutma makinesinden, dinamiti sucuktan ayırmak size kalır.
 - **Canlı gişe:** vatandaşlar yürüyerek gelir, konuşur, sabrı taşınca öfleyip pöfler.
 - **Müdür izliyor:** jaluzi açıkken yapılan hata çift ihtar sayılır.
 - **Ev ve geçim:** her akşam kira, kömür, yiyecek, ilaç ve okul masrafı arasında seçim.
@@ -140,6 +142,8 @@ the week.
 
 - **Document checking:** identity booklets, residence certificates and fee receipts, with new rules every day.
 - **Inspect mode:** pick two pieces of information and the game tells you whether they match. Face against photograph, date against calendar, amount against the fee table.
+- **Old photographs:** the photo in an identity booklet was taken years ago. You recognise its owner by the face, since the clothes and the haircut have changed. A forged booklet carries the photo of a look-alike.
+- **X-ray scanner:** from day five, bags go through the belt. Telling a pistol from a hair dryer and dynamite from a ring of sausage is up to you.
 - **A living window:** citizens walk up, talk, and huff and puff when their patience runs out.
 - **The director is watching:** a mistake made while his blinds are open counts double.
 - **Home and money:** every evening, choose between rent, coal, food, medicine and school costs.

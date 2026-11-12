@@ -79,6 +79,13 @@ func yukle(gun: Dictionary) -> void:
 		y = _baslik_yaz(s, "ARANANLAR", "Emniyet Müdürlüğü tebliği")
 		_arananlari_yaz(s, arananlar, y, genislik)
 
+	# --- Yasak eşya (röntgen cihazı) ---
+	var canta_kurali := Veri.kural(gun, "canta_kontrol")
+	if not canta_kurali.is_empty():
+		s = _yeni_sayfa("YASAK")
+		y = _baslik_yaz(s, "YASAK EŞYA", "Röntgen cihazı talimatı")
+		_yasaklari_yaz(s, canta_kurali, y, genislik)
+
 	_sekmeleri_kur()
 	sayfaya_gec(0, false)
 	inceleme_ac(_inceleme)
@@ -223,7 +230,7 @@ func _arananlari_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> vo
 	y += 6.0
 	for a: Dictionary in liste:
 		var portre := str(a.get("portre", ""))
-		Gazete.foto_ekle(s, portre, Rect2(x, y, foto.x, foto.y))
+		Gazete.foto_ekle(s, portre, Rect2(x, y, foto.x, foto.y), "", Portreler.aranan_resmi(portre))
 		var ad := Stil.etiket(str(a.get("ad", "")), 12, Stil.MUREKKEP, Stil.daktilo_kalin())
 		ad.position = Vector2(x - 14.0, y + foto.y + 4.0)
 		ad.size = Vector2(foto.x + 28.0, 16.0)
@@ -255,12 +262,51 @@ func _arananlari_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> vo
 			s.add_child(h)
 			hedefler.append(h)
 		x += foto.x + aralik
-	var uyari := "Bu şahıslardan biri gişenize gelirse evrakına bakmadan müdüre havale edin. Kendiniz bir şey yapmayın."
+	var uyari := "Resimler eskidir; şahıslar kılık değiştirmiş olabilir. Biri gişenize gelirse evrakına bakmadan müdüre havale edin. Kendiniz bir şey yapmayın."
 	var uyari_y := y + foto.y + 46.0
 	var l := Stil.etiket(uyari, 11, Stil.BORDO)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.position = Vector2(KENAR, uyari_y)
 	l.size = Vector2(genislik, _yukseklik(uyari, genislik, Stil.daktilo(), 11))
+	s.add_child(l)
+
+
+## Yasak eşya sayfası: o gün yasak olan her sınıf için röntgendeki görünüşünden üç örnek.
+## Cihaz neyin yasak olduğunu söylemez; memur ekrandaki görüntüyü bu örneklerle kendisi karşılaştırır.
+func _yasaklari_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> void:
+	var bosluk := 7.0
+	var kutu := Vector2((genislik - 2.0 * bosluk) / 3.0, 50.0)
+	for kategori: String in k.get("yasak", []):
+		var bilgi := Canta.kategori_bilgisi(kategori)
+		y = _ara_baslik(s, Stil.buyuk(str(bilgi.get("ad", kategori))), y)
+		var x := KENAR
+		for ad: String in bilgi.get("ornek", []):
+			var zemin := ColorRect.new()
+			zemin.color = Color(0.035, 0.075, 0.055)
+			zemin.position = Vector2(x, y)
+			zemin.size = kutu
+			zemin.mouse_filter = MOUSE_FILTER_IGNORE
+			s.add_child(zemin)
+			var resim := TextureRect.new()
+			resim.texture = Canta.esya_dokusu(ad)
+			resim.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			resim.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			resim.position = Vector2(x + 4.0, y + 3.0)
+			resim.size = kutu - Vector2(8, 6)
+			resim.modulate = Color(0.78, 1.0, 0.83)
+			resim.mouse_filter = MOUSE_FILTER_IGNORE
+			var m := CanvasItemMaterial.new()
+			m.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD      # siyah zemin görünmez, yalnızca parlaklık eklenir
+			resim.material = m
+			s.add_child(resim)
+			x += kutu.x + bosluk
+		y += kutu.y + 6.0
+	var uyari := "Benzerine aldanmayın: saç kurutma makinesi tabanca, sucuk dinamit değildir. Boş alarm mesaiden yer."
+	var l := Stil.etiket(uyari, 10, Stil.BORDO)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.add_theme_constant_override("line_spacing", 0)
+	l.position = Vector2(KENAR, y + 1.0)
+	l.size = Vector2(genislik, _yukseklik(uyari, genislik, Stil.daktilo(), 10))
 	s.add_child(l)
 
 
@@ -279,15 +325,21 @@ func _sekmeleri_kur() -> void:
 	if _sayfalar.size() < 2:
 		return
 	var x := KAGIT_YERI.position.x + 6.0
+	# Sekmeler panonun enine sığmıyorsa iç boşlukları daralır.
+	var font := Stil.daktilo()
+	var yazi_eni := 0.0
+	for b in _basliklar:
+		yazi_eni += font.get_string_size(b, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
+	var pay := clampf((KAGIT_YERI.size.x - 12.0 - yazi_eni - 4.0 * (_sayfalar.size() - 1)) / (2.0 * _sayfalar.size()), 3.0, 9.0)
 	for i in _sayfalar.size():
 		var d := Button.new()
 		d.text = _basliklar[i]
 		d.toggle_mode = true
 		d.focus_mode = FOCUS_NONE
 		d.add_theme_font_size_override("font_size", 11)
-		d.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Stil.KAGIT_ESKI, Color(0.4, 0.35, 0.28), 1, 3), 9, 3))
-		d.add_theme_stylebox_override("hover", Stil.bosluklu(Stil.kutu(Stil.KAGIT, Stil.BORDO, 1, 3), 9, 3))
-		d.add_theme_stylebox_override("pressed", Stil.bosluklu(Stil.kutu(Stil.KAGIT, Stil.MUREKKEP, 2, 3), 9, 3))
+		d.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Stil.KAGIT_ESKI, Color(0.4, 0.35, 0.28), 1, 3), pay, 3))
+		d.add_theme_stylebox_override("hover", Stil.bosluklu(Stil.kutu(Stil.KAGIT, Stil.BORDO, 1, 3), pay, 3))
+		d.add_theme_stylebox_override("pressed", Stil.bosluklu(Stil.kutu(Stil.KAGIT, Stil.MUREKKEP, 2, 3), pay, 3))
 		d.position = Vector2(x, 2.0)
 		d.pressed.connect(sayfaya_gec.bind(i))
 		add_child(d)

@@ -22,7 +22,7 @@ static func uret(gun: Dictionary, rng: RandomNumberGenerator, kullanilan: Array 
 	var adlar := Veri.adlar()
 	var bugun := str(gun.get("tarih", "09.01.1984"))
 
-	var portre := _portre_sec(rng, kullanilan)
+	var portre := _portre_sec(rng, kullanilan, gun)
 	var bilgi := Portreler.bilgi(portre)
 	var cins := str(bilgi.get("cinsiyet", "E"))
 	var yas := int(bilgi.get("yas", 40))
@@ -57,16 +57,30 @@ static func uret(gun: Dictionary, rng: RandomNumberGenerator, kullanilan: Array 
 	if hata_adedi > 0:
 		_kusur_ekle(v, gun, rng, hata_adedi)
 
+	# Çanta denetimi olan günlerde vatandaşların bir bölümü çantayla gelir.
+	if Canta.denetim_var(gun) and rng.randf() < float(gun.get("canta_orani", 0.45)):
+		v["canta"] = Canta.uret(gun, rng)
 	v["konusma"] = _konusma(v, adlar, rng)
 	return v
 
 
 # --- Kimlik ve belgeler ---
 
-static func _portre_sec(rng: RandomNumberGenerator, kullanilan: Array) -> String:
+const BENZEYEN_MASUM_ORANI := 0.14      ## arananlar varken: vatandaşın, aranan birine benzeyen biri olma olasılığı
+
+
+static func _portre_sec(rng: RandomNumberGenerator, kullanilan: Array, gun: Dictionary = {}) -> String:
 	var havuz := Portreler.havuz()
 	if havuz.is_empty():
 		return ""
+	# Arananlar listesi yürürlükteyse ara sıra, listedeki resme benzeyen masum biri gelir.
+	var arananlar: Array = Veri.kural(gun, "arananlar").get("liste", [])
+	if not arananlar.is_empty() and rng.randf() < BENZEYEN_MASUM_ORANI:
+		var aranan: Dictionary = arananlar[rng.randi_range(0, arananlar.size() - 1)]
+		for aday in Portreler.benzerler(str(aranan.get("portre", "")), "aranan_benzer"):
+			if havuz.has(aday) and not kullanilan.has(aday):
+				kullanilan.append(aday)
+				return aday
 	var bos: Array[String] = []
 	for p in havuz:
 		if not kullanilan.has(p):
@@ -266,7 +280,7 @@ static func kusur_uygula(v: Dictionary, tur: String, gun: Dictionary, rng: Rando
 		"foto":
 			if not belgeler.has("nufus_cuzdani"):
 				return ""
-			var baska := _baska_portre(str(v.portre), rng)
+			var baska := _baska_portre(str(v.portre), rng, zorluk)
 			if baska == "":
 				return ""
 			belgeler["nufus_cuzdani"]["foto"] = baska
@@ -371,8 +385,14 @@ static func _gecersiz_seri(kural: Dictionary, rng: RandomNumberGenerator) -> Str
 	return "X-000000"
 
 
-## Aynı cinsiyetten, yaşça yakın başka birinin portresi (sahte cüzdandaki fotoğraf için).
-static func _baska_portre(portre: String, rng: RandomNumberGenerator) -> String:
+## Sahte cüzdandaki fotoğrafın sahibi: başvurana benzeyen başka biri. Zorluk arttıkça daha çok benzeyeni
+## seçilir (zorluk 1: aynı cinsiyetten, yaşça yakın herhangi biri; 2: en benzer altı kişiden biri;
+## 3: en benzer üç kişiden biri). Benzerlik listesi yoksa yaşça yakın biri alınır.
+static func _baska_portre(portre: String, rng: RandomNumberGenerator, zorluk: int = 1) -> String:
+	var benzerler := Portreler.benzerler(portre)
+	if zorluk >= 2 and not benzerler.is_empty():
+		var adet := mini(benzerler.size(), 3 if zorluk >= 3 else 6)
+		return benzerler[rng.randi_range(0, adet - 1)]
 	var bilgi := Portreler.bilgi(portre)
 	var yas := int(bilgi.get("yas", 40))
 	var yakinlar: Array[String] = []
@@ -400,6 +420,8 @@ static func _konusma(v: Dictionary, adlar: Dictionary, rng: RandomNumberGenerato
 		"onay": str(_sec(adlar.get("onay_yasli" if yasli and rng.randf() < 0.6 else "onay", ["Sağ olun."]), rng)),
 		"eksik": str(_sec(adlar.get("eksik_yasli" if yasli and rng.randf() < 0.5 else "eksik", ["Peki."]), rng)),
 		"havale": str(_sec(adlar.get("havale", ["Peki efendim."]), rng)),
+		"alarm": str(_sec(adlar.get("alarm", ["O çanta benim değil!"]), rng)),
+		"alarm_bos": str(_sec(adlar.get("alarm_bos", ["Çantamı didik didik ettiniz; bulduğunuz bu mu?"]), rng)),
 	}
 
 

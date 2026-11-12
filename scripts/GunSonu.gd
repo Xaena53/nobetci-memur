@@ -51,6 +51,10 @@ func _ready() -> void:
 	y = _satir(kagit, "İhtar", str(int(o.get("ihtar", 0))), x, y, Stil.BORDO if int(o.get("ihtar", 0)) > 0 else Stil.MUREKKEP)
 	y = _satir(kagit, "Uyarı (gerekçe yanlış)", str(int(o.get("yarim", 0))), x, y)
 	y = _satir(kagit, "Müdüre havale", str(int(o.get("havale", 0))), x, y)
+	if int(o.get("canta", 0)) > 0:
+		var kacan := int(o.get("canta_kacan", 0))
+		y = _satir(kagit, "Röntgende yakalanan / kaçan", "%d / %d" % [int(o.get("canta_yakalanan", 0)), kacan],
+			x, y, Stil.BORDO if kacan > 0 else Stil.MUREKKEP)
 	if int(o.get("yarida", 0)) > 0:
 		y = _satir(kagit, "Kapanışta yarıda kalan", str(int(o.get("yarida", 0))), x, y)
 	y += 14.0

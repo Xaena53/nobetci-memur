@@ -2,6 +2,13 @@ class_name Portreler
 extends RefCounted
 ## Vatandaş ve hikâye karakteri portreleri. Görseller assets/img/portre/<kimlik>.webp,
 ## künyeleri (cinsiyet, yaş) data/portreler.json içindedir.
+##
+## Her kişinin üç ayrı görünüşü olabilir:
+##  - büst (portre/<kimlik>.webp): gişeye bugün geldiği hâli; canlandırılır.
+##  - vesikalık (portre/vesika/<kimlik>.webp): nüfus cüzdanındaki yıllar önce çekilmiş fotoğrafı;
+##    kıyafeti, saçı, bıyığı başkadır. Yüzü aynıdır: kimlik, yüz hatlarından doğrulanır.
+##  - aranan resmi (portre/aranan/<kimlik>.webp): emniyetin dosyasındaki eski resim.
+## Künyedeki "benzer" listesi, o kişiye en çok benzeyen başka kişileri verir (tools/sanat/vesikalik.py).
 
 const KLASOR := "res://assets/img/portre/"
 const KUNYE_YOLU := "res://data/portreler.json"
@@ -47,6 +54,36 @@ static func doku(kimlik: String) -> Texture2D:
 		var yol := KLASOR + kimlik + ".webp"
 		_onbellek[kimlik] = load(yol) if ResourceLoader.exists(yol) else _yedek_doku()
 	return _onbellek[kimlik]
+
+
+## Nüfus cüzdanındaki vesikalık fotoğraf; ayrı bir vesikalığı yoksa büstün kendisi.
+static func vesikalik(kimlik: String) -> Texture2D:
+	return _ek_doku("vesika/", kimlik)
+
+
+## Arananlar listesindeki eski dosya resmi; yoksa vesikalığı.
+static func aranan_resmi(kimlik: String) -> Texture2D:
+	if ResourceLoader.exists(KLASOR + "aranan/" + kimlik + ".webp"):
+		return _ek_doku("aranan/", kimlik)
+	return vesikalik(kimlik)
+
+
+static func _ek_doku(alt_klasor: String, kimlik: String) -> Texture2D:
+	if kimlik == "":
+		return _yedek_doku()
+	var anahtar := alt_klasor + kimlik
+	if not _onbellek.has(anahtar):
+		var yol := KLASOR + alt_klasor + kimlik + ".webp"
+		_onbellek[anahtar] = load(yol) if ResourceLoader.exists(yol) else doku(kimlik)
+	return _onbellek[anahtar]
+
+
+## Bu kişiye en çok benzeyen başka kişiler (en benzeri başta). `alan`: "benzer" ya da "aranan_benzer".
+static func benzerler(kimlik: String, alan: String = "benzer") -> Array[String]:
+	var sonuc: Array[String] = []
+	for b: Variant in bilgi(kimlik).get(alan, []):
+		sonuc.append(str(b))
+	return sonuc
 
 
 ## Konuşma kareleri (hafif açık / açık ağız, yan yana); yoksa null.

@@ -265,8 +265,9 @@ func _senaryo_hikaye() -> void:
 	masa = await _gune_git(5)
 	_one_al(masa, "kasap5")
 	bas("GiseyiAc")
+	await _cantayi_gecir(masa, "gecir")
 	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
-	masa.kural_kitabi.sayfaya_gec(99)
+	masa.kural_kitabi.sayfaya_gec(masa.kural_kitabi._sayfalar.size() - 2)      # arananlar sayfası
 	await bekle(1.5)
 	masa.inceleme.aktif = true
 	await kare(3)
@@ -383,3 +384,84 @@ func _senaryo_konusma() -> void:
 		var g := get_viewport().get_texture().get_image().get_region(Rect2i(0, 0, 660, 330))
 		g.save_png(ProjectSettings.globalize_path(CIKTI + "k_%02d.png" % i))
 	print("çekildi: k_00..k_53")
+
+
+## Röntgen cihazı ve yeni vesikalıklar (kareler tools/cikti/r_*.png).
+func _senaryo_rontgen() -> void:
+	# 5. gün sabahı: genelge (röntgen cihazı duyurusu)
+	var masa: Node = await _gune_git(5)
+	await bekle(9.0)
+	await cek("r_01_genelge")
+	_one_al(masa, "kasap5")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.canta_asamasi == "bekliyor")
+	await bekle(1.6)
+	await cek("r_02_canta_esikte")
+	bas("CantayiTara")
+	await kosulu_bekle(func() -> bool: return masa.rontgen.karar_bekliyor)
+	await bekle(0.4)
+	await cek("r_03_rontgen_olagan")
+	bas("RontgenKip1")
+	await bekle(0.3)
+	await cek("r_04_rontgen_negatif")
+	bas("RontgenKip2")
+	await bekle(0.3)
+	await cek("r_05_rontgen_yogun")
+	bas("RontgenKip0")
+	bas("RontgenGecir")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	masa.kural_kitabi.sayfaya_gec(masa.kural_kitabi._sayfalar.size() - 2)
+	await bekle(1.8)
+	await cek("r_06_vesikalik_arananlar")
+	masa.kural_kitabi.sayfaya_gec(99)
+	await bekle(0.4)
+	await cek("r_07_yasak_sayfasi")
+
+	# 6. gün: "Terzi"nin el çantası; alarm
+	masa = await _gune_git(6)
+	_one_al(masa, "naciye6")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.canta_asamasi == "bekliyor")
+	bas("CantayiTara")
+	await kosulu_bekle(func() -> bool: return masa.rontgen.karar_bekliyor)
+	await bekle(0.4)
+	await cek("r_08_el_cantasi")
+	bas("RontgenAlarm")
+	await bekle(0.5)
+	await cek("r_09_alarm")
+	await bekle(7.0)
+	await cek("r_10_alarm_sonrasi")
+
+	# 7. gün: bavul
+	masa = await _gune_git(7)
+	_one_al(masa, "bavullu7")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.canta_asamasi == "bekliyor")
+	bas("CantayiTara")
+	await kosulu_bekle(func() -> bool: return masa.rontgen.karar_bekliyor)
+	await bekle(0.4)
+	await cek("r_11_bavul")
+	bas("RontgenGecir")
+	await bekle(1.5)
+
+	# rastgele çantalar: cihaz doğrudan açılır
+	var rng := RandomNumberGenerator.new()
+	for i in 6:
+		rng.seed = 100 + i * 7
+		var canta := Canta.uret(masa.gun, rng)
+		masa.rontgen.ac(canta)
+		await kosulu_bekle(func() -> bool: return masa.rontgen.karar_bekliyor)
+		await bekle(0.3)
+		await cek("r_2%d_rastgele" % i)
+		print("  çanta ", i, ": ", canta.tur, " yasak=", Canta.yasaklar(canta, masa.gun), " içinde=", canta.esyalar.map(func(e: Dictionary) -> String: return str(e.ad)))
+		masa.rontgen.kapat()
+		await bekle(1.0)
+
+	# gün sonu puantajı: röntgen satırı
+	masa.ozet["canta"] = 5
+	masa.ozet["canta_yakalanan"] = 1
+	masa.ozet["canta_kacan"] = 1
+	masa.dakika = masa.MESAI_SONU - 0.5
+	await sahneyi_bekle("GunSonu", 12.0)
+	await bekle(3.0)
+	await cek("r_30_puantaj")

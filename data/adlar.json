@@ -1,147 +1,626 @@
 {
 	"erkek": [
-		"Mehmet", "Ahmet", "Mustafa", "Ali", "Hüseyin", "Hasan", "İbrahim", "İsmail", "Osman", "Yusuf",
-		"Ömer", "Halil", "Süleyman", "Abdullah", "Ramazan", "Mahmut", "Salih", "Recep", "Kemal", "Musa",
-		"Kadir", "Yaşar", "Bayram", "Durmuş", "Cemal", "Şükrü", "Hamza", "Nuri", "Rıza", "Sabri",
-		"Bekir", "Celal", "Hikmet", "Necati", "Orhan", "Turgut", "Zeki", "Adem", "Aziz", "Cevat",
-		"Dursun", "Ekrem", "Fikret", "Galip", "Haydar", "İlyas", "Kâmil", "Lütfü", "Muzaffer", "Nazım",
-		"Rıfat", "Sadık", "Tahsin", "Veli", "Yakup", "Ziya", "Şaban", "Satılmış", "Muharrem", "Seyfettin",
-		"Erol", "Metin", "Tuncay", "Selahattin", "Nihat", "Hayri", "Refik", "Kenan", "Şevket", "Vahit"
+		"Mehmet",
+		"Ahmet",
+		"Mustafa",
+		"Ali",
+		"Hüseyin",
+		"Hasan",
+		"İbrahim",
+		"İsmail",
+		"Osman",
+		"Yusuf",
+		"Ömer",
+		"Halil",
+		"Süleyman",
+		"Abdullah",
+		"Ramazan",
+		"Mahmut",
+		"Salih",
+		"Recep",
+		"Kemal",
+		"Musa",
+		"Kadir",
+		"Yaşar",
+		"Bayram",
+		"Durmuş",
+		"Cemal",
+		"Şükrü",
+		"Hamza",
+		"Nuri",
+		"Rıza",
+		"Sabri",
+		"Bekir",
+		"Celal",
+		"Hikmet",
+		"Necati",
+		"Orhan",
+		"Turgut",
+		"Zeki",
+		"Adem",
+		"Aziz",
+		"Cevat",
+		"Dursun",
+		"Ekrem",
+		"Fikret",
+		"Galip",
+		"Haydar",
+		"İlyas",
+		"Kâmil",
+		"Lütfü",
+		"Muzaffer",
+		"Nazım",
+		"Rıfat",
+		"Sadık",
+		"Tahsin",
+		"Veli",
+		"Yakup",
+		"Ziya",
+		"Şaban",
+		"Satılmış",
+		"Muharrem",
+		"Seyfettin",
+		"Erol",
+		"Metin",
+		"Tuncay",
+		"Selahattin",
+		"Nihat",
+		"Hayri",
+		"Refik",
+		"Kenan",
+		"Şevket",
+		"Vahit"
 	],
 	"kadin": [
-		"Fatma", "Ayşe", "Emine", "Hatice", "Zeynep", "Meryem", "Şerife", "Zehra", "Sultan", "Hanife",
-		"Havva", "Cemile", "Fadime", "Döndü", "Zeliha", "Rukiye", "Naciye", "Saniye", "Safiye", "Münevver",
-		"Nuriye", "Nazmiye", "Güllü", "Gülsüm", "Kezban", "Hüsniye", "Sabriye", "Şükriye", "Melek", "Sevim",
-		"Türkan", "Perihan", "Nevin", "Leyla", "Müzeyyen", "Bedriye", "Saadet", "Makbule", "Feride", "Hayriye",
-		"Adile", "Nezihe", "Raziye", "Hamide", "Esma", "Pakize", "Ülkü", "Songül", "Yıldız", "Gönül",
-		"Sevgi", "Aysel", "Nurten", "Güler", "Şengül", "Birgül", "Selma", "Halime", "Kadriye", "Vesile"
+		"Fatma",
+		"Ayşe",
+		"Emine",
+		"Hatice",
+		"Zeynep",
+		"Meryem",
+		"Şerife",
+		"Zehra",
+		"Sultan",
+		"Hanife",
+		"Havva",
+		"Cemile",
+		"Fadime",
+		"Döndü",
+		"Zeliha",
+		"Rukiye",
+		"Naciye",
+		"Saniye",
+		"Safiye",
+		"Münevver",
+		"Nuriye",
+		"Nazmiye",
+		"Güllü",
+		"Gülsüm",
+		"Kezban",
+		"Hüsniye",
+		"Sabriye",
+		"Şükriye",
+		"Melek",
+		"Sevim",
+		"Türkan",
+		"Perihan",
+		"Nevin",
+		"Leyla",
+		"Müzeyyen",
+		"Bedriye",
+		"Saadet",
+		"Makbule",
+		"Feride",
+		"Hayriye",
+		"Adile",
+		"Nezihe",
+		"Raziye",
+		"Hamide",
+		"Esma",
+		"Pakize",
+		"Ülkü",
+		"Songül",
+		"Yıldız",
+		"Gönül",
+		"Sevgi",
+		"Aysel",
+		"Nurten",
+		"Güler",
+		"Şengül",
+		"Birgül",
+		"Selma",
+		"Halime",
+		"Kadriye",
+		"Vesile"
 	],
 	"soyad": [
-		"Yılmaz", "Kaya", "Demir", "Çelik", "Şahin", "Yıldız", "Yıldırım", "Öztürk", "Aydın", "Özdemir",
-		"Arslan", "Doğan", "Kılıç", "Aslan", "Çetin", "Kara", "Koç", "Kurt", "Özkan", "Şimşek",
-		"Polat", "Korkmaz", "Özcan", "Çakır", "Acar", "Aktaş", "Bozkurt", "Bulut", "Güneş", "Keskin",
-		"Ünal", "Turan", "Güler", "Yavuz", "Tekin", "Taş", "Köse", "Avcı", "Sarı", "Uçar",
-		"Duman", "Toprak", "Karakaya", "Akın", "Altun", "Ateş", "Coşkun", "Çiftçi", "Demirci", "Ekinci",
-		"Gündüz", "Işık", "Kalkan", "Mutlu", "Okur", "Tuna", "Uysal", "Varol", "Yalçın", "Zengin",
-		"Akgül", "Başaran", "Ceylan", "Dinç", "Erdem", "Göksu", "Kocabaş", "Sönmez", "Tosun", "Uzun",
-		"Yaman", "Bektaş", "Değirmenci", "Ergin", "Gürbüz", "Karabulut", "Oral", "Parlak", "Tunç", "Ulusoy",
-		"Yazıcı", "Akbulut", "Biçer", "Çınar", "Dağlı", "Esen", "Kaplan", "Nalbant", "Özer", "Sağlam",
-		"Şen", "Topal", "Usta", "Yiğit", "Kahraman", "Çoban", "Bakırcı", "Terzi", "Sevinç", "Günay"
+		"Yılmaz",
+		"Kaya",
+		"Demir",
+		"Çelik",
+		"Şahin",
+		"Yıldız",
+		"Yıldırım",
+		"Öztürk",
+		"Aydın",
+		"Özdemir",
+		"Arslan",
+		"Doğan",
+		"Kılıç",
+		"Aslan",
+		"Çetin",
+		"Kara",
+		"Koç",
+		"Kurt",
+		"Özkan",
+		"Şimşek",
+		"Polat",
+		"Korkmaz",
+		"Özcan",
+		"Çakır",
+		"Acar",
+		"Aktaş",
+		"Bozkurt",
+		"Bulut",
+		"Güneş",
+		"Keskin",
+		"Ünal",
+		"Turan",
+		"Güler",
+		"Yavuz",
+		"Tekin",
+		"Taş",
+		"Köse",
+		"Avcı",
+		"Sarı",
+		"Uçar",
+		"Duman",
+		"Toprak",
+		"Karakaya",
+		"Akın",
+		"Altun",
+		"Ateş",
+		"Coşkun",
+		"Çiftçi",
+		"Demirci",
+		"Ekinci",
+		"Gündüz",
+		"Işık",
+		"Kalkan",
+		"Mutlu",
+		"Okur",
+		"Tuna",
+		"Uysal",
+		"Varol",
+		"Yalçın",
+		"Zengin",
+		"Akgül",
+		"Başaran",
+		"Ceylan",
+		"Dinç",
+		"Erdem",
+		"Göksu",
+		"Kocabaş",
+		"Sönmez",
+		"Tosun",
+		"Uzun",
+		"Yaman",
+		"Bektaş",
+		"Değirmenci",
+		"Ergin",
+		"Gürbüz",
+		"Karabulut",
+		"Oral",
+		"Parlak",
+		"Tunç",
+		"Ulusoy",
+		"Yazıcı",
+		"Akbulut",
+		"Biçer",
+		"Çınar",
+		"Dağlı",
+		"Esen",
+		"Kaplan",
+		"Nalbant",
+		"Özer",
+		"Sağlam",
+		"Şen",
+		"Topal",
+		"Usta",
+		"Yiğit",
+		"Kahraman",
+		"Çoban",
+		"Bakırcı",
+		"Terzi",
+		"Sevinç",
+		"Günay"
 	],
 	"il": [
-		"Adana", "Adıyaman", "Afyon", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir",
-		"Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli",
-		"Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkâri",
-		"Hatay", "Isparta", "İçel", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir",
-		"Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir",
-		"Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat",
-		"Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak"
+		"Adana",
+		"Adıyaman",
+		"Afyon",
+		"Ağrı",
+		"Amasya",
+		"Ankara",
+		"Antalya",
+		"Artvin",
+		"Aydın",
+		"Balıkesir",
+		"Bilecik",
+		"Bingöl",
+		"Bitlis",
+		"Bolu",
+		"Burdur",
+		"Bursa",
+		"Çanakkale",
+		"Çankırı",
+		"Çorum",
+		"Denizli",
+		"Diyarbakır",
+		"Edirne",
+		"Elazığ",
+		"Erzincan",
+		"Erzurum",
+		"Eskişehir",
+		"Gaziantep",
+		"Giresun",
+		"Gümüşhane",
+		"Hakkâri",
+		"Hatay",
+		"Isparta",
+		"İçel",
+		"İstanbul",
+		"İzmir",
+		"Kars",
+		"Kastamonu",
+		"Kayseri",
+		"Kırklareli",
+		"Kırşehir",
+		"Kocaeli",
+		"Konya",
+		"Kütahya",
+		"Malatya",
+		"Manisa",
+		"Kahramanmaraş",
+		"Mardin",
+		"Muğla",
+		"Muş",
+		"Nevşehir",
+		"Niğde",
+		"Ordu",
+		"Rize",
+		"Sakarya",
+		"Samsun",
+		"Siirt",
+		"Sinop",
+		"Sivas",
+		"Tekirdağ",
+		"Tokat",
+		"Trabzon",
+		"Tunceli",
+		"Şanlıurfa",
+		"Uşak",
+		"Van",
+		"Yozgat",
+		"Zonguldak"
 	],
 	"mahalleler": [
-		{"ad": "Çarşı", "muhtar": "Rıza Aksoy"},
-		{"ad": "Yukarı", "muhtar": "Kâzım Türkmen"},
-		{"ad": "Aşağı", "muhtar": "Nuri Bozkurt"},
-		{"ad": "İstasyon", "muhtar": "Hamdi Ersoy"},
-		{"ad": "Cumhuriyet", "muhtar": "Sabri Güneş"},
-		{"ad": "Bağlar", "muhtar": "Şükrü Akın"},
-		{"ad": "Dere", "muhtar": "Bekir Sezer"},
-		{"ad": "Hisar", "muhtar": "Osman Tuna"},
-		{"ad": "Değirmen", "muhtar": "Halil Çınar"},
-		{"ad": "Yeni", "muhtar": "Celâl Erdem"}
+		{
+			"ad": "Çarşı",
+			"muhtar": "Rıza Aksoy"
+		},
+		{
+			"ad": "Yukarı",
+			"muhtar": "Kâzım Türkmen"
+		},
+		{
+			"ad": "Aşağı",
+			"muhtar": "Nuri Bozkurt"
+		},
+		{
+			"ad": "İstasyon",
+			"muhtar": "Hamdi Ersoy"
+		},
+		{
+			"ad": "Cumhuriyet",
+			"muhtar": "Sabri Güneş"
+		},
+		{
+			"ad": "Bağlar",
+			"muhtar": "Şükrü Akın"
+		},
+		{
+			"ad": "Dere",
+			"muhtar": "Bekir Sezer"
+		},
+		{
+			"ad": "Hisar",
+			"muhtar": "Osman Tuna"
+		},
+		{
+			"ad": "Değirmen",
+			"muhtar": "Halil Çınar"
+		},
+		{
+			"ad": "Yeni",
+			"muhtar": "Celâl Erdem"
+		}
 	],
 	"dis_mahalleler": [
-		{"ad": "Kavaklı", "muhtar": "Fevzi Balcı"},
-		{"ad": "Söğütlü", "muhtar": "Tahir Ayaz"},
-		{"ad": "Akpınar", "muhtar": "İdris Kökten"},
-		{"ad": "Yazıbaşı", "muhtar": "Mevlüt Sarıkaya"}
+		{
+			"ad": "Kavaklı",
+			"muhtar": "Fevzi Balcı"
+		},
+		{
+			"ad": "Söğütlü",
+			"muhtar": "Tahir Ayaz"
+		},
+		{
+			"ad": "Akpınar",
+			"muhtar": "İdris Kökten"
+		},
+		{
+			"ad": "Yazıbaşı",
+			"muhtar": "Mevlüt Sarıkaya"
+		}
 	],
 	"sokak": [
-		"Değirmen Sok.", "Çeşme Sok.", "Okul Sok.", "İstasyon Cad.", "Cami Sok.", "Hükümet Cad.", "Çınar Sok.",
-		"Bağ Yolu", "Pazar Sok.", "Kışla Cad.", "Fırın Sok.", "Köprü Sok.", "Tabakhane Sok.", "Hamam Sok.",
-		"Lale Sok.", "Gül Sok.", "Menekşe Sok.", "Dutluk Sok.", "Kuyu Sok.", "Garaj Cad."
+		"Değirmen Sok.",
+		"Çeşme Sok.",
+		"Okul Sok.",
+		"İstasyon Cad.",
+		"Cami Sok.",
+		"Hükümet Cad.",
+		"Çınar Sok.",
+		"Bağ Yolu",
+		"Pazar Sok.",
+		"Kışla Cad.",
+		"Fırın Sok.",
+		"Köprü Sok.",
+		"Tabakhane Sok.",
+		"Hamam Sok.",
+		"Lale Sok.",
+		"Gül Sok.",
+		"Menekşe Sok.",
+		"Dutluk Sok.",
+		"Kuyu Sok.",
+		"Garaj Cad."
 	],
 	"benzer": {
-		"YILMAZ": ["YILDIZ", "YILMAN"],
-		"YILDIZ": ["YILMAZ", "YILDIRIM"],
-		"YILDIRIM": ["YILDIZ"],
-		"ARSLAN": ["ASLAN"],
-		"ASLAN": ["ARSLAN"],
-		"ÖZKAN": ["ÖZCAN"],
-		"ÖZCAN": ["ÖZKAN"],
-		"KAYA": ["KARA", "KAYAN"],
-		"KARA": ["KAYA"],
-		"DEMİR": ["DEMİRCİ", "DEMİREL"],
-		"DEMİRCİ": ["DEMİR"],
-		"ÇELİK": ["ÇETİN"],
-		"ÇETİN": ["ÇELİK"],
-		"UÇAR": ["ACAR"],
-		"ACAR": ["UÇAR"],
-		"GÜLER": ["GÜNEŞ"],
-		"GÜNEŞ": ["GÜLER", "GÜNAY"],
-		"TUNA": ["TUNÇ"],
-		"TUNÇ": ["TUNA"],
-		"ERDEM": ["ERGİN"],
-		"ERGİN": ["ERDEM"],
-		"AKIN": ["AKGÜL"],
-		"ÖZTÜRK": ["ÖZDEMİR"],
-		"ÖZDEMİR": ["ÖZTÜRK"],
-		"MEHMET": ["MEHMED", "AHMET"],
-		"AHMET": ["AHMED", "MEHMET"],
-		"HATİCE": ["HATÇE", "HAYRİYE"],
-		"HÜSEYİN": ["HÜSEYN", "HASAN"],
-		"HASAN": ["HÜSEYİN", "HAKAN"],
-		"MUSTAFA": ["MUZAFFER"],
-		"KEMAL": ["CEMAL", "KÂMİL"],
-		"CEMAL": ["KEMAL", "CELAL"],
-		"CELAL": ["CEMAL"],
-		"SALİH": ["SADIK"],
-		"NURİ": ["NURİYE"],
-		"FATMA": ["FADİME"],
-		"FADİME": ["FATMA"],
-		"EMİNE": ["EMİN"],
-		"ZEHRA": ["ZEYNEP"],
-		"ZEYNEP": ["ZEHRA"],
-		"SABRİ": ["SADIK"],
-		"SEVİM": ["SEVGİ"],
-		"SEVGİ": ["SEVİM"],
-		"GÜLLÜ": ["GÜLSÜM", "GÜLER"],
-		"GÜLSÜM": ["GÜLLÜ"],
-		"OSMAN": ["ORHAN"],
-		"ORHAN": ["OSMAN"],
-		"İSMAİL": ["İLYAS"],
-		"İBRAHİM": ["İSMAİL"]
+		"YILMAZ": [
+			"YILDIZ",
+			"YILMAN"
+		],
+		"YILDIZ": [
+			"YILMAZ",
+			"YILDIRIM"
+		],
+		"YILDIRIM": [
+			"YILDIZ"
+		],
+		"ARSLAN": [
+			"ASLAN"
+		],
+		"ASLAN": [
+			"ARSLAN"
+		],
+		"ÖZKAN": [
+			"ÖZCAN"
+		],
+		"ÖZCAN": [
+			"ÖZKAN"
+		],
+		"KAYA": [
+			"KARA",
+			"KAYAN"
+		],
+		"KARA": [
+			"KAYA"
+		],
+		"DEMİR": [
+			"DEMİRCİ",
+			"DEMİREL"
+		],
+		"DEMİRCİ": [
+			"DEMİR"
+		],
+		"ÇELİK": [
+			"ÇETİN"
+		],
+		"ÇETİN": [
+			"ÇELİK"
+		],
+		"UÇAR": [
+			"ACAR"
+		],
+		"ACAR": [
+			"UÇAR"
+		],
+		"GÜLER": [
+			"GÜNEŞ"
+		],
+		"GÜNEŞ": [
+			"GÜLER",
+			"GÜNAY"
+		],
+		"TUNA": [
+			"TUNÇ"
+		],
+		"TUNÇ": [
+			"TUNA"
+		],
+		"ERDEM": [
+			"ERGİN"
+		],
+		"ERGİN": [
+			"ERDEM"
+		],
+		"AKIN": [
+			"AKGÜL"
+		],
+		"ÖZTÜRK": [
+			"ÖZDEMİR"
+		],
+		"ÖZDEMİR": [
+			"ÖZTÜRK"
+		],
+		"MEHMET": [
+			"MEHMED",
+			"AHMET"
+		],
+		"AHMET": [
+			"AHMED",
+			"MEHMET"
+		],
+		"HATİCE": [
+			"HATÇE",
+			"HAYRİYE"
+		],
+		"HÜSEYİN": [
+			"HÜSEYN",
+			"HASAN"
+		],
+		"HASAN": [
+			"HÜSEYİN",
+			"HAKAN"
+		],
+		"MUSTAFA": [
+			"MUZAFFER"
+		],
+		"KEMAL": [
+			"CEMAL",
+			"KÂMİL"
+		],
+		"CEMAL": [
+			"KEMAL",
+			"CELAL"
+		],
+		"CELAL": [
+			"CEMAL"
+		],
+		"SALİH": [
+			"SADIK"
+		],
+		"NURİ": [
+			"NURİYE"
+		],
+		"FATMA": [
+			"FADİME"
+		],
+		"FADİME": [
+			"FATMA"
+		],
+		"EMİNE": [
+			"EMİN"
+		],
+		"ZEHRA": [
+			"ZEYNEP"
+		],
+		"ZEYNEP": [
+			"ZEHRA"
+		],
+		"SABRİ": [
+			"SADIK"
+		],
+		"SEVİM": [
+			"SEVGİ"
+		],
+		"SEVGİ": [
+			"SEVİM"
+		],
+		"GÜLLÜ": [
+			"GÜLSÜM",
+			"GÜLER"
+		],
+		"GÜLSÜM": [
+			"GÜLLÜ"
+		],
+		"OSMAN": [
+			"ORHAN"
+		],
+		"ORHAN": [
+			"OSMAN"
+		],
+		"İSMAİL": [
+			"İLYAS"
+		],
+		"İBRAHİM": [
+			"İSMAİL"
+		]
 	},
 	"selam": [
-		"Hayırlı işler efendim.", "Kolay gelsin.", "İyi günler efendim.", "Selamünaleyküm.",
-		"Günaydın efendim.", "Kolay gelsin efendim.", "Merhaba, hayırlı işler."
+		"Hayırlı işler efendim.",
+		"Kolay gelsin.",
+		"İyi günler efendim.",
+		"Selamünaleyküm.",
+		"Günaydın efendim.",
+		"Kolay gelsin efendim.",
+		"Merhaba, hayırlı işler."
 	],
 	"selam_yasli": [
-		"Kolay gelsin evladım.", "Hayırlı işler evladım.", "Selamünaleyküm evladım.", "Allah kolaylık versin evladım."
+		"Kolay gelsin evladım.",
+		"Hayırlı işler evladım.",
+		"Selamünaleyküm evladım.",
+		"Allah kolaylık versin evladım."
 	],
 	"laf": [
-		"Sabahtan beri sıradayım.", "Dışarıda ayaz var, içerisi iyiymiş.", "Otobüsüm on ikide kalkıyor.",
-		"Muhtar, kâğıtların tamam olduğunu söyledi.", "Üçüncü gelişim bu.", "Evrakı dün akşam hazırladım.",
-		"Çocuk okuldan çıkmadan döneyim diyorum.", "Dükkânı çırağa bıraktım, acelem var.",
-		"Köyden geldim, akşama dönmem lazım.", "Kardan yollar kapanmadan yetişeyim."
+		"Sabahtan beri sıradayım.",
+		"Dışarıda ayaz var, içerisi iyiymiş.",
+		"Otobüsüm on ikide kalkıyor.",
+		"Muhtar, kâğıtların tamam olduğunu söyledi.",
+		"Üçüncü gelişim bu.",
+		"Evrakı dün akşam hazırladım.",
+		"Çocuk okuldan çıkmadan döneyim diyorum.",
+		"Dükkânı çırağa bıraktım, acelem var.",
+		"Köyden geldim, akşama dönmem lazım.",
+		"Kardan yollar kapanmadan yetişeyim."
 	],
 	"onay": [
-		"Allah razı olsun.", "Eksik olmayın efendim.", "Sağ olun, hayırlı işler.", "Elinize sağlık.",
-		"Oh, şükür. Hayırlı günler.", "Çok teşekkür ederim.", "Bu iş de bitti, şükür."
+		"Allah razı olsun.",
+		"Eksik olmayın efendim.",
+		"Sağ olun, hayırlı işler.",
+		"Elinize sağlık.",
+		"Oh, şükür. Hayırlı günler.",
+		"Çok teşekkür ederim.",
+		"Bu iş de bitti, şükür."
 	],
 	"onay_yasli": [
-		"Eline sağlık evladım.", "Allah tuttuğunu altın etsin.", "Çok yaşa evladım."
+		"Eline sağlık evladım.",
+		"Allah tuttuğunu altın etsin.",
+		"Çok yaşa evladım."
 	],
 	"eksik": [
-		"Yine mi? Üçüncü gelişim bu!", "Peki efendim, tamamlayıp gelirim.", "Muhtara soracağım bunu.",
-		"Bir kâğıt için yine yol tepeceğiz.", "Bu memlekette iş bir günde bitmez zaten.",
-		"Neresi eksikmiş, anlamadım ki...", "Hay Allah. Yarın yine gelirim.", "Canınız sağ olsun, gider getiririm."
+		"Yine mi? Üçüncü gelişim bu!",
+		"Peki efendim, tamamlayıp gelirim.",
+		"Muhtara soracağım bunu.",
+		"Bir kâğıt için yine yol tepeceğiz.",
+		"Bu memlekette iş bir günde bitmez zaten.",
+		"Neresi eksikmiş, anlamadım ki...",
+		"Hay Allah. Yarın yine gelirim.",
+		"Canınız sağ olsun, gider getiririm."
 	],
 	"eksik_yasli": [
-		"Bu yaşta beni yollarda süründürme evladım.", "Peki evladım, yarın yine gelirim.",
+		"Bu yaşta beni yollarda süründürme evladım.",
+		"Peki evladım, yarın yine gelirim.",
 		"Gözlerim görmüyor, kim yazdıysa yanlış yazmış."
 	],
 	"havale": [
-		"Müdür Bey'e mi? Hayırdır?", "Peki efendim, bekliyorum.", "Bir yanlışlık olmasın sakın.",
+		"Müdür Bey'e mi? Hayırdır?",
+		"Peki efendim, bekliyorum.",
+		"Bir yanlışlık olmasın sakın.",
 		"Müdürün odası şu kapı mı?"
+	],
+	"alarm": [
+		"O çanta benim değil! Emanet almıştım!",
+		"Bir yanlışlık var! Kim koymuş onu oraya?",
+		"Vallahi haberim yok, garajda biri elime tutuşturdu!",
+		"Bırakın kolumu! Avukatımı isterim!"
+	],
+	"alarm_bos": [
+		"Çantamı didik didik ettiniz; bulduğunuz bu mu?",
+		"Otobüsü kaçırırsam hesabını sizden sorarım.",
+		"Her şeyi karıştırdınız. Kim toplayacak şimdi?",
+		"Bir çantaya bu kadar şüphe... Hayırdır memur bey?",
+		"Koca devlet, benim çantamla uğraşıyor."
 	]
 }

@@ -17,6 +17,7 @@ func _calistir() -> void:
 	await _belge_testi()
 	await _hikaye_testi()
 	await _cila_testi()
+	await _rontgen_testi()
 	print("")
 	if _hata == 0:
 		print("DUMAN TESTİ: BAŞARILI (%d denetim)" % _adim)
@@ -436,7 +437,7 @@ func _hikaye_testi() -> void:
 		"husnu1": "sure", "husnu2": "muhur", "husnu3": "belge_eksik", "husnu4": "harc", "husnu5": "harc",
 		"husnu6": "mahalle", "husnu7": "sure", "nermin2": "muhur", "kenan3": "harc", "izzet4": "sure",
 		"tarik2": "", "tarik4": "", "savci5": "", "kasap5": "aranan", "naciye6": "aranan",
-		"nermin6a": "", "nermin6b": "foto",
+		"nermin6a": "", "nermin6b": "foto", "bavullu7": "",
 	}
 	var gorulen := {}
 	for gun_no in range(1, 8):
@@ -567,6 +568,7 @@ func _hikaye_testi() -> void:
 	masa = await _gune_git(5)
 	_one_al(masa, "kasap5")
 	bas("GiseyiAc")
+	await _cantayi_gecir(masa, "gecir")
 	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
 	b = masa.belgeler[0]
 	masa.karar_ver("havale", b, b.get_global_transform() * (b.size * 0.5))
@@ -600,6 +602,134 @@ func _hikaye_testi() -> void:
 	dogru(son_sahne.find_child("Gazete", true, false) != null, "  gazete sayfası var")
 	dogru(son_sahne.find_child("Mektup", true, false) != null, "  mektup var")
 	dogru(dugme("AnaMenu") != null, "  ana menü düğmesi var")
+
+
+# --- Röntgen cihazı ve vesikalıklar ---
+
+## Vatandaşın çantası varsa röntgene alır ve verilen kararı düğmeyle verir. Çanta yoksa hiçbir şey yapmaz.
+func _cantayi_gecir(masa: Node, karar: String) -> bool:
+	if not await kosulu_bekle(func() -> bool: return masa.canta_asamasi == "bekliyor" or masa.belgeler.size() >= 1, 10.0):
+		return false
+	if masa.canta_asamasi != "bekliyor":
+		return false
+	bas("CantayiTara")
+	if not await kosulu_bekle(func() -> bool: return masa.rontgen.karar_bekliyor, 8.0):
+		return false
+	bas("RontgenAlarm" if karar == "alarm" else "RontgenGecir")
+	return true
+
+
+func _rontgen_testi() -> void:
+	print("-- röntgen ve vesikalık --")
+	# vesikalıklar: herkesin ayrı bir fotoğrafı ve benzerleri var
+	var eksik_vesika := 0
+	var eksik_benzer := 0
+	for kimlik in Portreler.havuz():
+		if Portreler.vesikalik(kimlik) == Portreler.doku(kimlik):
+			eksik_vesika += 1
+		if Portreler.benzerler(kimlik).size() < 3:
+			eksik_benzer += 1
+	esit(eksik_vesika, 0, "havuzdaki herkesin ayrı bir vesikalığı var")
+	esit(eksik_benzer, 0, "herkesin en az üç benzeri var")
+	dogru(Portreler.aranan_resmi("v27") != Portreler.vesikalik("v27"), "arananların dosya resmi vesikalıktan ayrı")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var yakin := 0
+	for i in 40:
+		var kim: String = Portreler.havuz()[i % Portreler.havuz().size()]
+		var sahte: String = VatandasUretici._baska_portre(kim, rng, 3)
+		if sahte != kim and Portreler.benzerler(kim).slice(0, 3).has(sahte):
+			yakin += 1
+	esit(yakin, 40, "zor günlerde sahte fotoğraf, en benzer üç kişiden birine ait")
+
+	# çanta üreticisi: her eşyanın görseli var, yasaklar günün kuralına uyuyor
+	var bozuk := 0
+	var yasakli := 0
+	var buyuk_esya := 0
+	for gun_no: int in [5, 6, 7]:
+		var gun := Veri.gun(gun_no)
+		dogru(Canta.denetim_var(gun), "%d. günde çanta denetimi var" % gun_no)
+		var yasak: Array = Veri.kural(gun, "canta_kontrol").get("yasak", [])
+		for i in 150:
+			rng.seed = gun_no * 1000 + i
+			var c := Canta.uret(gun, rng)
+			if Canta.kabuk_dokusu(str(c.tur)) == null or Canta.dis_doku(str(c.tur)) == null or (c.esyalar as Array).size() < 3:
+				bozuk += 1
+			for e: Dictionary in c.esyalar:
+				var bilgi := Canta.esya(str(e.ad))
+				if bilgi.is_empty() or Canta.esya_dokusu(str(e.ad)) == null:
+					bozuk += 1
+				if str(c.tur) == "el_cantasi" and not bool(bilgi.get("kucuk", false)):
+					buyuk_esya += 1
+			var bulunan := Canta.yasaklar(c, gun)
+			for ad in bulunan:
+				if not yasak.has(str(Canta.esya(ad).get("kategori", ""))):
+					bozuk += 1
+			if not bulunan.is_empty():
+				yasakli += 1
+	esit(bozuk, 0, "450 rastgele çantanın hepsi geçerli")
+	esit(buyuk_esya, 0, "el çantasına yalnızca küçük eşya girer")
+	dogru(yasakli > 90 and yasakli < 190, "çantaların yaklaşık üçte birinde yasak eşya var (%d/450)" % yasakli)
+	dogru(not Canta.denetim_var(Veri.gun(4)), "4. günde çanta denetimi yok")
+
+	# 5. gün: satır henüz yasak değil; geçirmek doğru, evrak ardından gelir
+	var masa: Node = await _gune_git(5)
+	_one_al(masa, "kasap5")
+	bas("GiseyiAc")
+	dogru(await kosulu_bekle(func() -> bool: return masa.canta_asamasi == "bekliyor"), "çantalı vatandaş: çanta eşikte bekliyor")
+	esit(masa.belgeler.size(), 0, "  çanta geçmeden evrak gelmez")
+	dogru(not (masa.araclar["onay"] as Arac).etkin, "  çanta geçmeden mühür kullanılamaz")
+	bas("CantayiTara")
+	dogru(await kosulu_bekle(func() -> bool: return masa.rontgen.karar_bekliyor, 8.0), "  röntgen açıldı, görüntü ekranda")
+	bas("RontgenKip2")
+	esit(masa.rontgen.kip, 2, "  görüntü kipi değişti")
+	bas("RontgenGecir")
+	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 8.0), "  geçirince evrak geldi")
+	dogru(not masa.vatandas.has("canta_kacti"), "  5. gün satır yasak değil: kaçak sayılmaz")
+	dogru(not masa.rontgen.acik, "  cihaz kapandı")
+
+	# boş alarm: zaman gider, ilkinde ihtar yok, ikincisinde var
+	masa = await _gune_git(5)
+	_one_al(masa, "husnu5")
+	bas("GiseyiAc")
+	var once: float = masa.dakika
+	dogru(await _cantayi_gecir(masa, "alarm"), "Hüsnü Amca'nın torbasına alarm verildi")
+	esit(masa.bos_alarm, 1, "  boş alarm sayıldı")
+	dogru(masa.dakika >= once + masa.ALARM_KAYBI, "  mesaiden zaman gitti")
+	esit(masa.gunluk_ihtar, 0, "  ilk boş alarmda ihtar yok")
+	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 8.0), "  evrak yine de geldi")
+	masa._bos_alarm(masa.vatandas.canta)
+	esit(masa.gunluk_ihtar, 1, "  ikinci boş alarm ihtar getirir")
+	await bekle(2.2)
+
+	# 6. gün: "Terzi"nin el çantasında tabanca; alarm onu yakalar
+	masa = await _gune_git(6)
+	_one_al(masa, "naciye6")
+	bas("GiseyiAc")
+	dogru(await _cantayi_gecir(masa, "alarm"), "tabancalı el çantasına alarm verildi")
+	esit(str(Oyun.bayrak("naciye", "")), "yakalandi", "  \"Terzi\" röntgende yakalandı")
+	esit(int(masa.ozet.kazanc), Oyun.PRIM + Oyun.SUPHELI_PRIMI, "  prim ve şüpheli primi yazıldı")
+	esit(masa.gunluk_ihtar, 0, "  ihtar yok")
+	dogru(await kosulu_bekle(func() -> bool: return masa.vatandas.is_empty() or str(masa.vatandas.get("kod", "")) != "naciye6", 8.0), "  şahıs evrakına bakılmadan götürüldü")
+
+	# 7. gün: bavuldaki saatli bomba gözden kaçarsa
+	masa = await _gune_git(7)
+	_one_al(masa, "bavullu7")
+	bas("GiseyiAc")
+	dogru(await _cantayi_gecir(masa, "gecir"), "saatli bombalı bavul geçirildi")
+	esit(str(Oyun.bayrak("bomba", "")), "kacti", "  bavul binaya girdi")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 8.0)
+	var b: Belge = masa.belgeler[0]
+	masa.karar_ver("onay", b, b.get_global_transform() * (b.size * 0.5))
+	esit(masa.gunluk_ihtar, 1, "  evrakı düzgün olsa da kaçan çanta ihtar getirir")
+	dogru(Hikaye.son({"tur": "olagan"}, Oyun.bayraklar).yan.any(func(y: Dictionary) -> bool: return str(y.baslik).contains("PATLAMA")), "  son gazetede patlama haberi çıkar")
+	await bekle(0.3)
+	masa = await _gune_git(7)
+	_one_al(masa, "bavullu7")
+	bas("GiseyiAc")
+	await _cantayi_gecir(masa, "alarm")
+	esit(str(Oyun.bayrak("bomba", "")), "yakalandi", "saatli bomba röntgende yakalandı")
+	await bekle(0.3)
 
 
 # --- Aşama 5: sesler, ana menü, ayarlar, mola ---

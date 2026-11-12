@@ -39,7 +39,9 @@ func kur(genislik: float, tarih: String, haber: Dictionary) -> void:
 	var metin := str(haber.get("metin", ""))
 	var foto := str(haber.get("foto", ""))
 	if foto != "":
-		foto_ekle(self, foto, Rect2(KENAR, y + 2.0, FOTO.x, FOTO.y), str(haber.get("foto_alt", "")))
+		# "foto_tur": "aranan" ise emniyetin dosyasındaki eski resim basılır (şahıs bugün öyle görünmez)
+		var doku: Texture2D = Portreler.aranan_resmi(foto) if str(haber.get("foto_tur", "")) == "aranan" else null
+		foto_ekle(self, foto, Rect2(KENAR, y + 2.0, FOTO.x, FOTO.y), str(haber.get("foto_alt", "")), doku)
 		var alt := _blok(metin, 14, Stil.serif(), Stil.MUREKKEP, KENAR + FOTO.x + 12.0, y, w - FOTO.x - 12.0, false, 1)
 		y = maxf(alt, y + FOTO.y + 30.0)
 	else:
@@ -86,7 +88,8 @@ static func blok_ekle(ebeveyn: Control, metin: String, punto: int, font: Font, r
 
 
 ## Siyah-beyaz baskı fotoğraf (portreden) ve altına italik açıklama ekler.
-static func foto_ekle(ebeveyn: Control, portre: String, alan: Rect2, aciklama: String = "") -> void:
+static func foto_ekle(ebeveyn: Control, portre: String, alan: Rect2, aciklama: String = "",
+		doku: Texture2D = null) -> void:
 	var zemin := ColorRect.new()
 	zemin.color = Color(0.20, 0.19, 0.17)
 	zemin.position = alan.position
@@ -96,7 +99,7 @@ static func foto_ekle(ebeveyn: Control, portre: String, alan: Rect2, aciklama: S
 	var foto := TextureRect.new()
 	foto.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	foto.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	foto.texture = Portreler.doku(portre)
+	foto.texture = doku if doku != null else Portreler.doku(portre)
 	foto.position = alan.position + Vector2(2, 2)
 	foto.size = alan.size - Vector2(4, 4)
 	foto.mouse_filter = MOUSE_FILTER_IGNORE

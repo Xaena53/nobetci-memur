@@ -1,9 +1,10 @@
 extends "res://tools/test_surucu.gd"
 ## Tam oyun testi: yedi günü baştan sona iki ayrı "memur"la, gerçek sahne akışı üzerinden oynar.
 ##
-##  - titiz : her kararı kurallara göre verir, arananı havale eder, zarfı geri iter, evin
-##            masraflarını öder. Beklenen son: TERFİ; iki aranan da yakalanır, savcı sağ kalır.
-##  - savruk: her evrakı onaylar, zarfı çekmeceye atar, eve yalnız yiyecek alır.
+##  - titiz : her kararı kurallara göre verir, arananı havale eder, zarfı geri iter, röntgende
+##            yasak eşyaya alarm verir, evin masraflarını öder. Beklenen son: TERFİ; iki aranan da
+##            yakalanır, savcı sağ kalır, bavuldaki bomba bulunur.
+##  - savruk: her evrakı onaylar, her çantayı geçirir, zarfı çekmeceye atar, eve yalnız yiyecek alır.
 ##            Beklenen son: sürgün ya da kötü sonlardan biri.
 ##
 ## Zaman 5 kat hızlı akar; bir koşu bir iki dakika sürer.
@@ -25,6 +26,7 @@ func _calistir() -> void:
 	esit(str(titiz.bayraklar.get("kasap", "")), "yakalandi", "  \"Kasap\" gişede yakalandı")
 	esit(str(titiz.bayraklar.get("naciye", "")), "yakalandi", "  \"Terzi\" gişede yakalandı")
 	esit(str(titiz.bayraklar.get("savci", "")), "sag", "  savcıya saldırı olmadı")
+	esit(str(titiz.bayraklar.get("bomba", "")), "yakalandi", "  bavuldaki saatli bomba röntgende bulundu")
 	esit(int(titiz.get("ihtar", -1)), 0, "  hiç ihtar almadı")
 	dogru(int(titiz.get("para", -1)) >= 0, "  borca batmadı (%s)" % Stil.tl(int(titiz.get("para", 0))))
 	dogru(int(titiz.get("islenen", 0)) >= 60, "  kuyruklar eritildi (%d işlem)" % int(titiz.get("islenen", 0)))
@@ -105,6 +107,12 @@ func _masada(masa: Node, tarz: String) -> void:
 				masa.zarf.al()
 			else:
 				masa.zarf.geri_it()
+		# çanta: eşikteyse röntgene al; ekrandaysa karar ver
+		if masa.mesai_acik and masa.canta_asamasi == "bekliyor" and dugme("CantayiTara") != null:
+			dugme("CantayiTara").pressed.emit()
+		elif masa.canta_asamasi == "taraniyor" and masa.rontgen.karar_bekliyor:
+			var yasak := Canta.yasaklar(masa.vatandas.canta, masa.gun)
+			bas("RontgenAlarm" if tarz == "titiz" and not yasak.is_empty() else "RontgenGecir")
 		if masa.mesai_acik and not masa._mesgul and not masa.vatandas.is_empty() and masa.belgeler.size() > 0:
 			var sonuc := Dogrulayici.kontrol(masa.vatandas, masa.gun)
 			var karar := "onay"

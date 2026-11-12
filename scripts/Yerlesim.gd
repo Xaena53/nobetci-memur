@@ -53,3 +53,4 @@ const BUYUTEC_YERI := Vector2(1036, 343)
 const IGNE_YERI := Vector2(1118, 372)           ## ihtarların takıldığı iğne
 const ZARF_YERI := Vector2(792, 318)            ## rüşvet zarfının masada durduğu yer (masa koordinatı)
 const DENETIM_ETIKETI := Rect2(742, 196, 125, 17)   ## "müdür izliyor" şeridi (ekran koordinatı)
+const CANTA_ETIKETI := Rect2(150, 268, 166, 17)     ## "çantayı röntgene alın" şeridi (ekran koordinatı)

@@ -337,6 +337,41 @@ def ruzgar(sure: float = 12.0) -> np.ndarray:
     return x + islik * 0.8
 
 
+def bant_sesi() -> np.ndarray:
+    """Röntgen cihazının bandı: motorun uğultusu, makaraların tıkırtısı; çalışıp yavaşlayarak durur."""
+    sure = 1.9
+    z = t(sure)
+    hiz = np.clip(z / 0.25, 0, 1) * np.clip((sure - z) / 0.45, 0, 1)
+    faz = 2 * np.pi * np.cumsum(92 * (0.55 + 0.45 * hiz)) / SR
+    x = (np.sin(faz) * 0.5 + signal.sawtooth(faz * 2.0) * 0.16) * hiz
+    x += bant(gurultu(sure), 250, 1800) * 0.22 * hiz
+    for i in range(22):                                   # makara tıkırtısı
+        an = 0.12 + i * 0.075
+        if an < sure - 0.25:
+            ekle(x, bant(gurultu(0.012), 900, 3200) * sonum(0.012, 260), an, 0.25)
+    return kenar(alcak(x, 2600), 0.02, 0.12)
+
+
+def dugme() -> np.ndarray:
+    """Cihazın iri düğmesi: yaylı, tok bir çıt."""
+    x = np.zeros(int(SR * 0.12))
+    ekle(x, bant(gurultu(0.02), 500, 3000) * sonum(0.02, 170), 0.0, 1.0)
+    ekle(x, np.sin(2 * np.pi * 210 * t(0.07)) * sonum(0.07, 55), 0.0, 0.7)
+    ekle(x, bant(gurultu(0.012), 1500, 5000) * sonum(0.012, 300), 0.055, 0.45)
+    return kenar(x, 0.0005, 0.02)
+
+
+def alarm() -> np.ndarray:
+    """Röntgen alarmı: iki perdeli, cırtlak bir vızıltı (üç kez)."""
+    x = np.zeros(int(SR * 0.95))
+    for i in range(3):
+        z = t(0.2)
+        f = 740 if i % 2 == 0 else 590
+        v = signal.square(2 * np.pi * f * z, duty=0.45) * 0.5 + np.sin(2 * np.pi * f * 2 * z) * 0.2
+        ekle(x, kenar(alcak(v, 3200), 0.004, 0.02), i * 0.28, 0.9)
+    return kenar(x, 0.002, 0.03)
+
+
 def tel(frekans: float, sure: float, parlaklik: float = 0.5) -> np.ndarray:
     """Mızrapla çekilen tel (Karplus-Strong): gürültüyle dolu bir gecikme hattı her turda yumuşar."""
     uzunluk = max(2, int(round(SR / frekans)))
@@ -406,7 +441,7 @@ def main() -> None:
         "muhur": muhur, "kagit": kagit, "kagit_kay": kagit_kay, "sayfa": sayfa, "zil": zil, "teleks": teleks,
         "daktilo": daktilo, "yirt": yirt, "hece": hece, "adim": adim, "ofle": ofle, "kepenk": kepenk,
         "ihtar": ihtar, "prim": prim, "tik": tik, "saat": saat, "jaluzi": jaluzi, "zarf": zarf, "kalem": kalem,
-        "patlama": patlama, "silah": silah,
+        "patlama": patlama, "silah": silah, "bant": bant_sesi, "dugme": dugme, "alarm": alarm,
     }
     for ad, uretici in efektler.items():
         yaz(ad, uretici())

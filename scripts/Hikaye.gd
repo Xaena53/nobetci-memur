@@ -156,6 +156,10 @@ static func vatandas_kur(z: Dictionary, gun: Dictionary, rng: RandomNumberGenera
 			if str(belgeler[i].tur) == tur:
 				belgeler.remove_at(i)
 	v["belgeler"] = belgeler
+	# röntgenden geçecek çanta: içindekiler veride yazılıdır, yerleşimi günün tohumuna göre kurulur
+	var canta: Dictionary = z.get("canta", {})
+	if not canta.is_empty():
+		v["canta"] = Canta.yerlestir(str(canta.get("tur", "bavul")), canta.get("esyalar", []), rng)
 	return v
 
 

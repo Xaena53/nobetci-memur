@@ -1,5 +1,36 @@
 # Sürüm notları
 
+## 1.1.0 — vesikalıklar ve röntgen cihazı
+
+### Fotoğraflar
+
+- **Vesikalıklar yenilendi.** Nüfus cüzdanındaki fotoğraf artık yıllar önce çekilmiş ayrı bir
+  resimdir: kıyafet, saç, bıyık, şapka başkadır. Fotoğrafın sahibini yüz hatlarından tanımak gerekir.
+- **Sahte cüzdandaki fotoğraf benzer birine ait.** Yüz benzerliği ölçülerek her kişi için "en çok
+  benzeyenler" listesi çıkarıldı; zorluk arttıkça daha benzeri seçilir.
+- **Arananlar listesi eski dosya resimlerini gösterir.** Aranan şahıslar gişeye kılık değiştirmiş
+  gelir. Arada bir, listedeki resme benzeyen masum bir vatandaş da gelir.
+- Gazetedeki "aranıyor" fotoğrafı da eski resimdir.
+
+### Röntgen cihazı
+
+- **5. günden itibaren** çantayla gelenin eşyası evrakından önce röntgenden geçer.
+- Dört çanta türü (bavul, bez çanta, evrak çantası, el çantası), otuz altı eşya.
+- Üç görüntü kipi: olağan, negatif, yalnızca yoğun parçalar.
+- Yasaklar genelgeyle gelir: 5. gün ateşli silah, mermi ve patlayıcı; 6. günden itibaren bıçak,
+  kama ve satır da. Genelge defterine **YASAK** sayfası eklendi.
+- Yanıltıcı eşyalar: saç kurutma makinesi, el matkabı, sucuk, mum, çalar saat, terzi makası.
+- Yerinde alarm prim getirir; kaçan yasak eşya ihtar, boş alarm zaman kaybıdır.
+- Hikâyeye bağlandı: Hüsnü Amca'nın torbası, "Kasap"ın satırı, "Terzi"nin el çantası ve son gün
+  gelen bavul. Bavulun akıbeti son gazetede bir haber olarak çıkar.
+- Gün sonu puantajına röntgen satırı eklendi.
+- Yeni sesler: bant, düğme, alarm.
+
+### Teknik
+
+- Duman testi 330 denetime çıktı; tam oyun testindeki memurlar çanta kararlarını da veriyor.
+- Yeni üretim betikleri: `tools/sanat/vesikalik.py`, `tools/sanat/rontgen.py`.
+
 ## 1.0.0 — ilk yayın
 
 Nöbetçi Memur'un ilk tam sürümü: yedi günlük hikâyenin tamamı, yedi ayrı sonla oynanabilir.

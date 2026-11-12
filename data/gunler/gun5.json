@@ -22,8 +22,8 @@
 	},
 	"genelge": {
 		"sayi": "1984/5",
-		"konu": "Harç zammı",
-		"metin": "Harçlara zam gelmiştir; yeni tarife bu sabah yürürlüğe girdi. Eski tarifeden yatırılmış makbuz kabul edilmez, vatandaş farkı vezneye yatıracaktır. Makbuz en çok 3 gün önce kesilmiş olmalıdır. Zammı ben yapmadım; şikâyeti bana getirmeyin. Savcı Bey pazartesi ilçemizde olacak; daire tertemiz olsun."
+		"konu": "Harç zammı ve röntgen cihazı",
+		"metin": "Harçlara zam gelmiştir; yeni tarife bu sabah yürürlüğe girdi. Eski tarifeden yatırılmış makbuz kabul edilmez. Makbuz en çok 3 gün önce kesilmiş olmalıdır. Zammı ben yapmadım; şikâyeti bana getirmeyin. Valiliğin gönderdiği röntgen cihazı gişenize kuruldu: çantayla gelenin eşyası evrakından önce banttan geçecek. Ekranda silah ya da patlayıcı görürseniz kırmızı düğmeye basın; gerisini bekçi halleder. Her gördüğünüz demire alarm vermeyin, bekçinin de bir sabrı var."
 	},
 	"kurallar": [
 		{
@@ -103,6 +103,16 @@
 			"yeni": true
 		},
 		{
+			"id": "canta",
+			"tur": "canta_kontrol",
+			"yasak": [
+				"silah",
+				"patlayici"
+			],
+			"metin": "Çanta ve bavullar röntgenden geçirilir. Ateşli silah, mermi ya da patlayıcı görülürse alarm verilir.",
+			"yeni": true
+		},
+		{
 			"id": "arananlar",
 			"tur": "arananlar",
 			"metin": "Arananlar listesindeki şahıs, evrakı ne olursa olsun müdüre havale edilir.",
@@ -127,5 +137,7 @@
 			660,
 			720
 		]
-	]
+	],
+	"canta_orani": 0.42,
+	"yasak_orani": 0.28
 }
