@@ -1,5 +1,53 @@
 # Sürüm notları
 
+## 1.2.1 — sağlamlaştırma
+
+Yeni içerik yok; oyunun bozulmaya, kurcalanmaya ve köşe durumlara dayanıklılığı artırıldı.
+
+### Kayıt
+
+- **Kayıt dosyası imzalı.** Elle değiştirilen ya da bozulan dosya kayıt sayılmaz; bir önceki kayıt
+  yedekten sürülür. Yazma geçici dosya üzerinden yapılır, yarıda kesilen yazma kaydı bozmaz.
+- **Kayıttan gelen hiçbir değere güvenilmez:** türü tutmayan alan varsayılana döner, sayılar geçerli
+  aralığa çekilir, tanınmayan içerik atılır. Bozuk kayıt artık oyunu çökertmez.
+- **Mesai kapanınca kaydedilir.** Kötü geçen gün, oyundan çıkıp kayıttan dönerek silinemez.
+- **Akşam ışık sönünce kaydedilir.** Gece ekranında çıkılırsa akşamın harcamaları yeniden seçilemez.
+- **Gişesi açılmış gün baştan oynanırsa kuyruk değişir.** Aynı vatandaşları ezberlemek işe yaramaz.
+- Ayar dosyasındaki değerler geçerli aralıklara çekilir (sıfır saat hızı, eksi ses düzeyi gibi).
+- 1.2.0 ve öncesinin kayıtları bu sürümde açılmaz; yeni oyuna başlamak gerekir.
+
+### Düzeltilen hatalar
+
+- İnceleme modunda cüzdandaki imza bir muhtar örneğiyle karşılaştırılınca kusursuz evrak için
+  "sahte" ipucu çıkıyordu.
+- Vizenin son geçerlilik günü duvar takvimiyle karşılaştırılamıyordu.
+- "İlgisiz" sonuç veren karşılaştırmalarda arka planda betik hatası oluşuyordu.
+- Karar verildiği anda mesai biterse vatandaş hem işlenmiş hem yarıda kalmış sayılıyordu.
+- Gerekçe penceresi açıkken mesai biterse pencere ekranda kalıyordu.
+- Ev sahibinin istemediği kira ve komşunun getirdiği yemek, oyuncu işaretlemezse sayılmıyordu;
+  bedelsiz kalemler artık kendiliğinden geçerli.
+- Aynı vatandaş için doğan iki pusuladan biri ötekini siliyordu; artık ağır olan kalır, hafif olan
+  sonuna eklenir.
+- Mola verilince rüşvet zarfının bekleme süresi işlemeye devam ediyordu.
+- Mesai sonuna çok yakın verilen boş alarm saati geri alabiliyordu.
+- Yedinci günün gazetesi yalnızca "savcı" bayrağına bağlıydı; beklenmedik bir değerde gazete boş
+  çıkıyordu.
+- Son eklenen 25 yüzün "hafif açık" konuşma karesi, açık ağzın yarı saydam hâliydi (çift dudak
+  görünüyordu). Ara kare artık açık kareden bükülerek üretiliyor; çene kenarındaki dikiş izleri de gitti.
+
+### Oynanış
+
+- Mola sırasında masa görünmez: saat dururken evrak okunamaz.
+- Pencere arka plana geçince oyun kendiliğinden mola verir.
+- Sekme ya da pencere uzun süre takılırsa mesai saati sıçramaz.
+
+### Testler
+
+- **Sağlamlık testi** (`bash tools/saglamlik.sh`): veri çapraz denetimi, kayıt bozma, üretici ve ipucu
+  tutarlılığı, yerleşim, akış yarışları ve rastgele girdilerle "maymun" testi.
+- **Statik denetim** (`bash tools/statik_denetim.sh`): bütün betikler, uyarılar hata sayılarak derlenir.
+- Testler artık oyuncunun kayıt ve ayar dosyalarına dokunmaz.
+
 ## 1.2.0 — görev şekilleri, bilgi defteri, çalışma vizesi, gerçek sesler
 
 ### Görev şekli
@@ -149,6 +197,6 @@ Nöbetçi Memur'un ilk tam sürümü: yedi günlük hikâyenin tamamı, yedi ayr
 
 - Oyun yalnızca Türkçedir.
 - Fare ile oynanır; dokunmatik ekran ve oyun kolu desteklenmez.
-- Kayıt gün başında alınır: gün ortasında çıkılırsa o günün mesaisi sabahtan yeniden başlar.
+- Kayıt gün başında, mesai kapanınca ve akşam ışık sönünce alınır: gün ortasında çıkılırsa o günün mesaisi sabahtan yeniden başlar (1.2.1 ile).
 - Windows .exe dosyası Godot'un varsayılan simgesini taşır (simgeyi gömmek için `rcedit` gerekir).
 - Web sürümünde tarayıcı, ilk tıklamadan önce ses çalmaz.

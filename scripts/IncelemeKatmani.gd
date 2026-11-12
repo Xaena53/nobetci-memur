@@ -108,9 +108,11 @@ func ipucunu_kullan() -> bool:
 
 func _sonucu_ac(a: Hedef, h: Hedef, sonuc: Dictionary) -> void:
 	_goster(a, h, sonuc)
-	sonuc["a"] = a
-	sonuc["b"] = h
-	bulgu.emit(sonuc)
+	# kural motorunun döndürdüğü sözlük sabit olabilir (ör. "ilgisiz"): üstüne yazılmaz, kopyası gönderilir
+	var kopya := sonuc.duplicate()
+	kopya["a"] = a
+	kopya["b"] = h
+	bulgu.emit(kopya)
 
 
 func _balona_basildi(event: InputEvent) -> void:

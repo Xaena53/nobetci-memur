@@ -21,6 +21,8 @@ const FIGURLER := [
 var kalemler: Array[Dictionary] = []
 var secili: Dictionary = {}                   ## kod -> bool
 var gece: Dictionary = {}
+var _gece_basladi := false           ## ışık söndürüldü mü (masraflar bir kez düşülür)
+var _sabah_oldu := false             ## sabaha geçildi mi (gün bir kez ilerler)
 
 var _soguk: ColorRect
 var _soba: Control
@@ -36,7 +38,8 @@ var _dokular: Dictionary = {}
 func _ready() -> void:
 	kalemler = AileDurumu.masraflar(Oyun.aile, Oyun.gun)
 	for k in kalemler:
-		secili[str(k.kod)] = false
+		# bedelsiz kalem (komşunun getirdiği yemek, ev sahibinin istemediği kira) kendiliğinden işaretlidir
+		secili[str(k.kod)] = int(k.tutar) == 0
 	Ses.yalniz(["soba", "ruzgar"])
 	Ses.muzik(["ney"], -13.0, false, 3.0)      # akşam: uzaktan bir ney
 	_odayi_kur()
@@ -54,13 +57,15 @@ func toplam() -> int:
 
 ## Bir kalemi işaretler ya da işareti kaldırır (para yetmiyorsa işaretlenmez).
 func sec(kod: String, acik: bool) -> bool:
-	if not secili.has(kod):
+	if not secili.has(kod) or _gece_basladi:
 		return false
+	var tutar := 0
+	for k in kalemler:
+		if str(k.kod) == kod:
+			tutar = int(k.tutar)
+	if not acik and tutar == 0:
+		return false                    # bedelsiz kalemin işareti kaldırılamaz
 	if acik and not bool(secili[kod]):
-		var tutar := 0
-		for k in kalemler:
-			if str(k.kod) == kod:
-				tutar = int(k.tutar)
 		if toplam() + tutar > maxi(0, Oyun.para):
 			return false
 	secili[kod] = acik
@@ -76,6 +81,9 @@ func _tikla(kod: String) -> void:
 # --- Gece ---
 
 func _lambayi_sondur() -> void:
+	if _gece_basladi:
+		return                          # ikinci kez basılırsa masraf iki kez düşmesin
+	_gece_basladi = true
 	_yat.disabled = true
 	var odenen: Array = []
 	for kod: String in secili:
@@ -87,6 +95,13 @@ func _lambayi_sondur() -> void:
 	if Oyun.gun == 6:
 		Oyun.bayraklar["savci"] = Hikaye.savci_akibeti(Oyun.bayraklar)
 	gece["olay"] = Hikaye.gece(Oyun.gun, Oyun.bayraklar) if str(gece.get("son", "")) == "" else ""
+	# Gecenin sonucu hemen kaydedilir: gece ekranında oyundan çıkıp akşamı baştan oynamak işe yaramaz.
+	if str(gece.get("son", "")) != "":
+		Oyun.sonu_kaydet({"tur": "kotu", "neden": str(gece.son), "kritik": str(gece.get("kritik", ""))})
+	elif Oyun.gun >= Oyun.TOPLAM_GUN:
+		Oyun.sonu_kaydet(Oyun.son_denetle(true))
+	else:
+		Oyun.sabahi_kaydet()
 	Ses.ortami_kes("soba", 1.5)
 	Ses.muzigi_kes(1.5)
 	Ses.ortam("ruzgar", -13.0, 1.5)
@@ -139,6 +154,9 @@ func _geceyi_goster() -> void:
 
 
 func _sabah() -> void:
+	if _sabah_oldu:
+		return                          # ikinci kez basılırsa gün iki kez ilerlemesin
+	_sabah_oldu = true
 	var son := str(gece.get("son", ""))
 	if son != "":
 		Oyun.oyunu_bitir({"tur": "kotu", "neden": son, "kritik": str(gece.get("kritik", ""))})

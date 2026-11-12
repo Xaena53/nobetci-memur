@@ -220,6 +220,11 @@ static func karsilastir(a: Dictionary, b: Dictionary, v: Dictionary, gun: Dictio
 		"yuz":
 			return _foto_yuz(alan, v, gun)
 		"takvim":
+			# vizenin son geçerlilik günü de takvimle karşılaştırılır
+			if str(alan.anahtar) == "bitis":
+				if Veri.kural(gun, "vize").is_empty():
+					return {"durum": "ilgisiz", "mesaj": "Vizenin süresi için genelgede bir kural yok."}
+				return _sahtelik_denetimi(alan, v, gun)
 			return _tarih_denetimi(alan, Veri.kural(gun, "tarih_sure", str(alan.belge)), gun)
 		"kural":
 			return _alan_kural(alan, diger.kural, v, gun)
@@ -232,7 +237,10 @@ static func _alan_alan(a: Dictionary, b: Dictionary, gun: Dictionary) -> Diction
 	# cüzdan ↔ çalışma vizesi: seri numarası, doğum tarihi ve imza birebir aynı olmalı
 	if a.anahtar == b.anahtar and VIZE_ALANLARI.has(a.anahtar) and (a.belge == "calisma_vizesi" or b.belge == "calisma_vizesi"):
 		var etiket: String = VIZE_ALANLARI[a.anahtar]
-		if str(a.deger) == str(b.deger):
+		var ayni := str(a.deger) == str(b.deger)
+		if a.anahtar == "imza":
+			ayni = Imza.kod(str(a.deger)) == Imza.kod(str(b.deger))      # kontrol() ile aynı ölçü
+		if ayni:
 			return {"durum": "uyumlu", "mesaj": "Sorun yok: %s iki belgede de aynı." % Stil.kucuk(etiket)}
 		if Veri.kural(gun, "vize").is_empty():
 			return {"durum": "ilgisiz", "mesaj": "%s farklı; ama genelgede bunu arayan bir kural yok." % etiket}
@@ -334,18 +342,21 @@ static func _ornekle_karsilastir(alan: Dictionary, ornek: Dictionary, v: Diction
 		"muhur": ["muhtar_muhur"], "kase_vezne": ["kase"], "kase_vize": ["vize_kase"], "vize_no": ["vize_no"],
 	}
 	if konu.begins_with("imza:"):
-		if not ["muhtar_imza", "imza"].has(str(alan.anahtar)):
+		# defterdeki imza örnekleri muhtarlarındır: hamilin imzası onlarla kıyaslanmaz
+		if str(alan.anahtar) == "imza":
+			return {"durum": "ilgisiz", "mesaj": "Bu örnek bir muhtarın imzası. Hamilin imzasını cüzdandaki imzayla karşılaştırın."}
+		if str(alan.anahtar) != "muhtar_imza":
 			return {"durum": "ilgisiz", "mesaj": "İmza örneği ancak bir imzayla karşılaştırılır."}
 		var kimin := konu.trim_prefix("imza:")
-		var atan := str(alan.deger)
+		var imzalayan := str(alan.deger)
 		if str(alan.anahtar) == "muhtar_imza":
 			var ik: Dictionary = belge_sozlugu(v).get("ikametgah", {})
 			if not bool(_alan(ik, "muhtar_imza", false)):
 				return {"durum": "ilgisiz", "mesaj": "Belgede imza yok."}
-			atan = str(_alan(ik, "imza_sahibi", _alan(ik, "muhtar")))
+			imzalayan = str(_alan(ik, "imza_sahibi", _alan(ik, "muhtar")))
 			if Imza.kod(kimin) != Imza.kod(str(_alan(ik, "muhtar"))):
 				return {"durum": "ilgisiz", "mesaj": "Bu örnek başka muhtarın. Belgede adı yazan muhtarın örneğine bakın."}
-		if Imza.kod(atan) == Imza.kod(kimin):
+		if Imza.kod(imzalayan) == Imza.kod(kimin):
 			return {"durum": "uyumlu", "mesaj": "Sorun yok: imza örnekle aynı elden çıkmış."}
 		return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: imza örnektekine benzemiyor. Başkası atmış."}
 	if not uygun.has(konu) or not (uygun[konu] as Array).has(str(alan.anahtar)):
@@ -410,8 +421,8 @@ static func sahtecilik_hatalari(belgeler: Dictionary) -> Array[Dictionary]:
 			sonuc.append({"kod": "muhur_sahte", "belge": "ikametgah", "alan": "muhtar_muhur",
 				"aciklama": "İkametgâhtaki muhtar mührü sahteydi (%s)." % Stil.kucuk(Damga.sahte_aciklamasi("muhtar", tur))})
 		var muhtar := str(_alan(ik, "muhtar"))
-		var atan := str(_alan(ik, "imza_sahibi", muhtar))
-		if bool(_alan(ik, "muhtar_imza", false)) and Imza.kod(atan) != Imza.kod(muhtar):
+		var imzalayan := str(_alan(ik, "imza_sahibi", muhtar))
+		if bool(_alan(ik, "muhtar_imza", false)) and Imza.kod(imzalayan) != Imza.kod(muhtar):
 			sonuc.append({"kod": "imza_sahte", "belge": "ikametgah", "alan": "muhtar_imza",
 				"aciklama": "İkametgâhtaki imza muhtar %s'in imzası değildi." % muhtar})
 	if belgeler.has("harc_makbuzu"):

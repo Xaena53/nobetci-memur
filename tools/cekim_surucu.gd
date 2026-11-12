@@ -376,7 +376,15 @@ func _senaryo_cila() -> void:
 ## Konuşma canlandırması: Hüsnü Amca konuşurken gişe bölgesinden art arda kareler (k_*.png).
 func _senaryo_konusma() -> void:
 	var masa: Node = await _gune_git(1)
-	_one_al(masa, "husnu1")
+	var yuz := _arg("yuz", "")
+	if yuz == "":
+		_one_al(masa, "husnu1")
+	else:
+		# belirli bir yüzün konuşması: sıradaki ilk rastgele vatandaşın yüzü değiştirilir
+		for v: Dictionary in masa.kuyruk:
+			if str(v.get("tur", "")) == "rastgele":
+				v["portre"] = yuz
+				break
 	bas("GiseyiAc")
 	await kosulu_bekle(func() -> bool: return masa.gise.portre.konusuyor, 10.0)
 	for i in 54:
@@ -660,3 +668,14 @@ func _senaryo_ses() -> void:
 	else:
 		print("KAYIT ALINAMADI")
 	AudioServer.remove_bus_effect(0, AudioServer.get_bus_effect_count(0) - 1)
+
+
+## Her günün sabah genelgesi, yazısı tamamlanmış hâliyle (kâğıda sığıyor mu diye bakmak için).
+func _senaryo_genelge() -> void:
+	for gun_no in range(1, Oyun.TOPLAM_GUN + 1):
+		await _gune_git(gun_no)
+		var ekran := sahne().find_child("GenelgeEkrani", true, false)
+		if ekran != null:
+			ekran._tamamla()
+		await bekle(1.4)
+		await cek("g_%d_genelge" % gun_no)

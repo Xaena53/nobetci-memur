@@ -460,8 +460,16 @@ func _oyunu_baslat(gorev_sekli: String) -> void:
 
 
 func _devam_et() -> void:
-	if Oyun.yukle():
-		Oyun.sahneye_gec("masa")
+	if not Oyun.yukle():
+		return
+	# kayıt hangi aşamada alındıysa oradan sürer: sabah, kapanmış mesainin puantajı ya da oyunun sonu
+	match Oyun.asama:
+		"gun_sonu":
+			Oyun.sahneye_gec("gun_sonu")
+		"son":
+			Oyun.oyunu_bitir(Oyun.son)
+		_:
+			Oyun.sahneye_gec("masa")
 
 
 func _ayarlari_ac() -> void:

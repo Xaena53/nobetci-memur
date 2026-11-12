@@ -47,6 +47,8 @@ func _calistir() -> void:
 	else:
 		print("TAM OYUN TESTİ: %d HATA (%d denetim)" % [_hata, _adim])
 	Oyun.kaydi_sil()
+	if Oyun.ayar_yolu != "user://ayarlar.json" and FileAccess.file_exists(Oyun.ayar_yolu):
+		DirAccess.remove_absolute(Oyun.ayar_yolu)
 	Oyun.cik(1 if _hata > 0 else 0)
 
 

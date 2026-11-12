@@ -6,14 +6,17 @@ var _adim := 0
 
 
 func _ready() -> void:
+	# testler oyuncunun kayıt ve ayar dosyalarına dokunmaz
 	Oyun.kayit_yolu = "user://test_kayit.json"
+	Oyun.ayar_yolu = "user://test_ayarlar.json"
+	Oyun.ayarlari_yukle()
 	_calistir.call_deferred()
 
 
 func _calistir() -> void:
 	await _akis_testi()
-	await _ekonomi_testi()
-	await _kural_testi()
+	_ekonomi_testi()
+	_kural_testi()
 	await _belge_testi()
 	await _hikaye_testi()
 	await _cila_testi()
@@ -25,6 +28,8 @@ func _calistir() -> void:
 	else:
 		print("DUMAN TESTİ: %d HATA (%d denetim)" % [_hata, _adim])
 	Oyun.kaydi_sil()
+	if Oyun.ayar_yolu != "user://ayarlar.json" and FileAccess.file_exists(Oyun.ayar_yolu):
+		DirAccess.remove_absolute(Oyun.ayar_yolu)
 	Oyun.cik(1 if _hata > 0 else 0)
 
 
@@ -478,8 +483,8 @@ func _hikaye_testi() -> void:
 	esit(Hikaye.savci_akibeti({"kasap": "yakalandi"}), "yarali", "biri yakalandı: saldırıdan kurtulur")
 	esit(Hikaye.savci_akibeti({"kasap": "yakalandi", "naciye": "yakalandi"}), "sag", "ikisi de yakalandı: saldırı olmaz")
 	for gun_no in range(1, 8):
-		var b := {"savci": "yarali"} if gun_no == 7 else {}
-		dogru(str(Hikaye.gazete(gun_no, b).get("manset", "")) != "", "%d. gün gazetesi var" % gun_no)
+		var gazete_bayraklari := {"savci": "yarali"} if gun_no == 7 else {}
+		dogru(str(Hikaye.gazete(gun_no, gazete_bayraklari).get("manset", "")) != "", "%d. gün gazetesi var" % gun_no)
 		dogru(Hikaye.aksam(gun_no, {}) != "", "  akşam sahnesi var")
 	dogru(str(Hikaye.gazete(6, {"kasap": "yakalandi"}).manset).contains("YAKALANDI"), "tetikçi yakalanınca manşet değişir")
 	dogru(Hikaye.gece(3, {}) != "", "3. gece: patlama")

@@ -77,6 +77,7 @@ var _tik_no := 0                        ## duvar saati: tik ve tak sırayla
 var _tik_sayaci := 0.0
 var _canta_seridi: Serit
 var _ziyaret_no := 0                    ## her vatandaşta artar: bekleyen işlevler eski ziyareti sürdürmesin
+var _ugurlaniyor := false               ## kararı verilmiş vatandaş gişeden ayrılıyor (mesai o sırada biterse yarıda sayılmaz)
 
 
 func _ready() -> void:
@@ -106,6 +107,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not mesai_acik or _saat_durdu:
 		return
+	# uzun bir takılmadan (sekme arka planda kaldı, pencere taşındı) sonra saat sıçramasın
+	delta = minf(delta, 0.25)
 	# Ayarlardaki saat hızı: bir oyun dakikasının kaç gerçek saniye sürdüğü.
 	dakika += delta / maxf(0.05, float(Oyun.ayar("saat_hizi")) * float(Oyun.kip().get("saat", 1.0)))
 	if dakika >= MESAI_SONU:
@@ -135,10 +138,13 @@ func giseyi_ac() -> void:
 	if mesai_acik or gun_bitti:
 		return
 	mesai_acik = true
+	Oyun.mesaiyi_isaretle()
 	Oyun.bekle(0.8).connect(_sonraki_vatandas)
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if gun_bitti:
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_SPACE:
 		inceleme.aktif = not inceleme.aktif
 		get_viewport().set_input_as_handled()
@@ -266,7 +272,7 @@ func _canta_yakalandi(yasak: Array[String], etki: Variant) -> void:
 func _bos_alarm(canta: Dictionary) -> void:
 	bos_alarm += 1
 	ozet["bos_alarm"] = bos_alarm
-	dakika = minf(dakika + ALARM_KAYBI, MESAI_SONU - 1.0)
+	dakika = maxf(dakika, minf(dakika + ALARM_KAYBI, MESAI_SONU - 1.0))     # saat geri gitmez
 	saat.dakika = dakika
 	var mesaj := "Bekçi çantayı boşalttı: şüphelendiğiniz şey %s çıktı. Vatandaş boş yere bekledi, mesaiden %d dakika gitti." % [
 		Canta.yaniltan(canta, gun), ALARM_KAYBI]
@@ -347,7 +353,10 @@ func _belgesiz_ziyaret() -> void:
 		var bekleme := 14.0
 		while bekleme > 0.0 and is_instance_valid(zarf) and not zarf.sonuclandi:
 			await get_tree().process_frame
-			bekleme -= get_process_delta_time()
+			if not is_inside_tree():
+				return
+			if not get_tree().paused:
+				bekleme -= get_process_delta_time()
 		if not _ziyaret_suruyor(kod):
 			return
 		if is_instance_valid(zarf) and not zarf.sonuclandi:
@@ -461,6 +470,7 @@ func _belgeleri_getir() -> void:
 
 func _vatandasi_ugurla(karar: String) -> void:
 	_mesgul = true
+	_ugurlaniyor = true
 	_araclari_ayarla()
 	gise.tepki(karar)
 	if is_instance_valid(zarf) and not zarf.sonuclandi:
@@ -477,6 +487,7 @@ func _vatandasi_ugurla(karar: String) -> void:
 	await Oyun.bekle(1.0)
 	gise.gitsin()
 	vatandas = {}
+	_ugurlaniyor = false
 	_fisi_goster()
 	await Oyun.bekle(1.3)
 	_sonraki_vatandas()
@@ -523,16 +534,22 @@ func _gerekce_sor(belge: Belge, konum: Vector2) -> void:
 	_ust_katman.add_child(p)
 	p.ac(Dogrulayici.gunun_gerekceleri(gun), tespitler, konum)
 	p.secildi.connect(func(gerekce: String) -> void:
+		if gun_bitti:
+			return
 		_mesgul = false
 		karar_ver("eksik", belge, konum, gerekce))
 	p.vazgecildi.connect(func() -> void:
+		if gun_bitti:
+			return
 		_mesgul = false
 		_araclari_ayarla())
 
 
 ## Kararı kaydeder, belgeye izini bırakır ve doğruluğunu değerlendirir. `konum` ekran koordinatıdır.
 func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = "") -> void:
-	if _mesgul or vatandas.is_empty() or not is_instance_valid(belge):
+	if _mesgul or vatandas.is_empty() or not is_instance_valid(belge) or belge == defter:
+		return
+	if not KARAR_ADLARI.has(karar) or (karar == "havale" and havale_kalan <= 0):
 		return
 	_mesgul = true
 	var yerel := belge.get_global_transform().affine_inverse() * konum
@@ -567,7 +584,7 @@ func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = ""
 	if not etki.is_empty():
 		Hikaye.etki_uygula(etki)
 		if etki.has("not"):
-			_bekleyen_fis = {"cesit": "not", "metin": str(etki["not"])}
+			_fis_yaz("not", str(etki["not"]))
 		# arananlardan biri yakalandıysa defterdeki resmine damga vurulur
 		var acik_sayfa := kural_kitabi.sayfa
 		kural_kitabi.yukle(gun)
@@ -588,7 +605,7 @@ func _sonucu_isle(karar: String, d: Dictionary) -> void:
 			Ses.gecikmeli("prim", 0.5, 1.0, -6.0)
 			if bool(d.get("supheli_yakalandi", false)):
 				ozet.kazanc += Oyun.SUPHELI_PRIMI
-				_bekleyen_fis = {"cesit": "not", "metin": "Şüpheniz yerindeymiş; evrak sahte çıktı. Dikkatiniz sicilinize işlendi."}
+				_fis_yaz("not", "Şüpheniz yerindeymiş; evrak sahte çıktı. Dikkatiniz sicilinize işlendi.")
 		"yanlis":
 			ozet.yanlis += 1
 			var mesaj := str(d.mesaj)
@@ -600,13 +617,35 @@ func _sonucu_isle(karar: String, d: Dictionary) -> void:
 				gunluk_ihtar += 1
 			ozet.ihtar = gunluk_ihtar
 			(ozet.ihtarlar as Array).append(mesaj)
-			_bekleyen_fis = {"cesit": "ihtar", "metin": mesaj}
+			_fis_yaz("ihtar", mesaj)
 		"yarim":
 			ozet.yarim += 1
-			_bekleyen_fis = {"cesit": "uyari", "metin": str(d.mesaj)}
+			_fis_yaz("uyari", str(d.mesaj))
 		_:
 			if str(d.get("mesaj", "")) != "":
-				_bekleyen_fis = {"cesit": "not", "metin": str(d.mesaj)}
+				_fis_yaz("not", str(d.mesaj))
+
+
+## Teleksten çıkacak pusulayı hazırlar. Aynı vatandaş için birden çok pusula doğarsa ağır olan kalır
+## (ihtar > uyarı > not): hafif olan ağırın yerine geçmez, sonuna eklenir; iki ihtar birleşir;
+## aynı ağırlıktaki yeni not eskisinin yerini alır.
+func _fis_yaz(cesit: String, metin: String) -> void:
+	const AGIRLIK := {"not": 0, "uyari": 1, "ihtar": 2}
+	if _bekleyen_fis.is_empty():
+		_bekleyen_fis = {"cesit": cesit, "metin": metin}
+		return
+	var eski := str(_bekleyen_fis.get("cesit", "not"))
+	var eski_metin := str(_bekleyen_fis.get("metin", ""))
+	var yeni_agir := int(AGIRLIK.get(cesit, 0))
+	var eski_agir := int(AGIRLIK.get(eski, 0))
+	if yeni_agir > eski_agir:
+		_bekleyen_fis = {"cesit": cesit, "metin": metin + (" " + eski_metin if eski_agir > 0 else "")}
+	elif yeni_agir < eski_agir:
+		_bekleyen_fis.metin = eski_metin + " " + metin
+	elif cesit == "ihtar":
+		_bekleyen_fis.metin = eski_metin + " Üstelik: " + metin
+	else:
+		_bekleyen_fis = {"cesit": cesit, "metin": metin}
 
 
 ## Bekleyen pusulayı (ihtar / uyarı / not) teleksten bastırır.
@@ -667,9 +706,17 @@ func mesaiyi_bitir() -> void:
 	canta_asamasi = ""
 	_canta_seridi.visible = false
 	rontgen.kapat()
+	# açık kalan pencereler (gerekçe seçimi) gişeyle birlikte kapanır
+	var pencere := _ust_katman.get_node_or_null("GerekcePenceresi")
+	if pencere != null:
+		pencere.queue_free()
 	if is_instance_valid(zarf) and not zarf.sonuclandi:
 		zarf.geri_git()
-	if not vatandas.is_empty():
+	if _ugurlaniyor:
+		# kararı verilmiş vatandaş zaten gidiyor: işlemi sayıldı, pusulası çıksın
+		await Oyun.bekle(1.9)
+		_fisi_goster()
+	elif not vatandas.is_empty():
 		if bool(vatandas.get("belgesiz", false)):
 			balon.soyle("Kapatıyorsunuz demek. Sonra konuşuruz.", 1.6)
 		else:

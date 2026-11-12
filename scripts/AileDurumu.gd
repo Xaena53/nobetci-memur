@@ -46,15 +46,25 @@ static func onar(v: Variant) -> Dictionary:
 	var a := yeni()
 	if typeof(v) != TYPE_DICTIONARY:
 		return a
-	var s: Dictionary = v.get("saglik", {})
-	for u: String in UYELER:
-		a.saglik[u] = clampi(int(s.get(u, 3)), 0, 3)
-	a.soguk_gece = int(v.get("soguk_gece", 0))
-	a.kira_borcu = int(v.get("kira_borcu", 0))
-	a.okul_eksigi = int(v.get("okul_eksigi", 0))
-	a.ikram = bool(v.get("ikram", false))
-	a.kira_affi = bool(v.get("kira_affi", false))
+	# kayıt dosyası dışarıdan gelir: türü tutmayan alan varsayılanda kalır, sayılar aralığa çekilir
+	var s: Variant = v.get("saglik")
+	if typeof(s) == TYPE_DICTIONARY:
+		for u: String in UYELER:
+			a.saglik[u] = _sayi(s.get(u), 3, 0, 3)
+	a.soguk_gece = _sayi(v.get("soguk_gece"), 0, 0, 30)
+	a.kira_borcu = _sayi(v.get("kira_borcu"), 0, 0, 30)
+	a.okul_eksigi = _sayi(v.get("okul_eksigi"), 0, 0, 30)
+	a.ikram = v.get("ikram") if typeof(v.get("ikram")) == TYPE_BOOL else false
+	a.kira_affi = v.get("kira_affi") if typeof(v.get("kira_affi")) == TYPE_BOOL else false
 	return a
+
+
+static func _sayi(v: Variant, yedek: int, alt: int, ust: int) -> int:
+	if typeof(v) == TYPE_INT:
+		return clampi(v, alt, ust)
+	if typeof(v) == TYPE_FLOAT and not is_nan(v) and not is_inf(v):
+		return int(clampf(v, float(alt), float(ust)))
+	return yedek
 
 
 static func saglik(aile: Dictionary, uye: String) -> int:

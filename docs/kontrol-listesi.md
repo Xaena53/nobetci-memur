@@ -12,6 +12,8 @@ godot --headless --path . res://scenes/UreticiTesti.tscn -- --cik   # 7 gün x 1
 godot --headless --path . res://tools/TamOyun.tscn              # yedi gün baştan sona, iki ayrı memurla
 ```
 
+- [ ] `bash tools/statik_denetim.sh` "0 sorunlu" yazıyor.
+- [ ] `bash tools/saglamlik.sh` "BAŞARILI" yazıyor ve konsolda hata satırı yok.
 - [ ] Duman testi "BAŞARILI" yazıyor.
 - [ ] Üretici testi "her vatandaşta aynı fikirde" yazıyor.
 - [ ] Tam oyun testi "BAŞARILI" yazıyor: titiz memur terfi ediyor, savruk memurun sonu kötü.

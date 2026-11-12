@@ -4,7 +4,7 @@ Yaptıkları:
   1. Portreleri keser (assets/img/portre/vNN.webp) ve künyeye cinsiyet ile yaşı yazar.
   2. Yüz noktalarını bulur (göz, burun, ağız, çene): canlandırma bunları kullanır.
   3. Konuşma karelerini üretir. Bu sayfanın yalnızca "ağız açık" çeşitlemesi vardır (agiz2_e.png);
-     "hafif açık" kare, açık karenin yarı saydam hâlidir.
+     "hafif açık" kare, açık kareden bükülerek üretilir (agiz_ara_kare.py).
 Vesikalıklar ve benzerlik listeleri için ardından tools/sanat/vesikalik.py çalıştırılır.
 
 Kullanım: python tools/sanat/yeni_havuz.py && python tools/sanat/vesikalik.py
@@ -18,6 +18,7 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import agiz_ara_kare  # noqa: E402
 import agiz_kareleri  # noqa: E402
 import kadro  # noqa: E402
 from dilimle import OMUZ_GENISLIGI, bilesenler, kaydet  # noqa: E402
@@ -90,7 +91,7 @@ def main() -> None:
     # 3. konuşma kareleri (tek çeşitlemeden)
     agiz_kareleri.AGIZ.mkdir(parents=True, exist_ok=True)
     acik = agiz_kareleri.sayfa_kisileri("agiz2_e", ADET, SATIR, olcek_bul)
-    denetim, basarisiz = [], []
+    denetim, basarisiz, ara_denetim = [], [], []
     for kimlik, cesit in zip(kimlikler, acik):
         if kimlik in bulunamayan:
             continue
@@ -99,12 +100,9 @@ def main() -> None:
             basarisiz.append(kimlik)
             kunye[kimlik].pop("agiz_kare", None)
             continue
-        # atlasın ilk karesi "hafif açık": açık karenin yarı saydamı (portrenin kapalı ağzıyla karışır)
-        yol = agiz_kareleri.AGIZ / f"{kimlik}.webp"
-        atlas = np.array(Image.open(yol).convert("RGBA"))
-        yari = atlas.shape[1] // 2
-        atlas[:, :yari, 3] = (atlas[:, :yari, 3].astype(np.float32) * 0.5).astype(np.uint8)
-        Image.fromarray(atlas, "RGBA").save(yol, quality=92, method=4, alpha_quality=100)
+        # atlasın ilk karesi "hafif açık": açık kareden bükülerek üretilir (bkz. agiz_ara_kare.py)
+        (agiz_ara_kare.YEDEK / f"{kimlik}.png").unlink(missing_ok=True)
+        agiz_ara_kare.isle(kimlik, kunye[kimlik], ara_denetim)
     print(f"konuşma kareleri: {ADET - len(basarisiz) - len(bulunamayan)}/{ADET}; başarısız: {basarisiz}")
     KUNYE.write_text(json.dumps(kunye, ensure_ascii=False, indent="\t") + "\n", encoding="utf-8")
     if denetim:

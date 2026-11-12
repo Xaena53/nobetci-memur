@@ -21,7 +21,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.2.0 |
+| Sürüm | 1.2.1 |
 
 ---
 
@@ -293,6 +293,26 @@ godot --path .               # oyunu başlatır
 Kayıt ve ayarlar kullanıcı klasöründe durur (`user://kayit.json`, `user://ayarlar.json`;
 Windows'ta `%APPDATA%\Godot\app_userdata\Nöbetçi Memur\`).
 
+### Kayıt nasıl işler
+
+Oyun kendiliğinden kaydeder; elle kayıt yoktur. Üç kayıt anı vardır:
+
+| An | Kayıttan dönünce |
+|---|---|
+| Sabah (gün başı) | Gün baştan oynanır. Gişe bir kez açıldıysa kuyruk başka vatandaşlarla kurulur. |
+| Mesai kapanınca | Puantaj ekranı gelir: günün parası, ihtarları ve sonucu yerindedir. |
+| Akşam ışık sönünce | Ertesi sabah (ya da oyun bittiyse son ekranı) gelir. |
+
+Bu düzen, kötü geçen günü oyundan çıkıp silmeyi ve aynı kuyruğu ezberleyip baştan oynamayı önler.
+Mola (ESC) sırasında masa görünmez: saat dururken evrak okunamaz. Pencere arka plana geçince oyun
+kendiliğinden mola verir.
+
+Kayıt dosyası imzalıdır. Elle değiştirilen ya da bozulan dosya kayıt sayılmaz; bir önceki kayıt
+(`kayit.json.yedek`) varsa ondan sürülür. Yazma önce geçici dosyaya yapılır: yarıda kesilen bir
+yazma eldeki kaydı bozmaz. İmza anahtarı oyunun paketindedir; paketi açan biri onu bulabilir, yani
+imza gündelik kurcalamayı ve bozulmayı yakalar, kararlı birini durdurmaz. Ayar dosyasındaki değerler
+okunurken geçerli aralıklara çekilir.
+
 ## Dışa aktarma ve yayın
 
 Windows ve Web ön ayarları `export_presets.cfg` içindedir.
@@ -405,6 +425,8 @@ Yeni bir kural türü eklenirse üç yer güncellenir: `Dogrulayici.kontrol` (de
 godot --headless --path . res://tools/DumanTesti.tscn              # 408 denetim
 godot --headless --path . res://scenes/UreticiTesti.tscn -- --cik  # 7 gün × 100 vatandaş
 godot --headless --path . res://tools/TamOyun.tscn                 # yedi gün baştan sona
+bash tools/statik_denetim.sh                                       # bütün betikler, uyarılar hata sayılarak
+bash tools/saglamlik.sh                                            # sağlamlık testi (aşağıda)
 ```
 
 - **Duman testi** sahneleri kodla gezer: gün döngüsü, maaş ve aile hesabı, kural motoru, belge
@@ -418,6 +440,21 @@ godot --headless --path . res://tools/TamOyun.tscn                 # yedi gün b
 - **Tam oyun testi** yedi günü gerçek sahne akışı üzerinden iki ayrı memurla oynar: kurallara
   uyan ve röntgende yasak eşyaya alarm veren memurun terfi etmesi, her evrakı onaylayıp her
   çantayı geçiren memurun sonunun kötü olması beklenir.
+
+- **Statik denetim** bütün betikleri GDScript uyarıları hataya çevrilmiş olarak derler: kullanılmayan
+  değişken, gölgelenen ad, gereksiz `await`, uyumsuz üçlü ifade gibi kusurlar derlemeyi durdurur.
+- **Sağlamlık testi** oyunu bozmaya çalışır; bölümleri tek tek de çalıştırılabilir
+  (`bash tools/saglamlik.sh kayit maymun`). Konsola düşen her betik hatası da başarısızlık sayılır.
+
+  | Bölüm | Ne yapar |
+  |---|---|
+  | `veri` | Veri dosyalarını ve varlıkları çapraz denetler (yaklaşık 4.000 denetim): her yüzün görseli, vesikalığı, konuşma kareleri, kimliği ve imzası; her kuralın alanları; her ziyaretin kişisi, işlemi, çantası; koşullarda okunan her bayrağı yazan bir yer; koddaki her ses, etiket ve dosya yolu. |
+  | `kayit` | Kayıt ve ayar dosyalarını bozar: yarım JSON, yanlış türler, aşırı büyük ve çok derin dosya, geçersiz baytlar, elle değiştirilmiş içerik, imzası doğru ama değerleri düşmanca kayıtlar. Oyun çökmemeli, durum makul kalmalıdır. Kayıt aşamaları da burada sınanır. |
+  | `uretici` | Üç görev şekli × beş tohum × yedi gün × 60 vatandaş (6.300): üreticinin koyduğu kusur ile doğrulayıcının bulduğu kusur aynı mı; aynı tohum aynı kuyruğu veriyor mu. |
+  | `ipucu` | İnceleme modunda tıklanabilecek bütün hedef çiftlerini karşılaştırır: kusursuz evrakta hiçbir çift "uyuşmazlık" dememeli, her kusur en az bir karşılaştırmayla bulunabilmeli, sonuç tıklama sırasına bağlı olmamalıdır. |
+  | `yerlesim` | Bütün yüzlerin kimlikleriyle kurulan belgelerde yazıların alanından taşmadığını, konuşmaların balona, en uzun pusulanın ekrana sığdığını ölçer. |
+  | `akis` | Zamanlama yarışları: karar anında biten mesai, pencere açıkken kapanan gişe, aynı karede iki karar, hakkı bitmiş havale, bilgi defterine mühür, üst üste sahne geçişi, mola. |
+  | `maymun` | Dokuz tur boyunca rastgele tıklar, sürükler, tuşlara ve düğmelere basar, karar araçlarını belgelere bırakır; her girdiden sonra oyun durumunun tutarlılığına ve kilitlenme olup olmadığına bakar. |
 
 Ekran görüntüsü düzeneği pencereyi ekran dışında, odak almadan açar:
 
@@ -441,6 +478,7 @@ betiklerle hazırlandı:
 | `tools/sanat/dilimle.py` | Portre ve nesne sayfalarını saydamlık kanalından tek tek görsellere ayırır |
 | `tools/sanat/yuz_noktalari.py` | Her portrede göz, burun, ağız ve çene noktalarını bulur (OpenCV YuNet) |
 | `tools/sanat/agiz_kareleri.py` | "Ağzı açık" çeşitlemeleri ana portreye hizalar; alt yüzü yumuşak maskeyle keser |
+| `tools/sanat/agiz_ara_kare.py` | Tek çeşitlemesi olan yüzlerde "hafif açık" kareyi açık kareden bükerek üretir (ağız boşluğunu daraltır) |
 | `tools/sanat/aile_figurleri.py` | Ev sahnesindeki tam boy figürleri dilimler |
 | `tools/sanat/vesikalik.py` | "Yıllar önceki hâli" çeşitlemelerinden vesikalıkları ve aranan resimlerini keser; yüz benzerliklerini ölçer (OpenCV SFace) |
 | `tools/sanat/rontgen.py` | Röntgen eşyalarını, çanta kabuklarını, cihazı ve çantaların dış görünüşünü dilimler |

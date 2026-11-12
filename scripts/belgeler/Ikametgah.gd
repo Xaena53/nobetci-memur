@@ -51,8 +51,8 @@ func _draw() -> void:
 
 	var tohum := hash(metin("muhtar") + metin("mahalle"))
 	if bool(al("muhtar_imza")):
-		var atan := metin("imza_sahibi") if metin("imza_sahibi") != "" else metin("muhtar")
-		_imza_ciz(Rect2(22, 308, 136, 52), tohum, Color(Stil.MAVI_MUREKKEP, 0.95), atan)
+		var imzalayan := metin("imza_sahibi") if metin("imza_sahibi") != "" else metin("muhtar")
+		_imza_ciz(Rect2(22, 308, 136, 52), tohum, Color(Stil.MAVI_MUREKKEP, 0.95), imzalayan)
 	else:
 		_noktali(26, 150, 348, Color(0, 0, 0, 0.3))
 

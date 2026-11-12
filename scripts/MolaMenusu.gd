@@ -19,7 +19,7 @@ func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_STOP
 
 	var perde := ColorRect.new()
-	perde.color = Color(0.07, 0.06, 0.05, 0.62)
+	perde.color = Color(0.07, 0.06, 0.05, 0.96)      # saat dururken masadaki evrak okunamasın
 	perde.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	perde.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(perde)

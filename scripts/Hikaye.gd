@@ -70,7 +70,15 @@ static func _ilk_uyan(liste: Array, gun_no: int, bayraklar: Dictionary) -> Dicti
 
 ## O sabahın gazetesi: {manset, metin} (yoksa boş).
 static func gazete(gun_no: int, bayraklar: Dictionary) -> Dictionary:
-	return _ilk_uyan(veri().get("gazete", []), gun_no, bayraklar)
+	var uyan := _ilk_uyan(veri().get("gazete", []), gun_no, bayraklar)
+	if not uyan.is_empty():
+		return uyan
+	# Hiçbir koşul tutmadıysa (beklenmedik bir bayrak değeri) o günün son kaydı basılır: sabah gazetesiz kalmaz.
+	var yedek := {}
+	for g: Dictionary in veri().get("gazete", []):
+		if int(g.get("gun", 0)) == gun_no:
+			yedek = g
+	return yedek
 
 
 ## Akşam evde geçen kısa sahne.
