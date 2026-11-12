@@ -25,7 +25,7 @@ static func kunye() -> Dictionary:
 		if FileAccess.file_exists(KUNYE_YOLU):
 			var veri: Variant = JSON.parse_string(FileAccess.get_file_as_string(KUNYE_YOLU))
 			if typeof(veri) == TYPE_DICTIONARY:
-				_kunye = veri
+				_kunye = Veri.dondur(veri)
 	return _kunye
 
 

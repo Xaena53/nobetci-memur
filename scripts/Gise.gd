@@ -83,10 +83,6 @@ func _ready() -> void:
 	add_child(yuz)
 
 
-func bos_mu() -> bool:
-	return kimlik == ""
-
-
 ## Vatandaş soldan yürüyerek cama gelir.
 func gelsin(portre_kimligi: String) -> void:
 	kimlik = portre_kimligi

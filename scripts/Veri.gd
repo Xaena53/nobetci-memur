@@ -21,8 +21,23 @@ static func oku(yol: String) -> Variant:
 	if hata != OK:
 		push_error("%s okunamadı (satır %d): %s" % [yol, json.get_error_line(), json.get_error_message()])
 		return null
-	_onbellek[yol] = json.data
-	return json.data
+	# Veri dosyaları oyun boyunca değişmez: bellekteki kopya salt okunur yapılır. Bir yer onu yanlışlıkla
+	# değiştirmeye kalkarsa (sonraki günleri de bozacak sessiz bir hata) anında hata verir.
+	_onbellek[yol] = dondur(json.data)
+	return _onbellek[yol]
+
+
+## Bir sözlüğü ya da diziyi, içindekilerle birlikte salt okunur yapar.
+static func dondur(v: Variant) -> Variant:
+	if typeof(v) == TYPE_DICTIONARY:
+		for anahtar: Variant in v:
+			dondur(v[anahtar])
+		(v as Dictionary).make_read_only()
+	elif typeof(v) == TYPE_ARRAY:
+		for oge: Variant in v:
+			dondur(oge)
+		(v as Array).make_read_only()
+	return v
 
 
 static func gun_var_mi(no: int) -> bool:
@@ -57,5 +72,3 @@ static func kural(gun_verisi: Dictionary, tur: String, belge: String = "") -> Di
 	return {}
 
 
-static func onbellegi_bosalt() -> void:
-	_onbellek.clear()

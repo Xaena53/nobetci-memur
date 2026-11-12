@@ -114,15 +114,6 @@ func sayfaya_gec(no: int, sesli: bool = true) -> void:
 		sayfa_cevrildi.emit()
 
 
-## Belirli bir kuralın yazılı olduğu sayfayı açar (ihtar sonrası göstermek için).
-func kurali_goster(kural_id: String) -> void:
-	for i in _sayfalar.size():
-		for c in _sayfalar[i].get_children():
-			if c is Hedef and str((c as Hedef).kural.get("id", "")) == kural_id:
-				sayfaya_gec(i)
-				return
-
-
 # --- Kurulum ---
 
 func _yeni_sayfa(baslik: String) -> Control:
@@ -201,7 +192,8 @@ func _tablo_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> float:
 			for islem: String in tutarlar:
 				var ad: String = Islemler.adi(islem)
 				var tutar := Stil.tl(int(tutarlar[islem]))
-				var nokta := maxi(2, 38 - ad.length() - tutar.length())
+				# satır 37 harfi geçmez: geçerse "TL" alt satıra kayıp sonraki satırın üstüne biner
+				var nokta := maxi(2, 35 - ad.length() - tutar.length())
 				_satir_yaz(s, ad + " " + ".".repeat(nokta) + " " + tutar, y, genislik, satir_yuk, k, Stil.MUREKKEP, islem)
 				y += satir_yuk + 2.0
 		"seri_aralik":

@@ -68,7 +68,7 @@ static func _sayi(v: Variant, yedek: int, alt: int, ust: int) -> int:
 
 
 static func saglik(aile: Dictionary, uye: String) -> int:
-	return int((aile.get("saglik", {}) as Dictionary).get(uye, 3))
+	return clampi(int((aile.get("saglik", {}) as Dictionary).get(uye, 3)), 0, 3)
 
 
 ## "Anneniz Hacer Hanım: halsiz" gibi durum satırı.

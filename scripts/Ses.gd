@@ -315,5 +315,7 @@ func _exit_tree() -> void:
 
 ## Sahneye eklenen her düğme basılınca küçük bir tık sesi çıkarır.
 func _dugum_eklendi(dugum: Node) -> void:
-	if dugum is Button:
+	# düğüm ağaçtan çıkıp yeniden girerse ikinci kez bağlanmasın
+	if dugum is Button and not dugum.has_meta("tik_bagli"):
+		dugum.set_meta("tik_bagli", true)
 		(dugum as Button).pressed.connect(cal.bind("tik", 1.0, -6.0, 0.05))

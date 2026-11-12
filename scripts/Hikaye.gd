@@ -223,8 +223,18 @@ static func son(sonuc: Dictionary, bayraklar: Dictionary) -> Dictionary:
 		"damga": str(bas.get("damga", "")),
 		"yan": yan,
 		"ilanlar": s.get("ilanlar", []),
-		"mektup": mektup() if bool(bayraklar.get("mektup", false)) else "",
+		"mektup": mektup() if _isaretli(bayraklar.get("mektup")) else "",
 	}
+
+
+## Mantıksal bir bayrak işaretli mi? Kayıttan başka türde bir değer gelirse (metin, sayı) hata vermez.
+static func _isaretli(v: Variant) -> bool:
+	match typeof(v):
+		TYPE_BOOL:
+			return v
+		TYPE_INT, TYPE_FLOAT:
+			return v != 0
+	return false
 
 
 ## Hüsnü Amca'nın mektubu.

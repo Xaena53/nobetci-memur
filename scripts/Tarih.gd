@@ -70,11 +70,6 @@ static func ay_ekle(metin: String, adet: int) -> String:
 	return yaz(mini(t.gun, ay_gunu(ay, yil)), ay, yil)
 
 
-## b − a (gün). Pozitifse b daha geç.
-static func fark_gun(a: String, b: String) -> int:
-	return gun_no(b) - gun_no(a)
-
-
 static func haftanin_gunu(metin: String) -> String:
 	return GUNLER[posmod(gun_no(metin), 7)]
 

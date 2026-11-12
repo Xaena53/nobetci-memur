@@ -79,7 +79,9 @@ func _ready() -> void:
 	var notu := Stil.etiket(_mudur_notu(o), 12, Stil.MAVI_MUREKKEP, Stil.daktilo_italik())
 	notu.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	notu.position = Vector2(x, y)
-	notu.size = Vector2(KAGIT.x - 2.0 * x, 64)
+	# satırlar çoğalıp not mührün hizasına indiyse, yazı mührün soluna sığacak kadar daralır
+	var muhre_degiyor := y + 34.0 > KAGIT.y - 162.0
+	notu.size = Vector2((KAGIT.x - x - 206.0) if muhre_degiyor else (KAGIT.x - 2.0 * x), 64)
 	kagit.add_child(notu)
 	_satirlar.append(notu)
 

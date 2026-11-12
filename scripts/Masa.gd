@@ -539,7 +539,7 @@ func _gerekce_sor(belge: Belge, konum: Vector2) -> void:
 		_mesgul = false
 		karar_ver("eksik", belge, konum, gerekce))
 	p.vazgecildi.connect(func() -> void:
-		if gun_bitti:
+		if gun_bitti or _ugurlaniyor:
 			return
 		_mesgul = false
 		_araclari_ayarla())
@@ -547,7 +547,7 @@ func _gerekce_sor(belge: Belge, konum: Vector2) -> void:
 
 ## Kararı kaydeder, belgeye izini bırakır ve doğruluğunu değerlendirir. `konum` ekran koordinatıdır.
 func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = "") -> void:
-	if _mesgul or vatandas.is_empty() or not is_instance_valid(belge) or belge == defter:
+	if _mesgul or _ugurlaniyor or gun_bitti or vatandas.is_empty() or not is_instance_valid(belge) or belge == defter:
 		return
 	if not KARAR_ADLARI.has(karar) or (karar == "havale" and havale_kalan <= 0):
 		return
@@ -688,7 +688,7 @@ func _konumdaki_belge(konum: Vector2) -> Belge:
 
 
 func _araclari_ayarla() -> void:
-	var acik := mesai_acik and not _mesgul and not vatandas.is_empty()
+	var acik := mesai_acik and not _mesgul and not _ugurlaniyor and not vatandas.is_empty()
 	for a: Arac in araclar.values():
 		a.etkin = acik and a.kalan != 0
 

@@ -19,6 +19,8 @@ const ETKI_ANLARI := ["onay", "eksik", "havale", "alarm", "gecir", "zarf", "ziya
 const ETKI_ALANLARI := ["bayrak", "suphe", "para", "ikram", "kira_affi", "sonuc", "not"]
 
 var _sessiz_hata := 0
+var _hedef_onbellegi: Dictionary = {}     ## gün özeti -> arayüzdeki hedeflerin özetleri
+var _hedef_sayisi := 0
 var _en_dolu := 0.0          ## yerleşim denetimi: alanını en çok dolduran yazının doluluk oranı
 
 
@@ -117,6 +119,7 @@ func _bolum_veri() -> void:
 		_v(str(b.get("yas", "")).is_valid_int() and int(b.get("yas", 0)) >= 4 and int(b.get("yas", 0)) <= 95, "yaş makul: " + kimlik)
 		_v(ResourceLoader.exists(Portreler.KLASOR + "vesika/" + kimlik + ".webp"), "vesikalığı var: " + kimlik)
 		_v(Portreler.agiz_dokusu(kimlik) != null, "konuşma kareleri var: " + kimlik)
+		_v(_agiz_kareleri_duzgun(kimlik), "konuşma kareleri iki ayrı, tam görünür kare (yarı saydam kopya değil): " + kimlik)
 		_v(not Portreler.benzerler(kimlik).is_empty(), "benzer listesi dolu: " + kimlik)
 
 	# --- sabit kimlikler ---
@@ -210,6 +213,7 @@ func _bolum_veri() -> void:
 				"belge_zorunlu":
 					for t: Variant in k.get("belgeler", []):
 						_v(BELGE_TURLERI.has(str(t)), e + "zorunlu belge türü tanımlı: " + str(t))
+						_v((g.get("belgeler", ["nufus_cuzdani", "ikametgah"]) as Array).has(str(t)), e + "zorunlu belge o gün vatandaşa veriliyor: " + str(t))
 				"alan_esit":
 					for a: Variant in k.get("alanlar", []):
 						_v(Dogrulayici.ALAN_ADLARI.has(str(a)), e + "karşılaştırılan alan tanımlı: " + str(a))
@@ -416,6 +420,35 @@ func _bolum_veri() -> void:
 	for ad: String in Belge.SAHNELER:
 		_v(ResourceLoader.exists(str(Belge.SAHNELER[ad])), "belge sahnesi var: " + ad)
 	dogru(_hata == once, "veri denetimi temiz (%d denetim)" % _adim)
+
+
+## Konuşma atlasının iki karesi de aynı ölçüde görünür mü ve birbirinden farklı mı? (Bir karenin, ötekinin
+## yarı saydam kopyası olması konuşurken çift dudak gösterir.)
+func _agiz_kareleri_duzgun(kimlik: String) -> bool:
+	var doku := Portreler.agiz_dokusu(kimlik)
+	if doku == null:
+		return false
+	var g := doku.get_image()
+	if g.is_compressed():
+		g.decompress()
+	@warning_ignore("integer_division")
+	var yari := g.get_width() / 2
+	var alfa := [0.0, 0.0]
+	var fark := 0.0
+	var sayi := 0
+	for y in range(0, g.get_height(), 3):
+		for x in range(0, yari, 3):
+			var a := g.get_pixel(x, y)
+			var b := g.get_pixel(x + yari, y)
+			alfa[0] += a.a
+			alfa[1] += b.a
+			if a.a > 0.8 and b.a > 0.8:
+				fark += absf(a.r - b.r) + absf(a.g - b.g) + absf(a.b - b.b)
+				sayi += 1
+	if alfa[1] <= 0.0 or sayi < 20:
+		return false
+	var oran: float = alfa[0] / alfa[1]
+	return oran > 0.85 and oran < 1.15 and fark / sayi > 0.012
 
 
 func _masa_sabiti(ad: String) -> Variant:
@@ -637,6 +670,8 @@ func _bolum_kayit() -> void:
 	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")
 
+	_bayrak_supurmesi()
+
 	# ayarlar
 	_dosyaya_yaz(Oyun.ayar_yolu, JSON.stringify({"saat_hizi": 0, "ses_genel": 99, "ses_efekt": "yüksek", "ses_radyo": -3,
 		"tam_ekran": "evet", "yabanci": 1}))
@@ -656,6 +691,57 @@ func _bolum_kayit() -> void:
 	Oyun.ayar_degistir("saat_hizi", -1.0)
 	esit(float(Oyun.ayar("saat_hizi")), 0.4, "eksi saat hızı kabul edilmez")
 	Oyun.ayar_degistir("saat_hizi", 1.0)
+
+
+## Hikâyedeki her bayrağa sırayla her türden beklenmedik değer verir; hikâyenin bütün okuyucuları
+## (ziyaretler, gazete, akşam, gece, sonlar, genelge defteri) hata vermeden çalışmalıdır.
+func _bayrak_supurmesi() -> void:
+	var adlar := {}
+	for z: Dictionary in Hikaye.karakterler().get("ziyaretler", []):
+		for ad: String in z.get("kosul", {}):
+			adlar[ad] = true
+		for an: String in z.get("etki", {}):
+			if typeof(z.etki[an]) == TYPE_DICTIONARY:
+				for ad: String in (z.etki[an] as Dictionary).get("bayrak", {}):
+					adlar[ad] = true
+	for bolum: String in ["gazete", "aksam", "gece"]:
+		for kayit: Dictionary in Hikaye.veri().get(bolum, []):
+			for ad: String in kayit.get("kosul", {}):
+				adlar[ad] = true
+	for y: Dictionary in (Hikaye.veri().get("son", {}) as Dictionary).get("yan", []):
+		for ad: String in y.get("kosul", {}):
+			adlar[ad] = true
+	for ad: String in ["savci", "kasap", "naciye", "mektup", "bomba"]:
+		adlar[ad] = true
+	var eski: Dictionary = Oyun.bayraklar
+	var kurulan := 0
+	var bos_gazete := 0
+	for deger: Variant in [true, false, 7, -3, 0.5, "", "bilinmeyen", "yakalandi", "kayirildi", 1]:
+		var bayraklar := {}
+		for ad: String in adlar:
+			bayraklar[ad] = deger
+		Oyun.bayraklar = bayraklar
+		for gun_no in range(1, Oyun.TOPLAM_GUN + 1):
+			var g := _kipli_gun(gun_no, 0)
+			var rng := RandomNumberGenerator.new()
+			rng.seed = gun_no
+			kurulan += Hikaye.ozel_vatandaslar(gun_no, g, bayraklar, rng).size()
+			if str(Hikaye.gazete(gun_no, bayraklar).get("manset", "")) == "" or Hikaye.aksam(gun_no, bayraklar) == "":
+				bos_gazete += 1
+			Hikaye.gece(gun_no, bayraklar)
+			var kitap := KuralKitabi.new()
+			add_child(kitap)
+			kitap.yukle(g)
+			kitap.free()
+		Hikaye.savci_akibeti(bayraklar)
+		for son: Dictionary in [{"tur": "terfi", "neden": "basari"}, {"tur": "olagan", "neden": "yerinde"},
+				{"tur": "surgun", "neden": "ihtar"}, {"tur": "surgun", "neden": "suphe"}, {"tur": "kotu", "neden": "iflas"},
+				{"tur": "kotu", "neden": "aile", "kritik": "can"}, {"tur": "kotu", "neden": "tahliye"}, {"tur": "kotu", "neden": ""}, {}]:
+			if str(Hikaye.son(son, bayraklar).get("manset", "")) == "":
+				bos_gazete += 1
+	Oyun.bayraklar = eski
+	dogru(kurulan > 0, "%d bayrak × 10 beklenmedik değerle hikâyenin bütün okuyucuları çalışıyor (%d ziyaret kuruldu)" % [adlar.size(), kurulan])
+	esit(bos_gazete, 0, "  hiçbir bayrak değeri gazeteyi, akşam metnini ya da son sayfasını boş bırakmıyor")
 
 
 # =====================================================================================================
@@ -757,21 +843,37 @@ func _hedefler(v: Dictionary, g: Dictionary) -> Array[Dictionary]:
 			liste.append(h.ozet())
 		belge.free()
 	liste.append({"tip": "yuz", "anahtar": "", "deger": null, "belge": "", "kural": {}, "etiket": ""})
-	liste.append({"tip": "takvim", "anahtar": "", "deger": null, "belge": "", "kural": {}, "etiket": ""})
-	for k: Dictionary in g.get("kurallar", []):
-		liste.append({"tip": "kural", "anahtar": str(k.get("id", "")), "deger": null, "belge": "", "kural": k, "etiket": ""})
-		if str(k.get("tur", "")) == "arananlar":
-			for a: Dictionary in k.get("liste", []):
-				liste.append({"tip": "kural", "anahtar": str(a.get("portre", "")), "deger": null, "belge": "", "kural": k, "etiket": ""})
+	liste.append({"tip": "takvim", "anahtar": "", "deger": str(g.get("tarih", "")), "belge": "", "kural": {}, "etiket": ""})
+	liste.append_array(_arayuz_hedefleri(g))
+	return liste
+
+
+## Genelge defterinin bütün sayfalarındaki ve bilgi defterinin bütün yapraklarındaki GERÇEK hedefler
+## (arayüz neyi tıklatıyorsa o): elle tarif edilmez, düğümlerin kendisinden okunur. Gün başına bir kez kurulur.
+func _arayuz_hedefleri(g: Dictionary) -> Array[Dictionary]:
+	var anahtar := JSON.stringify(g).hash()
+	if _hedef_onbellegi.has(anahtar):
+		return _hedef_onbellegi[anahtar]
+	var liste: Array[Dictionary] = []
+	var kitap := KuralKitabi.new()
+	add_child(kitap)
+	kitap.yukle(g)
+	for h: Hedef in kitap.hedefler:
+		liste.append(h.ozet())
+	kitap.queue_free()
 	if not Veri.kural(g, "sahtecilik").is_empty():
-		var ornekler: Array = ["muhur", "kase_vezne"]
-		if not Veri.kural(g, "vize").is_empty():
-			ornekler.append_array(["kase_vize", "vize_no"])
-		for liste_adi: String in ["mahalleler", "dis_mahalleler"]:
-			for m: Dictionary in Veri.adlar().get(liste_adi, []):
-				ornekler.append("imza:" + str(m.get("muhtar", "")))
-		for o: String in ornekler:
-			liste.append({"tip": "ornek", "anahtar": o, "deger": o, "belge": "bilgi_defteri", "kural": {}, "etiket": ""})
+		var tasiyici := Node2D.new()
+		add_child(tasiyici)
+		var defter := Belge.olustur({"tur": "bilgi_defteri", "gun": g})
+		defter.masaya_koy(tasiyici)
+		defter.buyut(true)
+		for no in (defter.yapraklar() as Array).size():
+			defter.yapraga_gec(no)
+			for h: Hedef in defter.alanlar.values():
+				liste.append(h.ozet())
+		tasiyici.queue_free()
+	_hedef_onbellegi[anahtar] = liste
+	_hedef_sayisi = maxi(_hedef_sayisi, liste.size())
 	return liste
 
 
@@ -834,6 +936,7 @@ func _bolum_ipucu() -> void:
 	for o in ornekler:
 		print("    ! ", o)
 	esit(sorunlu, 0, "%d rastgele vatandaşta her karşılaştırma kural motoruyla tutarlı" % toplam)
+	dogru(_hedef_sayisi >= 30, "  genelge ve bilgi defterinden okunan hedef sayısı yeterli (en çok %d)" % _hedef_sayisi)
 	# hikâye ziyaretleri
 	var hikaye_sorunu := 0
 	for z: Dictionary in Hikaye.karakterler().get("ziyaretler", []):
@@ -949,6 +1052,44 @@ func _bolum_akis() -> void:
 	masa._saat_durdu = false
 	dogru(await sahneyi_bekle("GunSonu", 16.0), "  evrak beklenirken mesai bitince gün sonu gelir")
 
+	# 3c) çift tetikleme: aynı karede iki kez gelen sinyal işlemi iki kez yaptırmaz
+	masa = await _evrakli_gun(2)
+	b = await _ilk_belgeyi_bekle(masa)
+	masa._gerekce_sor(b, Vector2(500, 400))
+	await kare(2)
+	var pencere := masa.find_child("GerekcePenceresi", true, false)
+	pencere._sec("sure")
+	pencere._sec("muhur")
+	pencere._vazgec()
+	await kare(2)
+	esit(int(masa.ozet.islenen), 1, "gerekçe penceresi aynı karede tek sonuç bildirir")
+	dogru(not masa.araclar["onay"].etkin and not masa.araclar["eksik"].etkin, "  vatandaş uğurlanırken karar araçları kapalı")
+	masa.karar_ver("onay", b, Vector2(500, 400))
+	esit(int(masa.ozet.islenen), 1, "  uğurlanan vatandaşa ikinci karar verilemez")
+	masa.dakika = masa.MESAI_SONU - 0.01
+	dogru(await sahneyi_bekle("GunSonu", 16.0), "gün sonu gelir")
+	Oyun.para = 1000
+	Oyun.aile["ikram"] = true           # komşu yemek getirdi: yiyecek bu akşam bedelsiz
+	await bekle(0.4)
+	sahne()._devam()
+	sahne()._devam()
+	dogru(await sahneyi_bekle("Aile", 8.0), "puantajdan eve iki kez basılsa da tek geçiş olur")
+	var aile := sahne()
+	dogru(not aile.sec("yemek", false), "bedelsiz kalemin işareti kaldırılamaz")
+	aile.sec("komur", true)
+	var para_once: int = Oyun.para
+	aile._lambayi_sondur()
+	aile._lambayi_sondur()
+	esit(Oyun.para, para_once - AileDurumu.KOMUR, "ışık iki kez söndürülse de masraf bir kez düşer")
+	dogru(not aile.sec("kira", true), "  ışık söndükten sonra masraf seçilemez")
+	dogru(not "
+".join(PackedStringArray(aile.gece.get("satirlar", []))).contains("aç yattı"), "  komşunun getirdiği yemek işaretlenmeden de sayılır")
+	var gun_once := Oyun.gun
+	aile._sabah()
+	aile._sabah()
+	dogru(await sahneyi_bekle("Masa", 8.0), "sabah olur")
+	esit(Oyun.gun, gun_once + 1, "  sabaha iki kez basılsa da gün bir kez ilerler")
+
 	# 4) sahne geçişi sürerken gelen ikinci istek geçişi bozmaz
 	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")
@@ -1042,7 +1183,10 @@ func _rastgele_girdi(rng: RandomNumberGenerator) -> void:
 			# ana menüye dönüş ve çıkış düğmeleri oturumu bitirir: onlara seyrek basılır
 			if not (str(d.name) in ["MolaMenu", "Cikis", "AnaMenu"]) or rng.randf() < 0.02:
 				if str(d.name) != "Cikis":
-					d.pressed.emit()
+					# kimi zaman aynı karede iki üç kez: çift tıklama, takılan fare düğmesi
+					for i in (1 if rng.randf() < 0.7 else rng.randi_range(2, 3)):
+						if is_instance_valid(d):
+							d.pressed.emit()
 	elif s != null and s.name == "Masa":
 		# bir karar aracını masadaki bir belgeye (ya da rastgele bir yere) sürükle
 		var araclar: Array = s.araclar.values()
@@ -1114,6 +1258,7 @@ func _bolum_maymun() -> void:
 		await sahneye_git("masa")
 		await sahneyi_bekle("Masa")
 		var gorulen := {"Masa": true}
+		var son_gun := Oyun.gun
 		var basla := Time.get_ticks_msec()
 		var son_degisim := Time.get_ticks_msec()
 		var son_sahne := "Masa"
@@ -1125,6 +1270,9 @@ func _bolum_maymun() -> void:
 			girdi += 1
 			await kare(rng.randi_range(1, 3))
 			var sorun := _degismezler()
+			if Oyun.gun > son_gun + 1:
+				sorun = "gün atladı: %d → %d" % [son_gun, Oyun.gun]
+			son_gun = Oyun.gun
 			if sorun != "" and not sorunlar.has(sorun):
 				sorunlar.append("tur %d: %s" % [tur, sorun])
 			var ad := str(sahne().name) if sahne() != null else ""

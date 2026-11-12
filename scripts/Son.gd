@@ -122,7 +122,19 @@ func _gazeteyi_kur() -> Control:
 			var x := KENAR + i * (sutun + bosluk)
 			var b := Gazete.blok_ekle(sayfa, str(haber.get("baslik", "")), 17, Stil.serif_kalin(), Stil.MUREKKEP,
 				Rect2(x, y, sutun, 0), false, -2)
-			Gazete.blok_ekle(sayfa, str(haber.get("metin", "")), 14, Stil.serif(), Stil.MUREKKEP, Rect2(x, b + 4.0, sutun, 0), false, 1)
+			# haber metni ilanların çizgisine değmesin: sığmazsa punto küçülür
+			var punto := 14
+			while true:
+				var once := sayfa.get_child_count()
+				var alt_kenar := Gazete.blok_ekle(sayfa, str(haber.get("metin", "")), punto, Stil.serif(), Stil.MUREKKEP,
+					Rect2(x, b + 4.0, sutun, 0), false, 1)
+				if alt_kenar <= ilan_ust - 8.0 or punto <= 11:
+					break
+				for no in range(sayfa.get_child_count() - 1, once - 1, -1):
+					var fazla := sayfa.get_child(no)
+					sayfa.remove_child(fazla)
+					fazla.free()
+				punto -= 1
 			if i > 0:
 				var ayrac := ColorRect.new()
 				ayrac.color = Color(Stil.MUREKKEP, 0.5)

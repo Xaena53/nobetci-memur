@@ -21,7 +21,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.2.1 |
+| Sürüm | 1.2.2 |
 
 ---
 
@@ -448,10 +448,10 @@ bash tools/saglamlik.sh                                            # sağlamlık
 
   | Bölüm | Ne yapar |
   |---|---|
-  | `veri` | Veri dosyalarını ve varlıkları çapraz denetler (yaklaşık 4.000 denetim): her yüzün görseli, vesikalığı, konuşma kareleri, kimliği ve imzası; her kuralın alanları; her ziyaretin kişisi, işlemi, çantası; koşullarda okunan her bayrağı yazan bir yer; koddaki her ses, etiket ve dosya yolu. |
-  | `kayit` | Kayıt ve ayar dosyalarını bozar: yarım JSON, yanlış türler, aşırı büyük ve çok derin dosya, geçersiz baytlar, elle değiştirilmiş içerik, imzası doğru ama değerleri düşmanca kayıtlar. Oyun çökmemeli, durum makul kalmalıdır. Kayıt aşamaları da burada sınanır. |
+  | `veri` | Veri dosyalarını ve varlıkları çapraz denetler (yaklaşık 4.000 denetim): her yüzün görseli, vesikalığı, konuşma kareleri (iki ayrı, tam görünür kare), kimliği ve imzası; her kuralın alanları; her ziyaretin kişisi, işlemi, çantası; koşullarda okunan her bayrağı yazan bir yer; koddaki her ses, etiket ve dosya yolu. |
+  | `kayit` | Kayıt ve ayar dosyalarını bozar: yarım JSON, yanlış türler, aşırı büyük ve çok derin dosya, geçersiz baytlar, elle değiştirilmiş içerik, imzası doğru ama değerleri düşmanca kayıtlar. Oyun çökmemeli, durum makul kalmalıdır. Kayıt aşamaları ve her hikâye bayrağının beklenmedik değerleri de burada sınanır. |
   | `uretici` | Üç görev şekli × beş tohum × yedi gün × 60 vatandaş (6.300): üreticinin koyduğu kusur ile doğrulayıcının bulduğu kusur aynı mı; aynı tohum aynı kuyruğu veriyor mu. |
-  | `ipucu` | İnceleme modunda tıklanabilecek bütün hedef çiftlerini karşılaştırır: kusursuz evrakta hiçbir çift "uyuşmazlık" dememeli, her kusur en az bir karşılaştırmayla bulunabilmeli, sonuç tıklama sırasına bağlı olmamalıdır. |
+  | `ipucu` | İnceleme modunda tıklanabilecek bütün hedef çiftlerini karşılaştırır (hedefler genelge defterinin ve bilgi defterinin gerçek düğümlerinden okunur): kusursuz evrakta hiçbir çift "uyuşmazlık" dememeli, her kusur en az bir karşılaştırmayla bulunabilmeli, sonuç tıklama sırasına bağlı olmamalıdır. |
   | `yerlesim` | Bütün yüzlerin kimlikleriyle kurulan belgelerde yazıların alanından taşmadığını, konuşmaların balona, en uzun pusulanın ekrana sığdığını ölçer. |
   | `akis` | Zamanlama yarışları: karar anında biten mesai, pencere açıkken kapanan gişe, aynı karede iki karar, hakkı bitmiş havale, bilgi defterine mühür, üst üste sahne geçişi, mola. |
   | `maymun` | Dokuz tur boyunca rastgele tıklar, sürükler, tuşlara ve düğmelere basar, karar araçlarını belgelere bırakır; her girdiden sonra oyun durumunun tutarlılığına ve kilitlenme olup olmadığına bakar. |
@@ -460,7 +460,12 @@ Ekran görüntüsü düzeneği pencereyi ekran dışında, odak almadan açar:
 
 ```bash
 bash tools/cek.sh hikaye     # kareler tools/cikti/ altına yazılır
+bash tools/cek.sh sinir      # ekranların en dolu hâlleri: puantaj, akşam defteri, son gazete, defter sayfaları
+bash tools/cek.sh genelge    # yedi günün genelgesi, yazısı tamamlanmış hâliyle
 ```
+
+Başsız kipte yazı yüksekliği ölçümü güvenilir olmadığından, satırların sığıp sığmadığı bu karelere
+bakılarak denetlenir. `python tools/olu_kod.py` çağrılmayan işlevleri ve bağlanmayan sinyalleri listeler.
 
 Oyunun ses çıkışı da dosyaya kaydedilebilir (menü, genelge, gişe, gün sonu, akşam; bir dakika kadar):
 

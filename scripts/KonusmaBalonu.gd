@@ -62,10 +62,6 @@ func sus() -> void:
 	visible = false
 
 
-func konusuyor_mu() -> bool:
-	return visible
-
-
 func _process(delta: float) -> void:
 	if not visible:
 		return

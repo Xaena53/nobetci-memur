@@ -11,6 +11,7 @@ const SATIR := 30.0
 
 var _kodlar: Array[String] = []
 var _kutu: Panel
+var _kapandi := false
 
 
 ## `gerekceler`: o gün geçerli gerekçe kodları; `bulunanlar`: incelemede yakalananlar.
@@ -112,10 +113,16 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _sec(kod: String) -> void:
+	if _kapandi:
+		return                      # pencere tek bir sonuç bildirir (aynı karede tuş + tıklama gelse de)
+	_kapandi = true
 	secildi.emit(kod)
 	queue_free()
 
 
 func _vazgec() -> void:
+	if _kapandi:
+		return
+	_kapandi = true
 	vazgecildi.emit()
 	queue_free()

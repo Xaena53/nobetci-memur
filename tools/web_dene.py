@@ -99,6 +99,15 @@ async def calistir(ws_adresi: str) -> int:
         await tikla(909, 601)                 # "Gişeyi Aç" (4. günden önce genelge ortada değil: 1. günde gazete var)
         await bekle(6.0)
         await cek("web_3_masa")
+        # pencere odağını yitirirse oyun kendiliğinden mola verir; geri gelince "Gişeye Dön" ile sürer
+        await gonder("Runtime.evaluate", expression="window.dispatchEvent(new Event('blur')); "
+                     "var c = document.querySelector('canvas'); if (c) { c.dispatchEvent(new FocusEvent('blur')); c.blur(); }")
+        await bekle(2.0)
+        await cek("web_4_odak_kaybi")
+        await gonder("Runtime.evaluate", expression="var c = document.querySelector('canvas'); if (c) { c.focus(); }")
+        await tikla(640, 300)
+        await bekle(2.0)
+        await cek("web_5_surduruldu")
 
     hatalar = [k for k in konsol if k[0] in ("error", "exception")]
     print(f"konsol: {len(konsol)} satır, {len(hatalar)} hata")

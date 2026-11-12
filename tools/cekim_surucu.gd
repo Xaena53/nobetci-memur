@@ -679,3 +679,55 @@ func _senaryo_genelge() -> void:
 			ekran._tamamla()
 		await bekle(1.4)
 		await cek("g_%d_genelge" % gun_no)
+
+
+## En dolu hâlleriyle ekranlar: satırlar ve yazılar taşıyor mu diye gözle bakmak için (tools/cikti/s_*.png).
+func _senaryo_sinir() -> void:
+	Oyun.yeni_oyun("orta")
+	Oyun.gun = 6
+	Oyun.gun_ozeti = {"islenen": 12, "dogru": 5, "yanlis": 5, "yarim": 2, "havale": 2, "yarida": 1, "kazanc": 650,
+		"ihtar": 7, "canta": 5, "canta_yakalanan": 2, "canta_kacan": 1, "bos_alarm": 2, "zarf": 2000, "ipucu": 3,
+		"para_once": 1250, "ihtarlar": ["Kusurlu evrakı onayladınız. İkametgâhtaki muhtar mührü sahteydi (dış halka tek).",
+			"Aranan bir şahsın evrakını onayladınız!", "Evrakı tam olan vatandaşı geri çevirdiniz.",
+			"Röntgenden geçirdiğiniz çantada toplu tabanca ile mermi vardı; şahıs binaya onunla girdi.",
+			"Zarfı çekmecenize atarken sizi gördüm. Para müsadere edildi; iki ihtar yazdım."]}
+	Oyun.gun_ozeti["maas"] = Oyun.maas_hesapla(Oyun.gun_ozeti)
+	await sahneye_git("gun_sonu")
+	await sahneyi_bekle("GunSonu")
+	await bekle(4.0)
+	await cek("s_1_puantaj")
+	Oyun.aile = AileDurumu.yeni()
+	for u: String in AileDurumu.UYELER:
+		Oyun.aile["saglik"][u] = 1
+	Oyun.aile["kira_borcu"] = 2
+	Oyun.para = 3000
+	await sahneye_git("aile")
+	await sahneyi_bekle("Aile")
+	await bekle(1.0)
+	var aile := sahne()
+	for k: Dictionary in aile.kalemler:
+		aile.sec(str(k.kod), true)
+	await bekle(0.6)
+	await cek("s_2_ev_dolu")
+	for k: Dictionary in aile.kalemler:
+		aile.sec(str(k.kod), false)
+	bas("Yat")
+	await bekle(2.6)
+	await cek("s_3_gece_uzun")
+	Oyun.bayraklar = {"husnu_onay": 3, "mektup": true, "kasap": "yakalandi", "naciye": "yakalandi", "savci": "sag",
+		"bomba": "yakalandi", "gurbetci": "ihbar", "usta": "gecti", "tarik_sonuc": "ovgu", "izzet": "kayirildi",
+		"nermin": "kayirildi", "kenan1": "aldi", "kenan2": "aldi", "savci_tanisti": true}
+	Oyun.son = {"tur": "terfi", "neden": "basari"}
+	await sahneye_git("son")
+	await sahneyi_bekle("Son")
+	await bekle(4.0)
+	await cek("s_4_son_dolu")
+	var masa: Node = await _gune_git(7)
+	var ekran := masa.find_child("GenelgeEkrani", true, false)
+	if ekran != null:
+		ekran.queue_free()
+	await bekle(0.3)
+	for i in masa.kural_kitabi._sayfalar.size():
+		masa.kural_kitabi.sayfaya_gec(i, false)
+		await bekle(0.2)
+		await cek("s_5_defter_%d" % i)

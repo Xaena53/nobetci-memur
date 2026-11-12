@@ -1,5 +1,37 @@
 # Sürüm notları
 
+## 1.2.2 — ikinci sağlamlaştırma turu
+
+1.2.1'de bulunan her hata bir "sınıf" olarak ele alındı ve aynı sınıfın başka örnekleri arandı.
+
+### Düzeltilen hatalar
+
+- **Son ekranı, bozuk bir bayrakla açılmıyordu.** Kayıtta "mektup" bayrağı metin olarak gelirse son
+  gazetesi betik hatası veriyordu. Bütün hikâye bayrakları her türden beklenmedik değerle sınandı.
+- **Genelge defterinin TARİFE sayfasında satırlar taşıyordu.** Harç satırlarının sonundaki "TL" alt
+  satıra kayıp bir sonraki satırın üstüne biniyordu.
+- **Puantajda mühür, müdürün notunu örtüyordu** (bütün satırlar doluyken). Not artık mührün soluna sığar.
+- **Son gazetede en uzun yan haber, ilanların çizgisine değiyordu.** Sığmayan haberin puntosu küçülür.
+- Gerekçe penceresi aynı karede hem "seçildi" hem "vazgeçildi" bildirebiliyordu; karar verilmiş
+  vatandaş uğurlanırken karar araçları yeniden açılabiliyordu.
+
+### Sağlamlaştırma
+
+- **Veri dosyaları bellekte salt okunur.** Bir yer veriyi yanlışlıkla değiştirmeye kalkarsa (sonraki
+  günleri sessizce bozacak bir hata sınıfı) anında hata verir.
+- Düğmelerin tık sesi, düğüm ağaçtan çıkıp yeniden girse de bir kez bağlanır.
+- Hiç çağrılmayan altı işlev kaldırıldı.
+
+### Testler
+
+- İpucu tutarlılığı artık arayüzdeki gerçek hedeflerle sınanıyor: genelge defterinin bütün sayfaları
+  ve bilgi defterinin bütün yaprakları düğümlerin kendisinden okunuyor.
+- Yeni denetimler: her bayrağa on ayrı beklenmedik değer; aynı karede iki kez gelen sinyaller (gerekçe,
+  puantaj, ışık, sabah); bedelsiz akşam kalemleri; rastgele girdi testinde çoklu basış ve gün atlaması;
+  her yüzün konuşma karelerinin iki ayrı, tam görünür kare olması; zorunlu belgenin o gün verilmesi.
+- `bash tools/cek.sh sinir`: ekranların en dolu hâlleri (taşma var mı diye gözle bakmak için).
+- `python tools/olu_kod.py`: çağrılmayan işlev, bağlanmayan sinyal taraması.
+
 ## 1.2.1 — sağlamlaştırma
 
 Yeni içerik yok; oyunun bozulmaya, kurcalanmaya ve köşe durumlara dayanıklılığı artırıldı.

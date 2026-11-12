@@ -55,10 +55,6 @@ static func olustur(v: Dictionary) -> Belge:
 	return b
 
 
-static func tur_adi(t: String) -> String:
-	return ADLAR.get(t, t)
-
-
 ## Belgeyi bir taşıyıcıya koyup verilen katmana (masaya) ekler.
 func masaya_koy(katman: Node) -> MasaNesnesi:
 	tutucu = MasaNesnesi.new()
