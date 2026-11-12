@@ -34,6 +34,7 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] Evde seçilen kalem odaya yansıyor (soba, ekmek, ilaç, defter); "Lambayı Söndür" geceyi getiriyor.
 - [ ] ESC molası oyunu durduruyor; "Gişeye Dön" kaldığı yerden sürdürüyor.
 - [ ] Cüzdandaki vesikalık camdaki kişinin eski bir resmi: kıyafeti ve saçı başka, yüzü aynı.
+- [ ] İlmühaberde muhtarın kendi imzası var (adıyla aynı); makbuzda veznedarın parafı, genelgede müdürün imzası.
 
 ### Röntgen cihazı (5.–7. gün)
 
@@ -72,7 +73,9 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 
 ## 3. Menü ve ayarlar
 
-- [ ] Ana menüde başlık daktiloyla yazılıyor; kar yağıyor; tabelada "NÜFUS MÜDÜRLÜĞÜ" yazıyor.
+- [ ] Ana menü kâğıdı yukarıdan süzülüp oturuyor; başlık daktiloyla yazılıyor; satırın üstüne gelince kutusuna işaret konuyor.
+- [ ] Sahne canlı: kar rüzgârla savruluyor, bacalar tütüyor, sokak lambası arada bir cızırdayıp titriyor.
+- [ ] Kapının üstündeki işlemeli tabelada "T.C. ARDIÇLI İLÇESİ / NÜFUS MÜDÜRLÜĞÜ" yazıyor.
 - [ ] Kayıt yokken "Devam" soluk; bir gün oynandıktan sonra açık.
 - [ ] Kayıt varken "Yeni Oyun" bir kez daha soruyor.
 - [ ] Ayarlar: üç ses kademesi duyulur biçimde değişiyor; mesai saati hızı; tam ekran (F11).

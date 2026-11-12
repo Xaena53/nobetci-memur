@@ -1,21 +1,44 @@
 extends Control
-## Ana menü: kar altındaki nüfus müdürlüğü binası. Başlık daktiloyla yazılır gibi belirir;
-## seçenekler gökyüzüne, başlığın altına dizilir: Yeni Oyun, Devam, Ayarlar, Çıkış.
+## Ana menü: kar altındaki nüfus müdürlüğü binası. Menünün kendisi gökyüzüne iliştirilmiş bir müdürlük
+## yazısıdır: antet, daktiloyla harf harf yazılan başlık, konu ve sayı satırı, numaralı seçenekler
+## (Yeni Oyun, Devam, Ayarlar, Çıkış), altta müdürün imzası ve dairenin mührü. Üstüne gelinen seçeneğin
+## kutusuna işaret konur. Sürüm bilgisi, masadaki etiketler gibi kabartma bir şerittedir.
+##
+## Sahne canlıdır: kar üç katman hâlinde rüzgârla savrulur (Kar.gd), bacalardan duman tüter ve
+## rüzgâra göre yatar, sokak lambası arada bir cızırdayıp titrer; ışığından geçen kar taneleri parlar.
+## Kapının üstündeki işlemeli tabela arka plan görselinin parçasıdır.
 
 const ARKA_PLAN := "res://assets/img/menu_arkaplan.webp"
 const BASLIK := "NÖBETÇİ MEMUR"
-const TABELA := Rect2(840, 352, 165, 46)       ## binanın kapısı üstündeki boş tabela
-const LAMBA := Vector2(563, 355)               ## sokak lambasının ampulü
+const LAMBA := Vector2(564, 363)               ## sokak lambasının ampulü
+const LAMBA_DIBI := Vector2(548, 664)          ## direğin dibinde, karın üstündeki ışık gölü
+## Bacalar: [ağzın yeri, ölçek]. İlk ikisi müdürlük binasının, ötekiler uzaktaki evlerin bacaları.
+const BACALAR := [
+	[Vector2(754, 127), 1.0], [Vector2(1047, 76), 1.0],
+	[Vector2(238, 481), 0.26], [Vector2(442, 496), 0.24], [Vector2(133, 485), 0.2], [Vector2(545, 483), 0.2],
+]
 const YAZI_HIZI := 9.0                         ## başlık: saniyede harf
-const SOL := 66.0
+const KAGIT := Vector2(452, 420)               ## menü kâğıdının boyutu
+const KAGIT_YERI := Vector2(36, 12)
+const KENAR := 52.0                            ## kâğıdın yazı kenar boşluğu
+const SATIR := Vector2(364, 32)                ## bir seçenek satırının boyutu
 
 var _baslik: Label
+var _kagit: Control
 var _gorunen := 0.0
 var _yaziyor := true
 var _sonrakiler: Array[Control] = []           ## başlık bitince sırayla beliren öğeler
 var _yeni: Button
 var _devam: Button
 var _isik: Control
+var _golge: Control                            ## lamba sönükken ampulü ve çevresini karartır
+var _kar: Kar
+var _dumanlar: Array[CPUParticles2D] = []
+var _parlaklik := 1.0                          ## lambanın o anki parlaklığı (0 sönük .. 1 yanıyor)
+var _cizirti_kalan := 0.0                      ## süren cızırtının kalan süresi
+var _cizirtiya := 2.6                          ## bir sonraki cızırtıya kalan süre
+var _titreme := 0.0
+var _hale_dokusu: Texture2D
 var _onay_bekliyor := false
 
 
@@ -34,71 +57,145 @@ func _ready() -> void:
 		zemin.modulate = Stil.DUVAR_KOYU
 	add_child(zemin)
 
-	# sokak lambasının titreyen ışığı
+	_dumani_kur()
+	_hale_dokusu = _hale_uret()
+
+	# sokak lambası: sönükken ampulü karartan katman ve yanarken ışığı ekleyen katman
+	_golge = Control.new()
+	_golge.mouse_filter = MOUSE_FILTER_IGNORE
+	_golge.draw.connect(_golgeyi_ciz)
+	add_child(_golge)
 	_isik = Control.new()
 	_isik.mouse_filter = MOUSE_FILTER_IGNORE
+	var ekle := CanvasItemMaterial.new()
+	ekle.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	_isik.material = ekle
 	_isik.draw.connect(_isigi_ciz)
 	add_child(_isik)
 
-	# tabela
-	var ust := Stil.etiket("T.C. ARDIÇLI İLÇESİ", 9, Color("5a3a22"), Stil.serif_kalin())
-	ust.position = TABELA.position + Vector2(0, 5)
-	ust.size = Vector2(TABELA.size.x, 12)
-	ust.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(ust)
-	var tabela := Stil.etiket("NÜFUS MÜDÜRLÜĞÜ", 14, Color("4a2a18"), Stil.serif_kalin())
-	tabela.position = TABELA.position + Vector2(0, 18)
-	tabela.size = Vector2(TABELA.size.x, 20)
-	tabela.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(tabela)
+	_kar = Kar.new()
+	_kar.name = "Kar"
+	_kar.isik = LAMBA
+	add_child(_kar)
 
-	_kar_yagdir()
-
-	# başlık: daktilo harfleri
-	_baslik = Stil.etiket(BASLIK, 62, Stil.MUREKKEP, Stil.daktilo_kalin())
-	_baslik.name = "Baslik"
-	_baslik.position = Vector2(SOL - 4.0, 44)
-	_baslik.visible_characters = 0
-	add_child(_baslik)
-
-	var cizgi := ColorRect.new()
-	cizgi.color = Color(Stil.MUREKKEP, 0.8)
-	cizgi.position = Vector2(SOL, 122)
-	cizgi.size = Vector2(486, 2)
-	cizgi.mouse_filter = MOUSE_FILTER_IGNORE
-	add_child(cizgi)
-	_sonrakiler.append(cizgi)
-	var alt := Stil.etiket("Ardıçlı İlçesi Nüfus Müdürlüğü  —  Ocak 1984", 19, Stil.MUREKKEP, Stil.serif_italik())
-	alt.position = Vector2(SOL, 130)
-	add_child(alt)
-	_sonrakiler.append(alt)
-
-	var y := 192.0
-	_yeni = _secenek("YeniOyun", "Yeni Oyun", y)
-	_yeni.pressed.connect(_yeni_oyun)
-	y += 42.0
-	_devam = _secenek("Devam", "Devam", y)
-	_devam.disabled = not Oyun.kayit_var_mi()
-	_devam.pressed.connect(_devam_et)
-	y += 42.0
-	_secenek("Ayarlar", "Ayarlar", y).pressed.connect(_ayarlari_ac)
-	y += 42.0
-	if not OS.has_feature("web"):
-		_secenek("Cikis", "Çıkış", y).pressed.connect(func() -> void: Oyun.cik())
-
-	var kunye := Stil.etiket("Sürüm %s  ·  Bütün kişi, kurum ve olaylar kurmacadır." % str(ProjectSettings.get_setting("application/config/version", "1.0")),
-		13, Color(0.97, 0.95, 0.89), Stil.daktilo())
-	kunye.add_theme_color_override("font_outline_color", Color(0.12, 0.10, 0.09, 0.85))
-	kunye.add_theme_constant_override("outline_size", 5)
-	kunye.position = Vector2(18, 694)
-	add_child(kunye)
-
+	_kagidi_kur()
+	_kunyeyi_kur()
 	for s in _sonrakiler:
 		s.modulate.a = 0.0
 
 
+# --- Menü kâğıdı ---
+
+## Kâğıt yukarıdan süzülerek yerine oturur; antet hemen görünür, başlık yazılır, gerisi ardından belirir.
+func _kagidi_kur() -> void:
+	_kagit = Control.new()
+	_kagit.name = "MenuKagidi"
+	_kagit.size = KAGIT
+	_kagit.pivot_offset = KAGIT / 2.0
+	_kagit.mouse_filter = MOUSE_FILTER_IGNORE
+	_kagit.draw.connect(func() -> void: Kagit.ciz(_kagit, Rect2(Vector2.ZERO, KAGIT), "daktilo_sayfa", Stil.KAGIT, 6.0, 4.0))
+	add_child(_kagit)
+	var w := KAGIT.x - 2.0 * KENAR
+
+	_yaz("T.C.", Rect2(0, 47, KAGIT.x, 14), 11, Stil.MUREKKEP_SOLUK, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
+	_yaz("ARDIÇLI İLÇESİ NÜFUS MÜDÜRLÜĞÜ", Rect2(0, 61, KAGIT.x, 18), 13, Stil.MUREKKEP, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
+	_cizgi(Rect2(KENAR, 84, w, 1.5), 0.75)
+
+	_baslik = _yaz(BASLIK, Rect2(0, 88, KAGIT.x, 56), 44, Stil.MUREKKEP, Stil.daktilo_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
+	_baslik.name = "Baslik"
+	_baslik.visible_characters = 0
+
+	_sonrakiler.append(_yaz("Konu : Yedi günlük gişe nöbeti", Rect2(KENAR, 148, w, 16), 12, Stil.MUREKKEP, Stil.daktilo_kalin()))
+	_sonrakiler.append(_yaz("Sayı : 1984/1", Rect2(KENAR, 148, w, 16), 12, Stil.MUREKKEP, Stil.daktilo(), HORIZONTAL_ALIGNMENT_RIGHT))
+	_sonrakiler.append(_yaz("Ardıçlı, Ocak 1984", Rect2(KENAR, 165, w, 14), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik()))
+	_sonrakiler.append(_cizgi(Rect2(KENAR, 184, w, 1.0), 0.4))
+
+	var y := 194.0
+	_yeni = _secenek("YeniOyun", "Yeni Oyun", 1, y)
+	_yeni.pressed.connect(_yeni_oyun)
+	y += 36.0
+	_devam = _secenek("Devam", "Devam", 2, y)
+	_devam.disabled = not Oyun.kayit_var_mi()
+	_devam.pressed.connect(_devam_et)
+	y += 36.0
+	_secenek("Ayarlar", "Ayarlar", 3, y).pressed.connect(_ayarlari_ac)
+	y += 36.0
+	if not OS.has_feature("web"):
+		_secenek("Cikis", "Çıkış", 4, y).pressed.connect(func() -> void: Oyun.cik())
+
+	# imza ve mühür
+	var alt := Control.new()
+	alt.name = "ImzaVeMuhur"
+	alt.position = Vector2(KENAR, 334)
+	alt.size = Vector2(w, 66)
+	alt.mouse_filter = MOUSE_FILTER_IGNORE
+	alt.draw.connect(_imzayi_ciz.bind(alt))
+	_kagit.add_child(alt)
+	_sonrakiler.append(alt)
+
+	# giriş: kâğıt yukarıdan süzülüp hafif yan yatar
+	_kagit.position = KAGIT_YERI + Vector2(0, -46)
+	_kagit.rotation = deg_to_rad(1.6)
+	_kagit.modulate.a = 0.0
+	var t := create_tween().set_parallel()
+	t.tween_property(_kagit, "position", KAGIT_YERI, 0.55).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.tween_property(_kagit, "rotation", deg_to_rad(-1.5), 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	t.tween_property(_kagit, "modulate:a", 1.0, 0.3)
+
+
+func _yaz(metin: String, alan: Rect2, punto: int, renk: Color, font: Font = null,
+		hiza: HorizontalAlignment = HORIZONTAL_ALIGNMENT_LEFT) -> Label:
+	var l := Stil.etiket(metin, punto, renk, font)
+	l.horizontal_alignment = hiza
+	l.clip_text = true
+	_kagit.add_child(l)
+	l.position = alan.position
+	l.size = alan.size
+	return l
+
+
+func _cizgi(alan: Rect2, koyuluk: float) -> ColorRect:
+	var c := ColorRect.new()
+	c.color = Color(Stil.MUREKKEP, koyuluk)
+	c.position = alan.position
+	c.size = alan.size
+	c.mouse_filter = MOUSE_FILTER_IGNORE
+	_kagit.add_child(c)
+	return c
+
+
+## Müdürün dolma kalem imzası (sağda) ve dairenin mor ıstampa mührü (solda, hafif yamuk basılmış).
+func _imzayi_ciz(alt: Control) -> void:
+	var b := alt.size
+	Imza.ciz(alt, Rect2(b.x - 150.0, -12.0, 136.0, 56.0), "mudur", Stil.MAVI_MUREKKEP)
+	alt.draw_string(Stil.daktilo_kalin(), Vector2(b.x - 150.0, 54.0), "Müdür", HORIZONTAL_ALIGNMENT_CENTER, 136.0, 12, Stil.MUREKKEP)
+	var renk := Color(Stil.MOR_MUHUR, 0.62)
+	alt.draw_set_transform(Vector2(44, 30), deg_to_rad(-13.0), Vector2.ONE)
+	alt.draw_arc(Vector2.ZERO, 30.0, 0.0, TAU, 48, renk, 2.0, true)
+	alt.draw_arc(Vector2.ZERO, 26.0, 0.0, TAU, 48, renk, 0.8, true)
+	alt.draw_arc(Vector2.ZERO, 12.0, 0.0, TAU, 32, renk, 0.8, true)
+	alt.draw_string(Stil.serif_kalin(), Vector2(-26, -13), "ARDIÇLI", HORIZONTAL_ALIGNMENT_CENTER, 52.0, 8, renk)
+	alt.draw_string(Stil.serif_kalin(), Vector2(-26, 22), "NÜFUS MD.", HORIZONTAL_ALIGNMENT_CENTER, 52.0, 7, renk)
+	alt.draw_string(Stil.serif_kalin(), Vector2(-12, 4), "T.C.", HORIZONTAL_ALIGNMENT_CENTER, 24.0, 8, renk)
+	alt.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+## Sürüm ve uyarı: masadaki etiketler gibi kabartma şerit.
+func _kunyeyi_kur() -> void:
+	var metin := "SÜRÜM %s  ·  BÜTÜN KİŞİ, KURUM VE OLAYLAR KURMACADIR" % str(ProjectSettings.get_setting("application/config/version", "1.0"))
+	var kunye := Stil.etiket(metin, 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	kunye.name = "Kunye"
+	kunye.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Color("1d1b19"), Color(0, 0, 0, 0.5), 1, 2, 2), 8, 3))
+	add_child(kunye)
+	kunye.position = Vector2(16, 692)
+	kunye.rotation = deg_to_rad(-0.5)
+
+
 func _process(delta: float) -> void:
-	_isik.queue_redraw()
+	_lambayi_guncelle(delta)
+	# duman rüzgâra göre yatar
+	for d in _dumanlar:
+		d.gravity = Vector2((3.0 + _kar.ruzgar * 0.42) * d.scale.x, -3.0 * d.scale.x)
 	if not _yaziyor:
 		return
 	var once := int(_gorunen)
@@ -122,83 +219,193 @@ func _basligi_bitir() -> void:
 	_yaziyor = false
 	_baslik.visible_characters = -1
 	for i in _sonrakiler.size():
-		var s := _sonrakiler[i]
-		var hedef := 0.4 if s is Button and (s as Button).disabled else 1.0
 		var t := create_tween()
-		t.tween_interval(0.12 + i * 0.09)
-		t.tween_property(s, "modulate:a", hedef, 0.25)
+		t.tween_interval(0.10 + i * 0.07)
+		t.tween_property(_sonrakiler[i], "modulate:a", 1.0, 0.25)
 
 
-## Çerçevesiz, daktilo yazısı görünümünde menü seçeneği; üstüne gelince öne kayar.
-func _secenek(ad: String, metin: String, y: float) -> Button:
+## Yazıdaki numaralı bir satır: "1. Yeni Oyun ........ [ ]". Üstüne gelinince satır bordoya döner ve
+## kutusuna işaret konur; kullanılamayan satır soluk yazılır, yanına kurşun kalemle not düşülür.
+func _secenek(ad: String, metin: String, no: int, y: float) -> Button:
 	var d := Button.new()
 	d.name = ad
-	d.text = metin
+	d.text = "%d. %s" % [no, metin]
 	d.focus_mode = FOCUS_NONE
 	d.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	d.mouse_default_cursor_shape = CURSOR_POINTING_HAND
 	d.add_theme_font_override("font", Stil.daktilo_kalin())
-	d.add_theme_font_size_override("font_size", 25)
+	d.add_theme_font_size_override("font_size", 20)
 	d.add_theme_color_override("font_color", Stil.MUREKKEP)
 	d.add_theme_color_override("font_hover_color", Stil.BORDO)
 	d.add_theme_color_override("font_pressed_color", Stil.BORDO)
-	d.add_theme_color_override("font_disabled_color", Stil.MUREKKEP)
-	for durum: String in ["normal", "hover", "pressed", "focus", "disabled"]:
-		d.add_theme_stylebox_override(durum, StyleBoxEmpty.new())
-	d.position = Vector2(SOL, y)
-	d.size = Vector2(430, 38)
-	add_child(d)
-	var ok := Stil.etiket("›", 27, Stil.BORDO, Stil.daktilo_kalin())
-	ok.name = "Ok"
-	ok.position = Vector2(-22, -1)
-	ok.modulate.a = 0.0
-	d.add_child(ok)
+	d.add_theme_color_override("font_hover_pressed_color", Stil.BORDO)
+	d.add_theme_color_override("font_disabled_color", Color(Stil.MUREKKEP, 0.42))
+	for durum: String in ["normal", "hover", "pressed", "focus", "disabled", "hover_pressed"]:
+		var kutu := StyleBoxEmpty.new()
+		kutu.content_margin_left = 8.0
+		d.add_theme_stylebox_override(durum, kutu)
+	_kagit.add_child(d)
+	d.position = Vector2(KENAR - 8.0, y)
+	d.size = SATIR
+	var sus := Control.new()
+	sus.name = "Sus"
+	sus.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
+	sus.mouse_filter = MOUSE_FILTER_IGNORE
+	sus.draw.connect(_satiri_ciz.bind(d, sus))
+	d.add_child(sus)
 	d.mouse_entered.connect(func() -> void:
-		if d.disabled:
-			return
-		Ses.cal("tik", 1.25, -12.0)
-		var t := d.create_tween().set_parallel()
-		t.tween_property(d, "position:x", SOL + 16.0, 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		t.tween_property(ok, "modulate:a", 1.0, 0.1))
-	d.mouse_exited.connect(func() -> void:
-		var t := d.create_tween().set_parallel()
-		t.tween_property(d, "position:x", SOL, 0.14)
-		t.tween_property(ok, "modulate:a", 0.0, 0.1))
+		sus.queue_redraw()
+		if not d.disabled:
+			Ses.cal("tik", 1.25, -12.0))
+	d.mouse_exited.connect(sus.queue_redraw)
+	d.button_down.connect(sus.queue_redraw)
+	d.button_up.connect(sus.queue_redraw)
 	_sonrakiler.append(d)
 	return d
 
 
+## Satırın süsü: noktalı kılavuz çizgisi, işaret kutusu ve üstüne gelinince konan işaret.
+func _satiri_ciz(d: Button, sus: Control) -> void:
+	var b := d.size
+	var font := Stil.daktilo_kalin()
+	var yazi_eni := font.get_string_size(d.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+	var kutu := Rect2(b.x - 30.0, 7.0, 18.0, 18.0)
+	var secili := d.is_hovered() and not d.disabled
+	var murekkep := Color(Stil.BORDO if secili else Stil.MUREKKEP, 0.42 if d.disabled else 0.85)
+	if secili:
+		sus.draw_rect(Rect2(0, 1, b.x, b.y - 2), Color(Stil.BORDO, 0.07))
+	var x := 8.0 + yazi_eni + 12.0
+	if d.disabled:
+		sus.draw_string(Stil.el_yazisi(), Vector2(x, 23.0), "(kayıt yok)", HORIZONTAL_ALIGNMENT_LEFT, -1, 19, Color(Stil.MAVI_MUREKKEP, 0.85))
+		x += 96.0
+	while x < kutu.position.x - 8.0:
+		sus.draw_circle(Vector2(x, 21.5), 1.0, Color(murekkep, murekkep.a * 0.7))
+		x += 7.0
+	sus.draw_rect(kutu, murekkep, false, 1.5)
+	if secili:
+		# kutuya kalemle atılmış işaret; basılıyken mühür gibi dolu
+		var isaret := PackedVector2Array([kutu.position + Vector2(3, 9), kutu.position + Vector2(8, 15), kutu.position + Vector2(22, -5)])
+		sus.draw_polyline(isaret, Stil.BORDO, 2.6, true)
+		if d.button_pressed:
+			sus.draw_arc(kutu.get_center(), 16.0, 0.0, TAU, 32, Color(Stil.BORDO, 0.8), 2.0, true)
+
+
+# --- Sokak lambası ---
+
+## Lamba çoğu zaman hafifçe titreyerek yanar; arada bir cızırdar: kısa bir süre hızla yanıp söner.
+func _lambayi_guncelle(delta: float) -> void:
+	var t := Time.get_ticks_msec() / 1000.0
+	if _cizirti_kalan > 0.0:
+		_cizirti_kalan -= delta
+		_titreme -= delta
+		if _titreme <= 0.0:
+			_titreme = randf_range(0.025, 0.085)
+			_parlaklik = [0.04, 0.12, 0.3, 0.55, 1.0, 1.0][randi() % 6]
+		if _cizirti_kalan <= 0.0:
+			_parlaklik = 1.0
+	else:
+		_parlaklik = 0.93 + 0.07 * sin(t * 27.0) * sin(t * 6.1)
+		_cizirtiya -= delta
+		if _cizirtiya <= 0.0:
+			_cizirtiya = randf_range(3.8, 9.5)
+			_cizirti_kalan = randf_range(0.4, 1.15)
+			_titreme = 0.0
+			Ses.cal("cizirti", randf_range(0.92, 1.08), -9.0)
+	_kar.isik_gucu = _parlaklik
+	_isik.queue_redraw()
+	_golge.queue_redraw()
+
+
+## Yanan lambanın ışığı (eklemeli): ampulün halesi, aşağı doğru yayılan huzme ve karın üstündeki ışık gölü.
 func _isigi_ciz() -> void:
-	var nabiz := 0.86 + 0.14 * sin(Time.get_ticks_msec() / 410.0) * sin(Time.get_ticks_msec() / 173.0)
-	for i in 5:
-		_isik.draw_circle(LAMBA, 14.0 + i * 17.0, Color(1.0, 0.86, 0.52, 0.055 * nabiz))
+	var b := _parlaklik
+	_hale(LAMBA, Vector2(190, 190), Color(1.0, 0.78, 0.40, 0.34 * b))
+	_hale(LAMBA, Vector2(64, 64), Color(1.0, 0.86, 0.55, 0.50 * b))
+	_hale(LAMBA, Vector2(22, 22), Color(1.0, 0.96, 0.80, 0.85 * b))
+	# huzme: ampulden yere açılan soluk bir yamuk
+	_isik.draw_colored_polygon(PackedVector2Array([LAMBA + Vector2(-12, 4), LAMBA + Vector2(12, 4),
+		LAMBA_DIBI + Vector2(118, 0), LAMBA_DIBI + Vector2(-86, 0)]), Color(1.0, 0.82, 0.48, 0.035 * b))
+	# yerdeki ışık gölü: karın üstünde basık, yumuşak bir elips
+	_hale(LAMBA_DIBI + Vector2(16, 0), Vector2(250, 44), Color(1.0, 0.80, 0.45, 0.30 * b))
 
 
-## İnce, ağır ağır yağan kar.
-func _kar_yagdir() -> void:
-	var nokta := Image.create(8, 8, false, Image.FORMAT_RGBA8)
-	for py in 8:
-		for px in 8:
-			var u := Vector2(px - 3.5, py - 3.5).length() / 4.0
-			nokta.set_pixel(px, py, Color(1, 1, 1, clampf(1.0 - u, 0.0, 1.0) ** 1.5))
-	var kar := CPUParticles2D.new()
-	kar.name = "Kar"
-	kar.texture = ImageTexture.create_from_image(nokta)
-	kar.amount = 150
-	kar.lifetime = 13.0
-	kar.preprocess = 13.0
-	kar.position = Vector2(640, -12)
-	kar.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	kar.emission_rect_extents = Vector2(700, 4)
-	kar.direction = Vector2(0.18, 1.0)
-	kar.spread = 9.0
-	kar.gravity = Vector2(4, 3)
-	kar.initial_velocity_min = 42.0
-	kar.initial_velocity_max = 78.0
-	kar.scale_amount_min = 0.35
-	kar.scale_amount_max = 0.95
-	kar.color = Color(1, 1, 1, 0.85)
-	add_child(kar)
+## Merkezi parlak, kenara doğru sönen yumuşak ışık lekesi.
+func _hale(merkez: Vector2, boyut: Vector2, renk: Color) -> void:
+	_isik.draw_texture_rect(_hale_dokusu, Rect2(merkez - boyut / 2.0, boyut), false, renk)
+
+
+## Sönen lamba: resimdeki yanık ampul ve halesi karartılır.
+func _golgeyi_ciz() -> void:
+	var s := clampf(1.0 - _parlaklik, 0.0, 1.0)
+	if s < 0.02:
+		return
+	_golge.draw_texture_rect(_hale_dokusu, Rect2(LAMBA + Vector2(-80, -70), Vector2(160, 160)), false, Color(0.30, 0.29, 0.34, 0.50 * s))
+	_golge.draw_circle(LAMBA, 8.5, Color(0.30, 0.25, 0.20, 0.78 * s))
+
+
+# --- Baca dumanı ---
+
+## Her bacanın ağzına bir duman kaynağı konur. Kümeler yükseldikçe büyür, döner ve dağılır.
+func _dumani_kur() -> void:
+	var doku := _duman_dokusu()
+	var buyume := Curve.new()
+	buyume.add_point(Vector2(0.0, 0.22))
+	buyume.add_point(Vector2(0.35, 0.62))
+	buyume.add_point(Vector2(1.0, 1.0))
+	var renkler := Gradient.new()
+	# bacadan çıkarken koyu ve yoğun; yükseldikçe ağarır ve dağılır
+	renkler.offsets = PackedFloat32Array([0.0, 0.05, 0.30, 0.68, 1.0])
+	renkler.colors = PackedColorArray([Color(0.52, 0.52, 0.54, 0.0), Color(0.56, 0.56, 0.58, 0.80),
+		Color(0.76, 0.76, 0.76, 0.52), Color(0.92, 0.91, 0.89, 0.24), Color(0.96, 0.95, 0.93, 0.0)])
+	for b: Array in BACALAR:
+		var olcek := float(b[1])
+		var d := CPUParticles2D.new()
+		d.name = "Duman"
+		d.texture = doku
+		d.position = b[0]
+		d.scale = Vector2(olcek, olcek)
+		if olcek < 0.5:
+			d.modulate.a = 0.7          # uzaktaki bacalar: kasabanın üstünü sis gibi örtmesin
+		d.amount = 72 if olcek > 0.5 else 22
+		d.lifetime = 7.0
+		d.preprocess = 7.0
+		d.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+		d.emission_sphere_radius = 4.0
+		d.direction = Vector2(0.25, -1.0)
+		d.spread = 9.0
+		d.initial_velocity_min = 11.0
+		d.initial_velocity_max = 18.0
+		d.gravity = Vector2(8, -3)
+		d.damping_min = 1.2
+		d.damping_max = 2.4
+		d.angle_min = 0.0
+		d.angle_max = 360.0
+		d.angular_velocity_min = -14.0
+		d.angular_velocity_max = 14.0
+		d.scale_amount_min = 0.85
+		d.scale_amount_max = 1.5
+		d.scale_amount_curve = buyume
+		d.color_ramp = renkler
+		add_child(d)
+		_dumanlar.append(d)
+
+
+## Duman kümesi: kenarı yumuşak, içi gürültüyle benekli bir yuvar (boya dokusuna uysun diye pürüzlü).
+func _duman_dokusu() -> Texture2D:
+	var boyut := 72
+	var gurultu := FastNoiseLite.new()
+	gurultu.seed = 84
+	gurultu.frequency = 0.045
+	gurultu.fractal_octaves = 3
+	var g := Image.create(boyut, boyut, false, Image.FORMAT_RGBA8)
+	var orta := (boyut - 1) / 2.0
+	for y in boyut:
+		for x in boyut:
+			var u := Vector2(x - orta, y - orta).length() / (boyut / 2.0)
+			var n := 0.5 + 0.5 * gurultu.get_noise_2d(x, y)
+			var kenar := clampf(1.0 - u - 0.28 * (1.0 - n), 0.0, 1.0)
+			g.set_pixel(x, y, Color(1, 1, 1, pow(kenar, 1.25) * (0.55 + 0.45 * n)))
+	return ImageTexture.create_from_image(g)
 
 
 # --- Seçenekler ---
@@ -207,12 +414,12 @@ func _yeni_oyun() -> void:
 	# Kayıt varsa üstüne yazmadan önce bir kez daha sorulur.
 	if Oyun.kayit_var_mi() and not _onay_bekliyor:
 		_onay_bekliyor = true
-		_yeni.text = "Yeni Oyun — eski kayıt silinsin mi?"
-		_yeni.add_theme_font_size_override("font_size", 21)
+		_yeni.text = "1. Eski kayıt silinsin mi?"
+		_yeni.add_theme_color_override("font_color", Stil.BORDO)
 		Oyun.bekle(4.0).connect(func() -> void:
 			_onay_bekliyor = false
-			_yeni.text = "Yeni Oyun"
-			_yeni.add_theme_font_size_override("font_size", 25))
+			_yeni.text = "1. Yeni Oyun"
+			_yeni.add_theme_color_override("font_color", Stil.MUREKKEP))
 		return
 	Oyun.yeni_oyun()
 	Oyun.sahneye_gec("masa")
@@ -227,3 +434,17 @@ func _ayarlari_ac() -> void:
 	if find_child("AyarlarPenceresi", false, false) != null:
 		return
 	add_child(AyarlarPenceresi.new())
+
+
+static func _hale_uret() -> Texture2D:
+	var gecis := Gradient.new()
+	gecis.offsets = PackedFloat32Array([0.0, 0.25, 0.6, 1.0])
+	gecis.colors = PackedColorArray([Color(1, 1, 1, 1.0), Color(1, 1, 1, 0.42), Color(1, 1, 1, 0.10), Color(1, 1, 1, 0.0)])
+	var doku := GradientTexture2D.new()
+	doku.gradient = gecis
+	doku.fill = GradientTexture2D.FILL_RADIAL
+	doku.fill_from = Vector2(0.5, 0.5)
+	doku.fill_to = Vector2(1.0, 0.5)
+	doku.width = 128
+	doku.height = 128
+	return doku

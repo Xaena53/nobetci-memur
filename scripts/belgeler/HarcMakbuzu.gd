@@ -34,4 +34,4 @@ func _draw() -> void:
 	draw_string(Stil.daktilo_kalin(), Vector2(-58, 4) * _k, "TAHSİL EDİLMİŞTİR", HORIZONTAL_ALIGNMENT_CENTER,
 		116.0 * _k, roundi(9.5 * _k), renk)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-	_imza_ciz(Rect2(70, 150, 70, 24), hash(metin("makbuz_no")), Color(Stil.MAVI_MUREKKEP, 0.85))
+	_imza_ciz(Rect2(66, 143, 80, 36), hash(metin("makbuz_no")), Color(Stil.MAVI_MUREKKEP, 0.9), "veznedar")

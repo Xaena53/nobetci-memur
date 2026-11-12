@@ -91,7 +91,7 @@ async def calistir(ws_adresi: str) -> int:
         await gonder("Page.navigate", url=f"http://127.0.0.1:{KAPI}/index.html")
         await bekle(22.0)                     # wasm derlenir, paket açılır, başlık yazılır
         await cek("web_1_menu")
-        await tikla(133, 209)                 # "Yeni Oyun"
+        await tikla(262, 222)                 # "1. Yeni Oyun" (menü kâğıdının ilk satırı)
         await bekle(7.0)
         await cek("web_2_sabah")
         await tikla(909, 601)                 # "Gişeyi Aç" (4. günden önce genelge ortada değil: 1. günde gazete var)

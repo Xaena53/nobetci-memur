@@ -69,15 +69,11 @@ func ac(gun: Dictionary, gun_no: int) -> void:
 
 	_yaz(kagit, "Müdür", Rect2(x + w - 150, 492, 150, 16), 12, Stil.MUREKKEP, Stil.daktilo_kalin(), true)
 	var imza := Control.new()
-	imza.position = Vector2(x + w - 150, 452)
-	imza.size = Vector2(150, 40)
+	imza.position = Vector2(x + w - 160, 428)
+	imza.size = Vector2(160, 66)
 	imza.mouse_filter = MOUSE_FILTER_IGNORE
 	imza.draw.connect(func() -> void:
-		var p := PackedVector2Array()
-		for i in 34:
-			var u := i / 33.0
-			p.append(Vector2(18.0 + 112.0 * u, 22.0 + 11.0 * sin(u * 19.0) * (1.0 - 0.6 * u) - 9.0 * u))
-		imza.draw_polyline(p, Stil.MAVI_MUREKKEP, 1.5, true))
+		Imza.ciz(imza, Rect2(Vector2.ZERO, imza.size), "mudur", Stil.MAVI_MUREKKEP))
 	kagit.add_child(imza)
 
 	_dugme = Button.new()

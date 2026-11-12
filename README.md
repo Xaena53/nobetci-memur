@@ -2,7 +2,7 @@
 
 > **1984. Bir gişe, bir mühür, bitmeyen bir kuyruk.**
 
-![Ana menü: kar altında nüfus müdürlüğü binası ve kapıdaki kuyruk](docs/img/01_menu.jpg)
+![Ana menü: kar altında nüfus müdürlüğü binası, kapıdaki kuyruk ve müdürlük yazısı biçimindeki menü](docs/img/01_menu.jpg)
 
 Ardıçlı İlçesi Nüfus Müdürlüğü'nün 2 numaralı gişesine yeni atanan memursunuz. Camın öbür
 yanında kuyruk kapıya kadar uzuyor; herkesin elinde bir nüfus cüzdanı, bir ikametgâh ilmühaberi ve
@@ -280,7 +280,7 @@ scenes/            Sahneler: AnaMenu, Masa, GunSonu, Aile, Son (+ belgeler/, Ure
 scripts/           Oyun kodu (aşağıda)
 data/              İçerik: günler, adlar, portre künyeleri, karakterler, hikâye (JSON)
 assets/img/        Arka planlar, portreler (+ ağız kareleri, vesikalıklar, aranan resimleri), nesneler,
-                   kâğıt dokuları, röntgen (cihaz, çanta kabukları, eşyalar)
+                   kâğıt dokuları, röntgen (cihaz, çanta kabukları, eşyalar), imzalar
 assets/ses/        Sentezlenmiş efektler (.wav) ve döngülü ortam sesleri (.ogg)
 assets/font/       Courier Prime, Old Standard TT, Caveat (+ lisans metinleri)
 assets/shader/     portre.gdshader (canlı portre), foto.gdshader (vesikalık baskı),
@@ -313,7 +313,9 @@ akışı: `Ana Menü → Masa (09:00–17:00) → Gün Sonu → Aile → ertesi 
 | `KuralKitabi.gd` | Panodaki genelge defteri: kurallar, tarife, arananlar, yasak eşya |
 | `GenelgeEkrani.gd`, `Gazete.gd` | Sabah genelgesi ve gazete kupürü |
 | `GunSonu.gd`, `Son.gd` | Günlük puantaj; oyun sonu gazetesi |
-| `AnaMenu.gd`, `AyarlarPenceresi.gd`, `MolaMenusu.gd` | Menüler |
+| `AnaMenu.gd`, `AyarlarPenceresi.gd`, `MolaMenusu.gd` | Menüler; ana menüde baca dumanı ve cızırdayan sokak lambası |
+| `Kar.gd` | Üç katmanlı, rüzgârla savrulan kar yağışı |
+| `Imza.gd` | Kişiye özel imzalar: müdür, muhtarlar, veznedar |
 | `Stil.gd`, `Yerlesim.gd` | Renkler ve yazı tipleri; ekran yerleşimi sabitleri |
 
 ## İçerik eklemek
@@ -377,6 +379,7 @@ betiklerle hazırlandı:
 | `tools/sanat/aile_figurleri.py` | Ev sahnesindeki tam boy figürleri dilimler |
 | `tools/sanat/vesikalik.py` | "Yıllar önceki hâli" çeşitlemelerinden vesikalıkları ve aranan resimlerini keser; yüz benzerliklerini ölçer (OpenCV SFace) |
 | `tools/sanat/rontgen.py` | Röntgen eşyalarını, çanta kabuklarını, cihazı ve çantaların dış görünüşünü dilimler |
+| `tools/sanat/imzalar.py` | İmza sayfasını kişi kişi keser; mürekkebin koyuluğunu saydamlık maskesine çevirir |
 | `tools/sanat/olc.py` | Arka plan üzerindeki yerleşim noktalarını ölçmek için cetvelli büyütme |
 
 Canlı portrelerin hareketi tek bir gölgelendiricidedir (`assets/shader/portre.gdshader`): nefes,

@@ -465,3 +465,47 @@ func _senaryo_rontgen() -> void:
 	await sahneyi_bekle("GunSonu", 12.0)
 	await bekle(3.0)
 	await cek("r_30_puantaj")
+
+
+## Ana menünün canlandırması: art arda kareler (kar, duman) ve lambanın yanık / sönük hâli (m_*.png).
+func _senaryo_menu() -> void:
+	Oyun.kaydi_sil()
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	var menu := sahne()
+	await bekle(2.4)
+	menu._cizirtiya = 99.0          # kareler alınırken kendiliğinden cızırdamasın
+	menu._cizirti_kalan = 0.0
+	await bekle(0.3)
+	for i in 6:
+		await cek("m_0%d" % i)
+		await bekle(0.5)
+	# seçeneğin üstüne gelince
+	var ayar := dugme("Ayarlar")
+	fare_tasi(ayar.get_global_transform() * (ayar.size * 0.5))
+	await bekle(0.3)
+	await cek("m_08_secili")
+	fare_tasi(Vector2(900, 650))
+	await bekle(0.2)
+	# lamba sönük an
+	menu._cizirti_kalan = 0.0
+	menu.set_process(false)
+	menu._parlaklik = 0.05
+	menu._kar.isik_gucu = 0.05
+	menu._isik.queue_redraw()
+	menu._golge.queue_redraw()
+	await cek("m_10_lamba_sonuk")
+	menu.set_process(true)
+
+
+## Ana menü canlandırmasının kısa kaydı: art arda kareler (g_*.png); ortasında lamba cızırdar.
+func _senaryo_menu_gif() -> void:
+	Oyun.kaydi_sil()
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	var menu := sahne()
+	await bekle(2.6)
+	menu._cizirtiya = 1.2
+	for i in 40:
+		await cek("g_%02d" % i)
+		await bekle(0.07)

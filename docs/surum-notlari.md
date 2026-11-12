@@ -26,10 +26,24 @@
 - Gün sonu puantajına röntgen satırı eklendi.
 - Yeni sesler: bant, düğme, alarm.
 
+### Ana menü
+
+- **Menü bir müdürlük yazısı oldu:** antet, daktiloyla yazılan başlık, konu ve sayı satırı, numaralı
+  seçenekler, imza ve mühür. Üstüne gelinen satırın kutusuna işaret konur.
+- **Sahne canlandı:** üç katmanlı, rüzgârla savrulan kar; rüzgâra göre yatan baca dumanı; arada bir
+  cızırdayıp titreyen sokak lambası ve ışığında parlayan kar taneleri.
+- Kapının üstündeki tabela işlemeli ahşap bir levha; yazısı görselin parçası olduğu için eğri durmuyor.
+- Sürüm bilgisi kabartma şerit etiketinde.
+
+### İmzalar
+
+- **Herkesin kendi imzası var.** Müdür, on dört mahalle muhtarı ve veznedar için dolma kalemle atılmış
+  ayrı ayrı imzalar: ilmühaberde muhtarın, makbuzda veznedarın, genelgede ve menü kâğıdında müdürün imzası.
+
 ### Teknik
 
 - Duman testi 330 denetime çıktı; tam oyun testindeki memurlar çanta kararlarını da veriyor.
-- Yeni üretim betikleri: `tools/sanat/vesikalik.py`, `tools/sanat/rontgen.py`.
+- Yeni üretim betikleri: `tools/sanat/vesikalik.py`, `tools/sanat/rontgen.py`, `tools/sanat/imzalar.py`.
 
 ## 1.0.0 — ilk yayın
 

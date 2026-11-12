@@ -194,8 +194,11 @@ func _noktali(x0: float, x1: float, y: float, renk: Color = Color(0, 0, 0, 0.35)
 	draw_dashed_line(_v(x0, y), _v(x1, y), renk, maxf(1.0, _k * 0.8), 2.0 * _k)
 
 
-## Tohuma bağlı, okunmaz ama akıcı bir imza karalaması.
-func _imza_ciz(alan: Rect2, tohum: int, renk: Color) -> void:
+## İmza. `kisi` verilmişse ("Sabri Güneş", "veznedar"...) o kişinin kendi imzası çizilir (bkz. Imza);
+## imzası olmayan biri için tohuma bağlı, okunmaz ama akıcı bir karalama çizilir.
+func _imza_ciz(alan: Rect2, tohum: int, renk: Color, kisi: String = "") -> void:
+	if kisi != "" and Imza.ciz(self, Rect2(alan.position * _k, alan.size * _k), kisi, renk):
+		return
 	var rng := RandomNumberGenerator.new()
 	rng.seed = tohum
 	var faz := rng.randf() * TAU

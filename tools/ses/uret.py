@@ -372,6 +372,26 @@ def alarm() -> np.ndarray:
     return kenar(x, 0.002, 0.03)
 
 
+def cizirti() -> np.ndarray:
+    """Sokak lambasının cızırtısı: şebeke uğultusu kesik kesik gelir, üstünde ince çıtırtılar."""
+    sure = 0.95
+    z = t(sure)
+    vizilti = np.abs(np.sin(2 * np.pi * 50 * z)) ** 3 * 0.55 + signal.sawtooth(2 * np.pi * 100 * z) * 0.18
+    vizilti = bant(vizilti + gurultu(sure) * 0.25, 90, 3400, 2)
+    kapi = np.zeros(len(z))
+    an = 0.0
+    while an < sure - 0.05:                                   # düzensiz yanıp sönme
+        uzun = rng.uniform(0.02, 0.11)
+        if rng.random() < 0.62:
+            kapi[int(an * SR):int((an + uzun) * SR)] = rng.uniform(0.5, 1.0)
+        an += uzun
+    kapi = alcak(kapi, 180)
+    x = vizilti * kapi
+    for _ in range(26):                                       # kıvılcım çıtırtıları
+        ekle(x, yuksek(gurultu(0.004), 2500) * sonum(0.004, 700), rng.uniform(0.0, sure - 0.02), rng.uniform(0.25, 0.8))
+    return kenar(x, 0.004, 0.06)
+
+
 def tel(frekans: float, sure: float, parlaklik: float = 0.5) -> np.ndarray:
     """Mızrapla çekilen tel (Karplus-Strong): gürültüyle dolu bir gecikme hattı her turda yumuşar."""
     uzunluk = max(2, int(round(SR / frekans)))
@@ -442,6 +462,7 @@ def main() -> None:
         "daktilo": daktilo, "yirt": yirt, "hece": hece, "adim": adim, "ofle": ofle, "kepenk": kepenk,
         "ihtar": ihtar, "prim": prim, "tik": tik, "saat": saat, "jaluzi": jaluzi, "zarf": zarf, "kalem": kalem,
         "patlama": patlama, "silah": silah, "bant": bant_sesi, "dugme": dugme, "alarm": alarm,
+        "cizirti": cizirti,
     }
     for ad, uretici in efektler.items():
         yaz(ad, uretici())
