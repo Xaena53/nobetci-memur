@@ -865,3 +865,36 @@ func _senaryo_ayarlar() -> void:
 		bas("AyarSekme_" + kod)
 		await bekle(0.3)
 		await cek("a_" + kod)
+
+
+## Onay ve ret mühürleri: tepsideki araçlar ve belgede bıraktıkları izler (tools/cikti/m2_*.png).
+func _senaryo_muhurler() -> void:
+	var masa: Node = await _gune_git(3)
+	masa.giseyi_ac()
+	var genelge := masa.find_child("GenelgeEkrani", true, false)
+	if genelge != null:
+		genelge.queue_free()
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul, 16.0)
+	await bekle(1.2)
+	await cek("m2_0_tepsi")
+	var b: Belge = masa.belgeler[0]
+	masa.karar_ver("onay", b, b.get_global_transform() * (b.size * Vector2(0.55, 0.55)))
+	await bekle(0.35)
+	await cek("m2_1_onay")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul, 16.0)
+	await bekle(0.8)
+	b = masa.belgeler[1] if masa.belgeler.size() > 1 else masa.belgeler[0]
+	masa.karar_ver("eksik", b, b.get_global_transform() * (b.size * Vector2(0.5, 0.5)), "sahte")
+	await bekle(0.35)
+	await cek("m2_2_ret")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+	await bekle(0.8)
+	# tutulan belge: fareyle basılı tutulurken
+	b = masa.belgeler[0]
+	var yer: Vector2 = b.get_global_transform() * (b.size * 0.5)
+	fare_bas(yer)
+	await kare(3)
+	fare_tasi(yer + Vector2(60, -30))
+	await bekle(0.3)
+	await cek("m2_3_tutulan")
+	fare_birak(yer + Vector2(60, -30))

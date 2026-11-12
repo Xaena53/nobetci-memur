@@ -13,6 +13,7 @@ signal birakildi(belge: Belge)
 signal hedef_tiklandi(hedef: Hedef)
 
 const BUYUTME := 1.6
+const TUTUS_BUYUMESI := 1.045         ## tutulan nesnenin öne çıkarken büyüme oranı
 const SAHNELER := {
 	"nufus_cuzdani": "res://scenes/belgeler/NufusCuzdani.tscn",
 	"ikametgah": "res://scenes/belgeler/Ikametgah.tscn",
@@ -43,6 +44,7 @@ var _k := 1.0
 var _surukleniyor := false
 var _tutma := Vector2.ZERO
 var _gecis: Tween
+var _tutus_gecisi: Tween
 
 
 static func olustur(v: Dictionary) -> Belge:
@@ -62,6 +64,7 @@ func masaya_koy(katman: Node) -> MasaNesnesi:
 	katman.add_child(tutucu)
 	tutucu.add_child(self)
 	tutucu.ortala()
+	mouse_default_cursor_shape = CURSOR_POINTING_HAND      # tutulabilir nesnenin üstünde imleç el olur
 	return tutucu
 
 
@@ -229,15 +232,18 @@ func _gui_input(event: InputEvent) -> void:
 		if event.pressed:
 			if event.double_click:
 				_surukleniyor = false
+				_one_cikar(false)
 				buyut(not buyuk)
 			else:
 				_surukleniyor = true
 				_tutma = (fare - tutucu.ekran_konumu) if buyuk else (Perspektif.masaya(fare) - tutucu.masa_konumu)
 				tutucu.move_to_front()
+				_one_cikar(true)
 				queue_redraw()
 				alindi.emit(self)
 		elif _surukleniyor:
 			_surukleniyor = false
+			_one_cikar(false)
 			queue_redraw()
 			birakildi.emit(self)
 		accept_event()
@@ -248,6 +254,18 @@ func _gui_input(event: InputEvent) -> void:
 		else:
 			tutucu.masa_konumu = _masada_sinirla(Perspektif.masaya(fare) - _tutma)
 		accept_event()
+
+
+## Tutulan nesne hafifçe büyüyüp öbürlerinin üstüne çıkar (gölgesi de büyür); bırakılınca yerine oturur.
+func _one_cikar(tutuluyor: bool) -> void:
+	if tutucu == null:
+		return
+	tutucu.tutuluyor = tutuluyor
+	if _tutus_gecisi != null:
+		_tutus_gecisi.kill()
+	_tutus_gecisi = create_tween()
+	_tutus_gecisi.tween_property(self, "scale", Vector2.ONE * (TUTUS_BUYUMESI if tutuluyor else 1.0), 0.09) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Belgenin ortasını masadaki gezinme alanının içinde tutar (masa koordinatı).
@@ -357,7 +375,12 @@ func iz_birak(karar: String, yerel: Vector2, satirlar: PackedStringArray) -> voi
 	iz.karar = karar
 	iz.satirlar = satirlar
 	iz.belge = self
-	var boyut := Vector2(152, 88) if karar == "onay" else Vector2(168, 66)
+	# onay: mühür; ret: mühür ve altında gerekçe; havale: zımbalı pusula
+	var boyut := Vector2(168, 66)
+	if karar == "onay":
+		boyut = Vector2(152, 88)
+	elif karar == "eksik":
+		boyut = Vector2(152, 88.0 + 4.0 + 12.0 * maxi(1, satirlar.size() - 3))
 	var konum := yerel / _k - boyut / 2.0
 	konum.x = clampf(konum.x, 4, maxf(4, _taban.x - boyut.x - 4))
 	konum.y = clampf(konum.y, 4, maxf(4, _taban.y - boyut.y - 4))
@@ -373,27 +396,35 @@ func iz_birak(karar: String, yerel: Vector2, satirlar: PackedStringArray) -> voi
 	t.parallel().tween_property(iz, "modulate:a", 1.0, 0.05)
 
 
-## Onay mührü ya da zımbalı fiş.
+## Karar izi: onay mührü (mavi), ret mührü (kırmızı; altında gerekçesi) ya da zımbalı havale pusulası.
+## Mühürlerde satirlar[2] tarihtir; ret mühründe satirlar[3..] gerekçenin satırlarıdır.
 class KararIzi extends Control:
 	var karar := "onay"
 	var satirlar := PackedStringArray()
 	var belge: Control      ## iç sınıf dış betiğe tipli başvurursa betik çıkışta bellekte kalır
 
 	func _draw() -> void:
-		var k := size.x / (152.0 if karar == "onay" else 168.0)
-		if karar == "onay":
-			_muhur(k)
-		else:
+		var k := size.x / (168.0 if karar == "havale" else 152.0)
+		if karar == "havale":
 			_fis(k)
+		else:
+			_muhur(k)
 
 	func _muhur(k: float) -> void:
-		var alan := Rect2(Vector2(3, 2) * k, size - Vector2(6, 4) * k)
-		Damga.ciz(self, alan, "onay", "", deg_to_rad(-7.0), 0.88)
+		var cesit := "onay" if karar == "onay" else "ret"
+		var egim := deg_to_rad(-7.0 if karar == "onay" else 5.0)
+		var muhur_boyu := Vector2(size.x, 88.0 * k)
+		var alan := Rect2(Vector2(3, 2) * k, muhur_boyu - Vector2(6, 4) * k)
+		Damga.ciz(self, alan, cesit, "", egim, 0.88)
+		var renk := Color(Damga.RENKLER[Damga.renk_adi(cesit)], 0.88)
+		# gerekçe: mührün altına aynı mürekkeple, daktiloyla
+		for i in range(3, satirlar.size()):
+			draw_string(Stil.daktilo_kalin(), Vector2(0, muhur_boyu.y + (10.0 + (i - 3) * 12.0) * k), satirlar[i],
+				HORIZONTAL_ALIGNMENT_CENTER, size.x, roundi(10.0 * k), renk)
 		# damganın alt şeridine tarih yazılır
 		if satirlar.size() >= 3:
-			var renk := Color(Stil.BORDO, 0.86)
-			draw_set_transform(size / 2.0, deg_to_rad(-7.0), Vector2.ONE)
-			draw_string(Stil.daktilo_kalin(), Vector2(-size.x / 2.0, size.y * 0.335), satirlar[2], HORIZONTAL_ALIGNMENT_CENTER,
+			draw_set_transform(muhur_boyu / 2.0, egim, Vector2.ONE)
+			draw_string(Stil.daktilo_kalin(), Vector2(-size.x / 2.0, muhur_boyu.y * 0.335), satirlar[2], HORIZONTAL_ALIGNMENT_CENTER,
 				size.x, roundi(11.0 * k), renk)
 			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 

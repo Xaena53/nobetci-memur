@@ -1,14 +1,15 @@
 class_name Arac
 extends Control
-## Tepsideki sürüklenebilir karar araçları: onay mührü, "eksik evrak" fişi, "müdüre havale" pusulası.
+## Tepsideki sürüklenebilir karar araçları: onay mührü (mavi lastikli), ret mührü (kırmızı lastikli) ve
+## "müdüre havale" pusulası. Ret mührü bırakılınca gerekçe sorulur.
 ## Bir belgenin üstüne bırakılınca karar verilir; boşa bırakılırsa tepsideki yerine döner.
 ## Araç tepside masa perspektifiyle yatar; ele alınınca düzleşip imleci izler (MasaNesnesi).
 
 signal alindi(arac: Arac)
 signal birakildi(arac: Arac, konum: Vector2)
 
-const BASLIKLAR := {"eksik": "EKSİK EVRAK", "havale": "MÜDÜRE HAVALE"}
-const MUHUR_DOKUSU := "res://assets/img/nesne/muhur.webp"
+const BASLIKLAR := {"havale": "MÜDÜRE HAVALE"}
+const MUHUR_DOKULARI := {"onay": "res://assets/img/nesne/muhur_onay.webp", "eksik": "res://assets/img/nesne/muhur_ret.webp"}
 
 var tur := "onay"            ## "onay" | "eksik" | "havale"
 var tutucu: MasaNesnesi
@@ -20,7 +21,7 @@ var etkin := true:
 	set(e):
 		etkin = e
 		modulate.a = 1.0 if e else 0.45
-		mouse_default_cursor_shape = CURSOR_DRAG if e else CURSOR_ARROW
+		mouse_default_cursor_shape = CURSOR_POINTING_HAND if e else CURSOR_ARROW
 
 var _surukleniyor := false
 var _doku: Texture2D
@@ -30,11 +31,13 @@ var _doku: Texture2D
 func kur(arac_turu: String, yer: Vector2, katman: Node) -> void:
 	tur = arac_turu
 	name = "Arac_" + tur
-	size = Vector2(100, 90) if tur == "onay" else Vector2(112, 59)
+	# mühürler aynı boyda; havale koçanı boyalı görselinin tamamı görünecek oranda
+	size = Vector2(86, 77) if muhur_mu() else Vector2(108, 95)
 	pivot_offset = size / 2.0
-	mouse_default_cursor_shape = CURSOR_DRAG
-	if tur == "onay" and ResourceLoader.exists(MUHUR_DOKUSU):
-		_doku = load(MUHUR_DOKUSU)
+	mouse_default_cursor_shape = CURSOR_POINTING_HAND
+	var yol := str(MUHUR_DOKULARI.get(tur, ""))
+	if yol != "" and ResourceLoader.exists(yol):
+		_doku = load(yol)
 	tutucu = MasaNesnesi.new()
 	tutucu.name = "Tutucu_" + tur
 	katman.add_child(tutucu)
@@ -42,6 +45,10 @@ func kur(arac_turu: String, yer: Vector2, katman: Node) -> void:
 	tutucu.ortala()
 	tutucu.masa_konumu = yer
 	queue_redraw()
+
+
+func muhur_mu() -> bool:
+	return MUHUR_DOKULARI.has(tur)
 
 
 func kullanilabilir() -> bool:
@@ -100,7 +107,7 @@ func eve_don(aninda: bool = false) -> void:
 
 
 func _draw() -> void:
-	if tur == "onay":
+	if muhur_mu():
 		_muhur_ciz()
 	else:
 		_fis_ciz()
@@ -127,11 +134,10 @@ func _fis_ciz() -> void:
 	else:
 		draw_rect(Rect2(r.position + Vector2(3, 4), r.size), Color(0, 0, 0, 0.26))
 	if doku != null:
-		var b := doku.get_size()
-		draw_texture_rect_region(doku, r, Rect2(0, 0, b.x, b.x * size.y / size.x))
+		draw_texture_rect(doku, r, false)       # koçanın tamamı (yarısı kesilince yazısı da kesiliyordu)
 	else:
 		Kagit.parca_ciz(self, r, "sayfa", Stil.KAGIT_BEYAZ)
 		draw_string(Stil.daktilo_kalin(), Vector2(0, 14), BASLIKLAR.get(tur, ""), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Stil.MUREKKEP)
 	if tur == "havale" and kalan >= 0:
-		draw_string(Stil.daktilo(), Vector2(0, size.y * 0.66), "kalan hak: %d" % kalan, HORIZONTAL_ALIGNMENT_CENTER, size.x, 12,
-			Stil.MUREKKEP_SOLUK)
+		draw_string(Stil.daktilo(), Vector2(0, size.y * 0.64), "kalan hak: %d" % kalan, HORIZONTAL_ALIGNMENT_CENTER, size.x, 12,
+			Stil.MUREKKEP)

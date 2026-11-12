@@ -18,7 +18,7 @@ const BUYUTEC := "res://assets/img/nesne/buyutec.webp"
 const IGNE := "res://assets/img/nesne/igne.webp"
 const MESAI_BASI := 9 * 60     ## 09:00 (dakika)
 const MESAI_SONU := 17 * 60    ## 17:00
-const KARAR_ADLARI := {"onay": "ONAY", "eksik": "EKSİK EVRAK", "havale": "MÜDÜRE HAVALE"}
+const KARAR_ADLARI := {"onay": "ONAY", "eksik": "RET", "havale": "MÜDÜRE HAVALE"}
 const ALARM_KAYBI := 12        ## boş yere verilen alarmın yediği mesai (dakika)
 const RADYO_LISTESI := ["saz_semaisi", "harman_dali", "saz", "taksim"]    ## masadaki radyonun çaldıkları (assets/ses/muzik)
 const VARSAYILAN_SOZ := {
@@ -593,8 +593,12 @@ func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = ""
 			Ses.cal("muhur", 1.0, -3.0, 0.04)
 			_sarsinti()
 		"eksik":
-			belge.iz_birak("eksik", yerel, _fis_satirlari(str(Dogrulayici.GEREKCELER.get(gerekce, "Eksik evrak"))))
-			Ses.cal("kagit", 1.0, -6.0, 0.08)
+			# ret mührü: altına gerekçesi yazılır
+			var neden := _fis_satirlari(str(Dogrulayici.GEREKCELER.get(gerekce, "Eksik evrak")))
+			neden.remove_at(0)
+			belge.iz_birak("eksik", yerel, PackedStringArray(["REDDEDİLMİŞTİR", "Ardıçlı Nüfus Md.", str(gun.get("tarih", ""))]) + neden)
+			Ses.cal("muhur", 0.92, -3.0, 0.04)
+			_sarsinti(4.0)
 		"havale":
 			belge.iz_birak("havale", yerel, PackedStringArray(["MÜDÜRE HAVALE", "Müdürlük makamına", "arz olunur."]))
 			Ses.cal("kagit", 0.9, -6.0, 0.08)
@@ -1106,6 +1110,9 @@ func _tepsiyi_kur() -> void:
 	_igne.draw.connect(_igne_ciz)
 	_masaya_yerlestir(_igne, Yerlesim.IGNE_YERI + Vector2(0, -22))
 	_ihtar_seridi = _serit("serit_bos", "İHTAR 0", Yerlesim.IGNE_YERI + Vector2(10, 33), 86)
+	# mühürlerin adları: hangisinin onay, hangisinin ret olduğu bir bakışta görülsün
+	_serit("serit_bos", "ONAY", Vector2(1012, 281), 58)
+	_serit("serit_bos", "RET", Vector2(1078, 281), 50)
 
 
 ## İğne ve ona takılmış günün ihtar pusulaları.

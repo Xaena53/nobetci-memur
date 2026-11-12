@@ -27,7 +27,13 @@ var yatis_acisi := 0.0:               ## masada dururkenki hafif dönüklük (ra
 		yatis_acisi = a
 		_guncelle()
 
+var tutuluyor := false:                ## masada sürüklenirken de öbür nesnelerin üstünde çizilir
+	set(t):
+		tutuluyor = t
+		_guncelle()
+
 const ELDE_KATMANI := 30
+const TUTUS_KATMANI := 8              ## sürüklenen (ama masada yatan) nesne: öbür belgelerin üstü, araçların altı
 
 var _gecis: Tween
 
@@ -60,7 +66,7 @@ func gecisi_durdur() -> void:
 
 func _guncelle() -> void:
 	# elde tutulan nesne tepsinin ve masadaki öbür nesnelerin üstünde çizilir
-	z_index = ELDE_KATMANI if kalkis > 0.01 else 0
+	z_index = ELDE_KATMANI if kalkis > 0.01 else (TUTUS_KATMANI if tutuluyor else 0)
 	var yatik := Perspektif.yerel(masa_konumu)
 	if yatis_acisi != 0.0:
 		yatik = yatik * Transform2D(yatis_acisi, Vector2.ZERO)

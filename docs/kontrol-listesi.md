@@ -30,7 +30,9 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] Vatandaş yürüyerek geliyor, zil çalıyor, konuşurken ağzı oynuyor.
 - [ ] Belgeler sürükleniyor, çift tıkla büyüyüp küçülüyor, teleksin altına girmiyor.
 - [ ] İnceleme modunda (BOŞLUK) iki bilgi seçilince çizgi ve sonuç balonu çıkıyor.
-- [ ] Mühür: "BAM" sesi ve kısa sarsıntı. Fiş: gerekçe penceresi açılıyor.
+- [ ] Onay mührü (mavi lastikli): "BAM" sesi, kısa sarsıntı, belgede mavi "ONAYLANMIŞTIR".
+- [ ] Ret mührü (kırmızı lastikli): gerekçe penceresi açılıyor; seçince belgede kırmızı "REDDEDİLMİŞTİR" ve altında gerekçe.
+- [ ] Belge ya da defter tutulunca imleç el oluyor, nesne hafifçe büyüyüp öbürlerinin üstüne çıkıyor.
 - [ ] Yanlış kararda teleks ihtarı satır satır basıyor; pusula iğneye takılıyor.
 - [ ] Saat 17:00'de ya da kuyruk bitince kepenk iniyor.
 - [ ] Gün sonu puantajındaki sayılar gün içinde olanlarla tutuyor.

@@ -42,7 +42,7 @@ func ac(gerekceler: Array[String], bulunanlar: Array, yakin: Vector2) -> void:
 	serit.size = Vector2(GENISLIK - 4.0, 28)
 	serit.mouse_filter = MOUSE_FILTER_IGNORE
 	_kutu.add_child(serit)
-	var baslik := Stil.etiket("EKSİK EVRAK — GEREKÇESİ", 15, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	var baslik := Stil.etiket("RET — GEREKÇESİ", 15, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
 	baslik.position = Vector2(0, 5)
 	baslik.size = Vector2(GENISLIK, 22)
 	baslik.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

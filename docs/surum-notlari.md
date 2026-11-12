@@ -1,5 +1,16 @@
 # Sürüm notları
 
+## 1.3.1 — ret mührü
+
+- **Ret mührü.** "Eksik evrak" fişinin yerini kırmızı lastikli bir mühür aldı: belgeye bırakılınca gerekçe
+  sorulur, belgeye kırmızı "REDDEDİLMİŞTİR" basılır ve altına gerekçe yazılır. Onay mührü mavi mürekkeple
+  basar. İki mühür ıstampanın üstünde yan yana durur; altlarında "ONAY" ve "RET" etiketleri vardır.
+- **Havale koçanı düzeldi.** Koçanın görseli yarısından kesiliyor, üstündeki yazı yarım görünüyordu;
+  artık tamamı görünür, kalan hak kâğıdın ortasında yazar.
+- **Tutulan nesne öne çıkar.** Belge ya da bilgi defteri sürüklenirken hafifçe büyür, gölgesi büyür ve
+  öbür belgelerin üstünde çizilir. Tutulabilir nesnelerin üstünde imleç el olur (araçlarda dört oklu
+  taşıma imleci çıkıyordu).
+
 ## 1.3.0 — ayarlar ve performans
 
 ### Ayarlar

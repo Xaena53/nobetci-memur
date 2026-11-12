@@ -21,7 +21,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.3.0 |
+| Sürüm | 1.3.1 |
 
 ---
 
@@ -54,8 +54,9 @@ Her gün müdürün genelgesiyle başlar. Genelgeyi okuyup **Gişeyi Aç**'a bas
    aralarına bir çizgi çeker ve uyuşup uyuşmadıklarını söyler. Ad adla, tarih duvardaki takvimle,
    tutar tarifeyle, fotoğraf camdaki yüzle karşılaştırılır.
 3. **Karar verin.** Sağdaki tepsiden bir aracı alıp belgenin üstüne bırakın:
-   - **Onay mührü:** evrak tamsa.
-   - **Eksik evrak fişi:** kusur varsa. Fiş gerekçeyi sorar; doğru gerekçeyi seçmek gerekir.
+   - **Onay mührü** (mavi lastikli): evrak tamsa. Belgeye mavi "ONAYLANMIŞTIR" basar.
+   - **Ret mührü** (kırmızı lastikli): kusur varsa. Gerekçeyi sorar; doğru gerekçeyi seçmek gerekir.
+     Belgeye kırmızı "REDDEDİLMİŞTİR" basar, altına gerekçeyi yazar.
    - **Müdüre havale pusulası:** sahtecilikten şüphelenirseniz. Günde iki hakkınız vardır.
 
 Doğru karar prim kazandırır. Yanlış kararda masadaki teleks çalışır ve müdürün ihtarı satır satır
@@ -133,7 +134,7 @@ kurutma makinesi tabancaya, sucuk dinamite, bir bağ mum patlayıcıya benzer.
 
 | Tuş | İşlev |
 |---|---|
-| Fare ile sürükle | Belgeyi masada taşır |
+| Fare ile sürükle | Belgeyi masada taşır (tutulan nesne öne çıkar, imleç el olur) |
 | Çift tık | Belgeyi büyütür, küçültür |
 | BOŞLUK | İnceleme modu |
 | ESC | Çay molası: oyun durur, ayarlar açılır |
@@ -519,6 +520,7 @@ betiklerle hazırlandı:
 | `tools/sanat/dilimle.py` | Portre ve nesne sayfalarını saydamlık kanalından tek tek görsellere ayırır |
 | `tools/sanat/yuz_noktalari.py` | Her portrede göz, burun, ağız ve çene noktalarını bulur (OpenCV YuNet) |
 | `tools/sanat/agiz_kareleri.py` | "Ağzı açık" çeşitlemeleri ana portreye hizalar; alt yüzü yumuşak maskeyle keser |
+| `tools/sanat/ret_damgasi.py` | Ret mührünün izini eldeki boyalı damgaların harflerinden kurar; mühür aracının mavi ve kırmızı lastikli hâllerini üretir |
 | `tools/sanat/agiz_ara_kare.py` | Tek çeşitlemesi olan yüzlerde "hafif açık" kareyi açık kareden bükerek üretir (ağız boşluğunu daraltır) |
 | `tools/sanat/aile_figurleri.py` | Ev sahnesindeki tam boy figürleri dilimler |
 | `tools/sanat/vesikalik.py` | "Yıllar önceki hâli" çeşitlemelerinden vesikalıkları ve aranan resimlerini keser; yüz benzerliklerini ölçer (OpenCV SFace) |
