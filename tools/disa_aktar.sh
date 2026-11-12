@@ -9,6 +9,7 @@ cd "$(dirname "$0")/.."
 G="${GODOT:-/c/Users/pc/Godot/4.3/Godot_v4.3-stable_win64_console.exe}"
 rm -rf build
 mkdir -p build/windows build/web
+touch build/.gdignore      # Godot bu klasörü proje varlığı saymasın
 "$G" --headless --path . --import
 "$G" --headless --path . --export-release "Windows" build/windows/NobetciMemur.exe
 "$G" --headless --path . --export-release "Web" build/web/index.html

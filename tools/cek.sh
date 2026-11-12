@@ -11,4 +11,5 @@ window/size/initial_position_type=0
 window/size/initial_position=Vector2i(-4000, -4000)
 EOF
 trap 'rm -f override.cfg' EXIT
+mkdir -p tools/cikti && touch tools/cikti/.gdignore   # kareler proje varlığı sayılmasın
 "$G" --path . --audio-driver Dummy res://tools/Cekim.tscn -- "$@"
