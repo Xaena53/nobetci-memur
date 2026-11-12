@@ -105,10 +105,10 @@ def main() -> None:
     cikti[..., 3] = (np.clip(ret, 0, 1) * 255).astype(np.uint8)
     Image.fromarray(cikti, "RGBA").save(DAMGA / "ret.webp", lossless=True, quality=100, method=6, exact=True)
 
-    # denetim: kırmızı mürekkeple kâğıt üstünde ret, mavi mürekkeple onay
+    # denetim: kırmızı mürekkeple kâğıt üstünde ret, yeşil mürekkeple onay
     HAM.mkdir(parents=True, exist_ok=True)
     sayfa = Image.new("RGB", (w * 2 + 60, h + 40), (243, 236, 219))
-    for i, (m, renk) in enumerate(((ret, (163, 38, 44)), (onay, (43, 74, 143)))):
+    for i, (m, renk) in enumerate(((ret, (163, 38, 44)), (onay, (31, 107, 60)))):
         murekkep = Image.new("RGB", (w, h), renk)
         sayfa.paste(murekkep, (20 + i * (w + 20), 20), Image.fromarray((np.clip(m, 0, 1) * 235).astype(np.uint8)))
     sayfa.save(HAM / "ret_denetim.png")
@@ -116,7 +116,7 @@ def main() -> None:
 
 
 def muhur_araclari() -> None:
-    """Tepsideki mühür görselinden iki araç üretir: lastiği mavi (onay) ve kırmızı (ret) mühür."""
+    """Tepsideki mühür görselinden iki araç üretir: lastiği yeşil (onay) ve kırmızı (ret) mühür."""
     import colorsys
     nesne = KOK / "assets" / "img" / "nesne"
     im = np.array(Image.open(nesne / "muhur.webp").convert("RGBA")).astype(np.float32) / 255.0
@@ -126,10 +126,11 @@ def muhur_araclari() -> None:
     lastik = ((ton < 9.0) | (ton > 346.0)) & (doygunluk > 0.50) & (im[..., 3] > 0.3)
     print("lastik pikseli:", int(lastik.sum()))
     Image.fromarray((im * 255).astype(np.uint8), "RGBA").save(nesne / "muhur_ret.webp", quality=95, method=6)
-    mavi = hsv.copy()
-    mavi[..., 0][lastik] = 218.0 / 360.0 * 255.0
-    mavi[..., 1][lastik] = np.clip(mavi[..., 1][lastik] * 0.92, 0, 255)
-    rgb = np.array(Image.fromarray(mavi.astype(np.uint8), "HSV").convert("RGB"))
+    yesil = hsv.copy()
+    yesil[..., 0][lastik] = 138.0 / 360.0 * 255.0
+    yesil[..., 1][lastik] = np.clip(yesil[..., 1][lastik] * 0.85, 0, 255)
+    yesil[..., 2][lastik] = np.clip(yesil[..., 2][lastik] * 0.82, 0, 255)
+    rgb = np.array(Image.fromarray(yesil.astype(np.uint8), "HSV").convert("RGB"))
     cikti = np.dstack([rgb, (im[..., 3] * 255).astype(np.uint8)])
     Image.fromarray(cikti, "RGBA").save(nesne / "muhur_onay.webp", quality=95, method=6)
     yan = Image.new("RGBA", (im.shape[1] * 2 + 30, im.shape[0] + 20), (52, 96, 70, 255))

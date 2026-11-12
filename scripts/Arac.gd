@@ -1,6 +1,6 @@
 class_name Arac
 extends Control
-## Tepsideki sürüklenebilir karar araçları: onay mührü (mavi lastikli), ret mührü (kırmızı lastikli) ve
+## Tepsideki sürüklenebilir karar araçları: onay mührü (yeşil lastikli), ret mührü (kırmızı lastikli) ve
 ## "müdüre havale" pusulası. Ret mührü bırakılınca gerekçe sorulur.
 ## Bir belgenin üstüne bırakılınca karar verilir; boşa bırakılırsa tepsideki yerine döner.
 ## Araç tepside masa perspektifiyle yatar; ele alınınca düzleşip imleci izler (MasaNesnesi).

@@ -8,9 +8,10 @@ extends Control
 ## Aynı çizici belgelerde, bilgi defterindeki örneklerde, karar mühründe ve ana menüde kullanılır.
 
 const KLASOR := "res://assets/img/damga/"
-const RENKLER := {"mor": Color("5b3a82"), "kirmizi": Color("a3262c"), "mavi": Color("2b4a8f"), "bordo": Color("7a1f2b")}
+const RENKLER := {"mor": Color("5b3a82"), "kirmizi": Color("a3262c"), "mavi": Color("2b4a8f"), "bordo": Color("7a1f2b"),
+	"yesil": Color("1f6b3c")}
 ## Gerçek damganın mürekkebi ve belgedeki taban boyutu.
-const MUREKKEP := {"muhtar": "mor", "vezne": "mor", "vize": "kirmizi", "daire": "mor", "onay": "mavi", "ret": "kirmizi",
+const MUREKKEP := {"muhtar": "mor", "vezne": "mor", "vize": "kirmizi", "daire": "mor", "onay": "yesil", "ret": "kirmizi",
 	"gorulmustur": "bordo"}
 const TABAN := {"muhtar": Vector2(84, 84), "vize": Vector2(84, 84), "vezne": Vector2(108, 47), "daire": Vector2(84, 70),
 	"onay": Vector2(150, 87), "ret": Vector2(150, 87), "gorulmustur": Vector2(140, 75)}

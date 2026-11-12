@@ -88,7 +88,7 @@ gazetenin birinci sayfasına yansır.
 | Fare ile sürükle | Belgeyi masada taşır |
 | Çift tık | Belgeyi büyütür / küçültür |
 | BOŞLUK ya da büyüteç | İnceleme modu |
-| Mührü belgeye bırak | Mavi mühür onaylar, kırmızı mühür reddeder |
+| Mührü belgeye bırak | Yeşil mühür onaylar, kırmızı mühür reddeder |
 | ESC | Mola (ayarlar burada) |
 | F11 | Tam ekran |
 

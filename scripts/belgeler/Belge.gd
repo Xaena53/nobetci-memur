@@ -396,7 +396,7 @@ func iz_birak(karar: String, yerel: Vector2, satirlar: PackedStringArray) -> voi
 	t.parallel().tween_property(iz, "modulate:a", 1.0, 0.05)
 
 
-## Karar izi: onay mührü (mavi), ret mührü (kırmızı; altında gerekçesi) ya da zımbalı havale pusulası.
+## Karar izi: onay mührü (yeşil), ret mührü (kırmızı; altında gerekçesi) ya da zımbalı havale pusulası.
 ## Mühürlerde satirlar[2] tarihtir; ret mühründe satirlar[3..] gerekçenin satırlarıdır.
 class KararIzi extends Control:
 	var karar := "onay"

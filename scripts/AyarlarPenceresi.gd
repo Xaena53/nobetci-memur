@@ -51,7 +51,7 @@ const KONTROLLER := [
 	["Fare ile sürükle", "belgeyi masada taşır"],
 	["Çift tık", "belgeyi ya da bilgi defterini büyütür"],
 	["BOŞLUK", "inceleme: iki bilgiye tıkla, karşılaştır"],
-	["Mührü bırak", "belgenin üstüne: mavi onaylar, kırmızı reddeder"],
+	["Mührü bırak", "belgenin üstüne: yeşil onaylar, kırmızı reddeder"],
 	["Havale pusulasını bırak", "şüpheli evrakı müdüre yollar"],
 	["1 – 9", "gerekçe penceresinde gerekçeyi seçer"],
 	["ENTER", "genelgeyi tamamlar, gişeyi açar"],
