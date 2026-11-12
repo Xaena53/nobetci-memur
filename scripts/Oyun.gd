@@ -49,7 +49,17 @@ const AYAR_ARALIKLARI := {
 	"saat_hizi": [0.4, 2.5],
 	"ses_genel": [0.0, 1.0],
 	"ses_efekt": [0.0, 1.0],
-	"ses_radyo": [0.0, 1.0],
+	"ses_konusma": [0.0, 1.0],
+	"ses_muzik": [0.0, 1.0],
+	"ses_ortam": [0.0, 1.0],
+	"yazi_hizi": [0.4, 100.0],
+	"fare_hassasiyeti": [0.5, 2.0],
+}
+## Yalnızca belirli değerleri alabilen ayarlar (dosyadan başka bir değer gelirse varsayılana dönülür).
+const AYAR_SECENEKLERI := {
+	"pencere_boyutu": ["1280x720", "1600x900", "1920x1080"],
+	"kare_siniri": [0, 30, 60, 120],
+	"efekt_kalitesi": ["dusuk", "orta", "yuksek"],
 }
 const SAHNELER := {
 	"menu": "res://scenes/AnaMenu.tscn",
@@ -59,11 +69,26 @@ const SAHNELER := {
 	"son": "res://scenes/Son.tscn",
 }
 const VARSAYILAN_AYARLAR := {
-	"saat_hizi": 1.0,      ## oyun dakikası başına gerçek saniye (küçüldükçe gün hızlanır)
+	# --- ses ---
 	"ses_genel": 0.8,
 	"ses_efekt": 0.9,
-	"ses_radyo": 0.5,
+	"ses_konusma": 0.8,        ## vatandaşların mırıltısı ve iç çekişi
+	"ses_muzik": 0.5,          ## radyo ve menü müziği
+	"ses_ortam": 0.6,          ## soba, rüzgâr
+	"muzik_acik": true,
+	# --- görüntü ---
 	"tam_ekran": false,
+	"pencere_boyutu": "1280x720",
+	"dikey_esleme": true,
+	"kare_siniri": 0,          ## saniyedeki en çok kare (0: sınır yok)
+	"efekt_kalitesi": "yuksek",    ## kar, duman gibi süsler: "dusuk" | "orta" | "yuksek"
+	"ekran_sarsintisi": true,  ## mühür inince masanın sarsılması
+	"titreme": true,           ## cızırdayan lamba, yanıp sönen uyarı ışıkları
+	# --- oyun ---
+	"saat_hizi": 1.0,          ## oyun dakikası başına gerçek saniye (küçüldükçe gün hızlanır)
+	"yazi_hizi": 1.0,          ## genelge, konuşma ve teleks yazısının hızı (100: anında)
+	"odakta_mola": true,       ## pencere arka plana geçince kendiliğinden mola
+	"fare_hassasiyeti": 1.0,   ## imlecin hızı (1: işletim sistemindeki gibi)
 }
 
 var kayit_yolu := "user://kayit.json"  ## testler kendi dosyasını kullanır
@@ -91,6 +116,9 @@ var _geciste := false
 var _katman: CanvasLayer
 var _mola: MolaMenusu
 var _son_kayit: Dictionary = {}    ## dosyaya en son yazılan durum
+var odak_sinamasi := false         ## testler: başsız kipte de odak kaybı molasını dene
+var _isinlanan := Vector2(-1, -1)  ## fare hassasiyeti: imleci en son taşıdığımız yer
+var _gorunurluk_geri_cagrisi: Variant   ## Web: sekme gizlenince çağrılan JavaScript işlevi (başvurusu yaşamalı)
 
 
 func _ready() -> void:
@@ -99,15 +127,66 @@ func _ready() -> void:
 	get_tree().auto_accept_quit = false     # pencere kapanırken önce sesler susturulur (bkz. cik)
 	_perde_kur()
 	ayarlari_yukle()
+	_pencereyi_boyutla()
+	_sekme_gorunurlugunu_izle()
+
+
+## Web: tarayıcı sekmesi gizlenince (başka sekmeye geçildi, pencere küçültüldü) oyun mola verir.
+## Tarayıcıda uygulama odağı bildirimi gelmediği için sayfanın kendi "visibilitychange" olayı dinlenir.
+func _sekme_gorunurlugunu_izle() -> void:
+	if not OS.has_feature("web"):
+		return
+	var belge: Variant = JavaScriptBridge.get_interface("document")
+	if belge == null:
+		return
+	_gorunurluk_geri_cagrisi = JavaScriptBridge.create_callback(func(_args: Array) -> void:
+		if bool(JavaScriptBridge.eval("document.hidden", true)):
+			odak_sinamasi = true
+			arka_plana_gecildi()
+			odak_sinamasi = false)
+	belge.addEventListener("visibilitychange", _gorunurluk_geri_cagrisi)
+
+
+## Fare hassasiyeti: imleç, farenin gerçek hareketinin `fare_hassasiyeti` katı kadar ilerler. İşletim
+## sisteminin imleci kullanılmaya devam eder; her harekette aradaki fark kadar ileri (ya da geri) taşınır.
+## Hassasiyet 1 iken hiçbir şey yapılmaz. Tarayıcıda imleç taşınamadığı için orada etkisizdir.
+func _input(event: InputEvent) -> void:
+	if not (event is InputEventMouseMotion):
+		return
+	var h := float(ayar("fare_hassasiyeti"))
+	if is_equal_approx(h, 1.0) or OS.has_feature("web") or DisplayServer.get_name() == "headless":
+		return
+	var e := event as InputEventMouseMotion
+	if _isinlanan.x >= 0.0 and e.position.distance_to(_isinlanan) < 2.0:
+		_isinlanan = Vector2(-1, -1)        # bu hareketi biz yaptık: yeniden ölçeklenmez
+		return
+	if e.relative.length() > 240.0:
+		return                              # sıçrama (pencereye yeni girildi): ölçeklenmez
+	var hedef := fare_hedefi(e.position, e.relative, h, get_viewport().get_visible_rect())
+	if hedef.distance_to(e.position) < 0.5:
+		return
+	_isinlanan = hedef
+	get_viewport().warp_mouse(hedef)
+
+
+## Hassasiyet uygulanmış imleç konumu: gerçek hareketin `h` katı, görünümün içinde kalacak biçimde.
+func fare_hedefi(konum: Vector2, hareket: Vector2, h: float, alan: Rect2) -> Vector2:
+	var hedef := konum + hareket * (h - 1.0)
+	return Vector2(clampf(hedef.x, alan.position.x, alan.end.x - 1.0), clampf(hedef.y, alan.position.y, alan.end.y - 1.0))
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		cik()
-	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT:
-		# pencere arka plana geçince mesai saati oyuncunun haberi olmadan işlemesin
-		if mola_verilebilir() and _odak_izlenir():
-			mola_ver()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		arka_plana_gecildi()
+
+
+## Pencere odağını yitirdi (ya da tarayıcı sekmesi gizlendi): mesai saati oyuncunun haberi olmadan
+## işlemesin diye oyun kendiliğinden mola verir. Ayarlardan kapatılabilir.
+func arka_plana_gecildi() -> void:
+	if bool(ayar("odakta_mola")) and mola_verilebilir() and (odak_sinamasi or _odak_izlenir()):
+		mola_ver()
 
 
 ## Odak kaybında kendiliğinden mola verilsin mi? (Başsız kipte ve odak almayan test penceresinde hayır.)
@@ -578,6 +657,15 @@ func _ayari_duzelt(ad: String, deger: Variant) -> Variant:
 	var varsayilan: Variant = VARSAYILAN_AYARLAR.get(ad)
 	if typeof(varsayilan) == TYPE_BOOL:
 		return deger if typeof(deger) == TYPE_BOOL else varsayilan
+	if AYAR_SECENEKLERI.has(ad):
+		# seçenekli ayar: metinler birebir, sayılar değerce eşleşmeli (JSON 60'ı 60.0 okur)
+		for s: Variant in AYAR_SECENEKLERI[ad]:
+			if typeof(s) == TYPE_STRING:
+				if typeof(deger) == TYPE_STRING and deger == s:
+					return s
+			elif (typeof(deger) == TYPE_INT or typeof(deger) == TYPE_FLOAT) and is_equal_approx(float(deger), float(s)):
+				return s
+		return varsayilan
 	if typeof(deger) != TYPE_FLOAT and typeof(deger) != TYPE_INT:
 		return varsayilan
 	var sayi := float(deger)
@@ -596,18 +684,60 @@ func ayar_degistir(ad: String, deger: Variant) -> void:
 		return
 	ayarlar[ad] = _ayari_duzelt(ad, deger)
 	ayarlari_uygula()
+	if ad == "pencere_boyutu" or ad == "tam_ekran":
+		_pencereyi_boyutla()
+	_ayarlari_yaz()
+
+
+## Bütün ayarları varsayılanlarına döndürür.
+func ayarlari_sifirla() -> void:
+	ayarlar = VARSAYILAN_AYARLAR.duplicate()
+	ayarlari_uygula()
+	_pencereyi_boyutla()
+	_ayarlari_yaz()
+
+
+func _ayarlari_yaz() -> void:
 	var dosya := FileAccess.open(ayar_yolu, FileAccess.WRITE)
 	if dosya != null:
 		dosya.store_string(JSON.stringify(ayarlar, "\t"))
 		dosya.close()
 
 
+## Süslerin (kar, duman) yoğunluğu: 0 düşük, 1 orta, 2 yüksek.
+func efekt_duzeyi() -> int:
+	return maxi(0, (AYAR_SECENEKLERI.efekt_kalitesi as Array).find(str(ayar("efekt_kalitesi"))))
+
+
 func ayarlari_uygula() -> void:
-	if DisplayServer.get_name() != "headless":
+	if DisplayServer.get_name() != "headless" and not OS.has_feature("web"):
 		var hedef := DisplayServer.WINDOW_MODE_FULLSCREEN if bool(ayarlar.tam_ekran) else DisplayServer.WINDOW_MODE_WINDOWED
 		if DisplayServer.window_get_mode() != hedef:
 			DisplayServer.window_set_mode(hedef)
+		var esleme := DisplayServer.VSYNC_ENABLED if bool(ayar("dikey_esleme")) else DisplayServer.VSYNC_DISABLED
+		if DisplayServer.window_get_vsync_mode() != esleme:
+			DisplayServer.window_set_vsync_mode(esleme)
+	Engine.max_fps = int(ayar("kare_siniri"))
 	ayarlar_degisti.emit()
+
+
+## Pencereyi ayarlardaki boyuta getirir ve ekranın ortasına alır (yalnız pencere kipinde, masaüstünde).
+## Yalnızca boyut ayarı değişince ve açılışta çağrılır: oyuncunun elle büyüttüğü pencere, başka bir
+## ayar değişti diye eski boyutuna dönmez. Ekrana sığmayan boyut ekranın kullanılabilir alanına çekilir.
+func _pencereyi_boyutla() -> void:
+	if DisplayServer.get_name() == "headless" or OS.has_feature("web") or bool(ayar("tam_ekran")):
+		return
+	if DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS):
+		return                              # ekran dışındaki test penceresi yerinde kalır
+	var parca := str(ayar("pencere_boyutu")).split("x")
+	if parca.size() != 2:
+		return
+	var ekran := DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
+	var boyut := Vector2i(mini(int(parca[0]), ekran.size.x), mini(int(parca[1]), ekran.size.y))
+	if DisplayServer.window_get_size() == boyut:
+		return
+	DisplayServer.window_set_size(boyut)
+	DisplayServer.window_set_position(ekran.position + (ekran.size - boyut) / 2)
 
 
 ## Kullanıcı klasöründeki bir JSON dosyasını okur. Dosya yoksa, `sinir` bayttan büyükse ya da

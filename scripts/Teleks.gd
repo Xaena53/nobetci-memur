@@ -75,7 +75,7 @@ func _siradakini_bas() -> void:
 			break
 		satir_basildi.emit()
 		_fisi_sur(fis, adim)
-		await Oyun.bekle(VURUS_ARASI)
+		await Oyun.bekle(VURUS_ARASI / clampf(float(Oyun.ayar("yazi_hizi")), 0.4, 6.0))
 	if not is_instance_valid(fis):
 		_siradakini_bas()
 		return
@@ -107,7 +107,7 @@ func _draw() -> void:
 	if _lamba <= 0.01:
 		return
 	var m := Yerlesim.TELEKS_LAMBA
-	var nabiz := 0.55 + 0.45 * sin(Time.get_ticks_msec() / 90.0)
+	var nabiz := 0.55 + 0.45 * sin(Time.get_ticks_msec() / 90.0) if bool(Oyun.ayar("titreme")) else 0.85
 	var guc := _lamba * nabiz
 	draw_circle(m, 15.0, Color(1.0, 0.25, 0.15, 0.10 * guc))
 	draw_circle(m, 9.5, Color(1.0, 0.30, 0.18, 0.22 * guc))

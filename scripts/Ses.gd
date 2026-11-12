@@ -16,7 +16,9 @@ const MUZIK_KLASORU := "res://assets/ses/muzik/"
 const HAVUZ := 12
 const EFEKT_YOLU := "Efekt"
 const ORTAM_YOLU := "Ortam"
-const RADYO_YOLU := "Radyo"          ## Ortam'a akar; küçük hoparlör sesi verir
+const MUZIK_YOLU := "Muzik"          ## menü müziği ve (Radyo üzerinden) masadaki radyo
+const RADYO_YOLU := "Radyo"          ## Muzik'e akar; küçük hoparlör sesi verir
+const KONUSMA_YOLU := "Konusma"      ## vatandaşların mırıltısı ve iç çekişi
 
 var _calicilar: Array[AudioStreamPlayer] = []
 var _siradaki := 0
@@ -37,7 +39,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_yol_ac(EFEKT_YOLU, "Master")
 	_yol_ac(ORTAM_YOLU, "Master")
-	if _yol_ac(RADYO_YOLU, ORTAM_YOLU):
+	_yol_ac(MUZIK_YOLU, "Master")
+	_yol_ac(KONUSMA_YOLU, "Master")
+	if _yol_ac(RADYO_YOLU, MUZIK_YOLU):
 		var i := AudioServer.get_bus_index(RADYO_YOLU)
 		var alt := AudioEffectHighPassFilter.new()
 		alt.cutoff_hz = 260.0
@@ -74,7 +78,9 @@ func _yol_ac(ad: String, hedef: String) -> bool:
 func ayarlari_uygula() -> void:
 	_duzey("Master", float(Oyun.ayar("ses_genel")))
 	_duzey(EFEKT_YOLU, float(Oyun.ayar("ses_efekt")))
-	_duzey(ORTAM_YOLU, float(Oyun.ayar("ses_radyo")))
+	_duzey(KONUSMA_YOLU, float(Oyun.ayar("ses_konusma")))
+	_duzey(ORTAM_YOLU, float(Oyun.ayar("ses_ortam")))
+	_duzey(MUZIK_YOLU, float(Oyun.ayar("ses_muzik")) if bool(Oyun.ayar("muzik_acik")) else 0.0)
 
 
 func _duzey(yol: String, oran: float) -> void:
@@ -144,6 +150,7 @@ func cal(ad: String, perde: float = 1.0, db: float = 0.0, sapma: float = 0.0, ar
 	var c := _calicilar[_siradaki]
 	_siradaki = (_siradaki + 1) % HAVUZ
 	c.stream = akis
+	c.bus = KONUSMA_YOLU if (ad == "hece" or ad.begins_with("ofle")) else EFEKT_YOLU
 	c.pitch_scale = maxf(0.2, perde + randf_range(-sapma, sapma))
 	c.volume_db = db
 	c.play()
@@ -210,7 +217,7 @@ func _gecis(ad: String, c: AudioStreamPlayer, db: float, sure: float, durdur: bo
 func muzik(liste: Array, db: float = 0.0, radyo: bool = false, gecis: float = 2.0, ilk: int = 0) -> void:
 	if _kapali or liste.is_empty():
 		return
-	var yol := RADYO_YOLU if radyo else ORTAM_YOLU
+	var yol := RADYO_YOLU if radyo else MUZIK_YOLU
 	if _muzik != null and _muzik.playing and liste == _muzik_listesi and _muzik.bus == yol:
 		_muzik_duzeyi(_muzik, db, gecis, false)
 		return

@@ -13,6 +13,7 @@ var _satirlar: Array[Control] = []
 func _ready() -> void:
 	Ses.yalniz([])
 	Ses.muzigi_kes(1.0)
+	Portreler.bosalt()                  # mesai bitti: günün yüzleri bellekten çıkar
 	var o := Oyun.gun_ozeti
 	var maas: Dictionary = o.get("maas", Oyun.maas_hesapla(o))
 	var gun := Veri.gun(Oyun.gun)

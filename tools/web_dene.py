@@ -99,13 +99,14 @@ async def calistir(ws_adresi: str) -> int:
         await tikla(909, 601)                 # "Gişeyi Aç" (4. günden önce genelge ortada değil: 1. günde gazete var)
         await bekle(6.0)
         await cek("web_3_masa")
-        # pencere odağını yitirirse oyun kendiliğinden mola verir; geri gelince "Gişeye Dön" ile sürer
-        await gonder("Runtime.evaluate", expression="window.dispatchEvent(new Event('blur')); "
-                     "var c = document.querySelector('canvas'); if (c) { c.dispatchEvent(new FocusEvent('blur')); c.blur(); }")
+        # sekme gizlenince (başka sekmeye geçildi) oyun kendiliğinden mola verir; "Gişeye Dön" ile sürer
+        await gonder("Runtime.evaluate", expression="Object.defineProperty(document, 'hidden', {configurable: true, get: () => true}); "
+                     "document.dispatchEvent(new Event('visibilitychange'));")
         await bekle(2.0)
-        await cek("web_4_odak_kaybi")
-        await gonder("Runtime.evaluate", expression="var c = document.querySelector('canvas'); if (c) { c.focus(); }")
-        await tikla(640, 300)
+        await cek("web_4_sekme_gizlendi")
+        await gonder("Runtime.evaluate", expression="Object.defineProperty(document, 'hidden', {configurable: true, get: () => false}); "
+                     "document.dispatchEvent(new Event('visibilitychange'));")
+        await tikla(640, 308)                 # mola kâğıdındaki "Gişeye Dön"
         await bekle(2.0)
         await cek("web_5_surduruldu")
 

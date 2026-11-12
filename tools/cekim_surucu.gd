@@ -731,3 +731,137 @@ func _senaryo_sinir() -> void:
 		masa.kural_kitabi.sayfaya_gec(i, false)
 		await bekle(0.2)
 		await cek("s_5_defter_%d" % i)
+	# öbür pencereler: gerekçe (en çok gerekçeli gün), röntgen, mola menüsü
+	masa.giseyi_ac()
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+	if masa.canta_asamasi == "bekliyor":
+		masa._cantayi_tara()
+		await bekle(1.4)
+		await cek("s_6_rontgen")
+		masa._canta_karari("gecir")
+		await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+	else:
+		var rng := RandomNumberGenerator.new()
+		rng.seed = 11
+		masa.rontgen.ac(Canta.yerlestir("bavul", ["kazak", "ayakkabi", "kitap", "termos", "calar_saat", "toplu"], rng))
+		await bekle(1.4)
+		await cek("s_6_rontgen")
+		masa.rontgen.kapat()
+		await bekle(0.8)
+	if masa.belgeler.size() > 0:
+		masa.tespitler.append_array(["sure", "sahte"])
+		masa._gerekce_sor(masa.belgeler[0], Vector2(520, 380))
+		await bekle(0.5)
+		await cek("s_7_gerekce")
+		var pencere := masa.find_child("GerekcePenceresi", true, false)
+		if pencere != null:
+			pencere._vazgec()
+	await bekle(0.3)
+	masa.teleks.yazdir("Kusurlu evrakı onayladınız. İkametgâhtaki muhtar mührü sahteydi (dış halka tek). Camdan izliyordum: çift ihtar. Üstelik: Röntgenden geçirdiğiniz çantada toplu tabanca ile mermi vardı; şahıs binaya onunla girdi.", 4, "ihtar")
+	await bekle(8.5)
+	await cek("s_8_uzun_ihtar")
+	Oyun.mola_ver()
+	await bekle(0.5)
+	await cek("s_9_mola")
+	Oyun.molayi_bitir()
+
+
+# --- Performans ölçümü ---
+
+## Belirli sayıda karenin süresini ölçer: ortalama, en uzun kare, çizim çağrısı sayısı.
+func _olc(ad: String, kare_sayisi: int = 240) -> Dictionary:
+	var sureler: Array[float] = []
+	var once := Time.get_ticks_usec()
+	for i in kare_sayisi:
+		await get_tree().process_frame
+		var simdi := Time.get_ticks_usec()
+		sureler.append((simdi - once) / 1000.0)
+		once = simdi
+	sureler.sort()
+	var toplam := 0.0
+	for s in sureler:
+		toplam += s
+	var sonuc := {"ad": ad, "ort": toplam / sureler.size(), "p99": sureler[int(sureler.size() * 0.99) - 1], "en_uzun": sureler[-1],
+		"cizim": int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),
+		"nesne": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
+		"doku_mb": Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED) / 1048576.0}
+	print("PERF %-26s ort %6.2f ms (%5.0f kare/sn)  p99 %6.2f  en uzun %6.2f  çizim %4d  düğüm %5d  doku %5.1f MB" % [
+		ad, sonuc.ort, 1000.0 / maxf(0.001, sonuc.ort), sonuc.p99, sonuc.en_uzun, sonuc.cizim, sonuc.nesne, sonuc.doku_mb])
+	return sonuc
+
+
+## Sahnelerin kare sürelerini ve takılmalarını ölçer (dikey eşleme kapalı: gerçek maliyet görünür).
+func _senaryo_performans() -> void:
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	Engine.max_fps = 0
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	await bekle(1.0)
+	await _olc("menü")
+	var masa: Node = await _gune_git(6)
+	await _olc("masa: genelge açık")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+	await bekle(1.5)
+	await _olc("masa: vatandaş ve evrak")
+	masa.inceleme.aktif = true
+	await _olc("masa: inceleme açık")
+	masa.inceleme.aktif = false
+	if masa.belgeler.size() > 0:
+		masa.belgeler[0].buyut(true)
+		await bekle(0.5)
+		await _olc("masa: belge elde")
+		masa.belgeler[0].buyut(false)
+	if is_instance_valid(masa.defter):
+		masa.defter.buyut(true)
+		await bekle(0.5)
+		await _olc("masa: bilgi defteri açık")
+		masa.defter.buyut(false)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3
+	masa.rontgen.ac(Canta.yerlestir("bavul", ["kazak", "ayakkabi", "kitap", "termos", "calar_saat", "toplu"], rng))
+	await bekle(1.2)
+	await _olc("masa: röntgen açık")
+	masa.rontgen.kapat()
+	await bekle(0.8)
+	await _olc("masa: röntgen kapandı")
+	# vatandaş değişimindeki takılma: art arda beş karar, en uzun kareler
+	var en_uzun := 0.0
+	for i in 5:
+		await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+		if masa.canta_asamasi == "bekliyor":
+			masa._cantayi_tara()
+			await bekle(0.6)
+			masa._canta_karari("gecir")
+			await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+		if masa.belgeler.size() == 0:
+			continue
+		var b: Belge = masa.belgeler[0]
+		masa.karar_ver("onay", b, b.get_global_transform() * (b.size * 0.5))
+		var olcum := await _olc("  vatandaş değişimi %d" % (i + 1), 300)
+		en_uzun = maxf(en_uzun, float(olcum.en_uzun))
+	print("PERF vatandaş değişiminde en uzun kare: %.1f ms" % en_uzun)
+	masa.dakika = masa.MESAI_SONU - 0.2
+	await sahneyi_bekle("GunSonu", 16.0)
+	await _olc("gün sonu")
+	Oyun.para = 2000
+	bas("EveGit")
+	await sahneyi_bekle("Aile")
+	await _olc("ev")
+	Oyun.son = {"tur": "terfi", "neden": "basari"}
+	await sahneye_git("son")
+	await sahneyi_bekle("Son")
+	await _olc("son")
+
+
+## Ayar penceresinin dört yaprağı (tools/cikti/a_*.png).
+func _senaryo_ayarlar() -> void:
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	await bekle(0.8)
+	bas("Ayarlar")
+	await bekle(0.5)
+	for kod: String in ["ses", "goruntu", "oyun", "kontrol"]:
+		bas("AyarSekme_" + kod)
+		await bekle(0.3)
+		await cek("a_" + kod)

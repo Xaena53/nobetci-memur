@@ -6,7 +6,7 @@ extends Control
 signal secildi(gerekce: String)
 signal vazgecildi
 
-const GENISLIK := 330.0
+const GENISLIK := 392.0         ## en uzun gerekçe kalın yazıyla ve işaretiyle sığacak kadar
 const SATIR := 30.0
 
 var _kodlar: Array[String] = []

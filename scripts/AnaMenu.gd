@@ -38,6 +38,7 @@ var _isik: Control
 var _golge: Control                            ## lamba sönükken ampulü ve çevresini karartır
 var _kar: Kar
 var _dumanlar: Array[CPUParticles2D] = []
+var _duman_duzeyi := -1
 var _parlaklik := 1.0                          ## lambanın o anki parlaklığı (0 sönük .. 1 yanıyor)
 var _cizirti_kalan := 0.0                      ## süren cızırtının kalan süresi
 var _cizirtiya := 2.6                          ## bir sonraki cızırtıya kalan süre
@@ -311,16 +312,19 @@ func _satiri_ciz(d: Button, sus: Control) -> void:
 ## Lamba çoğu zaman hafifçe titreyerek yanar; arada bir cızırdar: kısa bir süre hızla yanıp söner.
 func _lambayi_guncelle(delta: float) -> void:
 	var t := Time.get_ticks_msec() / 1000.0
+	var titrer := bool(Oyun.ayar("titreme"))
 	if _cizirti_kalan > 0.0:
 		_cizirti_kalan -= delta
 		_titreme -= delta
-		if _titreme <= 0.0:
+		if not titrer:
+			_parlaklik = 1.0            # titreyen ışıklar kapalı: lamba sabit yanar, yalnız sesi duyulur
+		elif _titreme <= 0.0:
 			_titreme = randf_range(0.025, 0.085)
 			_parlaklik = [0.04, 0.12, 0.3, 0.55, 1.0, 1.0][randi() % 6]
 		if _cizirti_kalan <= 0.0:
 			_parlaklik = 1.0
 	else:
-		_parlaklik = 0.93 + 0.07 * sin(t * 27.0) * sin(t * 6.1)
+		_parlaklik = 0.93 + 0.07 * sin(t * 27.0) * sin(t * 6.1) if titrer else 1.0
 		_cizirtiya -= delta
 		if _cizirtiya <= 0.0:
 			_cizirtiya = randf_range(3.8, 9.5)
@@ -383,6 +387,7 @@ func _dumani_kur() -> void:
 		if olcek < 0.5:
 			d.modulate.a = 0.7          # uzaktaki bacalar: kasabanın üstünü sis gibi örtmesin
 		d.amount = 72 if olcek > 0.5 else 22
+		d.set_meta("tam_adet", d.amount)
 		d.lifetime = 7.0
 		d.preprocess = 7.0
 		d.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
@@ -404,6 +409,20 @@ func _dumani_kur() -> void:
 		d.color_ramp = renkler
 		add_child(d)
 		_dumanlar.append(d)
+	_dumani_ayarla()
+	Oyun.ayarlar_degisti.connect(_dumani_ayarla)
+
+
+## Baca dumanının yoğunluğu efekt kalitesine uyar: düşükte uzak bacalar tütmez, yakındakiler seyrelir.
+func _dumani_ayarla() -> void:
+	var duzey := Oyun.efekt_duzeyi()
+	if duzey == _duman_duzeyi:
+		return
+	_duman_duzeyi = duzey
+	for d in _dumanlar:
+		var tam := int(d.get_meta("tam_adet", 22))
+		d.visible = duzey > 0 or tam > 30
+		d.amount = maxi(6, roundi(tam * [0.4, 0.7, 1.0][duzey]))
 
 
 ## Duman kümesi: kenarı yumuşak, içi gürültüyle benekli bir yuvar (boya dokusuna uysun diye pürüzlü).

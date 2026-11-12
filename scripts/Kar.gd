@@ -11,6 +11,7 @@ const KATMANLAR := [
 	[44, 6.5, 12.0, 96.0, 142.0, 0.46, 1.7],
 ]
 const KENAR := 40.0
+const YOGUNLUK := [0.34, 0.66, 1.0]   ## efekt kalitesine göre tane sayısının oranı
 
 var isik := Vector2(-1000, -1000)     ## ışık kaynağının yeri (sokak lambası)
 var isik_gucu := 0.0                  ## 0 sönük .. 1 yanıyor
@@ -21,6 +22,7 @@ var _taneler: Array[PackedFloat32Array] = []    ## katman başına: [x, y, çap,
 var _doku: Texture2D
 var _bulanik: Texture2D
 var _zaman := 0.0
+var _duzey := 2
 
 
 func _ready() -> void:
@@ -28,12 +30,26 @@ func _ready() -> void:
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_doku = _nokta(16, 1.6)
 	_bulanik = _nokta(32, 0.9)
+	_taneleri_kur()
+	Oyun.ayarlar_degisti.connect(_ayar_degisti)
+
+
+func _ayar_degisti() -> void:
+	if Oyun.efekt_duzeyi() != _duzey:
+		_taneleri_kur()
+
+
+## Tane sayısı efekt kalitesine göre azalır (düşük: üçte bir, orta: üçte iki).
+func _taneleri_kur() -> void:
+	_duzey = Oyun.efekt_duzeyi()
+	_taneler.clear()
+	var oran: float = YOGUNLUK[_duzey]
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 1984
 	var alan := Yerlesim.EKRAN.size
 	for k: Array in KATMANLAR:
 		var t := PackedFloat32Array()
-		for i in int(k[0]):
+		for i in maxi(1, roundi(int(k[0]) * oran)):
 			t.append(rng.randf_range(-KENAR, alan.x + KENAR))
 			t.append(rng.randf_range(-KENAR, alan.y + KENAR))
 			t.append(rng.randf_range(float(k[1]), float(k[2])))

@@ -8,9 +8,14 @@ signal hedef_tiklandi(hedef: Hedef)
 var dakika := 540.0:   ## gece yarısından beri geçen oyun dakikası
 	set(d):
 		dakika = d
-		_guncelle()
+		# ibre ancak gözle görülür kadar ilerleyince yeniden çizilir (her karede değil)
+		var adim := int(d * 6.0)
+		if adim != _son_adim:
+			_son_adim = adim
+			_guncelle()
 
 var takvim: Hedef
+var _son_adim := -1
 
 var _dijital: Label
 var _gun_no: Label

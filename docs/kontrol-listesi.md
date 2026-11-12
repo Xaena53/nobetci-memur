@@ -81,7 +81,10 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] Kapının üstündeki işlemeli tabelada "T.C. ARDIÇLI İLÇESİ / NÜFUS MÜDÜRLÜĞÜ" yazıyor.
 - [ ] Kayıt yokken "Devam" soluk; bir gün oynandıktan sonra açık.
 - [ ] Kayıt varken "Yeni Oyun" bir kez daha soruyor.
-- [ ] Ayarlar: üç ses kademesi duyulur biçimde değişiyor; mesai saati hızı; tam ekran (F11).
+- [ ] Ayarlar, SES: beş kademe duyulur biçimde değişiyor; "müzik çalsın" kapatılınca radyo susuyor, efektler sürüyor.
+- [ ] Ayarlar, GÖRÜNTÜ: pencere boyutu değişiyor ve ortalanıyor; tam ekran (F11); kare sınırı 30'da oyun akıcı; efekt kalitesi "düşük"te menüde kar seyreliyor; titreyen ışıklar kapalıyken sokak lambası sabit yanıyor.
+- [ ] Ayarlar, OYUN: yazı hızı "anında" iken genelge hemen beliriyor; fare hassasiyeti 0,5× ve 2×'te imleç beklendiği gibi yavaşlıyor / hızlanıyor, sürükleme bozulmuyor.
+- [ ] Başka pencereye geçince (Alt+Tab) oyun kendiliğinden mola veriyor; "arka planda mola" kapalıyken vermiyor.
 - [ ] Ayarlar oyunu kapatıp açınca korunuyor.
 
 ## 4. Kulakla dinlenecekler

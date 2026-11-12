@@ -359,7 +359,7 @@ func _isaretleri_ciz() -> void:
 		elif d.is_hovered():
 			_isaretler.draw_rect(kutu.grow(2.0), Color(1, 0.95, 0.8, 0.85), false, 1.5)
 	var lamba := LAMBA * BOYUT
-	if _lamba_acik and fmod(Time.get_ticks_msec() / 1000.0, 0.5) < 0.3:
+	if _lamba_acik and (not bool(Oyun.ayar("titreme")) or fmod(Time.get_ticks_msec() / 1000.0, 0.5) < 0.3):
 		_isaretler.draw_circle(lamba, 20.0, Color(1.0, 0.72, 0.2, 0.22))
 		_isaretler.draw_circle(lamba, 9.0, Color(1.0, 0.9, 0.55, 0.55))
 	else:

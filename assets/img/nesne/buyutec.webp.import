@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/buyutec.webp-25d0c7e1d3ccfeb3f75e4e59823f4b15
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.92
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0

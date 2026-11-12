@@ -67,7 +67,7 @@ func _process(delta: float) -> void:
 		return
 	if _yaziyor:
 		var once := int(_gorunen)
-		_gorunen += HIZ * delta
+		_gorunen += HIZ * float(Oyun.ayar("yazi_hizi")) * delta
 		_yazi.visible_characters = mini(_toplam, int(_gorunen))
 		if int(_gorunen) != once and int(_gorunen) % 2 == 0:
 			harf_yazildi.emit()

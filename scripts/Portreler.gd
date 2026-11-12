@@ -29,6 +29,12 @@ static func kunye() -> Dictionary:
 	return _kunye
 
 
+## Yüklenmiş portre görsellerini bırakır (künye kalır). Gün başında çağrılır: önceki günün yüzleri
+## bellekte birikmez; doku belleği bir günün kuyruğuyla sınırlı kalır.
+static func bosalt() -> void:
+	_onbellek.clear()
+
+
 static func bilgi(kimlik: String) -> Dictionary:
 	return kunye().get(kimlik, {})
 

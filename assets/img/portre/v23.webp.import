@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/v23.webp-c55be618dbe28a34e1f39177a95a8a73.cte
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.92
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0

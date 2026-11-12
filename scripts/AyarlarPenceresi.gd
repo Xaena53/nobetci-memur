@@ -1,22 +1,70 @@
 class_name AyarlarPenceresi
 extends Control
-## Ayarlar: daktilo sayfasına yazılmış bir form. Ses düzeyleri kutucuklu kademelerle, mesai
-## saatinin hızı üç seçenekle, tam ekran bir işaret kutusuyla ayarlanır; altta kontroller yazar.
-## Ana menüden ve mola (duraklatma) menüsünden açılır; oyun duraklatılmışken de çalışır.
+## Ayarlar: daktilo sayfasına yazılmış, sekmeli bir form. Dört yaprağı vardır: SES, GÖRÜNTÜ, OYUN ve
+## KONTROLLER. Düzeyler kutucuklu kademelerle, seçenekler köşeli ayraçlı daktilo yazısıyla, açık/kapalı
+## ayarlar işaret kutusuyla gösterilir. Ana menüden ve mola menüsünden açılır; oyun dururken de çalışır.
+##
+## Yapraklar ve satırları aşağıdaki SAYFALAR tablosundan kurulur; yeni bir ayar eklemek için tabloya bir
+## satır, Oyun.VARSAYILAN_AYARLAR'a bir varsayılan yazmak yeter.
 
 signal kapandi
 
-const KAGIT := Vector2(540, 600)
-const HIZLAR := [["Sakin", 1.4], ["Olağan", 1.0], ["Telaşlı", 0.7]]
+const KAGIT := Vector2(640, 640)
+const SOL := 58.0                ## satır adlarının başladığı yer
+const DEGER_X := 250.0           ## kademelerin ve seçeneklerin başladığı yer
+const SATIR := 37.0
+## tur: "kademe" (0..1 düzey) | "secenek" (birkaç değerden biri) | "isaret" (açık/kapalı)
+## masaustu: tarayıcıda gösterilmez (pencere, dikey eşleme ve imleç tarayıcının elindedir)
+const SAYFALAR := [
+	{"kod": "ses", "ad": "SES", "satirlar": [
+		{"tur": "kademe", "ad": "Genel ses", "anahtar": "ses_genel"},
+		{"tur": "kademe", "ad": "Efektler", "anahtar": "ses_efekt"},
+		{"tur": "kademe", "ad": "Konuşma", "anahtar": "ses_konusma"},
+		{"tur": "kademe", "ad": "Müzik", "anahtar": "ses_muzik"},
+		{"tur": "kademe", "ad": "Ortam", "anahtar": "ses_ortam", "not": "soba, rüzgâr"},
+		{"tur": "isaret", "ad": "Müzik çalsın", "anahtar": "muzik_acik", "not": "radyo ve menü müziği"},
+	]},
+	{"kod": "goruntu", "ad": "GÖRÜNTÜ", "satirlar": [
+		{"tur": "isaret", "ad": "Tam ekran", "anahtar": "tam_ekran", "masaustu": true, "not": "F11"},
+		{"tur": "secenek", "ad": "Pencere boyutu", "anahtar": "pencere_boyutu", "masaustu": true,
+			"secenekler": [["1280×720", "1280x720"], ["1600×900", "1600x900"], ["1920×1080", "1920x1080"]]},
+		{"tur": "isaret", "ad": "Dikey eşleme", "anahtar": "dikey_esleme", "masaustu": true, "not": "görüntü yırtılmasını önler"},
+		{"tur": "secenek", "ad": "Kare sınırı", "anahtar": "kare_siniri", "not": "düşük sınır pili ve fanı korur",
+			"secenekler": [["30", 30], ["60", 60], ["120", 120], ["yok", 0]]},
+		{"tur": "secenek", "ad": "Efekt kalitesi", "anahtar": "efekt_kalitesi", "not": "kar ve duman yoğunluğu",
+			"secenekler": [["düşük", "dusuk"], ["orta", "orta"], ["yüksek", "yuksek"]]},
+		{"tur": "isaret", "ad": "Ekran sarsıntısı", "anahtar": "ekran_sarsintisi", "not": "mühür inince"},
+		{"tur": "isaret", "ad": "Titreyen ışıklar", "anahtar": "titreme", "not": "lamba, uyarı ışıkları"},
+	]},
+	{"kod": "oyun", "ad": "OYUN", "satirlar": [
+		{"tur": "secenek", "ad": "Mesai saati", "anahtar": "saat_hizi", "onek": "Hiz", "not": "günün ne kadar sürdüğü",
+			"secenekler": [["Sakin", 1.4], ["Olağan", 1.0], ["Telaşlı", 0.7]]},
+		{"tur": "secenek", "ad": "Yazı hızı", "anahtar": "yazi_hizi", "not": "genelge, konuşma, teleks",
+			"secenekler": [["yavaş", 0.6], ["olağan", 1.0], ["hızlı", 2.0], ["anında", 100.0]]},
+		{"tur": "isaret", "ad": "Arka planda mola", "anahtar": "odakta_mola", "not": "pencereden çıkınca oyun durur"},
+		{"tur": "secenek", "ad": "Fare hassasiyeti", "anahtar": "fare_hassasiyeti", "masaustu": true, "not": "imlecin hızı",
+			"secenekler": [["0,5×", 0.5], ["0,75×", 0.75], ["1×", 1.0], ["1,5×", 1.5], ["2×", 2.0]]},
+	]},
+	{"kod": "kontrol", "ad": "KONTROLLER", "satirlar": []},
+]
 const KONTROLLER := [
-	"Belgeyi sürükle; çift tıkla, büyüsün.",
-	"BOŞLUK: inceleme. İki bilgiye tıkla, karşılaştır.",
-	"Mührü ya da fişi belgenin üstüne bırak.",
-	"ESC: mola.  F11: tam ekran.  F12: ekran görüntüsü.",
+	["Fare ile sürükle", "belgeyi masada taşır"],
+	["Çift tık", "belgeyi ya da bilgi defterini büyütür"],
+	["BOŞLUK", "inceleme: iki bilgiye tıkla, karşılaştır"],
+	["Mührü ya da fişi bırak", "belgenin üstüne: karar verir"],
+	["1 – 9", "gerekçe penceresinde gerekçeyi seçer"],
+	["ENTER", "genelgeyi tamamlar, gişeyi açar"],
+	["ESC", "mola; açık pencereyi kapatır"],
+	["F11", "tam ekran"],
+	["F12", "ekran görüntüsü"],
 ]
 
-var _hiz_dugmeleri: Array[Button] = []
-var _tam_ekran: Button
+var sayfa := 0
+
+var _kagit: Control
+var _yapraklar: Array[Control] = []
+var _sekmeler: Array[Button] = []
+var _guncelleyiciler: Array[Callable] = []     ## her satırın görünümünü ayara göre tazeleyen işlevler
 
 
 func _ready() -> void:
@@ -31,80 +79,68 @@ func _ready() -> void:
 	perde.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(perde)
 
-	var kagit := Control.new()
-	kagit.name = "Kagit"
-	kagit.size = KAGIT
-	kagit.position = (Yerlesim.EKRAN.size - KAGIT) / 2.0
-	kagit.pivot_offset = KAGIT / 2.0
-	kagit.rotation = deg_to_rad(-0.6)
-	kagit.mouse_filter = MOUSE_FILTER_IGNORE
-	kagit.draw.connect(func() -> void: Kagit.ciz(kagit, Rect2(Vector2.ZERO, KAGIT), "daktilo_sayfa", Stil.KAGIT, 14.0, 4.0))
-	add_child(kagit)
+	_kagit = Control.new()
+	_kagit.name = "Kagit"
+	_kagit.size = KAGIT
+	_kagit.position = (Yerlesim.EKRAN.size - KAGIT) / 2.0
+	_kagit.pivot_offset = KAGIT / 2.0
+	_kagit.rotation = deg_to_rad(-0.5)
+	_kagit.mouse_filter = MOUSE_FILTER_IGNORE
+	_kagit.draw.connect(func() -> void: Kagit.ciz(_kagit, Rect2(Vector2.ZERO, KAGIT), "daktilo_sayfa", Stil.KAGIT, 14.0, 4.0))
+	add_child(_kagit)
 
-	var x := 62.0
-	var w := KAGIT.x - 2.0 * x
+	var w := KAGIT.x - 2.0 * SOL
 	var baslik := Stil.etiket("AYARLAR", 22, Stil.BORDO, Stil.daktilo_kalin())
-	baslik.position = Vector2(0, 64)
+	baslik.position = Vector2(0, 58)
 	baslik.size = Vector2(KAGIT.x, 28)
 	baslik.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	kagit.add_child(baslik)
-	_cizgi(kagit, x, 100.0, w)
+	_kagit.add_child(baslik)
 
-	var y := 120.0
-	for satir: Array in [["Genel ses", "ses_genel"], ["Efektler", "ses_efekt"], ["Radyo ve ortam", "ses_radyo"]]:
-		_etiket(kagit, str(satir[0]), x, y)
-		var k := Kademe.new()
-		k.name = "Kademe_" + str(satir[1])
-		k.position = Vector2(x + 168.0, y - 1.0)
-		k.deger = float(Oyun.ayar(str(satir[1])))
-		k.degisti.connect(_ses_degisti.bind(str(satir[1])))
-		kagit.add_child(k)
-		y += 38.0
+	# sekmeler: başlığın altında, daktiloyla yazılmış yaprak adları
+	var sx := SOL
+	for i in SAYFALAR.size():
+		var d := _dugme("  %s  " % str(SAYFALAR[i].ad), 14, true)
+		d.name = "AyarSekme_" + str(SAYFALAR[i].kod)
+		d.position = Vector2(sx, 96.0)
+		d.pressed.connect(sayfaya_gec.bind(i))
+		_kagit.add_child(d)
+		_sekmeler.append(d)
+		sx += d.size.x + 6.0
+	_cizgi(_kagit, SOL, 128.0, w)
 
-	y += 8.0
-	_etiket(kagit, "Mesai saati", x, y)
-	var hx := x + 168.0
-	for h: Array in HIZLAR:
-		var d := _secenek(str(h[0]))
-		d.name = "Hiz_" + str(h[0])
-		d.position = Vector2(hx, y - 5.0)
-		d.pressed.connect(_hiz_secildi.bind(float(h[1])))
-		kagit.add_child(d)
-		_hiz_dugmeleri.append(d)
-		hx += d.size.x + 2.0
-	y += 40.0
+	for s: Dictionary in SAYFALAR:
+		var yaprak := Control.new()
+		yaprak.name = "Yaprak_" + str(s.kod)
+		yaprak.mouse_filter = MOUSE_FILTER_IGNORE
+		yaprak.size = KAGIT
+		_kagit.add_child(yaprak)
+		_yapraklar.append(yaprak)
+		if str(s.kod) == "kontrol":
+			_kontrolleri_yaz(yaprak)
+		else:
+			_satirlari_kur(yaprak, s.satirlar)
 
-	_etiket(kagit, "Tam ekran", x, y)
-	_tam_ekran = _secenek("")
-	_tam_ekran.name = "TamEkran"
-	_tam_ekran.position = Vector2(x + 168.0, y - 5.0)
-	_tam_ekran.pressed.connect(func() -> void:
-		Oyun.ayar_degistir("tam_ekran", not bool(Oyun.ayar("tam_ekran")))
+	_cizgi(_kagit, SOL, KAGIT.y - 104.0, w)
+	var sifirla := _dugme("[ varsayılana dön ]", 14)
+	sifirla.name = "AyarSifirla"
+	sifirla.position = Vector2(SOL, KAGIT.y - 92.0)
+	sifirla.pressed.connect(func() -> void:
+		Oyun.ayarlari_sifirla()
+		Ses.cal("yirt", 1.0, -6.0)
 		_guncelle())
-	kagit.add_child(_tam_ekran)
-	y += 46.0
-
-	_cizgi(kagit, x, y, w)
-	y += 14.0
-	var kb := Stil.etiket("KONTROLLER", 13, Stil.MUREKKEP_SOLUK, Stil.daktilo_kalin())
-	kb.position = Vector2(x, y)
-	kagit.add_child(kb)
-	y += 24.0
-	for satir: String in KONTROLLER:
-		var l := Stil.etiket("- " + satir, 13, Stil.MUREKKEP)
-		l.position = Vector2(x, y)
-		kagit.add_child(l)
-		y += 21.0
+	_kagit.add_child(sifirla)
 
 	var tamam := Button.new()
 	tamam.name = "AyarKapat"
 	tamam.text = "Tamam"
 	tamam.focus_mode = FOCUS_NONE
-	tamam.custom_minimum_size = Vector2(180, 42)
-	tamam.position = Vector2((KAGIT.x - 180.0) / 2.0, KAGIT.y - 76.0)
+	tamam.custom_minimum_size = Vector2(170, 40)
+	tamam.size = Vector2(170, 40)
+	tamam.position = Vector2(KAGIT.x - SOL - 170.0, KAGIT.y - 96.0)
 	tamam.pressed.connect(kapat)
-	kagit.add_child(tamam)
+	_kagit.add_child(tamam)
 
+	sayfaya_gec(0, false)
 	_guncelle()
 	modulate.a = 0.0
 	create_tween().tween_property(self, "modulate:a", 1.0, 0.18)
@@ -115,40 +151,124 @@ func kapat() -> void:
 	queue_free()
 
 
+func sayfaya_gec(no: int, sesli: bool = true) -> void:
+	sayfa = clampi(no, 0, _yapraklar.size() - 1)
+	for i in _yapraklar.size():
+		_yapraklar[i].visible = i == sayfa
+		_sekmeler[i].add_theme_color_override("font_color", Stil.BORDO if i == sayfa else Stil.MUREKKEP_SOLUK)
+		_sekmeler[i].add_theme_stylebox_override("normal",
+			Stil.bosluklu(Stil.kutu(Color(Stil.BORDO, 0.10) if i == sayfa else Color(0, 0, 0, 0), Stil.BORDO if i == sayfa else Color(0, 0, 0, 0), 1, 2), 5, 4))
+	if sesli:
+		Ses.cal("sayfa", 1.0, -6.0, 0.05)
+
+
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
 		get_viewport().set_input_as_handled()
 		kapat()
 
 
-func _ses_degisti(deger: float, anahtar: String) -> void:
+# --- Satırlar ---
+
+func _satirlari_kur(yaprak: Control, satirlar: Array) -> void:
+	var y := 150.0
+	var tarayici := OS.has_feature("web")
+	for s: Dictionary in satirlar:
+		if tarayici and bool(s.get("masaustu", false)):
+			continue
+		var anahtar := str(s.anahtar)
+		var ad := Stil.etiket(str(s.ad), 15, Stil.MUREKKEP)
+		ad.position = Vector2(SOL, y)
+		yaprak.add_child(ad)
+		if s.has("not"):
+			var aciklama := Stil.etiket(str(s["not"]), 10, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
+			aciklama.position = Vector2(SOL, y + 18.0)
+			yaprak.add_child(aciklama)
+		match str(s.tur):
+			"kademe":
+				var k := Kademe.new()
+				k.name = "Kademe_" + anahtar
+				k.position = Vector2(DEGER_X, y - 1.0)
+				k.degisti.connect(_duzey_degisti.bind(anahtar))
+				yaprak.add_child(k)
+				var yuzde := Stil.etiket("", 12, Stil.MUREKKEP_SOLUK)
+				yuzde.position = Vector2(DEGER_X + k.size.x + 8.0, y + 2.0)
+				yaprak.add_child(yuzde)
+				_guncelleyiciler.append(func() -> void:
+					k.deger = float(Oyun.ayar(anahtar))
+					yuzde.text = "%%%d" % roundi(float(Oyun.ayar(anahtar)) * 100.0))
+			"isaret":
+				var d := _dugme("[ ] kapalı", 15)
+				d.name = "TamEkran" if anahtar == "tam_ekran" else "Isaret_" + anahtar
+				d.position = Vector2(DEGER_X - 5.0, y - 5.0)
+				d.pressed.connect(func() -> void:
+					Oyun.ayar_degistir(anahtar, not bool(Oyun.ayar(anahtar)))
+					Ses.cal("tik", 1.0, -4.0)
+					_guncelle())
+				yaprak.add_child(d)
+				_guncelleyiciler.append(func() -> void:
+					var acik := bool(Oyun.ayar(anahtar))
+					d.text = "[x] açık" if acik else "[ ] kapalı"
+					d.add_theme_color_override("font_color", Stil.BORDO if acik else Stil.MUREKKEP))
+			"secenek":
+				var x := DEGER_X - 5.0
+				var onek := str(s.get("onek", "Sec_" + anahtar))
+				for secenek: Array in s.secenekler:
+					var deger: Variant = secenek[1]
+					var yazi := str(secenek[0])
+					var d := _dugme(" %s " % yazi, 15)
+					d.name = "%s_%s" % [onek, yazi]
+					d.position = Vector2(x, y - 5.0)
+					d.pressed.connect(func() -> void:
+						Oyun.ayar_degistir(anahtar, deger)
+						Ses.cal("tik", 1.0, -4.0)
+						_guncelle())
+					yaprak.add_child(d)
+					x += d.size.x + 1.0
+					_guncelleyiciler.append(func() -> void:
+						var secili := _ayni(Oyun.ayar(anahtar), deger)
+						d.text = ("[%s]" if secili else " %s ") % yazi
+						d.add_theme_color_override("font_color", Stil.BORDO if secili else Stil.MUREKKEP))
+		y += SATIR + (9.0 if s.has("not") else 0.0)
+
+
+func _kontrolleri_yaz(yaprak: Control) -> void:
+	var y := 152.0
+	for satir: Array in KONTROLLER:
+		var tus := Stil.etiket(str(satir[0]), 14, Stil.BORDO, Stil.daktilo_kalin())
+		tus.position = Vector2(SOL, y)
+		yaprak.add_child(tus)
+		var is_ := Stil.etiket(str(satir[1]), 13, Stil.MUREKKEP)
+		is_.position = Vector2(DEGER_X + 12.0, y + 1.0)
+		yaprak.add_child(is_)
+		y += 30.0
+
+
+func _duzey_degisti(deger: float, anahtar: String) -> void:
 	Oyun.ayar_degistir(anahtar, deger)
-	if anahtar == "ses_radyo":
-		Ses.cal("zil", 1.0, -10.0)
-	else:
-		Ses.cal("muhur", 1.0, -5.0)
-
-
-func _hiz_secildi(hiz: float) -> void:
-	Oyun.ayar_degistir("saat_hizi", hiz)
+	# ayarlanan düzeyin örneği duyulsun
+	match anahtar:
+		"ses_muzik", "ses_ortam":
+			Ses.cal("zil", 1.0, -10.0)
+		"ses_konusma":
+			Ses.cal("hece", 1.5, -6.0)
+		_:
+			Ses.cal("muhur", 1.0, -5.0)
 	_guncelle()
 
 
 func _guncelle() -> void:
-	var hiz := float(Oyun.ayar("saat_hizi"))
-	for i in HIZLAR.size():
-		var secili := is_equal_approx(float(HIZLAR[i][1]), hiz)
-		_hiz_dugmeleri[i].text = ("[%s]" if secili else " %s ") % str(HIZLAR[i][0])
-		_hiz_dugmeleri[i].add_theme_color_override("font_color", Stil.BORDO if secili else Stil.MUREKKEP)
-	var tam := bool(Oyun.ayar("tam_ekran"))
-	_tam_ekran.text = "[x] açık" if tam else "[ ] kapalı"
-	_tam_ekran.add_theme_color_override("font_color", Stil.BORDO if tam else Stil.MUREKKEP)
+	for g in _guncelleyiciler:
+		g.call()
 
 
-func _etiket(ebeveyn: Control, metin: String, x: float, y: float) -> void:
-	var l := Stil.etiket(metin, 15, Stil.MUREKKEP)
-	l.position = Vector2(x, y)
-	ebeveyn.add_child(l)
+## Ayar değeri seçenekle aynı mı? (Sayılar değerce, metinler birebir karşılaştırılır.)
+static func _ayni(a: Variant, b: Variant) -> bool:
+	var a_sayi := typeof(a) == TYPE_INT or typeof(a) == TYPE_FLOAT
+	var b_sayi := typeof(b) == TYPE_INT or typeof(b) == TYPE_FLOAT
+	if a_sayi and b_sayi:
+		return is_equal_approx(float(a), float(b))
+	return typeof(a) == typeof(b) and a == b
 
 
 func _cizgi(ebeveyn: Control, x: float, y: float, w: float) -> void:
@@ -160,19 +280,18 @@ func _cizgi(ebeveyn: Control, x: float, y: float, w: float) -> void:
 	ebeveyn.add_child(c)
 
 
-## Daktiloyla yazılmış gibi duran, çerçevesiz seçenek düğmesi.
-func _secenek(metin: String) -> Button:
+## Daktiloyla yazılmış gibi duran, çerçevesiz düğme (seçenekler, işaret kutuları, sekmeler).
+func _dugme(metin: String, punto: int, kalin: bool = false) -> Button:
 	var d := Button.new()
-	d.text = metin if metin != "" else "[ ] kapalı"
+	d.text = metin
 	d.focus_mode = FOCUS_NONE
 	d.mouse_default_cursor_shape = CURSOR_POINTING_HAND
-	d.add_theme_font_override("font", Stil.daktilo())
-	d.add_theme_font_size_override("font_size", 15)
+	d.add_theme_font_override("font", Stil.daktilo_kalin() if kalin else Stil.daktilo())
+	d.add_theme_font_size_override("font_size", punto)
 	d.add_theme_color_override("font_hover_color", Stil.BORDO)
 	for durum: String in ["normal", "pressed", "focus", "disabled"]:
 		d.add_theme_stylebox_override(durum, Stil.bosluklu(Stil.kutu(Color(0, 0, 0, 0)), 5, 4))
 	d.add_theme_stylebox_override("hover", Stil.bosluklu(Stil.kutu(Color(Stil.BORDO, 0.08)), 5, 4))
-	d.text = "[%s]" % metin if metin != "" else d.text
 	d.size = d.get_combined_minimum_size()
 	return d
 

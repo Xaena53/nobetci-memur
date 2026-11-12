@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/nermin.webp-a03e11405827a1a7d55b47d30d4a6d83.
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.92
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0

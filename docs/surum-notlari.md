@@ -1,5 +1,38 @@
 # Sürüm notları
 
+## 1.3.0 — ayarlar ve performans
+
+### Ayarlar
+
+- **Ayar penceresi dört yapraklı bir form oldu:** SES, GÖRÜNTÜ, OYUN, KONTROLLER.
+- **Ses:** efektler, konuşma, müzik ve ortam ayrı ayrı ayarlanır; müzik tek işaretle kapatılır.
+- **Görüntü:** pencere boyutu, dikey eşleme, kare sınırı (30 / 60 / 120 / yok), efekt kalitesi (kar ve
+  duman yoğunluğu), ekran sarsıntısı, titreyen ışıklar.
+- **Oyun:** yazı hızı (genelge, konuşma, teleks; "anında" seçeneğiyle), arka planda kendiliğinden mola,
+  fare hassasiyeti (0,5× – 2×).
+- "Varsayılana dön" düğmesi. Tarayıcıda geçerli olmayan satırlar (pencere, dikey eşleme, imleç) gizlenir.
+- Eski ayar dosyasındaki "radyo ve ortam" düzeyi yeni adlara taşınmaz; müzik ve ortam varsayılandan başlar.
+
+### Performans
+
+- Vatandaş değişimindeki takılma yarıya indi: kuyruğun görselleri önceden, kare başına bir tane yüklenir.
+- Doku belleği günler boyunca birikmez: her gün başında önceki yüzler bırakılır.
+- **Paket küçüldü:** görseller pakete kayıplı (kalite 0,92) aktarılır; içe aktarılan varlıklar 53 MB'tan
+  26 MB'a indi. Ölçülen görüntü farkı en kötü görselde 42,7 dB PSNR; saydamlık kanalı değişmedi.
+- Duvar saati her karede yeniden çizilmez.
+
+### Düzeltilen hatalar
+
+- Gerekçe penceresinde en uzun gerekçe, incelemede bulunmuş olarak kalın yazılınca kutudan taşıyordu.
+- Tarayıcıda sekme gizlenince oyun mola vermiyordu (uygulama odağı bildirimi tarayıcıda gelmez); artık
+  sayfanın görünürlük olayı dinleniyor.
+
+### Testler
+
+- Sağlamlık testine `ayarlar` bölümü eklendi; rastgele girdi testi aynı karede iki ayrı düğmeye de basıyor.
+- `bash tools/cek.sh performans`, `bash tools/cek.sh ayarlar`, `python tools/boyut.py`,
+  `python tools/ice_aktarma.py`, `python tools/sanat/kalite_olc.py`.
+
 ## 1.2.2 — ikinci sağlamlaştırma turu
 
 1.2.1'de bulunan her hata bir "sınıf" olarak ele alındı ve aynı sınıfın başka örnekleri arandı.

@@ -77,6 +77,7 @@ var _tik_no := 0                        ## duvar saati: tik ve tak sırayla
 var _tik_sayaci := 0.0
 var _canta_seridi: Serit
 var _ziyaret_no := 0                    ## her vatandaşta artar: bekleyen işlevler eski ziyareti sürdürmesin
+var _on_yukleme: Array[Callable] = []   ## kuyruktaki vatandaşların görselleri: kare başına biri yüklenir
 var _ugurlaniyor := false               ## kararı verilmiş vatandaş gişeden ayrılıyor (mesai o sırada biterse yarıda sayılmaz)
 
 
@@ -99,12 +100,17 @@ func _ready() -> void:
 	saat.tarih_ayarla(str(gun.get("tarih", "")))
 	saat.dakika = dakika
 	_kuyrugu_kur()
+	_on_yuklemeyi_kur()
 	_araclari_ayarla()
 	_sesleri_bagla()
 	_genelgeyi_goster()
 
 
 func _process(delta: float) -> void:
+	# Kuyruktaki vatandaşların görselleri önceden, kare başına bir tane yüklenir: vatandaş cama geldiği
+	# anda (portre, vesikalık, konuşma kareleri bir arada yüklenirken) oyun takılmaz.
+	if not _on_yukleme.is_empty():
+		(_on_yukleme.pop_front() as Callable).call()
 	if not mesai_acik or _saat_durdu:
 		return
 	# uzun bir takılmadan (sekme arka planda kaldı, pencere taşındı) sonra saat sıçramasın
@@ -168,6 +174,34 @@ func _kuyrugu_kur() -> void:
 		var yer := clampi(maxi(int(o.sira) - 1, son_yer + 1), 0, kuyruk.size())
 		kuyruk.insert(yer, o.vatandas)
 		son_yer = yer
+
+
+## Günün kuyruğunda kullanılacak görsellerin yükleme sırasını kurar (sıradaki vatandaş önce).
+func _on_yuklemeyi_kur() -> void:
+	Portreler.bosalt()                  # önceki günün yüzleri bellekten çıkar
+	_on_yukleme.clear()
+	for v: Dictionary in kuyruk:
+		var yuz := str(v.get("portre", ""))
+		_on_yukleme.append(func() -> void: Portreler.doku(yuz))
+		_on_yukleme.append(func() -> void: Portreler.agiz_dokusu(yuz))
+		for b: Dictionary in v.get("belgeler", []):
+			var foto := str(b.get("foto", ""))
+			if foto != "":
+				_on_yukleme.append(func() -> void: Portreler.vesikalik(foto))
+			var alanlar: Dictionary = b.get("alanlar", {})
+			for alan: String in ["imza", "imza_sahibi", "muhtar"]:
+				var kisi := str(alanlar.get(alan, ""))
+				if kisi != "":
+					_on_yukleme.append(func() -> void: Imza.doku(kisi))
+		if v.has("canta"):
+			var canta: Dictionary = v.canta
+			var tur := str(canta.get("tur", ""))
+			_on_yukleme.append(func() -> void:
+				Canta.kabuk_dokusu(tur)
+				Canta.dis_doku(tur))
+			for e: Dictionary in canta.get("esyalar", []):
+				var esya := str(e.get("ad", ""))
+				_on_yukleme.append(func() -> void: Canta.esya_dokusu(esya))
 
 
 func _sonraki_vatandas() -> void:
@@ -787,6 +821,8 @@ func _perde_bul(portre: String) -> float:
 
 ## Mühür inince masa kısa bir an sarsılır.
 func _sarsinti(guc: float = 5.0) -> void:
+	if not bool(Oyun.ayar("ekran_sarsintisi")):
+		return
 	var t := create_tween()
 	for i in 5:
 		var g := guc * (1.0 - i / 5.0)

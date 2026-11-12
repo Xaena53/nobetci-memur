@@ -11,7 +11,7 @@ extends "res://tools/test_surucu.gd"
 ## Çalıştırma:  bash tools/saglamlik.sh [bölüm ...]      (bölüm verilmezse hepsi)
 ## Betik hatası (SCRIPT ERROR) konsola düşerse kabuk betiği onu da başarısızlık sayar.
 
-const BOLUMLER := ["veri", "kayit", "uretici", "ipucu", "yerlesim", "akis", "maymun"]
+const BOLUMLER := ["veri", "kayit", "ayarlar", "uretici", "ipucu", "yerlesim", "akis", "maymun"]
 const BELGE_TURLERI := ["nufus_cuzdani", "ikametgah", "harc_makbuzu", "calisma_vizesi"]
 const KURAL_TURLERI := ["belge_zorunlu", "alan_esit", "tarih_sure", "muhur_zorunlu", "harc_tutar", "seri_aralik",
 	"foto_eslesme", "mahalle_listesi", "arananlar", "sahtecilik", "vize", "canta_kontrol"]
@@ -673,13 +673,22 @@ func _bolum_kayit() -> void:
 	_bayrak_supurmesi()
 
 	# ayarlar
-	_dosyaya_yaz(Oyun.ayar_yolu, JSON.stringify({"saat_hizi": 0, "ses_genel": 99, "ses_efekt": "yüksek", "ses_radyo": -3,
-		"tam_ekran": "evet", "yabanci": 1}))
+	_dosyaya_yaz(Oyun.ayar_yolu, JSON.stringify({"saat_hizi": 0, "ses_genel": 99, "ses_efekt": "yüksek", "ses_ortam": -3,
+		"tam_ekran": "evet", "yabanci": 1, "pencere_boyutu": "99999x99999", "kare_siniri": 45, "efekt_kalitesi": 5,
+		"muzik_acik": "evet", "fare_hassasiyeti": 99, "yazi_hizi": -1, "dikey_esleme": 0}))
 	Oyun.ayarlari_yukle()
 	esit(float(Oyun.ayar("saat_hizi")), 0.4, "ayar: sıfır saat hızı en küçük değere çekilir")
 	esit(float(Oyun.ayar("ses_genel")), 1.0, "  aşırı ses düzeyi 1'e çekilir")
 	esit(float(Oyun.ayar("ses_efekt")), float(Oyun.VARSAYILAN_AYARLAR.ses_efekt), "  sayı olmayan ayar varsayılana döner")
-	esit(float(Oyun.ayar("ses_radyo")), 0.0, "  eksi ses düzeyi sıfıra çekilir")
+	esit(float(Oyun.ayar("ses_ortam")), 0.0, "  eksi ses düzeyi sıfıra çekilir")
+	esit([Oyun.ayar("pencere_boyutu"), Oyun.ayar("kare_siniri"), Oyun.ayar("efekt_kalitesi")], ["1280x720", 0, "yuksek"],
+		"  tanınmayan seçenekler (pencere boyutu, kare sınırı, efekt kalitesi) varsayılana döner")
+	esit([Oyun.ayar("muzik_acik"), Oyun.ayar("dikey_esleme")], [true, true], "  mantıksal olmayan açık/kapalı ayarlar varsayılanda kalır")
+	esit([float(Oyun.ayar("fare_hassasiyeti")), float(Oyun.ayar("yazi_hizi"))], [2.0, 0.4], "  fare hassasiyeti ve yazı hızı aralığa çekilir")
+	_dosyaya_yaz(Oyun.ayar_yolu, JSON.stringify({"kare_siniri": 60.0, "efekt_kalitesi": "orta", "pencere_boyutu": "1600x900"}))
+	Oyun.ayarlari_yukle()
+	esit([Oyun.ayar("kare_siniri"), Oyun.ayar("efekt_kalitesi"), Oyun.ayar("pencere_boyutu")], [60, "orta", "1600x900"],
+		"  geçerli seçenekler dosyadan aynen okunur")
 	esit(Oyun.ayar("tam_ekran"), false, "  mantıksal olmayan tam ekran yok sayılır")
 	dogru(not Oyun.ayarlar.has("yabanci"), "  tanınmayan ayar alınmaz")
 	for ad: String in ["yarım", "dizi", "boş"]:
@@ -1187,6 +1196,11 @@ func _rastgele_girdi(rng: RandomNumberGenerator) -> void:
 					for i in (1 if rng.randf() < 0.7 else rng.randi_range(2, 3)):
 						if is_instance_valid(d):
 							d.pressed.emit()
+					# kimi zaman aynı karede başka bir düğme de: iki ayrı işlem üst üste gelsin
+					if rng.randf() < 0.15:
+						var diger := dugmeler[rng.randi() % dugmeler.size()]
+						if is_instance_valid(diger) and not (str(diger.name) in ["MolaMenu", "Cikis", "AnaMenu", "AyarSifirla"]):
+							diger.pressed.emit()
 	elif s != null and s.name == "Masa":
 		# bir karar aracını masadaki bir belgeye (ya da rastgele bir yere) sürükle
 		var araclar: Array = s.araclar.values()
@@ -1398,3 +1412,136 @@ func _bolum_yerlesim() -> void:
 		+ "Üstelik: Röntgenden geçirdiğiniz çantada toplu tabanca ile mermi vardı; şahıs binaya onunla girdi. Camdan izliyordum: çift ihtar.", 4, "ihtar")
 	dogru(fis.size.y <= 520.0, "en uzun birleşik ihtar pusulası ekrana sığıyor (%d piksel)" % int(fis.size.y))
 	fis.free()
+
+
+# =====================================================================================================
+# 8. Ayarlar: her ayar uygulanıyor mu, pencerenin her düğmesi doğru ayarı yazıyor mu
+# =====================================================================================================
+
+func _yol_db(ad: String) -> float:
+	return AudioServer.get_bus_volume_db(AudioServer.get_bus_index(ad))
+
+
+func _bolum_ayarlar() -> void:
+	print("== Ayarlar ==")
+	Oyun.ayarlari_sifirla()
+	esit(JSON.stringify(Oyun.ayarlar), JSON.stringify(Oyun.VARSAYILAN_AYARLAR), "varsayılana dönüş bütün ayarları sıfırlar")
+	# ses veriyolları
+	for yol: String in ["Efekt", "Ortam", "Muzik", "Radyo", "Konusma"]:
+		dogru(AudioServer.get_bus_index(yol) >= 0, "ses veriyolu var: " + yol)
+	esit(str(AudioServer.get_bus_send(AudioServer.get_bus_index("Radyo"))), "Muzik", "radyo, müzik veriyoluna akar")
+	for cift: Array in [["ses_genel", "Master"], ["ses_efekt", "Efekt"], ["ses_konusma", "Konusma"], ["ses_muzik", "Muzik"], ["ses_ortam", "Ortam"]]:
+		Oyun.ayar_degistir(str(cift[0]), 0.5)
+		dogru(absf(_yol_db(str(cift[1])) - linear_to_db(0.5)) < 0.01, "%s ayarı %s veriyolunun düzeyini değiştirir" % [str(cift[0]), str(cift[1])])
+		Oyun.ayar_degistir(str(cift[0]), 0.0)
+		dogru(AudioServer.is_bus_mute(AudioServer.get_bus_index(str(cift[1]))), "  sıfırda veriyolu susar")
+		Oyun.ayar_degistir(str(cift[0]), float(Oyun.VARSAYILAN_AYARLAR[cift[0]]))
+	Oyun.ayar_degistir("muzik_acik", false)
+	dogru(AudioServer.is_bus_mute(AudioServer.get_bus_index("Muzik")), "müzik kapatılınca müzik veriyolu susar")
+	dogru(not AudioServer.is_bus_mute(AudioServer.get_bus_index("Efekt")), "  efektler çalmaya devam eder")
+	Oyun.ayar_degistir("muzik_acik", true)
+	dogru(not AudioServer.is_bus_mute(AudioServer.get_bus_index("Muzik")), "  yeniden açılınca çalar")
+	Ses.cal("hece")
+	Ses.cal("muhur")
+	var konusma_var := false
+	var efekt_var := false
+	for c: AudioStreamPlayer in Ses._calicilar:
+		if c.stream != null and str(c.bus) == "Konusma":
+			konusma_var = true
+		if c.stream != null and str(c.bus) == "Efekt":
+			efekt_var = true
+	dogru(konusma_var and efekt_var, "konuşma heceleri kendi veriyolundan, öbür efektler efekt veriyolundan çalar")
+	# görüntü ve oyun
+	Oyun.ayar_degistir("kare_siniri", 30)
+	esit(Engine.max_fps, 30, "kare sınırı motora işlenir")
+	Oyun.ayar_degistir("kare_siniri", 0)
+	esit(Engine.max_fps, 0, "  sınır kaldırılır")
+	for i in 3:
+		Oyun.ayar_degistir("efekt_kalitesi", ["dusuk", "orta", "yuksek"][i])
+		esit(Oyun.efekt_duzeyi(), i, "efekt kalitesi düzeyi: " + ["düşük", "orta", "yüksek"][i])
+	esit(Oyun.fare_hedefi(Vector2(100, 100), Vector2(10, -4), 2.0, Rect2(0, 0, 1280, 720)), Vector2(110, 96), "fare hassasiyeti 2×: imleç hareketin bir katı daha ilerler")
+	esit(Oyun.fare_hedefi(Vector2(100, 100), Vector2(10, -4), 0.5, Rect2(0, 0, 1280, 720)), Vector2(95, 102), "  0,5×: yarısı kadar geri çekilir")
+	esit(Oyun.fare_hedefi(Vector2(1275, 5), Vector2(30, -30), 2.0, Rect2(0, 0, 1280, 720)), Vector2(1279, 0), "  imleç görünümün dışına taşmaz")
+	# kar taneleri kaliteye göre azalır
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	var kar: Kar = null
+	for c in sahne().find_children("*", "Control", true, false):
+		if c is Kar:
+			kar = c
+	var sayilar: Array[int] = []
+	for kalite: String in ["dusuk", "orta", "yuksek"]:
+		Oyun.ayar_degistir("efekt_kalitesi", kalite)
+		var toplam := 0
+		for t: PackedFloat32Array in kar._taneler:
+			@warning_ignore("integer_division")
+			toplam += t.size() / 6
+		sayilar.append(toplam)
+	dogru(sayilar[0] < sayilar[1] and sayilar[1] < sayilar[2], "kar tanesi sayısı efekt kalitesiyle artar (%s)" % str(sayilar))
+	# ayar penceresi: her yaprak açılır, her düğme kendi ayarını yazar
+	bas("Ayarlar")
+	await kare(3)
+	var pencere := sahne().find_child("AyarlarPenceresi", true, false) as AyarlarPenceresi
+	dogru(pencere != null, "ayar penceresi açılır")
+	var denenen := 0
+	var tutmayan: Array[String] = []
+	for i in AyarlarPenceresi.SAYFALAR.size():
+		var s: Dictionary = AyarlarPenceresi.SAYFALAR[i]
+		bas("AyarSekme_" + str(s.kod))
+		await kare(1)
+		if pencere.sayfa != i:
+			tutmayan.append("sekme " + str(s.kod))
+		for satir: Dictionary in s.satirlar:
+			var anahtar := str(satir.anahtar)
+			match str(satir.tur):
+				"kademe":
+					var k := pencere.find_child("Kademe_" + anahtar, true, false)
+					k.degisti.emit(0.3)
+					denenen += 1
+					if not is_equal_approx(float(Oyun.ayar(anahtar)), 0.3):
+						tutmayan.append(anahtar)
+				"isaret":
+					var once := bool(Oyun.ayar(anahtar))
+					bas("TamEkran" if anahtar == "tam_ekran" else "Isaret_" + anahtar)
+					denenen += 1
+					if bool(Oyun.ayar(anahtar)) == once:
+						tutmayan.append(anahtar)
+					bas("TamEkran" if anahtar == "tam_ekran" else "Isaret_" + anahtar)
+				"secenek":
+					for secenek: Array in satir.secenekler:
+						bas("%s_%s" % [str(satir.get("onek", "Sec_" + anahtar)), str(secenek[0])])
+						denenen += 1
+						if not AyarlarPenceresi._ayni(Oyun.ayar(anahtar), secenek[1]):
+							tutmayan.append("%s=%s" % [anahtar, str(secenek[0])])
+	esit(tutmayan.size(), 0, "ayar penceresindeki %d düğmenin her biri kendi ayarını yazar %s" % [denenen, str(tutmayan)])
+	bas("AyarSifirla")
+	esit(JSON.stringify(Oyun.ayarlar), JSON.stringify(Oyun.VARSAYILAN_AYARLAR), "varsayılana dön düğmesi bütün ayarları sıfırlar")
+	bas("AyarKapat")
+	await kare(2)
+	# sarsıntı ve odak kaybı molası
+	var masa: Node = await _gune_git(1)
+	Oyun.ayar_degistir("ekran_sarsintisi", false)
+	masa._sarsinti()
+	await kare(3)
+	esit(masa.position, Vector2.ZERO, "ekran sarsıntısı kapalıyken masa sarsılmaz")
+	Oyun.ayar_degistir("ekran_sarsintisi", true)
+	Oyun.odak_sinamasi = true
+	Oyun.ayar_degistir("odakta_mola", false)
+	Oyun.notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
+	dogru(not get_tree().paused, "arka planda mola kapalıyken odak kaybı oyunu durdurmaz")
+	Oyun.ayar_degistir("odakta_mola", true)
+	Oyun.notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
+	dogru(get_tree().paused, "odak kaybında oyun kendiliğinden mola verir")
+	Oyun.notification(Node.NOTIFICATION_WM_WINDOW_FOCUS_OUT)
+	Oyun.molayi_bitir()
+	dogru(not get_tree().paused, "  mola bitince oyun sürer")
+	Oyun.odak_sinamasi = false
+	# yazı hızı
+	Oyun.ayar_degistir("yazi_hizi", 100.0)
+	masa = await _gune_git(2)
+	await bekle(0.4)
+	var genelge := masa.find_child("GenelgeEkrani", true, false)
+	dogru(genelge != null and not genelge._yaziyor, "yazı hızı en yüksekteyken genelge hemen tamamlanır")
+	Oyun.ayarlari_sifirla()
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")

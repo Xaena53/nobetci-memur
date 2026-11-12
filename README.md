@@ -21,7 +21,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.2.2 |
+| Sürüm | 1.3.0 |
 
 ---
 
@@ -293,6 +293,21 @@ godot --path .               # oyunu başlatır
 Kayıt ve ayarlar kullanıcı klasöründe durur (`user://kayit.json`, `user://ayarlar.json`;
 Windows'ta `%APPDATA%\Godot\app_userdata\Nöbetçi Memur\`).
 
+### Ayarlar
+
+Ana menüden ve moladan (ESC) açılan dört yapraklı bir formdur; hepsi `user://ayarlar.json` içinde saklanır.
+
+| Yaprak | Ayarlar |
+|---|---|
+| **SES** | Genel ses, efektler, konuşma, müzik, ortam (soba, rüzgâr) düzeyleri; müziği açıp kapatma |
+| **GÖRÜNTÜ** | Tam ekran, pencere boyutu (1280×720, 1600×900, 1920×1080), dikey eşleme, kare sınırı (30, 60, 120, yok), efekt kalitesi (kar ve duman yoğunluğu), ekran sarsıntısı, titreyen ışıklar |
+| **OYUN** | Mesai saatinin hızı, yazı hızı (genelge, konuşma, teleks), arka planda kendiliğinden mola, fare hassasiyeti |
+| **KONTROLLER** | Tuşlar ve fare hareketleri |
+
+Zayıf bilgisayarlar için: efekt kalitesi "düşük", kare sınırı 30. Işığa duyarlı olanlar "titreyen
+ışıklar"ı ve "ekran sarsıntısı"nı kapatabilir. Tarayıcıda pencere, dikey eşleme ve imleç tarayıcının
+elinde olduğundan o satırlar gösterilmez. "Varsayılana dön" bütün ayarları sıfırlar.
+
 ### Kayıt nasıl işler
 
 Oyun kendiliğinden kaydeder; elle kayıt yoktur. Üç kayıt anı vardır:
@@ -304,8 +319,8 @@ Oyun kendiliğinden kaydeder; elle kayıt yoktur. Üç kayıt anı vardır:
 | Akşam ışık sönünce | Ertesi sabah (ya da oyun bittiyse son ekranı) gelir. |
 
 Bu düzen, kötü geçen günü oyundan çıkıp silmeyi ve aynı kuyruğu ezberleyip baştan oynamayı önler.
-Mola (ESC) sırasında masa görünmez: saat dururken evrak okunamaz. Pencere arka plana geçince oyun
-kendiliğinden mola verir.
+Mola (ESC) sırasında masa görünmez: saat dururken evrak okunamaz. Pencere arka plana geçince (tarayıcıda
+sekme gizlenince) oyun kendiliğinden mola verir; bu, ayarlardan kapatılabilir.
 
 Kayıt dosyası imzalıdır. Elle değiştirilen ya da bozulan dosya kayıt sayılmaz; bir önceki kayıt
 (`kayit.json.yedek`) varsa ondan sürülür. Yazma önce geçici dosyaya yapılır: yarıda kesilen bir
@@ -336,6 +351,24 @@ Yayın belgeleri `docs/` klasöründedir:
 - [`docs/ekran-goruntuleri.md`](docs/ekran-goruntuleri.md): üç ekran görüntüsü için talimat
 - [`docs/surum-notlari.md`](docs/surum-notlari.md): sürüm notları
 - [`docs/kontrol-listesi.md`](docs/kontrol-listesi.md): yedi günlük oynanış kontrol listesi
+
+## Performans
+
+`bash tools/cek.sh performans` sahnelerin kare sürelerini dikey eşleme kapalıyken ölçer. Geliştirme
+makinesinde bütün sahneler kare başına 1–3 ms sürer; ölçülen ve giderilen darboğazlar şunlardı:
+
+- **Vatandaş değişimindeki takılma.** Yüz, vesikalık ve konuşma kareleri vatandaş cama geldiği anda
+  yükleniyordu (en uzun kare 32 ms). Kuyruğun görselleri artık gün başından itibaren kare başına bir
+  tane yüklenir (en uzun kare 16 ms).
+- **Büyüyen doku belleği.** Yüklenen yüzler oyun boyunca bellekte kalıyordu. Her gün başında ve mesai
+  bitince önceki yüzler bırakılır; bellek bir günün kuyruğuyla sınırlıdır.
+- **Paket boyutu.** Görseller kayıplı WebP olarak saklanır ama kayıpsız içe aktarılıyordu: pakette üç
+  kat yer tutuyorlardı. Fotoğraf benzeri görseller artık kayıplı (kalite 0,92) aktarılır
+  (`python tools/ice_aktarma.py`); ölçülen fark en kötü görselde 42,7 dB PSNR'dir
+  (`python tools/sanat/kalite_olc.py`). Röntgen haritaları, imzalar ve damgalar kayıpsız kalır.
+  `python tools/boyut.py` paketin dökümünü verir.
+- Duvar saati ibre gözle görülür kadar ilerleyince yeniden çizilir; kar ve duman yoğunluğu efekt
+  kalitesi ayarına uyar.
 
 ## Proje yapısı
 
@@ -449,6 +482,7 @@ bash tools/saglamlik.sh                                            # sağlamlık
   | Bölüm | Ne yapar |
   |---|---|
   | `veri` | Veri dosyalarını ve varlıkları çapraz denetler (yaklaşık 4.000 denetim): her yüzün görseli, vesikalığı, konuşma kareleri (iki ayrı, tam görünür kare), kimliği ve imzası; her kuralın alanları; her ziyaretin kişisi, işlemi, çantası; koşullarda okunan her bayrağı yazan bir yer; koddaki her ses, etiket ve dosya yolu. |
+  | `ayarlar` | Her ayarın gerçekten uygulandığını (ses veriyolları, kare sınırı, efekt kalitesi, sarsıntı, yazı hızı, odak kaybı molası) ve ayar penceresindeki her düğmenin kendi ayarını yazdığını sınar. |
   | `kayit` | Kayıt ve ayar dosyalarını bozar: yarım JSON, yanlış türler, aşırı büyük ve çok derin dosya, geçersiz baytlar, elle değiştirilmiş içerik, imzası doğru ama değerleri düşmanca kayıtlar. Oyun çökmemeli, durum makul kalmalıdır. Kayıt aşamaları ve her hikâye bayrağının beklenmedik değerleri de burada sınanır. |
   | `uretici` | Üç görev şekli × beş tohum × yedi gün × 60 vatandaş (6.300): üreticinin koyduğu kusur ile doğrulayıcının bulduğu kusur aynı mı; aynı tohum aynı kuyruğu veriyor mu. |
   | `ipucu` | İnceleme modunda tıklanabilecek bütün hedef çiftlerini karşılaştırır (hedefler genelge defterinin ve bilgi defterinin gerçek düğümlerinden okunur): kusursuz evrakta hiçbir çift "uyuşmazlık" dememeli, her kusur en az bir karşılaştırmayla bulunabilmeli, sonuç tıklama sırasına bağlı olmamalıdır. |
@@ -460,7 +494,9 @@ Ekran görüntüsü düzeneği pencereyi ekran dışında, odak almadan açar:
 
 ```bash
 bash tools/cek.sh hikaye     # kareler tools/cikti/ altına yazılır
-bash tools/cek.sh sinir      # ekranların en dolu hâlleri: puantaj, akşam defteri, son gazete, defter sayfaları
+bash tools/cek.sh sinir      # ekranların en dolu hâlleri: puantaj, akşam defteri, son gazete, defter sayfaları, pencereler
+bash tools/cek.sh ayarlar    # ayar penceresinin dört yaprağı
+bash tools/cek.sh performans # sahnelerin kare süreleri ve vatandaş değişimindeki en uzun kare (konsola yazar)
 bash tools/cek.sh genelge    # yedi günün genelgesi, yazısı tamamlanmış hâliyle
 ```
 
