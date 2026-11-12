@@ -368,7 +368,7 @@ func iz_birak(karar: String, yerel: Vector2, satirlar: PackedStringArray) -> voi
 class KararIzi extends Control:
 	var karar := "onay"
 	var satirlar := PackedStringArray()
-	var belge: Belge
+	var belge: Control      ## iç sınıf dış betiğe tipli başvurursa betik çıkışta bellekte kalır
 
 	func _draw() -> void:
 		var k := size.x / (176.0 if karar == "onay" else 168.0)

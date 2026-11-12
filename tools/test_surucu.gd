@@ -16,13 +16,14 @@ func _calistir() -> void:
 	await _kural_testi()
 	await _belge_testi()
 	await _hikaye_testi()
+	await _cila_testi()
 	print("")
 	if _hata == 0:
 		print("DUMAN TESTİ: BAŞARILI (%d denetim)" % _adim)
 	else:
 		print("DUMAN TESTİ: %d HATA (%d denetim)" % [_hata, _adim])
 	Oyun.kaydi_sil()
-	get_tree().quit(1 if _hata > 0 else 0)
+	Oyun.cik(1 if _hata > 0 else 0)
 
 
 # --- Aşama 0 ve 3: sahne akışı, gün döngüsü ve kayıt ---
@@ -30,7 +31,7 @@ func _calistir() -> void:
 func _akis_testi() -> void:
 	print("== Sahne akışı ve gün döngüsü ==")
 	Oyun.kaydi_sil()
-	Oyun.sahneye_gec("menu")
+	await sahneye_git("menu")
 	bekle_dogru(await sahneyi_bekle("AnaMenu"), "ana menü açıldı")
 	dogru(dugme("Devam").disabled, "kayıt yokken Devam kapalı")
 
@@ -140,9 +141,13 @@ func _ekonomi_testi() -> void:
 func _belge_testi() -> void:
 	print("== Belge sistemi ==")
 	Oyun.yeni_oyun()
-	Oyun.sahneye_gec("masa")
+	await sahneye_git("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
+	# İlk vatandaş kusursuz olsun: "eksik belge" kusurlu biri gelirse masaya tek belge düşer.
+	var ilk_rng := RandomNumberGenerator.new()
+	ilk_rng.seed = 11
+	masa.kuyruk[0] = VatandasUretici.uret(masa.gun, ilk_rng, [], 0)
 	bas("GiseyiAc")
 	dogru(await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 2 and not masa._mesgul), "vatandaş geldi, belgeler masada")
 	await bekle(1.0)
@@ -328,6 +333,12 @@ func fare_tasi(konum: Vector2) -> void:
 	get_viewport().push_input(e, true)
 
 
+## Sahne değiştirir; süren bir geçiş varsa önce onun bitmesini bekler (yoksa istek yok sayılır).
+func sahneye_git(ad: String) -> void:
+	await kosulu_bekle(func() -> bool: return not Oyun.geciste_mi(), 4.0)
+	Oyun.sahneye_gec(ad)
+
+
 func sahne() -> Node:
 	return get_tree().current_scene
 
@@ -351,8 +362,12 @@ func kare(adet: int = 1) -> void:
 		await get_tree().process_frame
 
 
+## Düğmeyi önce sahnede, bulamazsa Oyun'un üst katmanında (mola menüsü) arar.
 func dugme(ad: String) -> Button:
-	return sahne().find_child(ad, true, false) as Button
+	var d := sahne().find_child(ad, true, false) as Button if sahne() != null else null
+	if d == null:
+		d = Oyun.find_child(ad, true, false) as Button
+	return d
 
 
 func bas(ad: String) -> void:
@@ -401,7 +416,7 @@ func _gune_git(gun_no: int, bayraklar: Dictionary = {}) -> Node:
 	Oyun.yeni_oyun()
 	Oyun.gun = gun_no
 	Oyun.bayraklar = bayraklar
-	Oyun.sahneye_gec("masa")
+	await sahneye_git("masa")
 	await sahneyi_bekle("Masa")
 	await bekle(0.5)
 	return sahne()
@@ -579,10 +594,80 @@ func _hikaye_testi() -> void:
 	Oyun.gun = 7
 	Oyun.bayraklar = {"savci": "yarali", "mektup": true, "husnu_onay": 7}
 	Oyun.son = {"tur": "olagan", "neden": "yerinde"}
-	Oyun.sahneye_gec("son")
+	await sahneye_git("son")
 	bekle_dogru(await sahneyi_bekle("Son"), "son ekranı açıldı")
 	var son_sahne := sahne()
 	dogru(son_sahne.find_child("Gazete", true, false) != null, "  gazete sayfası var")
 	dogru(son_sahne.find_child("Mektup", true, false) != null, "  mektup var")
 	dogru(dugme("AnaMenu") != null, "  ana menü düğmesi var")
+
+
+# --- Aşama 5: sesler, ana menü, ayarlar, mola ---
+
+func _cila_testi() -> void:
+	print("== Sesler, menü, ayarlar, mola ==")
+	# sesler: oyunun çağırdığı her ad için dosya var
+	for ad: String in ["muhur", "kagit", "kagit_kay", "sayfa", "zil", "teleks", "daktilo", "yirt", "hece", "adim",
+			"ofle", "kepenk", "ihtar", "prim", "tik", "saat", "jaluzi", "zarf", "kalem", "patlama", "silah",
+			"soba", "ruzgar", "radyo"]:
+		dogru(Ses._akis(ad) != null, "ses dosyası var: %s" % ad)
+	dogru(AudioServer.get_bus_index("Efekt") >= 0 and AudioServer.get_bus_index("Ortam") >= 0, "ses veriyolları kuruldu")
+	Ses.cal("olmayan_ses")
+	dogru(true, "bilinmeyen ses adı sessizce geçilir")
+
+	# ayarlar (kullanıcının dosyası testten sonra eski hâline döner)
+	var eski: Dictionary = Oyun.ayarlar.duplicate()
+	await sahneye_git("menu")
+	bekle_dogru(await sahneyi_bekle("AnaMenu"), "ana menü")
+	for ad: String in ["YeniOyun", "Devam", "Ayarlar", "Cikis"]:
+		dogru(dugme(ad) != null, "  menüde '%s' var" % ad)
+	bas("Ayarlar")
+	await kare(3)
+	var ayarlar := sahne().find_child("AyarlarPenceresi", true, false)
+	dogru(ayarlar != null, "Ayarlar penceresi açıldı")
+	bas("Hiz_Telaşlı")
+	esit(float(Oyun.ayar("saat_hizi")), 0.7, "  mesai saati hızı değişti")
+	bas("Hiz_Sakin")
+	esit(float(Oyun.ayar("saat_hizi")), 1.4, "  yavaşlatıldı")
+	var kademe: Control = ayarlar.find_child("Kademe_ses_efekt", true, false)
+	kademe.degisti.emit(0.3)
+	esit(float(Oyun.ayar("ses_efekt")), 0.3, "  efekt sesi kademeden ayarlandı")
+	dogru(absf(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Efekt")) - linear_to_db(0.3)) < 0.01, "  veriyoluna işlendi")
+	kademe.degisti.emit(0.0)
+	dogru(AudioServer.is_bus_mute(AudioServer.get_bus_index("Efekt")), "  sıfırda veriyolu susar")
+	bas("AyarKapat")
+	await kare(3)
+	dogru(sahne().find_child("AyarlarPenceresi", true, false) == null, "Ayarlar kapandı")
+	for anahtar: String in eski:
+		Oyun.ayar_degistir(anahtar, eski[anahtar])
+
+	# mola
+	dogru(not Oyun.mola_verilebilir(), "ana menüde mola verilmez")
+	var masa: Node = await _gune_git(1)
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.mesai_acik)
+	await bekle(0.3)
+	dogru(Oyun.mola_verilebilir(), "masada mola verilebilir")
+	Oyun.mola_ver()
+	await kare(3)
+	dogru(get_tree().paused and dugme("MolaDevam") != null, "mola: oyun durdu, menü açıldı")
+	var saat_once: float = masa.dakika
+	await bekle(0.5)
+	esit(masa.dakika, saat_once, "  molada saat işlemiyor")
+	bas("MolaAyarlar")
+	await kare(3)
+	dogru(dugme("AyarKapat") != null, "  moladan ayarlar açılıyor")
+	bas("AyarKapat")
+	await kare(3)
+	bas("MolaDevam")
+	await kare(3)
+	dogru(not get_tree().paused, "Gişeye Dön: oyun sürüyor")
+	await bekle(0.4)
+	dogru(masa.dakika > saat_once, "  saat yeniden işliyor")
+	Oyun.mola_ver()
+	await kare(3)
+	bas("MolaMenu")
+	bekle_dogru(await sahneyi_bekle("AnaMenu"), "moladan ana menüye dönüldü")
+	dogru(not get_tree().paused, "  oyun duraklatılmış kalmadı")
+	dogru(not dugme("Devam").disabled, "  sabahki kayıt duruyor: Devam açık")
 

@@ -57,6 +57,8 @@ var _mudur_odasi: Control
 var _mudur: CanliPortre
 var _denetim_seridi: Label
 var _saat_durdu := false                ## mektup gibi tam ekran bir kâğıt okunurken saat bekler
+var _ses_perdesi := 1.0                 ## camdaki vatandaşın ses perdesi (yaşa ve cinsiyete göre)
+var _tik_sayaci := 0.0
 
 
 func _ready() -> void:
@@ -71,6 +73,7 @@ func _ready() -> void:
 	saat.dakika = dakika
 	_kuyrugu_kur()
 	_araclari_ayarla()
+	_sesleri_bagla()
 	_genelgeyi_goster()
 
 
@@ -84,6 +87,11 @@ func _process(delta: float) -> void:
 		mesaiyi_bitir()
 	saat.dakika = dakika
 	_denetimi_guncelle()
+	# duvar saati: saniyede bir, kısık bir tık
+	_tik_sayaci += delta
+	if _tik_sayaci >= 1.0:
+		_tik_sayaci -= 1.0
+		Ses.cal("saat", 1.0 if int(dakika) % 2 == 0 else 0.86, -19.0)
 
 
 ## Gün, müdürün genelgesiyle başlar; "Gişeyi Aç" denince saat işlemeye ve vatandaş gelmeye başlar.
@@ -93,13 +101,14 @@ func _genelgeyi_goster() -> void:
 	_ust_katman.add_child(g)
 	g.ac(gun, Oyun.gun)
 	g.kapandi.connect(giseyi_ac)
+	g.harf_yazildi.connect(Ses.cal.bind("daktilo", 1.0, -11.0, 0.08, 0.045))
 
 
 func giseyi_ac() -> void:
 	if mesai_acik or gun_bitti:
 		return
 	mesai_acik = true
-	get_tree().create_timer(0.8).timeout.connect(_sonraki_vatandas)
+	Oyun.bekle(0.8).connect(_sonraki_vatandas)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -133,12 +142,14 @@ func _sonraki_vatandas() -> void:
 		return
 	if kuyruk.is_empty():
 		balon.sus()
-		get_tree().create_timer(1.0).timeout.connect(mesaiyi_bitir)
+		Oyun.bekle(1.0).connect(mesaiyi_bitir)
 		return
 	vatandas = kuyruk.pop_front()
 	tespitler.clear()
+	Ses.cal("zil", 1.0, -9.0)
+	_ses_perdesi = _perde_bul(str(vatandas.portre))
 	gise.gelsin(str(vatandas.portre))
-	await get_tree().create_timer(Gise.GELIS_SURESI + 0.1).timeout
+	await Oyun.bekle(Gise.GELIS_SURESI + 0.1)
 	if not mesai_acik:
 		return
 	if bool(vatandas.get("belgesiz", false)):
@@ -159,7 +170,7 @@ func _belgesiz_ziyaret() -> void:
 	for satir: String in z.get("satirlar", []):
 		balon.soyle(satir)
 		await balon.bitti
-		await get_tree().create_timer(1.1 + satir.length() * 0.03).timeout
+		await Oyun.bekle(1.1 + satir.length() * 0.03)
 		if not _ziyaret_suruyor(kod):
 			return
 	Hikaye.etki_uygula((z.get("etki", {}) as Dictionary).get("ziyaret", null))
@@ -178,14 +189,14 @@ func _belgesiz_ziyaret() -> void:
 		if is_instance_valid(zarf) and not zarf.sonuclandi:
 			zarf.geri_git()
 			balon.soyle(str((z.get("konusma", {}) as Dictionary).get("zarf_bekledi", "Düşünürsünüz.")), 1.4)
-		await get_tree().create_timer(1.6).timeout
+		await Oyun.bekle(1.6)
 		if not _ziyaret_suruyor(kod):
 			return
 	balon.sus()
 	gise.gitsin()
 	vatandas = {}
 	_fisi_goster()
-	await get_tree().create_timer(1.3).timeout
+	await Oyun.bekle(1.3)
 	_sonraki_vatandas()
 
 
@@ -204,6 +215,7 @@ func _mektubu_goster() -> void:
 	var kagit := Mektup.new()
 	katman.add_child(kagit)
 	kagit.kur(Hikaye.mektup())
+	Ses.cal("kagit", 0.85, -2.0)
 	kagit.position = Vector2(560, 120)
 	kagit.rotation = deg_to_rad(-2.0)
 	var kapat := Button.new()
@@ -235,11 +247,13 @@ func _zarfi_getir(gecikme: float) -> void:
 	zarf.alindi.connect(_zarf_alindi)
 	zarf.geri_itildi.connect(_zarf_geri_itildi)
 	zarf.gel(Yerlesim.GISE_YARIK, Yerlesim.ZARF_YERI, gecikme)
+	Ses.gecikmeli("kagit_kay", gecikme + 0.02, 0.85, -5.0)
 
 
 ## Zarf çekmeceye atıldı: para cebe girer, şüphe artar. Müdür izliyorsa para müsadere edilir.
 func _zarf_alindi(tutar: int) -> void:
 	var konusma: Dictionary = vatandas.get("konusma", {})
+	Ses.cal("zarf", 1.0, -3.0)
 	Hikaye.etki_uygula((vatandas.get("etki", {}) as Dictionary).get("zarf", null))
 	if denetimde:
 		Oyun.suphe += 1
@@ -276,6 +290,7 @@ func _belgeleri_getir() -> void:
 		yer += Vector2(randf_range(-4, 4), randf_range(-2, 2))
 		b.tutucu.yatis_acisi = deg_to_rad(randf_range(-1.0, 1.0))
 		b.gel(Yerlesim.GISE_YARIK, yer, 0.15 + i * 0.2)
+		Ses.gecikmeli("kagit_kay", 0.15 + i * 0.2, 1.0, -6.0, 0.08)
 		belgeler.append(b)
 		i += 1
 
@@ -286,23 +301,36 @@ func _vatandasi_ugurla(karar: String) -> void:
 	gise.tepki(karar)
 	if is_instance_valid(zarf) and not zarf.sonuclandi:
 		zarf.geri_git()            # dokunulmayan zarf sahibiyle birlikte gider
-	for b in belgeler:
-		b.kilitli = true
-	await get_tree().create_timer(0.7).timeout
+	_belgeleri_kilitle()
+	await Oyun.bekle(0.7)
 	balon.soyle(str(vatandas.konusma.get(karar, "")), 1.4)
 	inceleme.temizle()
 	kural_kitabi.isaretleri_temizle()
-	var i := 0
-	for b in belgeler:
-		b.git(Yerlesim.GISE_YARIK, 0.25 + i * 0.12)
-		i += 1
-	belgeler.clear()
-	await get_tree().create_timer(1.0).timeout
+	_belgeleri_gonder(0.25)
+	Ses.gecikmeli("kagit_kay", 0.25, 1.15, -8.0)
+	await Oyun.bekle(1.0)
 	gise.gitsin()
 	vatandas = {}
 	_fisi_goster()
-	await get_tree().create_timer(1.3).timeout
+	await Oyun.bekle(1.3)
 	_sonraki_vatandas()
+
+
+# Belgeler üzerindeki döngüler, bekleyen (await) işlevlerin dışında tutulur: beklerken oyundan
+# çıkılırsa döngü değişkeni belge betiğini bellekte asılı bırakıyor.
+
+func _belgeleri_kilitle() -> void:
+	for b in belgeler:
+		b.kilitli = true
+
+
+## Masadaki belgeleri sırayla yarıktan geri yollar.
+func _belgeleri_gonder(ilk_gecikme: float) -> void:
+	var i := 0
+	for b in belgeler:
+		b.git(Yerlesim.GISE_YARIK, ilk_gecikme + i * 0.12)
+		i += 1
+	belgeler.clear()
 
 
 # --- Kararlar ---
@@ -317,7 +345,7 @@ func _arac_birakildi(arac: Arac, konum: Vector2) -> void:
 		_gerekce_sor(b, konum)
 		return
 	karar_ver(arac.tur, b, konum)
-	get_tree().create_timer(0.16).timeout.connect(arac.eve_don)
+	Oyun.bekle(0.16).connect(arac.eve_don)
 
 
 ## "Eksik evrak" için gerekçe penceresini açar; seçilince karar verilir.
@@ -345,10 +373,14 @@ func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = ""
 	match karar:
 		"onay":
 			belge.iz_birak("onay", yerel, PackedStringArray(["ONAYLANMIŞTIR", "Ardıçlı Nüfus Md.", str(gun.get("tarih", ""))]))
+			Ses.cal("muhur", 1.0, 0.0, 0.04)
+			_sarsinti()
 		"eksik":
 			belge.iz_birak("eksik", yerel, _fis_satirlari(str(Dogrulayici.GEREKCELER.get(gerekce, "Eksik evrak"))))
+			Ses.cal("kagit", 1.0, -2.0, 0.08)
 		"havale":
 			belge.iz_birak("havale", yerel, PackedStringArray(["MÜDÜRE HAVALE", "Müdürlük makamına", "arz olunur."]))
+			Ses.cal("kagit", 0.9, -2.0, 0.08)
 			havale_kalan -= 1
 			(araclar["havale"] as Arac).kalan = havale_kalan
 
@@ -384,6 +416,7 @@ func _sonucu_isle(karar: String, d: Dictionary) -> void:
 		"dogru":
 			ozet.dogru += 1
 			ozet.kazanc += Oyun.PRIM
+			Ses.gecikmeli("prim", 0.5, 1.0, -12.0)
 			if bool(d.get("supheli_yakalandi", false)):
 				ozet.kazanc += Oyun.SUPHELI_PRIMI
 				_bekleyen_fis = {"cesit": "not", "metin": "Şüpheniz yerindeymiş; evrak sahte çıktı. Dikkatiniz sicilinize işlendi."}
@@ -411,6 +444,8 @@ func _sonucu_isle(karar: String, d: Dictionary) -> void:
 func _fisi_goster() -> void:
 	if _bekleyen_fis.is_empty():
 		return
+	if str(_bekleyen_fis.cesit) == "ihtar":
+		Ses.cal("ihtar", 1.0, -9.0)
 	teleks.yazdir(str(_bekleyen_fis.metin), gunluk_ihtar, str(_bekleyen_fis.cesit))
 	_bekleyen_fis = {}
 
@@ -469,19 +504,62 @@ func mesaiyi_bitir() -> void:
 			ozet.yarida += 1
 			balon.soyle("Saat beş mi oldu? Ama daha işim bitmemişti!", 1.6)
 		gise.tepki("eksik")
-		var i := 0
-		for b in belgeler:
-			b.git(Yerlesim.GISE_YARIK, 0.3 + i * 0.12)
-			i += 1
-		belgeler.clear()
+		_belgeleri_gonder(0.3)
 		vatandas = {}
-		await get_tree().create_timer(1.3).timeout
+		await Oyun.bekle(1.3)
 		gise.gitsin()
 	gise.kepengi_indir()
-	await get_tree().create_timer(1.9).timeout
+	Ses.cal("kepenk", 1.0, -2.0)
+	Ses.ortami_kes("radyo", 2.2)
+	await Oyun.bekle(1.9)
 	ozet.ihtar = gunluk_ihtar
 	Oyun.mesaiyi_kapat(ozet)
 	Oyun.sahneye_gec("gun_sonu")
+
+
+# --- Ses ve sarsıntı ---
+
+func _sesleri_bagla() -> void:
+	gise.efekt.connect(_gise_sesi)
+	teleks.satir_basildi.connect(Ses.cal.bind("teleks", 1.0, -5.0, 0.06))
+	teleks.fis_koptu.connect(func(_f: IhtarFisi) -> void: Ses.cal("yirt", 1.0, -3.0, 0.05))
+	kural_kitabi.sayfa_cevrildi.connect(Ses.cal.bind("sayfa", 1.0, -4.0, 0.06))
+	for a: Arac in araclar.values():
+		a.alindi.connect(func(_a: Arac) -> void: Ses.cal("tik", 0.8, -5.0))
+	Ses.yalniz(["radyo"])
+	Ses.ortam("radyo", -10.0, 2.5)
+
+
+## Camdaki vatandaştan gelen sesler: ayak sesi, konuşma heceleri, öfleme.
+func _gise_sesi(ad: String) -> void:
+	match ad:
+		"adim":
+			Ses.cal("adim", 1.0, -9.0, 0.12)
+		"hece":
+			Ses.cal("hece", _ses_perdesi, -8.0, 0.07)
+		"ofle":
+			Ses.cal("ofle", clampf(_ses_perdesi, 0.85, 1.25), -5.0)
+
+
+## Portrenin yaşına ve cinsiyetine göre konuşma perdesi; kişiden kişiye biraz oynar.
+func _perde_bul(portre: String) -> float:
+	var b := Portreler.bilgi(portre)
+	var yas := int(b.get("yas", 40))
+	var perde := 1.48 if str(b.get("cinsiyet", "E")) == "K" else 0.96
+	if yas <= 12:
+		perde = 1.9
+	elif yas >= 62:
+		perde *= 0.9
+	return perde + float(hash(portre) % 100) / 100.0 * 0.16 - 0.08
+
+
+## Mühür inince masa kısa bir an sarsılır.
+func _sarsinti(guc: float = 5.0) -> void:
+	var t := create_tween()
+	for i in 5:
+		var g := guc * (1.0 - i / 5.0)
+		t.tween_property(self, "position", Vector2(randf_range(-g, g), randf_range(-g * 0.3, g)), 0.028)
+	t.tween_property(self, "position", Vector2.ZERO, 0.04)
 
 
 # --- İnceleme modu ---
@@ -492,7 +570,12 @@ func _karsilastir(a: Hedef, b: Hedef) -> Dictionary:
 
 func _bulgu(sonuc: Dictionary) -> void:
 	var gerekce := str(sonuc.get("gerekce", ""))
-	if str(sonuc.get("durum", "")) == "uyusmaz" and gerekce != "" and not tespitler.has(gerekce):
+	var durum := str(sonuc.get("durum", ""))
+	if durum == "uyusmaz":
+		Ses.cal("tik", 0.55, 0.0)
+	elif durum == "uyumlu":
+		Ses.cal("tik", 1.5, -5.0)
+	if durum == "uyusmaz" and gerekce != "" and not tespitler.has(gerekce):
 		tespitler.append(gerekce)
 
 
@@ -668,6 +751,7 @@ func _denetimi_guncelle() -> void:
 		return
 	denetimde = simdi
 	_denetim_seridi.visible = simdi
+	Ses.cal("jaluzi", 1.0 if simdi else 0.85, -5.0)
 	if simdi:
 		_mudur_odasi.visible = true
 		_mudur.set_process(true)

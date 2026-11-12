@@ -14,6 +14,8 @@ var son: Dictionary = {}
 
 func _ready() -> void:
 	son = Hikaye.son(Oyun.son, Oyun.bayraklar)
+	Ses.yalniz(["ruzgar"])
+	Ses.ortam("ruzgar", -14.0, 2.0)
 	if ResourceLoader.exists(ARKA_PLAN):
 		var zemin := TextureRect.new()
 		zemin.texture = load(ARKA_PLAN)
@@ -53,6 +55,8 @@ func _ready() -> void:
 		k.modulate.a = 0.0
 		var t := create_tween()
 		t.tween_interval(0.25 + i * 0.45)
+		if not k is Button:
+			t.tween_callback(Ses.cal.bind("kagit", 0.9, -3.0, 0.08))
 		t.tween_property(k, "modulate:a", 1.0, 0.3)
 		t.parallel().tween_property(k, "position", hedef, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 

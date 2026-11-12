@@ -56,13 +56,86 @@ var ayarlar: Dictionary = VARSAYILAN_AYARLAR.duplicate()
 
 var _perde: ColorRect
 var _geciste := false
+var _katman: CanvasLayer
+var _mola: MolaMenusu
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().root.theme = Stil.tema()
+	get_tree().auto_accept_quit = false     # pencere kapanırken önce sesler susturulur (bkz. cik)
 	_perde_kur()
 	ayarlari_yukle()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		cik()
+
+
+## Oyundan çıkar: sesleri susturur, bir an bekleyip kapatır.
+func cik(kod: int = 0) -> void:
+	Ses.sustur()
+	get_tree().create_timer(0.25, true).timeout.connect(get_tree().quit.bind(kod))
+
+
+# --- Mola (ESC) ---
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F11:
+		ayar_degistir("tam_ekran", not bool(ayar("tam_ekran")))
+		get_viewport().set_input_as_handled()
+	elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F12:
+		ekran_goruntusu_al()
+		get_viewport().set_input_as_handled()
+	elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+		if is_instance_valid(_mola):
+			_mola.geri()
+			get_viewport().set_input_as_handled()
+		elif mola_verilebilir():
+			mola_ver()
+			get_viewport().set_input_as_handled()
+
+
+## F12: ekranın görüntüsünü kullanıcı klasörüne kaydeder (mağaza sayfası için). Yolu döndürür.
+func ekran_goruntusu_al() -> String:
+	if DisplayServer.get_name() == "headless":
+		return ""
+	var klasor := "user://ekran_goruntuleri"
+	DirAccess.make_dir_recursive_absolute(klasor)
+	var damga := Time.get_datetime_string_from_system().replace(":", "-").replace("T", "_")
+	var yol := "%s/nobetci_memur_%s.png" % [klasor, damga]
+	get_viewport().get_texture().get_image().save_png(yol)
+	print("Ekran görüntüsü kaydedildi: ", ProjectSettings.globalize_path(yol))
+	Ses.cal("daktilo", 0.8, -4.0)
+	return yol
+
+
+## Mola yalnızca oyunun içinde (masa, gün sonu, ev) verilir.
+func mola_verilebilir() -> bool:
+	var sahne := get_tree().current_scene
+	return not _geciste and sahne != null and str(sahne.name) in ["Masa", "GunSonu", "Aile"]
+
+
+func mola_ver() -> void:
+	if is_instance_valid(_mola):
+		return
+	get_tree().paused = true
+	_mola = MolaMenusu.new()
+	_katman.add_child(_mola)
+	_katman.move_child(_mola, 0)        # geçiş perdesi her şeyin üstünde kalır
+	_mola.devam_edildi.connect(molayi_bitir)
+	_mola.menuye_donuldu.connect(func() -> void:
+		molayi_bitir()
+		Ses.yalniz([])
+		sahneye_gec("menu"))
+
+
+func molayi_bitir() -> void:
+	if is_instance_valid(_mola):
+		_mola.queue_free()
+	_mola = null
+	get_tree().paused = false
 
 
 # --- Oyun akışı ---
@@ -141,6 +214,19 @@ func oyunu_bitir(sonuc: Dictionary) -> void:
 	sahneye_gec("son")
 
 
+## Gecikme: `await Oyun.bekle(0.5)`. Oyun duraklatılınca sayaç da durur; bekleyen sahne kapanırsa
+## sayaç sessizce biter (SceneTreeTimer'ın aksine çıkışta artık bırakmaz).
+func bekle(sure: float) -> Signal:
+	var t := Timer.new()
+	t.one_shot = true
+	t.wait_time = maxf(0.001, sure)
+	t.process_mode = Node.PROCESS_MODE_PAUSABLE
+	add_child(t)
+	t.timeout.connect(t.queue_free)
+	t.start()
+	return t.timeout
+
+
 func bayrak(ad: String, yedek: Variant = false) -> Variant:
 	return bayraklar.get(ad, yedek)
 
@@ -209,7 +295,7 @@ func yukle() -> bool:
 
 func kaydi_sil() -> void:
 	if kayit_var_mi():
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(kayit_yolu))
+		DirAccess.remove_absolute(kayit_yolu)
 
 
 # --- Ayarlar (user://ayarlar.json) ---
@@ -263,17 +349,16 @@ func sahneye_gec(ad: String) -> void:
 		return
 	_geciste = true
 	_perde.mouse_filter = Control.MOUSE_FILTER_STOP
-	var kapan := create_tween()
-	kapan.tween_property(_perde, "color:a", 1.0, 0.22)
-	await kapan.finished
-	get_tree().change_scene_to_file(SAHNELER[ad])
-	await get_tree().process_frame
-	await get_tree().process_frame
-	var acil := create_tween()
-	acil.tween_property(_perde, "color:a", 0.0, 0.28)
-	await acil.finished
-	_perde.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_geciste = false
+	# Tek bir geçiş zinciri: karar, sahneyi değiştir, aç. (Bekleyen bir eşyordam kullanılmaz;
+	# geçişin ortasında oyundan çıkılırsa geçiş nesnesi bellekte asılı kalmasın.)
+	var t := create_tween()
+	t.tween_property(_perde, "color:a", 1.0, 0.22)
+	t.tween_callback(get_tree().change_scene_to_file.bind(SAHNELER[ad]))
+	t.tween_interval(0.06)
+	t.tween_property(_perde, "color:a", 0.0, 0.28)
+	t.tween_callback(func() -> void:
+		_perde.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_geciste = false)
 
 
 func geciste_mi() -> bool:
@@ -284,6 +369,7 @@ func _perde_kur() -> void:
 	var katman := CanvasLayer.new()
 	katman.layer = 100
 	add_child(katman)
+	_katman = katman
 	_perde = ColorRect.new()
 	_perde.color = Color(Stil.GECE, 0.0)
 	_perde.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)

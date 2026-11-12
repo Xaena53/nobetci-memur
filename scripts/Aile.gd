@@ -37,6 +37,7 @@ func _ready() -> void:
 	kalemler = AileDurumu.masraflar(Oyun.aile, Oyun.gun)
 	for k in kalemler:
 		secili[str(k.kod)] = false
+	Ses.yalniz(["soba", "ruzgar"])
 	_odayi_kur()
 	_defteri_kur()
 	_guncelle()
@@ -67,7 +68,8 @@ func sec(kod: String, acik: bool) -> bool:
 
 
 func _tikla(kod: String) -> void:
-	sec(kod, not bool(secili.get(kod, false)))
+	if sec(kod, not bool(secili.get(kod, false))):
+		Ses.cal("kalem", 1.0, -3.0, 0.08)
 
 
 # --- Gece ---
@@ -84,6 +86,16 @@ func _lambayi_sondur() -> void:
 	if Oyun.gun == 6:
 		Oyun.bayraklar["savci"] = Hikaye.savci_akibeti(Oyun.bayraklar)
 	gece["olay"] = Hikaye.gece(Oyun.gun, Oyun.bayraklar) if str(gece.get("son", "")) == "" else ""
+	Ses.ortami_kes("soba", 1.5)
+	Ses.ortam("ruzgar", -13.0, 1.5)
+	if str(gece.olay) != "":
+		# gecenin sesi: üçüncü gece patlama, altıncı gece silah sesleri
+		if Oyun.gun == 3:
+			Ses.gecikmeli("patlama", 1.1, 1.0, 0.0)
+		elif Oyun.gun == 6 and str(Oyun.bayrak("savci", "")) != "sag":
+			var el := 3 if str(Oyun.bayrak("savci", "")) == "oldu" else 2
+			for i in el:
+				Ses.gecikmeli("silah", 1.1 + i * 0.62, 1.0 - i * 0.03, -2.0)
 	_geceyi_goster()
 
 
@@ -400,6 +412,14 @@ func _guncelle() -> void:
 	_sofra.queue_redraw()
 	var isinacak := bool(secili.get("komur", false))
 	var hedef := 0.0 if isinacak else 0.20
+	if _yat != null and not _yat.disabled:
+		# soba yanınca çıtırtı, yanmayınca dışarıdaki rüzgâr duyulur
+		if isinacak:
+			Ses.ortam("soba", -3.0, 0.8)
+			Ses.ortami_kes("ruzgar", 1.2)
+		else:
+			Ses.ortam("ruzgar", -11.0, 1.2)
+			Ses.ortami_kes("soba", 0.6)
 	var t := create_tween()
 	t.tween_property(_soguk, "color:a", hedef, 0.4)
 	# hasta ya da üşüyen aile üyesi solgun ve durgun görünür

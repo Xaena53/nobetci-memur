@@ -93,7 +93,7 @@ func _goster(a: Hedef, b: Hedef, sonuc: Dictionary) -> void:
 					h.durum = Hedef.Durum.UYUMLU
 			# Düğümleri değil kimliklerini yakala: belge bu arada masadan kalkmış olabilir.
 			var kimlikler := [a.get_instance_id(), b.get_instance_id()]
-			get_tree().create_timer(1.6).timeout.connect(func() -> void:
+			Oyun.bekle(1.6).connect(func() -> void:
 				for k: int in kimlikler:
 					var h := instance_from_id(k) as Hedef
 					if h != null and h.durum == Hedef.Durum.UYUMLU:

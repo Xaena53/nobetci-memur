@@ -12,14 +12,19 @@ config_version=5
 
 config/name="Nöbetçi Memur"
 config/description="1984, Ardıçlı İlçesi Nüfus Müdürlüğü. Gişede evrak kontrol oyunu."
-config/version="0.1.0"
+config/version="1.0.0"
 run/main_scene="res://scenes/AnaMenu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
+boot_splash/bg_color=Color(0.121569, 0.105882, 0.0901961, 1)
+boot_splash/image="res://icon.png"
+boot_splash/fullsize=false
+boot_splash/use_filter=true
 
 [autoload]
 
 Oyun="*res://scripts/Oyun.gd"
+Ses="*res://scripts/Ses.gd"
 
 [display]
 

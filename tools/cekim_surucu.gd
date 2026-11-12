@@ -14,7 +14,7 @@ func _calistir() -> void:
 	else:
 		print("Bilinmeyen senaryo: ", senaryo)
 	Oyun.kaydi_sil()
-	get_tree().quit()
+	Oyun.cik()
 
 
 func cek(ad: String) -> void:
@@ -28,7 +28,7 @@ func cek(ad: String) -> void:
 
 func _senaryo_akis() -> void:
 	Oyun.kaydi_sil()
-	Oyun.sahneye_gec("menu")
+	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")
 	await cek("00_menu")
 	bas("YeniOyun")
@@ -69,7 +69,7 @@ func _senaryo_akis() -> void:
 func _senaryo_masa() -> void:
 	Oyun.yeni_oyun()
 	Oyun.gun = int(_arg("gun", "1"))
-	Oyun.sahneye_gec("masa")
+	await sahneye_git("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
 	bas("GiseyiAc")
@@ -128,7 +128,7 @@ func _senaryo_masa() -> void:
 func _senaryo_portre() -> void:
 	Oyun.yeni_oyun()
 	Oyun.gun = int(_arg("gun", "1"))
-	Oyun.sahneye_gec("masa")
+	await sahneye_git("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
 	bas("GiseyiAc")
@@ -182,7 +182,7 @@ func _senaryo_portre() -> void:
 ## Ağız denemesi: belirli portrelerde kapalı / yarı açık / tam açık ağız (kareler a_*.png).
 func _senaryo_agiz() -> void:
 	Oyun.yeni_oyun()
-	Oyun.sahneye_gec("masa")
+	await sahneye_git("masa")
 	await sahneyi_bekle("Masa")
 	var masa := sahne()
 	bas("GiseyiAc")
@@ -295,7 +295,7 @@ func _senaryo_hikaye() -> void:
 	Oyun.para = 1400
 	Oyun.bayraklar = {"nermin": "kayirildi"}
 	Oyun.aile["ikram"] = true
-	Oyun.sahneye_gec("aile")
+	await sahneye_git("aile")
 	await sahneyi_bekle("Aile")
 	await bekle(1.0)
 	await cek("h_08_ev")
@@ -313,7 +313,7 @@ func _senaryo_hikaye() -> void:
 	Oyun.aile["saglik"] = {"anne": 1, "elif": 2, "can": 0}
 	Oyun.aile["kira_borcu"] = 2
 	Oyun.bayraklar = {"kasap": "yakalandi", "naciye": "gecti", "savci_tanisti": true}
-	Oyun.sahneye_gec("aile")
+	await sahneye_git("aile")
 	await sahneyi_bekle("Aile")
 	await bekle(1.0)
 	await cek("h_10_ev_hasta")
@@ -332,16 +332,54 @@ func _senaryo_hikaye() -> void:
 	Oyun.toplam = {"islenen": 61, "dogru": 52, "yanlis": 4, "kazanc": 7400}
 	Oyun.bayraklar = {"savci": "sag", "husnu_onay": 7, "mektup": true, "tarik_sonuc": "ovgu"}
 	Oyun.son = {"tur": "terfi", "neden": "basari"}
-	Oyun.sahneye_gec("son")
+	await sahneye_git("son")
 	await sahneyi_bekle("Son")
 	await bekle(3.0)
 	await cek("h_12_son_terfi")
 	Oyun.bayraklar = {"savci": "oldu", "husnu_onay": -1}
 	Oyun.suphe = 5
 	Oyun.son = {"tur": "surgun", "neden": "suphe"}
-	Oyun.sahneye_gec("menu")
+	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")
-	Oyun.sahneye_gec("son")
+	await sahneye_git("son")
 	await sahneyi_bekle("Son")
 	await bekle(3.0)
 	await cek("h_13_son_surgun")
+
+
+## Cila ekranları: ana menü, ayarlar, mola (c_*.png).
+func _senaryo_cila() -> void:
+	Oyun.kaydi_sil()
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	await bekle(0.9)
+	await cek("c_01_menu_yazarken")
+	await bekle(2.6)
+	await cek("c_02_menu")
+	bas("Ayarlar")
+	await bekle(0.6)
+	await cek("c_03_ayarlar")
+	bas("AyarKapat")
+	var masa: Node = await _gune_git(2)
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul)
+	await bekle(1.2)
+	Oyun.mola_ver()
+	await bekle(0.6)
+	await cek("c_04_mola")
+	Oyun.molayi_bitir()
+	await bekle(0.2)
+
+
+## Konuşma canlandırması: Hüsnü Amca konuşurken gişe bölgesinden art arda kareler (k_*.png).
+func _senaryo_konusma() -> void:
+	var masa: Node = await _gune_git(1)
+	_one_al(masa, "husnu1")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.gise.portre.konusuyor, 10.0)
+	for i in 54:
+		await kare(1)
+		await RenderingServer.frame_post_draw
+		var g := get_viewport().get_texture().get_image().get_region(Rect2i(0, 0, 660, 330))
+		g.save_png(ProjectSettings.globalize_path(CIKTI + "k_%02d.png" % i))
+	print("çekildi: k_00..k_53")

@@ -69,25 +69,30 @@ func _siradakini_bas() -> void:
 	_kirpma.add_child(fis)
 	fis.position = Vector2(10.0, -fis.size.y)
 
-	await get_tree().create_timer(0.35).timeout
+	await Oyun.bekle(0.35)
 	for adim: float in fis.adimlar:
 		if not is_instance_valid(fis):
 			break
 		satir_basildi.emit()
-		var t := create_tween()
-		t.tween_property(fis, "position:y", fis.position.y + adim, SURME_SURESI)
-		await get_tree().create_timer(VURUS_ARASI).timeout
+		_fisi_sur(fis, adim)
+		await Oyun.bekle(VURUS_ARASI)
 	if not is_instance_valid(fis):
 		_siradakini_bas()
 		return
 	# Kopar: pusula masada kendi yerine geçer.
-	await get_tree().create_timer(0.25).timeout
+	await Oyun.bekle(0.25)
 	var orta := _yarik_masa + Vector2(0, fis.position.y + fis.size.y / 2.0)
 	fis.masaya_birak(_fis_katmani, orta, _igne_yeri)
 	_masadaki = fis
 	fis_koptu.emit(fis)
-	await get_tree().create_timer(0.4).timeout
+	await Oyun.bekle(0.4)
 	_siradakini_bas()
+
+
+## Kâğıdı bir satır aşağı sürer. (Geçiş nesnesi, bekleyen işlevin yerel değişkeninde tutulmaz.)
+func _fisi_sur(fis: IhtarFisi, adim: float) -> void:
+	var t := create_tween()
+	t.tween_property(fis, "position:y", fis.position.y + adim, SURME_SURESI)
 
 
 func _process(delta: float) -> void:
