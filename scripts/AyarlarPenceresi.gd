@@ -126,7 +126,7 @@ func _ses_degisti(deger: float, anahtar: String) -> void:
 	if anahtar == "ses_radyo":
 		Ses.cal("zil", 1.0, -10.0)
 	else:
-		Ses.cal("muhur", 1.0, -4.0)
+		Ses.cal("muhur", 1.0, -5.0)
 
 
 func _hiz_secildi(hiz: float) -> void:

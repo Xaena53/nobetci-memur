@@ -38,6 +38,7 @@ func _ready() -> void:
 	for k in kalemler:
 		secili[str(k.kod)] = false
 	Ses.yalniz(["soba", "ruzgar"])
+	Ses.muzik(["ney"], -13.0, false, 3.0)      # akşam: uzaktan bir ney
 	_odayi_kur()
 	_defteri_kur()
 	_guncelle()
@@ -87,6 +88,7 @@ func _lambayi_sondur() -> void:
 		Oyun.bayraklar["savci"] = Hikaye.savci_akibeti(Oyun.bayraklar)
 	gece["olay"] = Hikaye.gece(Oyun.gun, Oyun.bayraklar) if str(gece.get("son", "")) == "" else ""
 	Ses.ortami_kes("soba", 1.5)
+	Ses.muzigi_kes(1.5)
 	Ses.ortam("ruzgar", -13.0, 1.5)
 	if str(gece.olay) != "":
 		# gecenin sesi: üçüncü gece (ve bavul kaçtıysa yedinci gece) patlama, altıncı gece silah sesleri

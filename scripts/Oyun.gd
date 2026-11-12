@@ -120,7 +120,7 @@ func ekran_goruntusu_al() -> String:
 	var yol := "%s/nobetci_memur_%s.png" % [klasor, damga]
 	get_viewport().get_texture().get_image().save_png(yol)
 	print("Ekran görüntüsü kaydedildi: ", ProjectSettings.globalize_path(yol))
-	Ses.cal("daktilo", 0.8, -4.0)
+	Ses.cal("daktilo", 0.8, -8.0)
 	return yol
 
 

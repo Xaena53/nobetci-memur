@@ -21,7 +21,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.1.0 |
+| Sürüm | 1.2.0 |
 
 ---
 
@@ -60,6 +60,40 @@ Her gün müdürün genelgesiyle başlar. Genelgeyi okuyup **Gişeyi Aç**'a bas
 
 Doğru karar prim kazandırır. Yanlış kararda masadaki teleks çalışır ve müdürün ihtarı satır satır
 basılır. Günde üçüncü ihtardan itibaren maaşınız kesilir.
+
+### Görev şekli
+
+![Yeni oyunda görev şekli seçimi: Kolay, Orta, Zor](docs/img/15_gorev_sekli.jpg)
+
+Yeni oyuna başlarken üç görev şeklinden biri seçilir; seçim kayıtla birlikte saklanır.
+
+| Şekil | İnceleme modu | Saat | Sahtecilik |
+|---|---|---|---|
+| **Kolay** | Her karşılaştırmanın sonucu söylenir | Ağır işler | Göze batar |
+| **Orta** | Günde üç ipucu hakkı; balona tıklayınca sonuç açılır | Olağan | Olağan |
+| **Zor** | İpucu yok; çizgi çekilir, karar sizindir | Olağan | Bir kademe daha ince |
+
+### Bilgi defteri ve sahte evrak
+
+![Bilgi defteri: gerçek muhtarlık mührü ve emniyetin ele geçirdiği altı sahte örnek](docs/img/13_defter.jpg)
+
+Dördüncü günden itibaren masada bir **bilgi defteri** durur; çift tıklayınca açılır. Dört yaprağı
+vardır: muhtarlık mührü, muhtarların imza sirküleri, vezne ve konsolosluk kaşeleri, çalışma vizesi.
+Her yaprakta gerçeğin özellikleri ve emniyetin ele geçirdiği sahte örnekler yan yana durur.
+
+Evraktaki mühür, imza ya da kaşe defterdeki örneğe uymuyorsa evrak sahtedir: mürekkebin rengi
+yanlıştır, mühür oval basılmıştır, yıldızı ya da iç halkası yoktur, yazısında bir harf eksiktir,
+başka ilçenin mührüdür ya da imza o mahallenin muhtarına ait değildir. Sahte evrak geri çevrilmez,
+**müdüre havale** edilir.
+
+### Çalışma vizesi
+
+![Çalışma vizesi: numara, konsolosluk kaşesi, cüzdan seri numarası, hamilin imzası](docs/img/14_vize.jpg)
+
+Altıncı günden itibaren gişeye yurt dışına işçi gidenler de gelir. **Yurt dışı çıkış kaydı** için
+dördüncü bir belge aranır: çalışma vizesi. Vizenin numarası geçerli aralıkta, konsolosluk kaşesi
+gerçek, süresi dolmamış olmalı; üstündeki seri numarası, doğum tarihi ve imza cüzdandakiyle aynı
+olmalıdır.
 
 ### Fotoğraf eskidir, yüz aynıdır
 
@@ -112,7 +146,12 @@ kurutma makinesi tabancaya, sucuk dinamite, bir bağ mum patlayıcıya benzer.
 
 Vatandaşlar camın ardında yürüyerek gelir, konuşur, beklerken nefes alır ve göz kırpar. Sabırları
 taşınca öfleyip pöflerler. Kararınıza sevinir, üzülür ya da şaşırırlar. Konuşma, her yüz için ayrı
-ayrı boyanmış ağız kareleriyle canlandırılır.
+ayrı boyanmış ağız kareleriyle canlandırılır; sesi kısa, anlaşılmaz bir mırıltıdır ve kişinin yaşına,
+cinsiyetine göre incelip kalınlaşır.
+
+Kuyruk her gün başka insanlardan oluşur. Oyunda hikâye kişileriyle birlikte **89 ayrı yüz** vardır;
+her yüz kalıcı bir kişidir: adı, ana ve baba adı, doğum yeri ve tarihi, imzası hep aynıdır. Cüzdanda
+sahibinin imzası durur.
 
 ### Müdür izliyor
 
@@ -145,7 +184,9 @@ Gişeye rastgele vatandaşların arasında, hikâyenin kişileri de gelir:
 - Dördüncü günden itibaren genelge defterinde emniyetin aradığı iki kişinin eski resimleri
   durur. Onları gişede tanırsanız yapılacak tek şey müdüre havale etmektir. Çantaları da bir şey
   söyler: birinin torbasında satır, ötekinin el çantasında dikiş makasından fazlası vardır.
-- Son gün **bavullu bir genç** gelir; bavulunu arşivin yanına bırakmak ister.
+- Altıncı gün **tarlasını satıp vize alan bir genç** gelir; vizesindeki kaşe defterdekine benzemez.
+- Son gün vizesinin süresi bir gün önce dolmuş **bir dökümcü ustası** ve **bavullu bir genç** gelir;
+  genç, bavulunu arşivin yanına bırakmak ister.
 
 ![Aranan şahıs yakalanınca teleksten çıkan müdür notu](docs/img/08_teleks_notu.jpg)
 
@@ -165,19 +206,22 @@ Kurallar birikir: bir gün konan kural sonraki günlerde de geçerlidir.
 | 1 | 9 Ocak Pzt | 8 kişi | Nüfus cüzdanı ve ikametgâh ilmühaberi aranır. Ad ve soyad bütün belgelerde aynı olmalı. İlmühaber son 6 ay içinde alınmış olmalı. |
 | 2 | 10 Ocak Sal | 9 | İlmühaberde muhtarın mührü ve imzası olmalı. Baba adı bütün belgelerde aynı olmalı. Müdür denetimi başlar. |
 | 3 | 11 Ocak Çar | 10 | Harç makbuzu aranır; tutar tarifeye uymalı (kayıt örneği 250, cüzdan yenileme 1.250, nakil 750 TL). |
-| 4 | 12 Ocak Per | 10 | Seri numarası geçerli aralıkta olmalı (A-100000 – A-499999). Fotoğraf başvurana ait olmalı. Arananlar listesi. |
+| 4 | 12 Ocak Per | 10 | Seri numarası geçerli aralıkta olmalı (A-100000 – A-499999). Fotoğraf başvurana ait olmalı. Mühür, imza ve kaşeler bilgi defterindeki örneklere uymalı. Arananlar listesi. |
 | 5 | 13 Ocak Cum | 11 | Harç zammı (300 / 1.500 / 900 TL). Makbuz en çok 3 günlük olmalı. Röntgen cihazı: ateşli silah, mermi ve patlayıcı yasak. |
-| 6 | 16 Ocak Pzt | 12 | İlmühaber ilçeye bağlı bir mahalleden alınmış olmalı (Dere ve Değirmen çıkarıldı). B serisi cüzdanlar da geçerli. Bıçak, kama ve satır da yasak. |
-| 7 | 17 Ocak Sal | 12 | Teftiş günü. İlmühaberin geçerlilik süresi 3 aya iner. |
+| 6 | 16 Ocak Pzt | 12 | İlmühaber ilçeye bağlı bir mahalleden alınmış olmalı (Dere ve Değirmen çıkarıldı). B serisi cüzdanlar da geçerli. Yeni işlem: yurt dışı çıkış kaydı (harcı 2.000 TL); çalışma vizesi aranır. |
+| 7 | 17 Ocak Sal | 12 | Teftiş günü. İlmühaberin geçerlilik süresi 3 aya iner. Röntgende bıçak, kama ve satır da yasak. |
 
 Röntgen günlerinde vatandaşların yaklaşık yüzde 45'i çantayla gelir; çantaların üçte birine
 yakınında yasak bir eşya, yarıdan fazlasında yanıltıcı bir eşya bulunur.
 
-Vatandaşların yaklaşık yüzde 40–50'si kusurlu evrakla gelir; oran günden güne artar. Kusurlar dokuz türdür: eksik belge, uyuşmayan
-ad-soyad, uyuşmayan baba adı, süresi geçmiş belge, eksik mühür ya da imza, yanlış harç, geçersiz
-seri numarası, başkasına ait fotoğraf, ilçeye bağlı olmayan mahalle.
+Vatandaşların yaklaşık yüzde 40–50'si kusurlu evrakla gelir; oran günden güne artar. Kusurlar:
+eksik belge, uyuşmayan ad-soyad, uyuşmayan baba adı, süresi geçmiş belge, eksik mühür ya da imza,
+yanlış harç, geçersiz seri numarası, başkasına ait fotoğraf, ilçeye bağlı olmayan mahalle; dördüncü
+günden itibaren sahte mühür, başkasının attığı imza ve sahte vezne kaşesi; altıncı günden itibaren
+vizenin numarası, kaşesi, süresi, kimlik bilgileri ve imzası.
 
-Seri numarası ve fotoğraf kusurları sahtecilik sayılır: bunları müdüre havale etmek ek prim getirir.
+Seri numarası, fotoğraf ve sahte mühür, imza, kaşe kusurları sahtecilik sayılır: bunları müdüre
+havale etmek ek prim getirir.
 
 ---
 
@@ -278,14 +322,16 @@ Yayın belgeleri `docs/` klasöründedir:
 ```
 scenes/            Sahneler: AnaMenu, Masa, GunSonu, Aile, Son (+ belgeler/, UreticiTesti)
 scripts/           Oyun kodu (aşağıda)
-data/              İçerik: günler, adlar, portre künyeleri, karakterler, hikâye (JSON)
+data/              İçerik: günler, adlar, portre künyeleri, vatandaşların sabit kimlikleri, karakterler,
+                   hikâye, eşyalar (JSON)
 assets/img/        Arka planlar, portreler (+ ağız kareleri, vesikalıklar, aranan resimleri), nesneler,
-                   kâğıt dokuları, röntgen (cihaz, çanta kabukları, eşyalar), imzalar
-assets/ses/        Sentezlenmiş efektler (.wav) ve döngülü ortam sesleri (.ogg)
+                   kâğıt dokuları, röntgen (cihaz, çanta kabukları, eşyalar), imzalar, mühür ve kaşeler
+assets/ses/        Gerçek kayıtlardan kesilmiş efektler (.wav), döngülü ortam sesleri (.ogg),
+                   muzik/ altında çalgı müzikleri; künyeler KAYNAKLAR.md içinde
 assets/font/       Courier Prime, Old Standard TT, Caveat (+ lisans metinleri)
 assets/shader/     portre.gdshader (canlı portre), foto.gdshader (vesikalık baskı),
                    rontgen_esya.gdshader ve rontgen_ekran.gdshader (röntgen görüntüsü)
-tools/             Testler, ekran görüntüsü düzeneği, görsel ve ses üretim betikleri
+tools/             Testler, ekran görüntüsü düzeneği, görsel hazırlama ve ses derleme betikleri
 docs/              Yayın belgeleri ve README görselleri
 ```
 
@@ -297,7 +343,7 @@ akışı: `Ana Menü → Masa (09:00–17:00) → Gün Sonu → Aile → ertesi 
 | Dosya | Görev |
 |---|---|
 | `Oyun.gd` (autoload) | Oyun durumu (gün, para, ihtar, şüphe, bayraklar), kayıt, ayarlar, sahne geçişi, mola |
-| `Ses.gd` (autoload) | Efektler ve ortam sesleri; ses veriyolları |
+| `Ses.gd` (autoload) | Efektler (çok kayıtlı olanlardan her seferinde biri), ortam sesleri, müzik çalma listesi, radyo tınısı |
 | `Masa.gd` | Mesai: kuyruk, belgeler, kararlar, teleks, zarf, müdür denetimi, çanta denetimi |
 | `Rontgen.gd` | Röntgen cihazı: çantanın görüntüsünü kurar, görüntü kipleri, geçir / alarm düğmeleri |
 | `Canta.gd` | Çanta ve eşya kataloğu, rastgele çanta üretimi, günün yasakları |
@@ -306,7 +352,10 @@ akışı: `Ana Menü → Masa (09:00–17:00) → Gün Sonu → Aile → ertesi 
 | `VatandasUretici.gd` | Tutarlı vatandaş ve evrak üretir; istenen kusuru enjekte eder |
 | `Hikaye.gd` | Hikâye karakterleri, koşullar, etkiler, gazete, akşam ve gece metinleri, sonlar |
 | `AileDurumu.gd`, `Aile.gd` | Evin ekonomisi ve sağlık; akşam sahnesi |
-| `belgeler/Belge.gd` (+ üç belge) | Sürükleme, büyütme, inceleme hedefleri, karar izleri |
+| `belgeler/Belge.gd` (+ dört belge) | Sürükleme, büyütme, inceleme hedefleri, karar izleri; dördüncü belge çalışma vizesi |
+| `belgeler/BilgiDefteri.gd` | Masadaki bilgi defteri: mühür, imza, kaşe ve vize yaprakları; örnekler inceleme hedefidir |
+| `Damga.gd` | Mühür ve kaşeler: gerçek ve sahte çeşitleri, mürekkep rengi |
+| `IncelemeKatmani.gd` | İnceleme modu: karşılaştırma çizgisi, sonuç balonu, ipucu hakkı |
 | `Perspektif.gd`, `MasaNesnesi.gd` | Masanın perspektifi: nesneler masada yatar, ele alınınca düzleşir |
 | `CanliPortre.gd` | Nefes, göz kırpma, konuşma, yürüyüş, tepkiler |
 | `Teleks.gd`, `IhtarFisi.gd` | İhtar, uyarı ve notların satır satır basılması |
@@ -315,7 +364,8 @@ akışı: `Ana Menü → Masa (09:00–17:00) → Gün Sonu → Aile → ertesi 
 | `GunSonu.gd`, `Son.gd` | Günlük puantaj; oyun sonu gazetesi |
 | `AnaMenu.gd`, `AyarlarPenceresi.gd`, `MolaMenusu.gd` | Menüler; ana menüde baca dumanı ve cızırdayan sokak lambası |
 | `Kar.gd` | Üç katmanlı, rüzgârla savrulan kar yağışı |
-| `Imza.gd` | Kişiye özel imzalar: müdür, muhtarlar, veznedar |
+| `Imza.gd` | Kişiye özel imzalar: müdür, muhtarlar, veznedar, vize memuru ve bütün vatandaşlar |
+| `Serit.gd` | Masadaki kabartma şerit etiketler |
 | `Stil.gd`, `Yerlesim.gd` | Renkler ve yazı tipleri; ekran yerleşimi sabitleri |
 
 ## İçerik eklemek
@@ -324,7 +374,8 @@ Oyunun içeriği veridir; kod değiştirmeden genişletilebilir.
 
 - **Yeni gün ya da kural:** `data/gunler/gunN.json`. Kural türleri: `belge_zorunlu`, `alan_esit`,
   `tarih_sure`, `muhur_zorunlu`, `harc_tutar`, `seri_aralik`, `foto_eslesme`, `mahalle_listesi`,
-  `arananlar`, `canta_kontrol` (`yasak`: o gün yasak eşya sınıfları). `denetim` alanı müdürün
+  `arananlar`, `sahtecilik`, `vize` (`islem`: vize aranan işlem; `no`: geçerli numara aralığı),
+  `canta_kontrol` (`yasak`: o gün yasak eşya sınıfları). `denetim` alanı müdürün
   izlediği saat aralıklarını (dakika), `canta_orani` çantayla gelenlerin, `yasak_orani` yasak eşya
   taşıyan çantaların oranını verir.
 - **Yeni eşya ya da çanta:** `data/esyalar.json`. Her eşyanın boyu, röntgendeki yoğunluğu, sınıfı
@@ -337,6 +388,12 @@ Oyunun içeriği veridir; kod değiştirmeden genişletilebilir.
 - **Gazete, akşam ve gece metinleri, sonlar:** `data/hikaye.json`. Her kayıt bir `kosul` taşıyabilir;
   koşulu tutan ilk kayıt kullanılır.
 - **İsimler ve replikler:** `data/adlar.json`.
+- **Yeni yüz:** portresi, vesikalığı ve ağız kareleri `assets/img/portre/` altına, künyesi
+  `data/portreler.json` dosyasına, sabit kimliği `data/vatandaslar.json` dosyasına, imzası
+  `assets/img/imza/` altına eklenir (`tools/sanat/yeni_havuz.py`, `kadro.py`, `imzalar.py`).
+- **Yeni ses:** `tools/ses/kaynaklar.json` dosyasına kaynağı ve kesim tarifi yazılır,
+  `python tools/ses/topla.py <ad>` çalıştırılır. `ad_2`, `ad_3` diye adlandırılan kayıtlar aynı
+  efektin çeşitlemeleri sayılır.
 
 Yeni bir kural türü eklenirse üç yer güncellenir: `Dogrulayici.kontrol` (denetim),
 `VatandasUretici.kusur_uygula` (kusurun üretimi) ve `Dogrulayici.karsilastir` (inceleme modu).
@@ -345,7 +402,7 @@ Yeni bir kural türü eklenirse üç yer güncellenir: `Dogrulayici.kontrol` (de
 ## Testler
 
 ```bash
-godot --headless --path . res://tools/DumanTesti.tscn              # 330 denetim
+godot --headless --path . res://tools/DumanTesti.tscn              # 408 denetim
 godot --headless --path . res://scenes/UreticiTesti.tscn -- --cik  # 7 gün × 100 vatandaş
 godot --headless --path . res://tools/TamOyun.tscn                 # yedi gün baştan sona
 ```
@@ -353,7 +410,9 @@ godot --headless --path . res://tools/TamOyun.tscn                 # yedi gün b
 - **Duman testi** sahneleri kodla gezer: gün döngüsü, maaş ve aile hesabı, kural motoru, belge
   sürükleme (gerçek fare olaylarıyla), hikâyedeki her ziyaretin kusuru, zarf, denetim, arananlar,
   mektup, sonlar, menü, ayarlar, mola; vesikalıklar ve benzerlik listeleri, 450 rastgele çanta,
-  röntgen akışı (geçirme, yerinde alarm, boş alarm, kaçan bavul).
+  röntgen akışı (geçirme, yerinde alarm, boş alarm, kaçan bavul); görev şekilleri ve ipucu hakkı,
+  bilgi defteri, sahte mühür, imza ve kaşeler, çalışma vizesi; ses dosyaları, çok kayıtlı efektler
+  ve müzik çalma listesi.
 - **Üretici testi** her gün için 100 vatandaş üretir; üreticinin koyduğu kusur ile doğrulayıcının
   bulduğu kusurun aynı olduğunu denetler.
 - **Tam oyun testi** yedi günü gerçek sahne akışı üzerinden iki ayrı memurla oynar: kurallara
@@ -364,6 +423,12 @@ Ekran görüntüsü düzeneği pencereyi ekran dışında, odak almadan açar:
 
 ```bash
 bash tools/cek.sh hikaye     # kareler tools/cikti/ altına yazılır
+```
+
+Oyunun ses çıkışı da dosyaya kaydedilebilir (menü, genelge, gişe, gün sonu, akşam; bir dakika kadar):
+
+```bash
+godot --headless --path . res://tools/Cekim.tscn -- ses    # tools/cikti/ses_ornegi.wav
 ```
 
 ## Görsel ve ses üretim hattı
@@ -380,6 +445,9 @@ betiklerle hazırlandı:
 | `tools/sanat/vesikalik.py` | "Yıllar önceki hâli" çeşitlemelerinden vesikalıkları ve aranan resimlerini keser; yüz benzerliklerini ölçer (OpenCV SFace) |
 | `tools/sanat/rontgen.py` | Röntgen eşyalarını, çanta kabuklarını, cihazı ve çantaların dış görünüşünü dilimler |
 | `tools/sanat/imzalar.py` | İmza sayfasını kişi kişi keser; mürekkebin koyuluğunu saydamlık maskesine çevirir |
+| `tools/sanat/damgalar.py` | Mühür ve kaşe sayfalarını (gerçek ve sahte çeşitler) keser; mürekkebi saydamlık maskesine çevirir |
+| `tools/sanat/yeni_havuz.py` | Yeni portre sayfalarını dilimler, künyelerini ve benzerlik listelerini çıkarır |
+| `tools/sanat/kadro.py` | Her yüze kalıcı bir kimlik verir: ad, ana-baba adı, doğum yeri ve tarihi (`data/vatandaslar.json`) |
 | `tools/sanat/olc.py` | Arka plan üzerindeki yerleşim noktalarını ölçmek için cetvelli büyütme |
 
 Canlı portrelerin hareketi tek bir gölgelendiricidedir (`assets/shader/portre.gdshader`): nefes,
@@ -395,12 +463,29 @@ Röntgen görüntüsü yoğunluk haritalarından kurulur: çantanın kabuğu ve 
 görsellerdir, beyaz bir zemine çarpılarak üst üste biner (yoğunluklar birikir), ekran
 gölgelendiricisi sonucu fosfor yeşiline boyar ve tarama çizgilerini ekler.
 
-**Sesler** tamamen kodla sentezlenir (`tools/ses/uret.py`): mühür, kâğıt, zil, teleks, daktilo,
-konuşma heceleri, kepenk, patlama, silah, röntgen bandı ve alarmı; döngülü soba, rüzgâr ve Hicaz dizisinde, dokuz zamanlı
-özgün bir bağlama ezgisi çalan radyo. Dışarıdan ses dosyası kullanılmamıştır.
+**Sesler** gerçek kayıtlardan derlenir. `tools/ses/kaynaklar.json` her sesin kaynağını ve kesim
+tarifini tutar; `tools/ses/topla.py` kaydı indirir, tarife göre keser (tek olay, art arda olaylar,
+kesit, döngü, konuşma heceleri, karışım), düzeyini ayarlar ve `assets/ses/` altına yazar. Kullanılan
+her kaydın künyesi `assets/ses/KAYNAKLAR.md` dosyasına dökülür.
+
+- **Efektler** Freesound'daki CC0 (kamu malı) kayıtlardan kesilmiştir: ıstampa mührü, kâğıt
+  hışırtısı ve kayması, sayfa, resepsiyon zili, daktilo tuşları, kâğıt yırtılması, tahta zeminde
+  ayak sesleri, iç çekiş, ahşap kepenk, jaluzi, uyarı zili, bozuk para, duvar saati, çekmece,
+  dolma kalem ve imza, uzak patlama ve silah sesi, taşıma bandı, düğme, fabrika alarmı, floresan
+  cızırtısı, soba çıtırtısı, pencereden ıslık çalan kış rüzgârı.
+- **Konuşma** gerçek bir mırıltı kaydından kesilmiş on kısa hecedir; kişinin yaşına ve cinsiyetine
+  göre inceltilerek çalınır. Sözcük seçilmez; yalnızca konuşanın sesi duyulur.
+- **Müzik** çalgısaldır. Masadaki radyo sırayla şunları çalar: *Hüseyni Saz Semaisi* (kemençe ve
+  ud; 1939 öncesi bir taş plak kaydı, kamu malı), *Harman Dalı* (Turku, Nomads of the Silk Road;
+  CC BY 4.0), bir bağlama kaydı ve bir taksim (CC0). Menüde ve akşam evde ney duyulur (CC0).
+  Radyodan gelen ses dar bantlı bir süzgeçten geçer.
+
+Çok kayıtlı efektlerde (ayak sesi, hece, kâğıt, sayfa, daktilo) oyun her seferinde başka bir kaydı
+çalar; ana çıkıştaki sınırlayıcı üst üste binen seslerin taşmasını önler.
 
 ```bash
-python tools/ses/uret.py     # assets/ses/ altındaki bütün sesleri yeniden üretir
+python tools/ses/topla.py            # bütün sesleri yeniden derler (kaynaklar tools/ses/ham/ altında saklanır)
+python tools/ses/topla.py muhur zil  # yalnızca adı verilenleri
 ```
 
 ## Emeği geçenler ve lisanslar
@@ -409,6 +494,14 @@ python tools/ses/uret.py     # assets/ses/ altındaki bütün sesleri yeniden ü
 - **Yazı tipleri:** Courier Prime, Old Standard TT, Caveat — SIL Open Font License 1.1
   (lisans metinleri `assets/font/` içinde)
 - **Görseller:** üretken yapay zekâ ile üretilmiş, oyun için dilimlenip işlenmiştir.
-- **Sesler:** bu depodaki betikle sentezlenmiştir.
+- **Ses efektleri:** [Freesound](https://freesound.org) üzerindeki CC0 1.0 (kamu malı) kayıtlar;
+  kaydedenlerin tam listesi [`assets/ses/KAYNAKLAR.md`](assets/ses/KAYNAKLAR.md) içindedir.
+- **Müzik:**
+  - *Harman Dalı* — Turku, Nomads of the Silk Road (*Alleys of Istanbul* albümü),
+    [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); Wikimedia Commons üzerinden alınmış,
+    düzeyi eşitlenmiştir.
+  - *Hüseyni Saz Semaisi* — Hafız Kemal Bey (kemençe) ve Hayriye Hanım (ud); 1939 öncesi kayıt,
+    kamu malı (Gallica Digital Library, Wikimedia Commons üzerinden).
+  - Bağlama, taksim ve ney kayıtları — Freesound, CC0 1.0.
 
 Bu depo özeldir; oyunun kodu ve içeriği için bir lisans henüz belirlenmemiştir.

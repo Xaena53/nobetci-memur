@@ -20,6 +20,7 @@ const MESAI_BASI := 9 * 60     ## 09:00 (dakika)
 const MESAI_SONU := 17 * 60    ## 17:00
 const KARAR_ADLARI := {"onay": "ONAY", "eksik": "EKSİK EVRAK", "havale": "MÜDÜRE HAVALE"}
 const ALARM_KAYBI := 12        ## boş yere verilen alarmın yediği mesai (dakika)
+const RADYO_LISTESI := ["saz_semaisi", "harman_dali", "saz", "taksim"]    ## masadaki radyonun çaldıkları (assets/ses/muzik)
 const VARSAYILAN_SOZ := {
 	"alarm": "O çanta benim değil! Bir yanlışlık var!",
 	"alarm_bos": "Çantamı didik didik ettiniz; bulduğunuz bu mu?",
@@ -71,6 +72,8 @@ var _mudur: CanliPortre
 var _denetim_seridi: Serit
 var _saat_durdu := false                ## mektup gibi tam ekran bir kâğıt okunurken saat bekler
 var _ses_perdesi := 1.0                 ## camdaki vatandaşın ses perdesi (yaşa ve cinsiyete göre)
+var _ses_kadin := false                 ## camdaki vatandaş kadın mı (iç çekişin kaydı ona göre seçilir)
+var _tik_no := 0                        ## duvar saati: tik ve tak sırayla
 var _tik_sayaci := 0.0
 var _canta_seridi: Serit
 var _ziyaret_no := 0                    ## her vatandaşta artar: bekleyen işlevler eski ziyareti sürdürmesin
@@ -114,7 +117,8 @@ func _process(delta: float) -> void:
 	_tik_sayaci += delta
 	if _tik_sayaci >= 1.0:
 		_tik_sayaci -= 1.0
-		Ses.cal("saat", 1.0 if int(dakika) % 2 == 0 else 0.86, -19.0)
+		_tik_no += 1
+		Ses.cal("saat", 1.0, -15.0, 0.0, 0.0, _tik_no % 2)
 
 
 ## Gün, müdürün genelgesiyle başlar; "Gişeyi Aç" denince saat işlemeye ve vatandaş gelmeye başlar.
@@ -170,8 +174,9 @@ func _sonraki_vatandas() -> void:
 	vatandas = kuyruk.pop_front()
 	_ziyaret_no += 1
 	tespitler.clear()
-	Ses.cal("zil", 1.0, -9.0)
+	Ses.cal("zil", 1.0, -10.0)
 	_ses_perdesi = _perde_bul(str(vatandas.portre))
+	_ses_kadin = str(Portreler.bilgi(str(vatandas.portre)).get("cinsiyet", "E")) == "K"
 	gise.gelsin(str(vatandas.portre))
 	await Oyun.bekle(Gise.GELIS_SURESI + 0.1)
 	if not mesai_acik:
@@ -374,7 +379,7 @@ func _mektubu_goster() -> void:
 	var kagit := Mektup.new()
 	katman.add_child(kagit)
 	kagit.kur(Hikaye.mektup())
-	Ses.cal("kagit", 0.85, -2.0)
+	Ses.cal("kagit", 0.85, -6.0)
 	kagit.position = Vector2(560, 120)
 	kagit.rotation = deg_to_rad(-2.0)
 	var kapat := Button.new()
@@ -406,13 +411,13 @@ func _zarfi_getir(gecikme: float) -> void:
 	zarf.alindi.connect(_zarf_alindi)
 	zarf.geri_itildi.connect(_zarf_geri_itildi)
 	zarf.gel(Yerlesim.GISE_YARIK, Yerlesim.ZARF_YERI, gecikme)
-	Ses.gecikmeli("kagit_kay", gecikme + 0.02, 0.85, -5.0)
+	Ses.gecikmeli("kagit_kay", gecikme + 0.02, 0.85, -12.0)
 
 
 ## Zarf çekmeceye atıldı: para cebe girer, şüphe artar. Müdür izliyorsa para müsadere edilir.
 func _zarf_alindi(tutar: int) -> void:
 	var konusma: Dictionary = vatandas.get("konusma", {})
-	Ses.cal("zarf", 1.0, -3.0)
+	Ses.cal("zarf", 1.0, -7.0)
 	Hikaye.etki_uygula((vatandas.get("etki", {}) as Dictionary).get("zarf", null))
 	if denetimde:
 		Oyun.suphe += 1
@@ -449,7 +454,7 @@ func _belgeleri_getir() -> void:
 		yer += Vector2(randf_range(-4, 4), randf_range(-2, 2))
 		b.tutucu.yatis_acisi = deg_to_rad(randf_range(-1.0, 1.0))
 		b.gel(Yerlesim.GISE_YARIK, yer, 0.15 + i * 0.2)
-		Ses.gecikmeli("kagit_kay", 0.15 + i * 0.2, 1.0, -6.0, 0.08)
+		Ses.gecikmeli("kagit_kay", 0.15 + i * 0.2, 1.0, -13.0, 0.08)
 		belgeler.append(b)
 		i += 1
 
@@ -468,7 +473,7 @@ func _vatandasi_ugurla(karar: String) -> void:
 	if is_instance_valid(defter):
 		defter.isaretleri_temizle()
 	_belgeleri_gonder(0.25)
-	Ses.gecikmeli("kagit_kay", 0.25, 1.15, -8.0)
+	Ses.gecikmeli("kagit_kay", 0.25, 1.15, -14.0)
 	await Oyun.bekle(1.0)
 	gise.gitsin()
 	vatandas = {}
@@ -534,14 +539,14 @@ func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = ""
 	match karar:
 		"onay":
 			belge.iz_birak("onay", yerel, PackedStringArray(["ONAYLANMIŞTIR", "Ardıçlı Nüfus Md.", str(gun.get("tarih", ""))]))
-			Ses.cal("muhur", 1.0, 0.0, 0.04)
+			Ses.cal("muhur", 1.0, -3.0, 0.04)
 			_sarsinti()
 		"eksik":
 			belge.iz_birak("eksik", yerel, _fis_satirlari(str(Dogrulayici.GEREKCELER.get(gerekce, "Eksik evrak"))))
-			Ses.cal("kagit", 1.0, -2.0, 0.08)
+			Ses.cal("kagit", 1.0, -6.0, 0.08)
 		"havale":
 			belge.iz_birak("havale", yerel, PackedStringArray(["MÜDÜRE HAVALE", "Müdürlük makamına", "arz olunur."]))
-			Ses.cal("kagit", 0.9, -2.0, 0.08)
+			Ses.cal("kagit", 0.9, -6.0, 0.08)
 			havale_kalan -= 1
 			(araclar["havale"] as Arac).kalan = havale_kalan
 
@@ -580,7 +585,7 @@ func _sonucu_isle(karar: String, d: Dictionary) -> void:
 		"dogru":
 			ozet.dogru += 1
 			ozet.kazanc += Oyun.PRIM
-			Ses.gecikmeli("prim", 0.5, 1.0, -12.0)
+			Ses.gecikmeli("prim", 0.5, 1.0, -6.0)
 			if bool(d.get("supheli_yakalandi", false)):
 				ozet.kazanc += Oyun.SUPHELI_PRIMI
 				_bekleyen_fis = {"cesit": "not", "metin": "Şüpheniz yerindeymiş; evrak sahte çıktı. Dikkatiniz sicilinize işlendi."}
@@ -676,8 +681,8 @@ func mesaiyi_bitir() -> void:
 		await Oyun.bekle(1.3)
 		gise.gitsin()
 	gise.kepengi_indir()
-	Ses.cal("kepenk", 1.0, -2.0)
-	Ses.ortami_kes("radyo", 2.2)
+	Ses.cal("kepenk", 1.0, -1.0)
+	Ses.muzigi_kes(2.2)
 	await Oyun.bekle(1.9)
 	ozet.ihtar = gunluk_ihtar
 	Oyun.mesaiyi_kapat(ozet)
@@ -694,19 +699,20 @@ func _sesleri_bagla() -> void:
 	for a: Arac in araclar.values():
 		a.alindi.connect(func(_a: Arac) -> void: Ses.cal("tik", 0.8, -5.0))
 	rontgen.efekt.connect(_rontgen_sesi)
-	Ses.yalniz(["radyo"])
-	Ses.ortam("radyo", -10.0, 2.5)
+	Ses.yalniz([])
+	# masadaki radyo: her gün listenin başka bir parçasından açılır
+	Ses.muzik(RADYO_LISTESI, -4.0, true, 2.5, Oyun.gun - 1)
 
 
 ## Camdaki vatandaştan gelen sesler: ayak sesi, konuşma heceleri, öfleme.
 func _gise_sesi(ad: String) -> void:
 	match ad:
 		"adim":
-			Ses.cal("adim", 1.0, -9.0, 0.12)
+			Ses.cal("adim", 1.0, -5.0, 0.08)
 		"hece":
-			Ses.cal("hece", _ses_perdesi, -8.0, 0.07)
+			Ses.cal("hece", _ses_perdesi, -9.0, 0.14)
 		"ofle":
-			Ses.cal("ofle", clampf(_ses_perdesi, 0.85, 1.25), -5.0)
+			Ses.cal("ofle_k" if _ses_kadin else "ofle", 1.0, -6.0, 0.06)
 
 
 func _rontgen_sesi(ad: String) -> void:
@@ -723,12 +729,13 @@ func _rontgen_sesi(ad: String) -> void:
 func _perde_bul(portre: String) -> float:
 	var b := Portreler.bilgi(portre)
 	var yas := int(b.get("yas", 40))
-	var perde := 1.48 if str(b.get("cinsiyet", "E")) == "K" else 0.96
+	# konuşma, gerçek bir mırıltıdan kesilmiş kısa hecelerin inceltilmesiyle çıkar: sözcük seçilmez
+	var perde := 2.05 if str(b.get("cinsiyet", "E")) == "K" else 1.38
 	if yas <= 12:
-		perde = 1.9
+		perde = 2.6
 	elif yas >= 62:
 		perde *= 0.9
-	return perde + float(hash(portre) % 100) / 100.0 * 0.16 - 0.08
+	return perde + float(hash(portre) % 100) / 100.0 * 0.24 - 0.12
 
 
 ## Mühür inince masa kısa bir an sarsılır.

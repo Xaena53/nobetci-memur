@@ -920,9 +920,27 @@ func _cila_testi() -> void:
 	# sesler: oyunun çağırdığı her ad için dosya var
 	for ad: String in ["muhur", "kagit", "kagit_kay", "sayfa", "zil", "teleks", "daktilo", "yirt", "hece", "adim",
 			"ofle", "kepenk", "ihtar", "prim", "tik", "saat", "jaluzi", "zarf", "kalem", "patlama", "silah",
-			"soba", "ruzgar", "radyo"]:
+			"soba", "ruzgar", "imza", "ofle_k", "bant", "dugme", "alarm", "cizirti"]:
 		dogru(Ses._akis(ad) != null, "ses dosyası var: %s" % ad)
-	dogru(AudioServer.get_bus_index("Efekt") >= 0 and AudioServer.get_bus_index("Ortam") >= 0, "ses veriyolları kuruldu")
+	dogru(AudioServer.get_bus_index("Efekt") >= 0 and AudioServer.get_bus_index("Ortam") >= 0
+		and AudioServer.get_bus_index("Radyo") >= 0, "ses veriyolları kuruldu")
+	# çok kayıtlı efektler: adım ve konuşma hecesi her seferinde başka kayıttan çalar
+	dogru(Ses.cesit_sayisi("adim") >= 4, "ayak sesinin en az dört kaydı var (%d)" % Ses.cesit_sayisi("adim"))
+	dogru(Ses.cesit_sayisi("hece") >= 8, "konuşma hecesinin en az sekiz kaydı var (%d)" % Ses.cesit_sayisi("hece"))
+	var ilk_adim := Ses._akis("adim")
+	dogru(Ses._akis("adim") != ilk_adim, "  art arda iki adım aynı kayıt olmaz")
+	dogru(Ses._akis("saat", 0) != Ses._akis("saat", 1), "  duvar saatinin tik ve takı ayrı kayıt")
+	# müzik: masadaki radyonun ve menünün parçaları yerinde
+	var radyo: Array = (load("res://scripts/Masa.gd") as GDScript).get_script_constant_map()["RADYO_LISTESI"]
+	for parca: String in radyo + ["ney"]:
+		dogru(Ses._yukle(Ses.MUZIK_KLASORU, parca) != null, "müzik dosyası var: %s" % parca)
+	Ses.muzik(radyo, -6.0, true, 0.05, 1)
+	esit(Ses.calan_parca(), str(radyo[1]), "çalma listesi istenen parçadan açılır")
+	esit(str(Ses._muzik.bus), "Radyo", "  masadaki müzik radyo veriyolundan çalar")
+	Ses._siradaki_parca(Ses._muzik)
+	esit(Ses.calan_parca(), str(radyo[2]), "  parça bitince sıradaki başlar")
+	Ses.muzigi_kes(0.05)
+	esit(Ses.calan_parca(), "", "  müzik kesilir")
 	Ses.cal("olmayan_ses")
 	dogru(true, "bilinmeyen ses adı sessizce geçilir")
 
@@ -932,6 +950,7 @@ func _cila_testi() -> void:
 	bekle_dogru(await sahneyi_bekle("AnaMenu"), "ana menü")
 	for ad: String in ["YeniOyun", "Devam", "Ayarlar", "Cikis"]:
 		dogru(dugme(ad) != null, "  menüde '%s' var" % ad)
+	esit(Ses.calan_parca(), "ney", "  menüde ney çalıyor")
 	bas("Ayarlar")
 	await kare(3)
 	var ayarlar := sahne().find_child("AyarlarPenceresi", true, false)

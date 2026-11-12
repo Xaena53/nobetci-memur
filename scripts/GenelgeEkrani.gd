@@ -10,6 +10,7 @@ const KAGIT := Vector2(520, 596)
 const HIZ := 70.0      ## saniyede harf
 
 var _govde: Label
+var _imza: Control                      ## müdürün imzası: yazı bitince atılır
 var _dugme: Button
 var _gorunen := 0.0
 var _toplam := 0
@@ -75,6 +76,8 @@ func ac(gun: Dictionary, gun_no: int) -> void:
 	imza.draw.connect(func() -> void:
 		Imza.ciz(imza, Rect2(Vector2.ZERO, imza.size), "mudur", Stil.MAVI_MUREKKEP))
 	kagit.add_child(imza)
+	imza.modulate.a = 0.0          # yazı bitince müdür imzalar
+	_imza = imza
 
 	_dugme = Button.new()
 	_dugme.name = "GiseyiAc"
@@ -124,8 +127,13 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 
 func _tamamla() -> void:
+	if not _yaziyor:
+		return
 	_yaziyor = false
 	_govde.visible_characters = -1
+	if _imza != null:
+		Ses.cal("imza", 1.0, -4.0)
+		create_tween().tween_property(_imza, "modulate:a", 1.0, 0.9).set_delay(0.15)
 
 
 func _kapat() -> void:

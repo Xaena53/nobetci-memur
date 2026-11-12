@@ -17,3 +17,4 @@ Thumbs.db
 override.cfg
 tools/sanat/ham/
 __pycache__/
+tools/ses/ham/

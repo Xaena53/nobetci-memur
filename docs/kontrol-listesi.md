@@ -7,7 +7,7 @@ Yayından önce oyunun baştan sona oynanıp aşağıdaki maddelerin işaretlenm
 
 ```bash
 godot --headless --path . --import                              # varlıklar içe aktarılır
-godot --headless --path . res://tools/DumanTesti.tscn           # 330 denetim: sahne akışı, kurallar, hikâye, menü, röntgen
+godot --headless --path . res://tools/DumanTesti.tscn           # 408 denetim: sahne akışı, kurallar, hikâye, menü, röntgen, defter, vize, sesler
 godot --headless --path . res://scenes/UreticiTesti.tscn -- --cik   # 7 gün x 100 vatandaş: üretici ile doğrulayıcı tutarlı mı
 godot --headless --path . res://tools/TamOyun.tscn              # yedi gün baştan sona, iki ayrı memurla
 ```
@@ -45,7 +45,7 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] ALARM (yasak eşya varken): ekran kızarıyor, alarm çalıyor, vatandaş götürülüyor, teleksten not çıkıyor.
 - [ ] ALARM (temiz çantada): saat 12 dakika ileri gidiyor, teleksten uyarı çıkıyor; ikincisinde ihtar.
 - [ ] Yasak eşyalı çanta geçirilirse vatandaş ayrılırken ihtar geliyor.
-- [ ] Genelge defterinde YASAK sayfası günün yasaklarını gösteriyor (6. günden itibaren kesici aletler de).
+- [ ] Genelge defterinde YASAK sayfası günün yasaklarını gösteriyor (7. gün kesici aletler de).
 - [ ] Yasak eşyalar tanınabiliyor; yanıltıcı eşyalar (saç kurutma makinesi, sucuk, mum) haksız yere zorlamıyor.
 
 ### Gün gün
@@ -55,9 +55,9 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 | 1 | Cüzdan + ilmühaber, ad-soyad, 6 ay | Hüsnü Amca (eski ilmühaber) | [ ] Gazete: banka soygunu |
 | 2 | Mühür ve imza, baba adı | Nermin Hanım "aramızda kalsın"; gözlüklü adam | [ ] Müdür denetimi: jaluzi açılıyor, "MÜDÜR İZLİYOR" |
 | 3 | Harç makbuzu ve tarife | Kenan Bey ve zarf | [ ] Zarf: "Çekmeceye At" / "Geri İt". [ ] Gece: patlama |
-| 4 | Seri numarası, fotoğraf, arananlar | Ev sahibi İzzet Bey; gözlüklü adam başka adla | [ ] ARANANLAR sayfası açıldı |
+| 4 | Seri numarası, fotoğraf, sahte mühür-imza-kaşe, arananlar | Ev sahibi İzzet Bey; gözlüklü adam başka adla | [ ] ARANANLAR sayfası açıldı. [ ] Bilgi defteri masada, çift tıkla açılıyor |
 | 5 | Harç zammı, makbuz 3 gün, röntgen | Kenan Bey'in büyük zarfı, "Kasap" (torbasında satır), Savcı | [ ] Aranan havale edilince resmine YAKALANDI damgası |
-| 6 | Mahalle listesi, B serisi, kesici aletler | "Terzi" (el çantasında tabanca), Nermin Hanım'ın dönüşü | [ ] Gece: savcının akıbeti |
+| 6 | Mahalle listesi, B serisi, çalışma vizesi | "Terzi" (el çantasında tabanca), Nermin Hanım'ın dönüşü, sahte vizeli genç | [ ] Yurt dışı çıkış kaydında dördüncü belge: vize. [ ] Gece: savcının akıbeti |
 | 7 | İlmühaber 3 ay | Hüsnü Amca ya da Yusuf ve mektup; Başkomiser; bavullu genç | [ ] Bavul yakalanırsa ya da kaçarsa son gazetede haberi var |
 
 ### Sonlar
@@ -83,15 +83,19 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 
 ## 4. Kulakla dinlenecekler
 
-Sesler kodla sentezlendi ve yalnızca sayısal olarak (süre, düzey) denetlendi. Yayından önce
-kulaklıkla bir tur dinlenmeli:
+Sesler gerçek kayıtlardan kesildi; kesim yerleri spektrogramla, düzeyler oyunun ses çıkışı
+kaydedilerek (`tools/Cekim.tscn -- ses`) denetlendi. Kulakla dinlenmedi; yayından önce kulaklıkla
+bir tur dinlenmeli:
 
-- [ ] Radyo çok öne çıkmıyor; konuşma heceleri rahatsız etmiyor.
-- [ ] Mühür, zil ve ihtar vızıltısı birbirini bastırmıyor.
+- [ ] Radyo çok öne çıkmıyor; dört parçanın dördü de çalgısal (söz yok) ve odaya yakışıyor.
+- [ ] Konuşma mırıltısı rahatsız etmiyor; kadın, erkek, yaşlı ve çocuk sesleri ayırt ediliyor.
+- [ ] Mühür, zil ve ihtar vızıltısı birbirini bastırmıyor; kâğıt kayması fazla hışırdamıyor.
+- [ ] Ayak sesleri camın ardındaki yürüyüşe oturuyor.
 - [ ] Soba çıtırtısı ve rüzgâr döngüsünde kesinti ("tık") duyulmuyor.
+- [ ] Menüde ney, rüzgâr ve lamba cızırtısı dengeli.
 
-Beğenilmeyen ses `tools/ses/uret.py` içindeki işlevi değiştirilip yeniden üretilebilir:
-`python tools/ses/uret.py`
+Beğenilmeyen sesin kaynağı ya da kesim yeri `tools/ses/kaynaklar.json` içinde değiştirilir:
+`python tools/ses/topla.py <ad>`. Parça çıkarmak için `Masa.gd` içindeki `RADYO_LISTESI` yeter.
 
 ## 5. Dışa aktarma
 

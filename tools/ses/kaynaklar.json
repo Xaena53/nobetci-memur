@@ -1,0 +1,313 @@
+{
+	"_aciklama": "Oyundaki seslerin kaynakları ve kesim tarifleri (bkz. tools/ses/topla.py). 'freesound': Freesound kayıt numarası (yalnızca CC0); 'adres': doğrudan indirme adresi.",
+	"sesler": [
+		{
+			"ad": "muhur",
+			"freesound": 470710,
+			"islem": "tek",
+			"sure": 0.6,
+			"sonum": 0.45
+		},
+		{
+			"ad": "kagit",
+			"freesound": 181774,
+			"islem": "olaylar",
+			"adet": 3,
+			"aralik": 0.35,
+			"sure": 0.34
+		},
+		{
+			"ad": "kagit_kay",
+			"freesound": 464302,
+			"islem": "tek",
+			"sure": 0.75
+		},
+		{
+			"ad": "kagit_kay_2",
+			"freesound": 154403,
+			"islem": "kesit",
+			"sure": 0.7,
+			"bas": 0.0
+		},
+		{
+			"ad": "sayfa",
+			"freesound": 136778,
+			"islem": "kesit",
+			"bas": 0.05,
+			"sure": 0.95
+		},
+		{
+			"ad": "sayfa_2",
+			"freesound": 397548,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 0.5
+		},
+		{
+			"ad": "zil",
+			"freesound": 398281,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 2.4,
+			"sonum": 0.5
+		},
+		{
+			"ad": "daktilo",
+			"freesound": 380137,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 0.13
+		},
+		{
+			"ad": "daktilo_2",
+			"freesound": 160678,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 0.12
+		},
+		{
+			"ad": "teleks",
+			"freesound": 160678,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 0.12,
+			"ust": 3600
+		},
+		{
+			"ad": "teleks_2",
+			"freesound": 380137,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 0.14,
+			"ust": 3600
+		},
+		{
+			"ad": "yirt",
+			"freesound": 342541,
+			"islem": "kesit",
+			"bas": 0.05,
+			"sure": 0.72
+		},
+		{
+			"ad": "adim",
+			"freesound": 19292,
+			"islem": "olaylar",
+			"adet": 5,
+			"aralik": 0.4,
+			"sure": 0.42,
+			"atla": 3
+		},
+		{
+			"ad": "ofle",
+			"freesound": 215380,
+			"islem": "kesit",
+			"bas": 0.05,
+			"sure": 1.6,
+			"tepe": -4.0
+		},
+		{
+			"ad": "ofle_k",
+			"freesound": 384992,
+			"islem": "kesit",
+			"bas": 0.02,
+			"sure": 0.85,
+			"tepe": -4.0
+		},
+		{
+			"ad": "kepenk",
+			"freesound": 444793,
+			"islem": "kesit",
+			"bas": 10.05,
+			"sure": 3.1,
+			"sonum": 0.2
+		},
+		{
+			"ad": "jaluzi",
+			"freesound": 145385,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 1.2
+		},
+		{
+			"ad": "ihtar",
+			"freesound": 54047,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 0.9,
+			"sonum": 0.25,
+			"tepe": -6.0
+		},
+		{
+			"ad": "prim",
+			"freesound": 17502,
+			"islem": "kesit",
+			"bas": 0.2,
+			"sure": 1.3
+		},
+		{
+			"ad": "tik",
+			"freesound": 215772,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 0.08,
+			"sonum": 0.5
+		},
+		{
+			"ad": "saat",
+			"freesound": 188033,
+			"islem": "olaylar",
+			"adet": 2,
+			"aralik": 0.5,
+			"sure": 0.18
+		},
+		{
+			"ad": "zarf",
+			"islem": "karisim",
+			"sure": 1.15,
+			"parcalar": [
+				{
+					"freesound": 444431,
+					"islem": "tek",
+					"sure": 0.6,
+					"an": 0.0,
+					"kazanc": 0.8
+				},
+				{
+					"freesound": 360949,
+					"islem": "kesit",
+					"bas": 0.0,
+					"sure": 0.68,
+					"an": 0.42
+				}
+			]
+		},
+		{
+			"ad": "kalem",
+			"freesound": 173081,
+			"islem": "kesit",
+			"bas": 0.55,
+			"sure": 0.7
+		},
+		{
+			"ad": "imza",
+			"freesound": 326961,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 2.3,
+			"sonum": 0.2
+		},
+		{
+			"ad": "patlama",
+			"freesound": 372086,
+			"islem": "kesit",
+			"bas": 1.55,
+			"sure": 2.75,
+			"sonum": 0.5
+		},
+		{
+			"ad": "silah",
+			"freesound": 385812,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 1.7,
+			"sonum": 0.5
+		},
+		{
+			"ad": "bant",
+			"freesound": 478247,
+			"islem": "kesit",
+			"bas": 2.0,
+			"sure": 1.9,
+			"sonum": 0.25,
+			"tepe": -5.0
+		},
+		{
+			"ad": "dugme",
+			"freesound": 448394,
+			"islem": "tek",
+			"sure": 0.35
+		},
+		{
+			"ad": "alarm",
+			"freesound": 832414,
+			"islem": "kesit",
+			"bas": 0.0,
+			"sure": 1.3,
+			"sonum": 0.2,
+			"tepe": -5.0
+		},
+		{
+			"ad": "cizirti",
+			"freesound": 125064,
+			"islem": "kesit",
+			"bas": 0.2,
+			"sure": 1.3,
+			"sonum": 0.4,
+			"tepe": -4.0
+		},
+		{
+			"ad": "hece",
+			"freesound": 536967,
+			"islem": "taneler",
+			"adet": 10,
+			"sure": 0.11,
+			"alt": 250,
+			"ust": 3800,
+			"tepe": -3.0
+		},
+		{
+			"ad": "soba",
+			"freesound": 532191,
+			"islem": "dongu",
+			"bas": 2.0,
+			"sure": 20.0,
+			"gecis": 2.0,
+			"sikistir": 6.0
+		},
+		{
+			"ad": "ruzgar",
+			"freesound": 69512,
+			"islem": "dongu",
+			"bas": 60.0,
+			"sure": 30.0,
+			"gecis": 3.0
+		},
+		{
+			"ad": "saz_semaisi",
+			"islem": "muzik",
+			"dosya": "commons_saz_semaisi.ogg",
+			"kanal": 1,
+			"kalite": 3,
+			"adres": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Husseyni_Saz_Semayissi_.ogg",
+			"baslik": "Hüseyni Saz Semaisi (kemençe ve ud; 1939 öncesi taş plak, Gallica Digital Library)",
+			"yazar": "Hafız Kemal Bey (kemençe), Hayriye Hanım (ud)",
+			"lisans": "Kamu malı",
+			"sayfa": "https://commons.wikimedia.org/wiki/File:Husseyni_Saz_Semayissi_.ogg"
+		},
+		{
+			"ad": "harman_dali",
+			"islem": "muzik",
+			"dosya": "commons_harman_dali.ogg",
+			"adres": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Turku_Nomads_of_the_Silk_Road_-_12_-_-Harman_Dali.ogg",
+			"baslik": "Harman Dalı",
+			"yazar": "Turku, Nomads of the Silk Road",
+			"lisans": "CC BY 4.0",
+			"sayfa": "https://commons.wikimedia.org/wiki/File:Turku_Nomads_of_the_Silk_Road_-_12_-_-Harman_Dali.ogg"
+		},
+		{
+			"ad": "saz",
+			"freesound": 749332,
+			"islem": "muzik"
+		},
+		{
+			"ad": "taksim",
+			"freesound": 486407,
+			"islem": "muzik"
+		},
+		{
+			"ad": "ney",
+			"freesound": 440816,
+			"islem": "muzik"
+		}
+	]
+}

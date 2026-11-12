@@ -12,6 +12,7 @@ var _satirlar: Array[Control] = []
 
 func _ready() -> void:
 	Ses.yalniz([])
+	Ses.muzigi_kes(1.0)
 	var o := Oyun.gun_ozeti
 	var maas: Dictionary = o.get("maas", Oyun.maas_hesapla(o))
 	var gun := Veri.gun(Oyun.gun)
@@ -109,9 +110,9 @@ func _ready() -> void:
 		var t := create_tween()
 		t.tween_interval(0.35 + i * SATIR_ARASI)
 		if s == damga:
-			t.tween_callback(Ses.cal.bind("muhur", 1.0, -2.0))
+			t.tween_callback(Ses.cal.bind("muhur", 1.0, -5.0))
 		elif not s is Button:
-			t.tween_callback(Ses.cal.bind("daktilo", 1.0, -9.0, 0.1))
+			t.tween_callback(Ses.cal.bind("daktilo", 1.0, -11.0, 0.1))
 		t.tween_property(s, "modulate:a", 1.0, 0.06)
 
 

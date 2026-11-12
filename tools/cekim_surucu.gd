@@ -609,3 +609,54 @@ func _senaryo_defter() -> void:
 	masa.inceleme.hedef_tiklandi(masa.gise.yuz)
 	await bekle(0.3)
 	await cek("d_32_zor_kip")
+
+
+## Oyunun ses çıkışını dosyaya kaydeder (dinleme örneği): menü, genelge, gişe, birkaç vatandaş, kepenk,
+## puantaj ve akşam evi. Çıktı: tools/cikti/ses_ornegi.wav
+func _senaryo_ses() -> void:
+	Oyun.kaydi_sil()
+	for anahtar: String in ["ses_genel", "ses_efekt"]:
+		Oyun.ayarlar[anahtar] = 1.0
+	Oyun.ayarlar["ses_radyo"] = 0.5
+	Ses.ayarlari_uygula()
+	var kayit := AudioEffectRecord.new()
+	AudioServer.add_bus_effect(0, kayit)
+	kayit.set_recording_active(true)
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	await bekle(float(_arg("menu", "9")))
+	bas("YeniOyun")
+	bas("ZorlukKolay")
+	await sahneyi_bekle("Masa")
+	Oyun.gun = int(_arg("gun", "1"))
+	await bekle(7.0)
+	bas("GiseyiAc")
+	var masa := sahne()
+	for i in int(_arg("kisi", "3")):
+		await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+		await bekle(3.2)
+		var b: Belge = masa.belgeler[0]
+		b.buyut(true)
+		await bekle(0.9)
+		b.buyut(false)
+		await bekle(0.6)
+		masa.karar_ver("onay" if i != 1 else "ret", b, b.get_global_transform() * (b.size * 0.5))
+		await bekle(1.2)
+	masa.dakika = masa.MESAI_SONU - 0.5
+	await sahneyi_bekle("GunSonu", 16.0)
+	await bekle(4.5)
+	bas("EveGit")
+	await sahneyi_bekle("Aile")
+	await bekle(2.0)
+	sahne().sec("komur", true)
+	sahne().sec("yemek", true)
+	await bekle(5.0)
+	kayit.set_recording_active(false)
+	var ses := kayit.get_recording()
+	var yol := ProjectSettings.globalize_path(CIKTI + "ses_ornegi.wav")
+	if ses != null:
+		ses.save_to_wav(yol)
+		print("kaydedildi: ", yol, " (", snappedf(ses.get_length(), 0.1), " sn)")
+	else:
+		print("KAYIT ALINAMADI")
+	AudioServer.remove_bus_effect(0, AudioServer.get_bus_effect_count(0) - 1)

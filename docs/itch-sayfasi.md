@@ -69,15 +69,17 @@ gazetenin birinci sayfasına yansır.
 
 ### Öne çıkanlar
 
-- **Evrak kontrolü:** nüfus cüzdanı, ikametgâh ilmühaberi ve harç makbuzu; her gün eklenen yeni kurallar.
+- **Evrak kontrolü:** nüfus cüzdanı, ikametgâh ilmühaberi, harç makbuzu ve çalışma vizesi; her gün eklenen yeni kurallar.
+- **Üç görev şekli:** Kolayda her karşılaştırmanın sonucu söylenir, Ortada günde üç ipucu hakkınız vardır, Zorda yalnız gözünüz.
+- **Bilgi defteri:** gerçek mühür, imza ve kaşe örnekleri ile sahteleri. Yıldızı eksik mührü, başka muhtarın imzasını, taklit konsolosluk kaşesini siz yakalarsınız.
 - **İnceleme modu:** iki bilgiyi seçin, oyun uyuşup uyuşmadığını söylesin. Yüzü fotoğrafla, tarihi takvimle, tutarı tarifeyle karşılaştırın.
 - **Eski fotoğraflar:** cüzdandaki vesikalık yıllar önce çekilmiştir; kıyafet de saç da çoktan değişmiştir, sahibini yüzünden tanırsınız. Sahte cüzdandaki fotoğraf, başvurana benzeyen birine aittir.
 - **Röntgen cihazı:** beşinci günden itibaren çantalar banttan geçer. Tabancayı saç kurutma makinesinden, dinamiti sucuktan ayırmak size kalır.
-- **Canlı gişe:** vatandaşlar yürüyerek gelir, konuşur, sabrı taşınca öfleyip pöfler.
+- **Canlı gişe:** 89 ayrı yüz; her birinin adı, imzası ve yıllar önce çekilmiş vesikalığı var. Yürüyerek gelir, mırıldanarak konuşur, sabrı taşınca öfleyip pöfler.
 - **Müdür izliyor:** jaluzi açıkken yapılan hata çift ihtar sayılır.
 - **Ev ve geçim:** her akşam kira, kömür, yiyecek, ilaç ve okul masrafı arasında seçim.
 - **Yedi ayrı son:** terfiden sürgüne, hepsi "Ardıçlı Postası"nın birinci sayfasında.
-- Elle boyanmış görünümde sahneler, daktilo ve teleks sesleri, kısık sesli bir radyo.
+- Elle boyanmış görünümde sahneler; gerçek kayıtlardan daktilo, mühür ve ayak sesleri; radyoda saz semaisi, bağlama ve taksim.
 
 ### Kontroller
 
@@ -102,7 +104,8 @@ yazıyla geçer; şiddet gösterilmez.
 - Tasarım, kod ve metin: (adınız)
 - Motor: Godot 4.3
 - Görseller: üretken yapay zekâ ile üretilip oyun için dilimlenmiş ve işlenmiştir.
-- Sesler: tamamı kodla sentezlenmiştir.
+- Ses efektleri: Freesound üzerindeki CC0 (kamu malı) kayıtlar.
+- Müzik: "Harman Dalı" — Turku, Nomads of the Silk Road (CC BY 4.0); "Hüseyni Saz Semaisi" — Hafız Kemal Bey ve Hayriye Hanım, 1939 öncesi kayıt (kamu malı); bağlama, taksim ve ney kayıtları (Freesound, CC0).
 - Yazı tipleri: Courier Prime, Old Standard TT, Caveat (SIL Open Font License).
 
 ---
@@ -140,15 +143,17 @@ the week.
 
 ### Features
 
-- **Document checking:** identity booklets, residence certificates and fee receipts, with new rules every day.
+- **Document checking:** identity booklets, residence certificates, fee receipts and work visas, with new rules every day.
+- **Three difficulty modes:** Easy tells you the result of every comparison, Normal gives you three hints a day, Hard leaves it to your own eyes.
+- **Reference book:** genuine seals, signatures and stamps next to known forgeries. Spotting the seal with a missing star, the wrong headman's signature or a copied consulate stamp is your job.
 - **Inspect mode:** pick two pieces of information and the game tells you whether they match. Face against photograph, date against calendar, amount against the fee table.
 - **Old photographs:** the photo in an identity booklet was taken years ago. You recognise its owner by the face, since the clothes and the haircut have changed. A forged booklet carries the photo of a look-alike.
 - **X-ray scanner:** from day five, bags go through the belt. Telling a pistol from a hair dryer and dynamite from a ring of sausage is up to you.
-- **A living window:** citizens walk up, talk, and huff and puff when their patience runs out.
+- **A living window:** 89 different faces, each with a name, a signature and an ID photo taken years ago. They walk up, mumble, and huff and puff when their patience runs out.
 - **The director is watching:** a mistake made while his blinds are open counts double.
 - **Home and money:** every evening, choose between rent, coal, food, medicine and school costs.
 - **Seven endings,** from promotion to exile, each printed on the front page of the local paper.
-- Hand-painted look, typewriter and teleprinter sounds, a radio playing quietly in the corner.
+- Hand-painted look; typewriter, stamp and footstep sounds cut from real recordings; Turkish instrumental music on the office radio.
 
 ### Controls
 
@@ -175,5 +180,6 @@ are mentioned in text only; no violence is shown.
 - Design, code and writing: (your name)
 - Engine: Godot 4.3
 - Graphics: produced with generative AI, then sliced and processed for the game.
-- Sound: synthesised entirely in code.
+- Sound effects: CC0 (public domain) recordings from Freesound.
+- Music: "Harman Dalı" by Turku, Nomads of the Silk Road (CC BY 4.0); "Hüseyni Saz Semaisi" by Hafız Kemal Bey and Hayriye Hanım, recorded before 1939 (public domain); saz, taksim and ney recordings (Freesound, CC0).
 - Fonts: Courier Prime, Old Standard TT, Caveat (SIL Open Font License).

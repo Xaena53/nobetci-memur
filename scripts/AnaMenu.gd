@@ -48,7 +48,8 @@ var _onay_bekliyor := false
 
 func _ready() -> void:
 	Ses.yalniz(["ruzgar"])
-	Ses.ortam("ruzgar", -9.0, 2.0)
+	Ses.ortam("ruzgar", -12.0, 2.0)
+	Ses.muzik(["ney", "taksim"], -4.0, false, 3.0)
 
 	var zemin := TextureRect.new()
 	zemin.name = "ArkaPlan"
@@ -212,7 +213,7 @@ func _process(delta: float) -> void:
 	_gorunen += YAZI_HIZI * delta
 	_baslik.visible_characters = mini(BASLIK.length(), int(_gorunen))
 	if int(_gorunen) != once and int(_gorunen) <= BASLIK.length() and BASLIK[int(_gorunen) - 1] != " ":
-		Ses.cal("daktilo", 1.0, -3.0, 0.08)
+		Ses.cal("daktilo", 1.0, -10.0, 0.08)
 	if _gorunen >= BASLIK.length():
 		_basligi_bitir()
 
@@ -325,7 +326,7 @@ func _lambayi_guncelle(delta: float) -> void:
 			_cizirtiya = randf_range(3.8, 9.5)
 			_cizirti_kalan = randf_range(0.4, 1.15)
 			_titreme = 0.0
-			Ses.cal("cizirti", randf_range(0.92, 1.08), -9.0)
+			Ses.cal("cizirti", randf_range(0.92, 1.08), -14.0)
 	_kar.isik_gucu = _parlaklik
 	_isik.queue_redraw()
 	_golge.queue_redraw()
