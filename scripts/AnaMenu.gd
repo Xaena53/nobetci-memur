@@ -25,6 +25,10 @@ const SATIR := Vector2(364, 32)                ## bir seçenek satırının boyu
 
 var _baslik: Label
 var _kagit: Control
+var _konu: Label
+var _aciklama: Label
+var _ana_satirlar: Array[Button] = []          ## Yeni Oyun, Devam, Ayarlar, Çıkış
+var _kip_satirlari: Array[Button] = []         ## Kolay, Orta, Zor, Vazgeç
 var _gorunen := 0.0
 var _yaziyor := true
 var _sonrakiler: Array[Control] = []           ## başlık bitince sırayla beliren öğeler
@@ -105,9 +109,11 @@ func _kagidi_kur() -> void:
 	_baslik.name = "Baslik"
 	_baslik.visible_characters = 0
 
-	_sonrakiler.append(_yaz("Konu : Yedi günlük gişe nöbeti", Rect2(KENAR, 148, w, 16), 12, Stil.MUREKKEP, Stil.daktilo_kalin()))
+	_konu = _yaz("Konu : Yedi günlük gişe nöbeti", Rect2(KENAR, 148, w, 16), 12, Stil.MUREKKEP, Stil.daktilo_kalin())
+	_sonrakiler.append(_konu)
 	_sonrakiler.append(_yaz("Sayı : 1984/1", Rect2(KENAR, 148, w, 16), 12, Stil.MUREKKEP, Stil.daktilo(), HORIZONTAL_ALIGNMENT_RIGHT))
-	_sonrakiler.append(_yaz("Ardıçlı, Ocak 1984", Rect2(KENAR, 165, w, 14), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik()))
+	_aciklama = _yaz("Ardıçlı, Ocak 1984", Rect2(KENAR, 165, w, 14), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
+	_sonrakiler.append(_aciklama)
 	_sonrakiler.append(_cizgi(Rect2(KENAR, 184, w, 1.0), 0.4))
 
 	var y := 194.0
@@ -122,6 +128,18 @@ func _kagidi_kur() -> void:
 	y += 36.0
 	if not OS.has_feature("web"):
 		_secenek("Cikis", "Çıkış", 4, y).pressed.connect(func() -> void: Oyun.cik())
+
+	# görev şekli satırları: "Yeni Oyun" denince ana satırların yerine gelir
+	y = 194.0
+	var no := 1
+	for kod: String in Oyun.KIPLER:
+		var bilgi: Dictionary = Oyun.KIPLER[kod]
+		var d := _secenek("Zorluk" + kod.capitalize(), str(bilgi.ad), no, y, true)
+		d.pressed.connect(_oyunu_baslat.bind(kod))
+		d.mouse_entered.connect(func() -> void: _aciklama.text = str(bilgi.aciklama))
+		y += 36.0
+		no += 1
+	_secenek("ZorlukGeri", "Vazgeç", no, y, true).pressed.connect(_kipleri_goster.bind(false))
 
 	# imza ve mühür
 	var alt := Control.new()
@@ -169,15 +187,7 @@ func _imzayi_ciz(alt: Control) -> void:
 	var b := alt.size
 	Imza.ciz(alt, Rect2(b.x - 150.0, -12.0, 136.0, 56.0), "mudur", Stil.MAVI_MUREKKEP)
 	alt.draw_string(Stil.daktilo_kalin(), Vector2(b.x - 150.0, 54.0), "Müdür", HORIZONTAL_ALIGNMENT_CENTER, 136.0, 12, Stil.MUREKKEP)
-	var renk := Color(Stil.MOR_MUHUR, 0.62)
-	alt.draw_set_transform(Vector2(44, 30), deg_to_rad(-13.0), Vector2.ONE)
-	alt.draw_arc(Vector2.ZERO, 30.0, 0.0, TAU, 48, renk, 2.0, true)
-	alt.draw_arc(Vector2.ZERO, 26.0, 0.0, TAU, 48, renk, 0.8, true)
-	alt.draw_arc(Vector2.ZERO, 12.0, 0.0, TAU, 32, renk, 0.8, true)
-	alt.draw_string(Stil.serif_kalin(), Vector2(-26, -13), "ARDIÇLI", HORIZONTAL_ALIGNMENT_CENTER, 52.0, 8, renk)
-	alt.draw_string(Stil.serif_kalin(), Vector2(-26, 22), "NÜFUS MD.", HORIZONTAL_ALIGNMENT_CENTER, 52.0, 7, renk)
-	alt.draw_string(Stil.serif_kalin(), Vector2(-12, 4), "T.C.", HORIZONTAL_ALIGNMENT_CENTER, 24.0, 8, renk)
-	alt.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	Damga.ciz(alt, Rect2(2, -12, 92, 78), "daire", "", deg_to_rad(-12.0), 0.78)
 
 
 ## Sürüm ve uyarı: masadaki etiketler gibi kabartma şerit.
@@ -226,7 +236,7 @@ func _basligi_bitir() -> void:
 
 ## Yazıdaki numaralı bir satır: "1. Yeni Oyun ........ [ ]". Üstüne gelinince satır bordoya döner ve
 ## kutusuna işaret konur; kullanılamayan satır soluk yazılır, yanına kurşun kalemle not düşülür.
-func _secenek(ad: String, metin: String, no: int, y: float) -> Button:
+func _secenek(ad: String, metin: String, no: int, y: float, kip_satiri: bool = false) -> Button:
 	var d := Button.new()
 	d.name = ad
 	d.text = "%d. %s" % [no, metin]
@@ -260,7 +270,12 @@ func _secenek(ad: String, metin: String, no: int, y: float) -> Button:
 	d.mouse_exited.connect(sus.queue_redraw)
 	d.button_down.connect(sus.queue_redraw)
 	d.button_up.connect(sus.queue_redraw)
-	_sonrakiler.append(d)
+	if kip_satiri:
+		d.visible = false
+		_kip_satirlari.append(d)
+	else:
+		_ana_satirlar.append(d)
+		_sonrakiler.append(d)
 	return d
 
 
@@ -421,7 +436,25 @@ func _yeni_oyun() -> void:
 			_yeni.text = "1. Yeni Oyun"
 			_yeni.add_theme_color_override("font_color", Stil.MUREKKEP))
 		return
-	Oyun.yeni_oyun()
+	_kipleri_goster(true)
+
+
+## Ana satırların yerine görev şekli satırlarını getirir (ya da geri alır).
+func _kipleri_goster(acik: bool) -> void:
+	_onay_bekliyor = false
+	_yeni.text = "1. Yeni Oyun"
+	_yeni.add_theme_color_override("font_color", Stil.MUREKKEP)
+	for d in _ana_satirlar:
+		d.visible = not acik
+	for d in _kip_satirlari:
+		d.visible = acik
+	_konu.text = "Konu : Görev şekli" if acik else "Konu : Yedi günlük gişe nöbeti"
+	_aciklama.text = "Nasıl bir mesai istersiniz?" if acik else "Ardıçlı, Ocak 1984"
+	Ses.cal("sayfa", 1.0, -6.0, 0.05)
+
+
+func _oyunu_baslat(gorev_sekli: String) -> void:
+	Oyun.yeni_oyun(gorev_sekli)
 	Oyun.sahneye_gec("masa")
 
 

@@ -95,6 +95,11 @@
 			"metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır."
 		},
 		{
+			"id": "sahte",
+			"tur": "sahtecilik",
+			"metin": "Mühür, imza ve kaşeler bilgi defterindeki örneklere uymalıdır; uymayan evrak sahtedir."
+		},
+		{
 			"id": "makbuz_sure",
 			"tur": "tarih_sure",
 			"belge": "harc_makbuzu",

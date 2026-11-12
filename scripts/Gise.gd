@@ -260,12 +260,10 @@ func _kepenk_ciz() -> void:
 	_kepenk_cizimi.draw_rect(Rect2(0, alt - 7.0, w, 7.0), Color("4a3222"))
 	_kepenk_cizimi.draw_rect(Rect2(0, alt, w, 9.0), Color(0, 0, 0, 0.22))
 	if kepenk > 0.96:
-		var levha := Rect2(w / 2.0 - 52.0, size.y * 0.44, 104.0, 30.0)
-		_kepenk_cizimi.draw_rect(levha, Color("efe6cd"))
-		_kepenk_cizimi.draw_rect(levha, Color("4a3222"), false, 2.0)
-		_kepenk_cizimi.draw_string(Stil.daktilo_kalin(), levha.position + Vector2(0, 21), "KAPALI",
-			HORIZONTAL_ALIGNMENT_CENTER, levha.size.x, 18, Stil.BORDO)
-
+		var levha := Serit.doku("levha_kapali")
+		if levha != null:
+			var boyut := levha.get_size() * (108.0 / levha.get_width())
+			_kepenk_cizimi.draw_texture_rect(levha, Rect2(Vector2(w / 2.0 - boyut.x / 2.0, size.y * 0.30), boyut), false)
 
 ## Camın yansıması: iki çapraz ışık şeridi ve üstte çerçeve gölgesi.
 func _cam_ciz(cam: Control) -> void:

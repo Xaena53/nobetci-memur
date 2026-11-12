@@ -37,6 +37,13 @@ static func uret(gun: Dictionary, rng: RandomNumberGenerator, kullanilan: Array 
 		"seri_no": _gecerli_seri(gun, rng),
 		"cinsiyet": cins,
 	}
+	# Her yüz kalıcı bir kişidir: adı, soyadı, ana-baba adı, doğumu ve imzası değişmez
+	# (rastgele değerler yine çekilir ki günün geri kalanı aynı tohumla aynı çıksın).
+	var sabit := Veri.vatandas(portre)
+	for alan: String in ["ad", "soyad", "baba_adi", "ana_adi", "dogum_yeri", "dogum_tarihi"]:
+		if sabit.has(alan):
+			kimlik[alan] = str(sabit[alan])
+	kimlik["imza"] = "%s %s" % [kimlik.ad, kimlik.soyad]
 	var islemler: Array = gun.get("islemler", ["kayit_ornegi"])
 	var islem := str(_sec(islemler, rng))
 
@@ -117,6 +124,8 @@ static func belgeleri_kur(kimlik: Dictionary, portre: String, islem: String, gun
 		match tur:
 			"nufus_cuzdani":
 				belgeler.append({"tur": tur, "foto": portre, "alanlar": kimlik.duplicate()})
+			"calisma_vizesi":
+				pass      # yalnızca yurt dışı çıkış kaydında, aşağıda eklenir
 			"ikametgah":
 				var m := _gecerli_mahalle(gun, adlar, rng)
 				var sure := Veri.kural(gun, "tarih_sure", "ikametgah")
@@ -129,6 +138,8 @@ static func belgeleri_kur(kimlik: Dictionary, portre: String, islem: String, gun
 					"muhtar": str(m.muhtar),
 					"muhtar_imza": true,
 					"muhtar_muhur": true,
+					"muhur_turu": "",                 # boş: gerçek mühür; doluysa sahtecilik türü (bkz. Damga)
+					"imza_sahibi": str(m.muhtar),     # imzayı atan (sahte belgede başkası)
 				}})
 			"harc_makbuzu":
 				var tarife: Dictionary = Veri.kural(gun, "harc_tutar").get("tutarlar", VARSAYILAN_TARIFE)
@@ -142,8 +153,34 @@ static func belgeleri_kur(kimlik: Dictionary, portre: String, islem: String, gun
 					"tutar": int(tarife.get(islem, 250)),
 					"tarih": Tarih.gun_ekle(bugun, -geri),
 					"makbuz_no": "%06d" % rng.randi_range(1200, 9800),
+					"kase_turu": "",                  # boş: gerçek vezne kaşesi
 				}})
+	# Yurt dışı çıkış kaydı için çalışma vizesi de getirilir.
+	var vize_kurali := Veri.kural(gun, "vize")
+	if not vize_kurali.is_empty() and islem == str(vize_kurali.get("islem", "yurt_disi")):
+		belgeler.append(vize_kur(kimlik, gun, rng))
 	return belgeler
+
+
+## Geçerli bir çalışma vizesi: numarası verilmiş aralıkta, süresi dolmamış, bilgileri cüzdanla aynı.
+static func vize_kur(kimlik: Dictionary, gun: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
+	var adlar := Veri.adlar()
+	var bugun := str(gun.get("tarih", "09.01.1984"))
+	var b: Dictionary = Veri.kural(gun, "vize").get("no", {})
+	var verilis := Tarih.gun_ekle(bugun, -rng.randi_range(4, 38))
+	return {"tur": "calisma_vizesi", "alanlar": {
+		"ad": kimlik.ad, "soyad": kimlik.soyad,
+		"dogum_tarihi": kimlik.get("dogum_tarihi", ""),
+		"seri_no": kimlik.get("seri_no", ""),
+		"ulke": str(_sec(adlar.get("ulkeler", ["Almanya"]), rng)),
+		"meslek": str(_sec(adlar.get("meslekler", ["Kaynakçı"]), rng)),
+		"vize_no": "%s-%02d-%05d" % [str(b.get("onek", "ÇV")), int(b.get("yil", 84)),
+			rng.randi_range(int(b.get("min", 2000)) + 50, int(b.get("max", 6999)) - 50)],
+		"verilis": verilis,
+		"bitis": Tarih.gun_ekle(verilis, 90),
+		"kase_turu": "",
+		"imza": kimlik.get("imza", ""),
+	}}
 
 
 static func _gecerli_mahalle(gun: Dictionary, adlar: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
@@ -188,6 +225,19 @@ static func kusur_adaylari(v: Dictionary, gun: Dictionary) -> Array:
 			"mahalle_listesi":
 				if belgeler.has("ikametgah"):
 					adaylar.append(["mahalle", w])
+			"sahtecilik":
+				if belgeler.has("ikametgah"):
+					adaylar.append(["muhur_sahte", w * 0.9])
+					adaylar.append(["imza_sahte", w * 0.6])
+				if belgeler.has("harc_makbuzu"):
+					adaylar.append(["kase_sahte", w * 0.7])
+			"vize":
+				if belgeler.has("calisma_vizesi"):
+					adaylar.append(["vize_no", w * 1.6])
+					adaylar.append(["vize_kase", w * 1.6])
+					adaylar.append(["vize_kimlik", w * 1.2])
+					adaylar.append(["vize_imza", w * 0.9])
+					adaylar.append(["vize_sure", w * 1.4])
 			"belge_zorunlu":
 				if (k.get("belgeler", []) as Array).size() > 1:
 					adaylar.append(["belge_eksik", 0.55 * w])
@@ -203,6 +253,15 @@ static func _kusur_ekle(v: Dictionary, gun: Dictionary, rng: RandomNumberGenerat
 		adaylar.remove_at(i)
 		# Eksik belge tek başına bir kusurdur: başka kusurun hedefini ortadan kaldırabilir.
 		if tur == "belge_eksik" and not secilenler.is_empty():
+			continue
+		# Olmayan mühür sahte olamaz: aynı öğeye iki ayrı kusur verilmez.
+		var cakisan := false
+		for cift: Array in [["muhur", "muhur_sahte"], ["imza", "imza_sahte"]]:
+			if cift.has(tur):
+				for s in secilenler:
+					if cift.has(s):
+						cakisan = true
+		if cakisan:
 			continue
 		secilenler.append(tur)
 		if tur == "belge_eksik":
@@ -222,7 +281,7 @@ static func kusur_uygula(v: Dictionary, tur: String, gun: Dictionary, rng: Rando
 	match tur:
 		"ad", "soyad":
 			var hedefler: Array = []
-			for t: String in ["ikametgah", "harc_makbuzu"]:
+			for t: String in ["ikametgah", "harc_makbuzu", "calisma_vizesi"]:
 				if belgeler.has(t):
 					hedefler.append(belgeler[t])
 			if hedefler.is_empty():
@@ -276,6 +335,8 @@ static func kusur_uygula(v: Dictionary, tur: String, gun: Dictionary, rng: Rando
 			if k.is_empty() or not belgeler.has("nufus_cuzdani"):
 				return ""
 			belgeler["nufus_cuzdani"].alanlar["seri_no"] = _gecersiz_seri(k, rng)
+			if belgeler.has("calisma_vizesi"):      # vize bu cüzdana göre düzenlenmiştir: numara aynı kalır
+				belgeler["calisma_vizesi"].alanlar["seri_no"] = belgeler["nufus_cuzdani"].alanlar["seri_no"]
 			return "seri"
 		"foto":
 			if not belgeler.has("nufus_cuzdani"):
@@ -298,7 +359,31 @@ static func kusur_uygula(v: Dictionary, tur: String, gun: Dictionary, rng: Rando
 			var secilen: Dictionary = _sec(disarisi, rng)
 			belgeler["ikametgah"].alanlar["mahalle"] = str(secilen.ad)
 			belgeler["ikametgah"].alanlar["muhtar"] = str(secilen.muhtar)
+			belgeler["ikametgah"].alanlar["imza_sahibi"] = str(secilen.muhtar)
 			return "mahalle"
+		"muhur_sahte":
+			if not belgeler.has("ikametgah") or not bool(belgeler["ikametgah"].alanlar.get("muhtar_muhur", false)):
+				return ""
+			belgeler["ikametgah"].alanlar["muhur_turu"] = Damga.sahte_sec("muhtar", zorluk, rng)
+			return "sahte"
+		"imza_sahte":
+			if not belgeler.has("ikametgah") or not bool(belgeler["ikametgah"].alanlar.get("muhtar_imza", false)):
+				return ""
+			var al: Dictionary = belgeler["ikametgah"].alanlar
+			var baskasi := _baska_muhtar(str(al.get("muhtar", "")), adlar, rng)
+			if baskasi == "":
+				return ""
+			al["imza_sahibi"] = baskasi
+			return "sahte"
+		"kase_sahte":
+			if not belgeler.has("harc_makbuzu"):
+				return ""
+			belgeler["harc_makbuzu"].alanlar["kase_turu"] = Damga.sahte_sec("vezne", zorluk, rng)
+			return "sahte"
+		"vize_no", "vize_kase", "vize_kimlik", "vize_imza", "vize_sure":
+			if not belgeler.has("calisma_vizesi"):
+				return ""
+			return _vize_boz(belgeler["calisma_vizesi"].alanlar, tur, gun, rng, zorluk)
 		"belge_eksik":
 			var liste: Array = v.belgeler
 			var adaylar: Array = []
@@ -309,6 +394,78 @@ static func kusur_uygula(v: Dictionary, tur: String, gun: Dictionary, rng: Rando
 				return ""
 			liste.erase(_sec(adaylar, rng))
 			return "belge_eksik"
+	return ""
+
+
+## Çalışma vizesine tek bir kusur işler; doğurduğu gerekçeyi döndürür.
+static func _vize_boz(al: Dictionary, tur: String, gun: Dictionary, rng: RandomNumberGenerator, zorluk: int) -> String:
+	var bugun := str(gun.get("tarih", ""))
+	var b: Dictionary = Veri.kural(gun, "vize").get("no", {})
+	match tur:
+		"vize_no":
+			var onek := str(b.get("onek", "ÇV"))
+			var yil := int(b.get("yil", 84))
+			match rng.randi_range(0, 2 if zorluk >= 2 else 1):
+				0:      # geçen yılın numarası
+					al["vize_no"] = "%s-%02d-%05d" % [onek, yil - 1, rng.randi_range(int(b.get("min", 2000)), int(b.get("max", 6999)))]
+				1:      # henüz verilmemiş bir numara
+					al["vize_no"] = "%s-%02d-%05d" % [onek, yil, rng.randi_range(int(b.get("max", 6999)) + 1, mini(99999, int(b.get("max", 6999)) + 2500))]
+				_:      # önek harfleri yanlış
+					al["vize_no"] = "%s-%02d-%05d" % [["CV", "ÇY", "ÇW"][rng.randi_range(0, 2)], yil, rng.randi_range(int(b.get("min", 2000)), int(b.get("max", 6999)))]
+			return "sahte"
+		"vize_kase":
+			al["kase_turu"] = Damga.sahte_sec("vize", zorluk, rng)
+			return "sahte"
+		"vize_kimlik":
+			if rng.randf() < 0.5:
+				al["seri_no"] = _rakam_degistir(str(al.get("seri_no", "")), rng)
+			else:
+				al["dogum_tarihi"] = _rakam_degistir(str(al.get("dogum_tarihi", "")), rng)
+			return "sahte"
+		"vize_imza":
+			var baskasi := _baska_imza(str(al.get("imza", "")), rng)
+			if baskasi == "":
+				return ""
+			al["imza"] = baskasi
+			return "sahte"
+		"vize_sure":
+			var bitis := Tarih.gun_ekle(bugun, -rng.randi_range(1, 4 if zorluk >= 3 else 30))
+			al["bitis"] = bitis
+			al["verilis"] = Tarih.gun_ekle(bitis, -90)
+			return "vize"
+	return ""
+
+
+## Metindeki rakamlardan birini başka bir rakamla değiştirir ("A-318722" → "A-318122").
+static func _rakam_degistir(metin: String, rng: RandomNumberGenerator) -> String:
+	var yerler: Array[int] = []
+	for i in metin.length():
+		if metin[i] >= "0" and metin[i] <= "9":
+			yerler.append(i)
+	if yerler.is_empty():
+		return metin + "1"
+	var i: int = yerler[rng.randi_range(maxi(0, yerler.size() - 4), yerler.size() - 1)]      # sondaki rakamlar: daha zor fark edilir
+	var yeni := (int(metin[i]) + rng.randi_range(1, 9)) % 10
+	return metin.substr(0, i) + str(yeni) + metin.substr(i + 1)
+
+
+## Sahte ilmühabere imza atan: bu mahallenin muhtarı olmayan başka bir muhtar.
+static func _baska_muhtar(muhtar: String, adlar: Dictionary, rng: RandomNumberGenerator) -> String:
+	var digerleri: Array[String] = []
+	for m: Dictionary in (adlar.get("mahalleler", []) as Array) + (adlar.get("dis_mahalleler", []) as Array):
+		if str(m.muhtar) != muhtar and Imza.doku(str(m.muhtar)) != null:
+			digerleri.append(str(m.muhtar))
+	return digerleri[rng.randi_range(0, digerleri.size() - 1)] if not digerleri.is_empty() else ""
+
+
+## Sahte vizedeki imza: kadrodan başka birinin imzası.
+static func _baska_imza(sahibi: String, rng: RandomNumberGenerator) -> String:
+	var havuz := Portreler.havuz()
+	for deneme in 12:
+		var k := Veri.vatandas(havuz[rng.randi_range(0, havuz.size() - 1)])
+		var aday := "%s %s" % [str(k.get("ad", "")), str(k.get("soyad", ""))]
+		if not k.is_empty() and Imza.kod(aday) != Imza.kod(sahibi) and Imza.doku(aday) != null:
+			return aday
 	return ""
 
 

@@ -118,15 +118,15 @@ def main() -> None:
 
     isler = []      # (kimlik, klasör, çeşitleme rgba)
     no = 0
-    for sayfa in HAVUZ:
-        ek = sayfa.split("_")[1]
+    # (sayfa eki, kişi sayısı, satır sayısı): ilk dört sayfa 4x4, sonradan eklenen "e" sayfası 5x5
+    for ek, adet, satir in [(s.split("_")[1], 16, 4) for s in HAVUZ] + [("e", 25, 5)]:
         yol = HAM / f"vesika_{ek}.png"
-        kimlikler = [f"v{no + i + 1:02d}" for i in range(16)]
-        no += 16
+        kimlikler = [f"v{no + i + 1:02d}" for i in range(adet)]
+        no += adet
         if not yol.exists():
             print(f"vesika_{ek}.png yok, atlandı")
             continue
-        for kimlik, kisi in zip(kimlikler, sayfa_kisileri(yol, 16, 4)):
+        for kimlik, kisi in zip(kimlikler, sayfa_kisileri(yol, adet, satir)):
             isler.append((kimlik, VESIKA, kisi))
     yol = HAM / "vesika_hikaye.png"
     if yol.exists():

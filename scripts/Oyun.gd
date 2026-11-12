@@ -23,6 +23,18 @@ const SURGUN_SUPHESI := 4       ## şüphe bu düzeye varınca sürgün
 const TERFI_IHTARI := 6         ## terfi için en çok bu kadar ihtar
 const TERFI_SUPHESI := 1        ## terfi için en çok bu kadar şüphe
 
+# --- Görev şekli (zorluk) ---
+## ipucu: inceleme modunda karşılaştırma sonucunun söylenmesi (−1: her zaman, 0: hiç, n: günde n hak).
+## saat: mesai saatinin ağırlığı (1'den büyükse gün uzar). zorluk_farki: sahteciliklerin inceliğine eklenir.
+const KIPLER := {
+	"kolay": {"ad": "Kolay", "ipucu": -1, "saat": 1.3, "zorluk_farki": -1,
+		"aciklama": "Her karşılaştırmada ipucu; saat ağır işler."},
+	"orta": {"ad": "Orta", "ipucu": 3, "saat": 1.0, "zorluk_farki": 0,
+		"aciklama": "Günde üç ipucu hakkı; gerisi sizin gözünüz."},
+	"zor": {"ad": "Zor", "ipucu": 0, "saat": 1.0, "zorluk_farki": 1,
+		"aciklama": "İpucu yok. Defter, büyüteç ve siz."},
+}
+
 const AYAR_YOLU := "user://ayarlar.json"
 const SAHNELER := {
 	"menu": "res://scenes/AnaMenu.tscn",
@@ -42,6 +54,7 @@ const VARSAYILAN_AYARLAR := {
 var kayit_yolu := "user://kayit.json"  ## testler kendi dosyasını kullanır
 
 var gun: int = 1
+var zorluk := "kolay"              ## görev şekli: "kolay" | "orta" | "zor" (bkz. KIPLER)
 var para: int = BASLANGIC_PARASI
 var ihtar: int = 0                 ## oyun boyunca alınan toplam ihtar
 var suphe: int = 0                 ## rüşvet ve kayırma yüzünden biriken şüphe
@@ -140,7 +153,20 @@ func molayi_bitir() -> void:
 
 # --- Oyun akışı ---
 
-func yeni_oyun() -> void:
+## Seçili görev şeklinin ayarları.
+func kip() -> Dictionary:
+	return KIPLER.get(zorluk, KIPLER.kolay)
+
+
+## O günün verisi, görev şekline göre ayarlanmış hâliyle (sahteciliklerin inceliği kiple değişir).
+func gunun_verisi(gun_no: int = -1) -> Dictionary:
+	var g: Dictionary = Veri.gun(gun if gun_no < 0 else gun_no).duplicate(true)
+	g["zorluk"] = clampi(int(g.get("zorluk", 1)) + int(kip().get("zorluk_farki", 0)), 1, 3)
+	return g
+
+
+func yeni_oyun(gorev_sekli: String = "kolay") -> void:
+	zorluk = gorev_sekli if KIPLER.has(gorev_sekli) else "kolay"
 	gun = 1
 	para = BASLANGIC_PARASI
 	ihtar = 0
@@ -245,6 +271,7 @@ func kayit_var_mi() -> bool:
 func kayit_verisi() -> Dictionary:
 	return {
 		"surum": SURUM,
+		"zorluk": zorluk,
 		"gun": gun,
 		"para": para,
 		"ihtar": ihtar,
@@ -259,6 +286,9 @@ func kayit_verisi() -> Dictionary:
 
 func kayittan_al(veri: Dictionary) -> void:
 	gun = clampi(int(veri.get("gun", 1)), 1, TOPLAM_GUN)
+	zorluk = str(veri.get("zorluk", "kolay"))
+	if not KIPLER.has(zorluk):
+		zorluk = "kolay"
 	para = int(veri.get("para", BASLANGIC_PARASI))
 	ihtar = int(veri.get("ihtar", 0))
 	suphe = int(veri.get("suphe", 0))

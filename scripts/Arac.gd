@@ -30,7 +30,7 @@ var _doku: Texture2D
 func kur(arac_turu: String, yer: Vector2, katman: Node) -> void:
 	tur = arac_turu
 	name = "Arac_" + tur
-	size = Vector2(100, 90) if tur == "onay" else Vector2(136, 44)
+	size = Vector2(100, 90) if tur == "onay" else Vector2(112, 59)
 	pivot_offset = size / 2.0
 	mouse_default_cursor_shape = CURSOR_DRAG
 	if tur == "onay" and ResourceLoader.exists(MUHUR_DOKUSU):
@@ -46,6 +46,20 @@ func kur(arac_turu: String, yer: Vector2, katman: Node) -> void:
 
 func kullanilabilir() -> bool:
 	return etkin and kalan != 0
+
+
+## Elde tutulan (büyütülmüş) bir belgenin altında kalan araç tıklanamaz: tık belgeye gider.
+func _has_point(nokta: Vector2) -> bool:
+	if not Rect2(Vector2.ZERO, size).has_point(nokta):
+		return false
+	if _surukleniyor:
+		return true
+	var ekranda := get_global_transform() * nokta
+	for d in get_tree().get_nodes_in_group("elde_belge"):
+		var b := d as Control
+		if b != null and Rect2(Vector2.ZERO, b.size).has_point(b.get_global_transform().affine_inverse() * ekranda):
+			return false
+	return true
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -104,22 +118,20 @@ func _muhur_ciz() -> void:
 		draw_circle(Vector2(49, 12), 13, Stil.MASA_KOYU)
 
 
+## Fiş koçanı: başlığı ve yazısıyla boyalı görsel (koçanın üst bölümü). Havale pusulasında kalan hak yazılır.
 func _fis_ciz() -> void:
-	var kenar := Stil.KIRMIZI if tur == "eksik" else Stil.MAVI_MUREKKEP
 	var r := Rect2(Vector2.ZERO, size)
-	if not _surukleniyor:
-		# koçan: alttaki fişlerin kenarları
-		draw_rect(Rect2(r.position + Vector2(4, 5), r.size), Color(0, 0, 0, 0.28))
-		Kagit.parca_ciz(self, Rect2(r.position + Vector2(3, 3), r.size), "sayfa", Stil.KAGIT_ESKI, Color(0.86, 0.86, 0.86))
-		Kagit.parca_ciz(self, Rect2(r.position + Vector2(1.5, 1.5), r.size), "sayfa", Stil.KAGIT, Color(0.93, 0.93, 0.93))
-	else:
+	var doku := Serit.doku("fis_" + tur)
+	if _surukleniyor:
 		draw_rect(Rect2(r.position + Vector2(7, 11), r.size), Color(0, 0, 0, 0.22))
-	Kagit.parca_ciz(self, r, "sayfa", Stil.KAGIT_BEYAZ)
-	draw_rect(Rect2(0, 0, size.x, 18), Color(kenar, 0.92))
-	draw_rect(r, Color(kenar, 0.9), false, 1.5)
-	draw_string(Stil.daktilo_kalin(), Vector2(0, 14), BASLIKLAR.get(tur, ""), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13,
-		Stil.KAGIT_BEYAZ)
-	var alt := "belgeye bırak"
+	else:
+		draw_rect(Rect2(r.position + Vector2(3, 4), r.size), Color(0, 0, 0, 0.26))
+	if doku != null:
+		var b := doku.get_size()
+		draw_texture_rect_region(doku, r, Rect2(0, 0, b.x, b.x * size.y / size.x))
+	else:
+		Kagit.parca_ciz(self, r, "sayfa", Stil.KAGIT_BEYAZ)
+		draw_string(Stil.daktilo_kalin(), Vector2(0, 14), BASLIKLAR.get(tur, ""), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Stil.MUREKKEP)
 	if tur == "havale" and kalan >= 0:
-		alt = "kalan hak: %d" % kalan
-	draw_string(Stil.daktilo(), Vector2(0, 35), alt, HORIZONTAL_ALIGNMENT_CENTER, size.x, 12, Stil.MUREKKEP_SOLUK)
+		draw_string(Stil.daktilo(), Vector2(0, size.y * 0.66), "kalan hak: %d" % kalan, HORIZONTAL_ALIGNMENT_CENTER, size.x, 12,
+			Stil.MUREKKEP_SOLUK)

@@ -307,6 +307,34 @@
 				},
 				"baslik": "NÜFUS DAİRESİNDE PATLAMA",
 				"metin": "Teftiş günü mesai bitiminde arşiv odasında bir bavul patladı. Ölen yok; kırk yıllık nüfus kütükleri kül oldu. Bavulun röntgen cihazından nasıl geçtiği soruşturuluyor."
+			},
+			{
+				"kosul": {
+					"gurbetci": "ihbar"
+				},
+				"baslik": "SAHTE VİZE YAZIHANESİNE BASKIN",
+				"metin": "Gişede yakalanan sahte çalışma vizesinin izi sürüldü: müteahhit K.D.'nin yazıhanesinde boş vize kâğıtları ve kaşeler bulundu. Tarlasını satıp vize alan genç şikâyetçi oldu."
+			},
+			{
+				"kosul": {
+					"gurbetci": "uyarildi"
+				},
+				"baslik": "ALMANYA HAYALİ GİŞEDE BİTTİ",
+				"metin": "Tarlasını satıp aldığı vizenin sahte olduğunu nüfus gişesinde öğrenen genç, yola çıkmadan döndü. \"Sınırda öğrenseydim hâlim nice olurdu\" dedi; parasını geri almak için dava açtı."
+			},
+			{
+				"kosul": {
+					"gurbetci": "gecti"
+				},
+				"baslik": "SINIRDA SAHTE VİZE",
+				"metin": "Ardıçlı'dan yola çıkan genç işçi, sınır kapısında sahte çalışma vizesiyle yakalandı. Vizeyi almak için tarlasını satmıştı. Çıkış kaydının hangi gişede yapıldığı araştırılıyor."
+			},
+			{
+				"kosul": {
+					"usta": "gecti"
+				},
+				"baslik": "SINIRDAN GERİ ÇEVRİLDİ",
+				"metin": "Vizesinin süresi bir gün önce dolan dökümcü, sınır kapısından geri çevrildi. Yol parası da kış da ona kaldı."
 			}
 		],
 		"mektup": "Sayın Memur,\n\nYusuf'un kaydı oldu. Okuma yazmam yok; bunu Yusuf'a ben söyledim, o yazdı.\n\nKâğıdımın eksiği vardı, biliyorum. Siz de biliyordunuz. Beni yine de geri çevirmediniz. Başınıza iş açtıysam hakkınızı helal edin.\n\nYusuf büyüyünce memur olacakmış. \"Cama öbür taraftan bakacağım\" diyor.\n\nEllerinizden öper.\nHüsnü Karaca",

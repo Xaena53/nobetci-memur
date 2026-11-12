@@ -20,7 +20,7 @@ const SAAT_YARICAP := 30.5                      ## kadranın yarıçapı
 const TAKVIM_YAPRAK := Rect2(648, 124, 60, 70)
 const SAAT_ETIKETI := Rect2(647, 200, 62, 17)   ## takvimin altındaki dijital saat şeridi
 const MUDUR_CAMI := Rect2(733, 50, 143, 140)
-const MUDUR_PLAKET := Rect2(762, 13, 84, 21)
+const MUDUR_PLAKET := Rect2(765, 2, 78, 40)         ## pirinç kapı plaketi (görseli 2:1)
 const RADYO := Rect2(382, 236, 162, 64)
 
 # --- Sağdaki evrak dolabı (ekran koordinatı) ---
@@ -37,7 +37,9 @@ const BELGE_YERI := {
 	"nufus_cuzdani": Vector2(194, 120),
 	"harc_makbuzu": Vector2(196, 356),
 	"ikametgah": Vector2(516, 263),
+	"calisma_vizesi": Vector2(742, 322),
 }
+const DEFTER_YERI := Vector2(828, 158)            ## bilgi defterinin masada durduğu yer (ortası)
 
 # --- Teleks cihazı (masanın sağ arka köşesinde, müdür camının altında) ---
 const TELEKS_YARIK := Rect2(670, 360, 186, 13)  ## kâğıdın çıktığı yarık (ekran koordinatı)
@@ -47,10 +49,10 @@ const TELEKS_ENGEL := Rect2(636, -12, 280, 85)  ## cihazın masada kapladığı 
 # --- Araç tepsisi (masa koordinatı) ---
 const TEPSI := Rect2(968, 142, 297, 273)
 const MUHUR_YERI := Vector2(1047, 222)          ## ıstampanın üstü
-const EKSIK_YERI := Vector2(1188, 178)
-const HAVALE_YERI := Vector2(1185, 234)
+const EKSIK_YERI := Vector2(1188, 172)
+const HAVALE_YERI := Vector2(1186, 242)
 const BUYUTEC_YERI := Vector2(1036, 343)
 const IGNE_YERI := Vector2(1118, 372)           ## ihtarların takıldığı iğne
 const ZARF_YERI := Vector2(792, 318)            ## rüşvet zarfının masada durduğu yer (masa koordinatı)
-const DENETIM_ETIKETI := Rect2(742, 196, 125, 17)   ## "müdür izliyor" şeridi (ekran koordinatı)
-const CANTA_ETIKETI := Rect2(150, 268, 166, 17)     ## "çantayı röntgene alın" şeridi (ekran koordinatı)
+const DENETIM_ETIKETI := Rect2(741, 191, 127, 27)   ## "müdür izliyor" şeridi (ekran koordinatı)
+const CANTA_ETIKETI := Rect2(160, 264, 152, 31)     ## "çantayı röntgene alın" şeridi (ekran koordinatı)

@@ -1,17 +1,26 @@
 class_name IncelemeKatmani
 extends Control
-## İnceleme modu: oyuncu iki hedef (belge alanı, kural, yüz, takvim) seçer; aralarına çizgi
-## çekilir ve "Uyuşmazlık: ..." ya da "Sorun yok" balonu çıkar. Karşılaştırmanın kendisi
-## dışarıdan verilen `karsilastir` çağrısıyla yapılır.
+## İnceleme modu: oyuncu iki hedef (belge alanı, kural, yüz, takvim, defterdeki örnek) seçer; aralarına
+## çizgi çekilir. Karşılaştırmanın kendisi dışarıdan verilen `karsilastir` çağrısıyla yapılır.
+##
+## Sonucun söylenip söylenmeyeceği görev şekline bağlıdır (`kip`):
+##  - "acik"  : her karşılaştırmada "Uyuşmazlık: ..." ya da "Sorun yok" balonu çıkar (kolay).
+##  - "hak"   : balon "ipucu ister misiniz?" diye sorar; tıklanırsa bir hak harcanır ve sonuç açılır (orta).
+##  - "kapali": yalnızca çizgi çekilir; karar memurundur (zor).
 
 signal bulgu(sonuc: Dictionary)
 signal mod_degisti(acik: bool)
+signal ipucu_kullanildi(kalan: int)
+
+const NOTR := "Yan yana kondu. Karar sizin."
 
 const BALON_GENISLIK := 270.0
 const BALON_PUNTO := 14
 const BALON_BOSLUK := Vector2(12, 8)
 
 var karsilastir: Callable   ## func(a: Hedef, b: Hedef) -> {durum, mesaj, gerekce}
+var kip := "acik"
+var ipucu_kalan := 0        ## "hak" kipinde kalan ipucu hakkı
 
 var aktif := false:
 	set(a):
@@ -27,13 +36,17 @@ var _cizgiler: Array[Dictionary] = []   ## {a, b, renk, omur}  (omur < 0: kalıc
 var _balon: Panel
 var _balon_yazi: Label
 var _balon_omru := 0.0
+var _bekleyen: Dictionary = {}          ## ipucu sorulan karşılaştırma: {a, b, sonuc}
 
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	mouse_filter = MOUSE_FILTER_IGNORE
 	_balon = Panel.new()
+	_balon.name = "IncelemeBalonu"
 	_balon.mouse_filter = MOUSE_FILTER_IGNORE
+	_balon.mouse_default_cursor_shape = CURSOR_POINTING_HAND
+	_balon.gui_input.connect(_balona_basildi)
 	_balon.visible = false
 	_balon_yazi = Stil.etiket("", BALON_PUNTO, Stil.MUREKKEP, Stil.daktilo_kalin())
 	_balon_yazi.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -57,17 +70,62 @@ func hedef_tiklandi(h: Hedef) -> void:
 	var a := _ilk
 	_secimi_birak()
 	var sonuc: Dictionary = karsilastir.call(a, h) if karsilastir.is_valid() else {"durum": "ilgisiz", "mesaj": ""}
+	var durum := str(sonuc.get("durum", "ilgisiz"))
+	var hukum := durum == "uyumlu" or durum == "uyusmaz"
+	_bekleyen = {}
+	if kip == "kapali":
+		_goster(a, h, {"durum": "notr", "mesaj": NOTR})
+		return
+	if kip == "hak" and hukum:
+		if ipucu_kalan <= 0:
+			_goster(a, h, {"durum": "notr", "mesaj": "İpucu hakkınız kalmadı. Karar sizin."})
+			return
+		_bekleyen = {"a": a, "b": h, "sonuc": sonuc}
+		_goster(a, h, {"durum": "soru", "mesaj": "İpucu ister misiniz? Bu kâğıda tıklayın (kalan hak: %d)." % ipucu_kalan})
+		return
+	_sonucu_ac(a, h, sonuc)
+
+
+## Bekleyen karşılaştırmanın sonucunu bir ipucu hakkı harcayarak açar ("hak" kipi).
+func ipucunu_kullan() -> bool:
+	if _bekleyen.is_empty() or ipucu_kalan <= 0:
+		return false
+	var a := _bekleyen.a as Hedef
+	var b := _bekleyen.b as Hedef
+	var sonuc: Dictionary = _bekleyen.sonuc
+	_bekleyen = {}
+	if not is_instance_valid(a) or not is_instance_valid(b):
+		return false
+	ipucu_kalan -= 1
+	# soru çizgisini kaldır, gerçek sonucu göster
+	for i in range(_cizgiler.size() - 1, -1, -1):
+		if _cizgiler[i].a == a and _cizgiler[i].b == b:
+			_cizgiler.remove_at(i)
+	_sonucu_ac(a, b, sonuc)
+	ipucu_kullanildi.emit(ipucu_kalan)
+	return true
+
+
+func _sonucu_ac(a: Hedef, h: Hedef, sonuc: Dictionary) -> void:
 	_goster(a, h, sonuc)
 	sonuc["a"] = a
 	sonuc["b"] = h
 	bulgu.emit(sonuc)
 
 
+func _balona_basildi(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_balon.accept_event()
+		ipucunu_kullan()
+
+
 ## Vatandaş giderken: bütün çizgiler ve seçimler silinir.
 func temizle() -> void:
 	_secimi_birak()
 	_cizgiler.clear()
+	_bekleyen = {}
 	_balon.visible = false
+	_balon.mouse_filter = MOUSE_FILTER_IGNORE
 	queue_redraw()
 
 
@@ -98,11 +156,21 @@ func _goster(a: Hedef, b: Hedef, sonuc: Dictionary) -> void:
 					var h := instance_from_id(k) as Hedef
 					if h != null and h.durum == Hedef.Durum.UYUMLU:
 						h.durum = Hedef.Durum.BOS)
+		"soru":
+			renk = Stil.MAVI_MUREKKEP
+			omur = 6.0
+		"notr":
+			renk = Color(Stil.MUREKKEP, 0.7)
+			omur = 3.2
 		_:
 			renk = Color(Stil.MUREKKEP, 0.55)
 			omur = 1.2
 	_cizgiler.append({"a": a, "b": b, "renk": renk, "omur": omur})
 	_balonu_ac(str(sonuc.get("mesaj", "")), renk, (a.merkez() + b.merkez()) / 2.0, durum == "uyusmaz")
+	# ipucu sorusu: balon tıklanabilir olur ve daha uzun kalır
+	_balon.mouse_filter = MOUSE_FILTER_STOP if durum == "soru" else MOUSE_FILTER_IGNORE
+	if durum == "soru":
+		_balon_omru = 6.0
 	queue_redraw()
 
 
@@ -134,6 +202,8 @@ func _process(delta: float) -> void:
 		_balon_omru -= delta
 		if _balon_omru <= 0.0:
 			_balon.visible = false
+			_balon.mouse_filter = MOUSE_FILTER_IGNORE
+			_bekleyen = {}
 		elif _balon_omru < 0.4:
 			_balon.modulate.a = _balon_omru / 0.4
 	if _cizgiler.is_empty():

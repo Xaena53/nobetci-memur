@@ -49,6 +49,7 @@ var kural_kitabi: KuralKitabi
 var inceleme: IncelemeKatmani
 var teleks: Teleks
 var rontgen: Rontgen
+var defter: Belge                       ## bilgi defteri (sahtecilik kuralı olan günlerde masada durur)
 var araclar: Dictionary = {}            ## tür -> Arac
 
 var _tepsi_katmani: Node2D
@@ -57,8 +58,8 @@ var _fis_katmani: Node2D
 var _arac_katmani: Node2D
 var _ust_katman: Control
 var _incele_dugmesi: Button
-var _incele_seridi: Label
-var _ihtar_seridi: Label
+var _incele_seridi: Serit
+var _ihtar_seridi: Serit
 var _igne: Control
 var _igne_dokusu: Texture2D             ## çizim komutu dokuyu tutmaz; başvuru burada yaşamalı
 var _bekleyen_fis: Dictionary = {}
@@ -67,21 +68,29 @@ var _jaluzi: Control
 var _jaluzi_acik := 0.0                 ## 0 inik .. 1 açık
 var _mudur_odasi: Control
 var _mudur: CanliPortre
-var _denetim_seridi: Label
+var _denetim_seridi: Serit
 var _saat_durdu := false                ## mektup gibi tam ekran bir kâğıt okunurken saat bekler
 var _ses_perdesi := 1.0                 ## camdaki vatandaşın ses perdesi (yaşa ve cinsiyete göre)
 var _tik_sayaci := 0.0
-var _canta_seridi: Label
+var _canta_seridi: Serit
 var _ziyaret_no := 0                    ## her vatandaşta artar: bekleyen işlevler eski ziyareti sürdürmesin
 
 
 func _ready() -> void:
-	gun = Veri.gun(Oyun.gun)
+	gun = Oyun.gunun_verisi()          # görev şekline göre ayarlanmış gün
 	havale_kalan = int(gun.get("havale_hakki", 2))
 	ozet = {"islenen": 0, "dogru": 0, "yanlis": 0, "yarim": 0, "havale": 0, "yarida": 0, "kazanc": 0, "ihtar": 0,
 		"ihtarlar": []}
 	_sahneyi_kur()
 	inceleme.karsilastir = _karsilastir
+	# görev şekli: ipucu her zaman mı, hakla mı, hiç mi
+	var ipucu := int(Oyun.kip().get("ipucu", -1))
+	inceleme.kip = "acik" if ipucu < 0 else ("hak" if ipucu > 0 else "kapali")
+	inceleme.ipucu_kalan = maxi(0, ipucu)
+	inceleme.ipucu_kullanildi.connect(func(_kalan: int) -> void:
+		ozet["ipucu"] = int(ozet.get("ipucu", 0)) + 1
+		_incele_seridini_yaz(inceleme.aktif))
+	_incele_seridini_yaz(false)
 	kural_kitabi.yukle(gun)
 	saat.tarih_ayarla(str(gun.get("tarih", "")))
 	saat.dakika = dakika
@@ -95,7 +104,7 @@ func _process(delta: float) -> void:
 	if not mesai_acik or _saat_durdu:
 		return
 	# Ayarlardaki saat hızı: bir oyun dakikasının kaç gerçek saniye sürdüğü.
-	dakika += delta / maxf(0.05, float(Oyun.ayar("saat_hizi")))
+	dakika += delta / maxf(0.05, float(Oyun.ayar("saat_hizi")) * float(Oyun.kip().get("saat", 1.0)))
 	if dakika >= MESAI_SONU:
 		dakika = MESAI_SONU
 		mesaiyi_bitir()
@@ -456,6 +465,8 @@ func _vatandasi_ugurla(karar: String) -> void:
 	balon.soyle(_soz(karar), 1.4)
 	inceleme.temizle()
 	kural_kitabi.isaretleri_temizle()
+	if is_instance_valid(defter):
+		defter.isaretleri_temizle()
 	_belgeleri_gonder(0.25)
 	Ses.gecikmeli("kagit_kay", 0.25, 1.15, -8.0)
 	await Oyun.bekle(1.0)
@@ -624,7 +635,7 @@ func _konumdaki_belge(konum: Vector2) -> Belge:
 		if t == null:
 			continue
 		var b := t.icerik() as Belge
-		if b == null or b.kilitli:
+		if b == null or b.kilitli or b == defter:      # bilgi defterine karar aracı bırakılmaz
 			continue
 		var yerel := b.get_global_transform().affine_inverse() * konum
 		if Rect2(Vector2.ZERO, b.size).has_point(yerel):
@@ -749,13 +760,26 @@ func _bulgu(sonuc: Dictionary) -> void:
 func _inceleme_degisti(acik: bool) -> void:
 	for b in belgeler:
 		b.inceleme_ac(acik)
+	if is_instance_valid(defter):
+		defter.inceleme_ac(acik)
 	kural_kitabi.inceleme_ac(acik)
 	gise.yuz.aktif = acik
 	saat.takvim.aktif = acik
 	_incele_dugmesi.set_pressed_no_signal(acik)
 	_incele_dugmesi.modulate = Color(1.25, 1.2, 1.05) if acik else Color.WHITE
-	_incele_seridi.text = "İNCELEME AÇIK" if acik else "İNCELE [BOŞLUK]"
-	_incele_seridi.add_theme_color_override("font_color", Color("ffd9a0") if acik else Stil.KAGIT_BEYAZ)
+	_incele_seridini_yaz(acik)
+
+
+## Büyütecin altındaki şerit: inceleme açık mı; ipucu hakkı sayılan görev şeklinde kalan hak.
+func _incele_seridini_yaz(acik: bool) -> void:
+	if inceleme.kip == "hak":
+		# sayı taşıyan şerit: boş bandın üstüne kabartma yazı
+		_incele_seridi.doku_adi = "serit_bos"
+		_incele_seridi.metin = ("AÇIK · İPUCU %d" if acik else "İPUCU HAKKI %d") % inceleme.ipucu_kalan
+		_incele_seridi.parlak = acik
+	else:
+		_incele_seridi.doku_adi = "serit_inceleme_acik" if acik else "serit_incele"
+		_incele_seridi.metin = ""
 
 
 # --- Sahne kurulumu ---
@@ -820,24 +844,31 @@ func _sahneyi_kur() -> void:
 	inceleme = IncelemeKatmani.new()
 	inceleme.name = "Inceleme"
 	add_child(inceleme)
+	inceleme.z_index = 60            # çizgiler ve balon, elde tutulan belgenin de üstünde
 	inceleme.mod_degisti.connect(_inceleme_degisti)
 	inceleme.bulgu.connect(_bulgu)
 	gise.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
 	saat.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
 	kural_kitabi.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
 
-	_canta_seridi = Stil.etiket("ÇANTAYI RÖNTGENE ALIN", 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	# bilgi defteri: sahtecilik kuralı yürürlükteyse masada durur; çift tıklanınca açılır
+	if not Veri.kural(gun, "sahtecilik").is_empty():
+		defter = Belge.olustur({"tur": "bilgi_defteri", "gun": gun})
+		defter.name = "BilgiDefteri"
+		defter.masaya_koy(_belge_katmani)
+		defter.tutucu.masa_konumu = Yerlesim.DEFTER_YERI
+		defter.tutucu.yatis_acisi = deg_to_rad(4.0)
+		defter.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
+
+	_canta_seridi = Serit.olustur("serit_canta", Yerlesim.CANTA_ETIKETI.size)
 	_canta_seridi.name = "CantaSeridi"
-	_canta_seridi.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Stil.BORDO, Color(0, 0, 0, 0.45), 1, 2, 2), 4, 2))
-	_canta_seridi.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_canta_seridi.position = Yerlesim.CANTA_ETIKETI.position
-	_canta_seridi.size = Yerlesim.CANTA_ETIKETI.size
-	_canta_seridi.mouse_filter = MOUSE_FILTER_IGNORE
 	_canta_seridi.visible = false
 	add_child(_canta_seridi)
 
 	rontgen = Rontgen.new()
 	rontgen.name = "Rontgen"
+	rontgen.z_index = 45             # cihaz, açık duran bilgi defterini de örter
 	add_child(rontgen)
 	rontgen.karar_verildi.connect(_canta_karari)
 	gise.canta_tiklandi.connect(_cantayi_tara)
@@ -846,6 +877,7 @@ func _sahneyi_kur() -> void:
 	_ust_katman.name = "UstKatman"
 	_ust_katman.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_ust_katman.mouse_filter = MOUSE_FILTER_IGNORE
+	_ust_katman.z_index = 80
 	add_child(_ust_katman)
 
 
@@ -860,12 +892,16 @@ func _katman(ad: String) -> Node2D:
 ## müdür denetim saatlerinde açar ve gişeyi izler.
 func _mudur_bolmesini_kur() -> void:
 	var p := Yerlesim.MUDUR_PLAKET
-	var yazi := Stil.etiket("MÜDÜR", 12, Color("3a2a14"), Stil.serif_kalin())
-	yazi.position = p.position
-	yazi.size = p.size
-	yazi.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	yazi.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	add_child(yazi)
+	# pirinç kapı plaketi (yazısıyla birlikte boyalı görsel); arka plandaki boş plaketin üstüne oturur
+	var plaket := TextureRect.new()
+	plaket.name = "MudurPlaketi"
+	plaket.texture = Serit.doku("plaket_mudur")
+	plaket.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	plaket.stretch_mode = TextureRect.STRETCH_SCALE
+	plaket.position = p.position
+	plaket.size = p.size
+	plaket.mouse_filter = MOUSE_FILTER_IGNORE
+	add_child(plaket)
 
 	_mudur_odasi = Control.new()
 	_mudur_odasi.name = "MudurOdasi"
@@ -896,12 +932,9 @@ func _mudur_bolmesini_kur() -> void:
 	_jaluzi.draw.connect(_jaluzi_ciz)
 	add_child(_jaluzi)
 
-	_denetim_seridi = Stil.etiket("MÜDÜR İZLİYOR", 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	_denetim_seridi = Serit.olustur("serit_mudur_izliyor", Yerlesim.DENETIM_ETIKETI.size)
 	_denetim_seridi.name = "DenetimSeridi"
-	_denetim_seridi.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Stil.BORDO, Color(0, 0, 0, 0.45), 1, 2, 2), 4, 2))
-	_denetim_seridi.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_denetim_seridi.position = Yerlesim.DENETIM_ETIKETI.position
-	_denetim_seridi.size = Yerlesim.DENETIM_ETIKETI.size
 	_denetim_seridi.visible = false
 	add_child(_denetim_seridi)
 
@@ -972,7 +1005,7 @@ func _tepsiyi_kur() -> void:
 		_incele_dugmesi.add_child(resim)
 	_incele_dugmesi.toggled.connect(func(acik: bool) -> void: inceleme.aktif = acik)
 	_masaya_yerlestir(_incele_dugmesi, Yerlesim.BUYUTEC_YERI)
-	_incele_seridi = _serit("İNCELE [BOŞLUK]", Yerlesim.BUYUTEC_YERI + Vector2(-8, 58), Color("1d1b19"), 118)
+	_incele_seridi = _serit("serit_incele", "", Yerlesim.BUYUTEC_YERI + Vector2(-8, 60), 118)
 
 	if ResourceLoader.exists(IGNE):
 		_igne_dokusu = load(IGNE)
@@ -982,7 +1015,7 @@ func _tepsiyi_kur() -> void:
 	_igne.mouse_filter = MOUSE_FILTER_IGNORE
 	_igne.draw.connect(_igne_ciz)
 	_masaya_yerlestir(_igne, Yerlesim.IGNE_YERI + Vector2(0, -22))
-	_ihtar_seridi = _serit("İHTAR 0", Yerlesim.IGNE_YERI + Vector2(8, 30), Stil.BORDO, 64)
+	_ihtar_seridi = _serit("serit_bos", "İHTAR 0", Yerlesim.IGNE_YERI + Vector2(10, 33), 86)
 
 
 ## İğne ve ona takılmış günün ihtar pusulaları.
@@ -1005,7 +1038,7 @@ func _igne_ciz() -> void:
 
 func _igneyi_guncelle() -> void:
 	_igne.queue_redraw()
-	_ihtar_seridi.text = "İHTAR %d" % gunluk_ihtar
+	_ihtar_seridi.metin = "İHTAR %d" % gunluk_ihtar
 
 
 ## Bir denetimi (düğme, etiket, gösterge) tepsideki yerine, masa perspektifiyle yerleştirir.
@@ -1019,12 +1052,9 @@ func _masaya_yerlestir(d: Control, yer: Vector2) -> MasaNesnesi:
 	return t
 
 
-## Dymo tarzı kabartma şerit etiket (masa düzleminde; `yer` ortasıdır).
-func _serit(metin: String, yer: Vector2, zemin: Color, genislik: float = 128.0) -> Label:
-	var l := Stil.etiket(metin, 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
-	l.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(zemin, Color(0, 0, 0, 0.45), 1, 2, 2), 4, 2))
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.clip_text = true
-	l.size = Vector2(genislik, 18)
-	_masaya_yerlestir(l, yer)
-	return l
+## Kabartma şerit etiket (masa düzleminde; `yer` ortasıdır). Yazısı sabitse görselin kendisidir; sayı
+## taşıyorsa boş şeridin üstüne yazılır (bkz. Serit).
+func _serit(doku_adi: String, metin: String, yer: Vector2, genislik: float = 128.0) -> Serit:
+	var s := Serit.olustur(doku_adi, Vector2(genislik, roundf(genislik / 4.55)), metin)
+	_masaya_yerlestir(s, yer)
+	return s

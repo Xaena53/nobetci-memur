@@ -1,6 +1,7 @@
 extends Belge
 ## Nüfus cüzdanı: açık defter. Solda fotoğraf ve seri no, sağda kimlik bilgileri.
-## Alanlar: ad, soyad, baba_adi, ana_adi, dogum_yeri, dogum_tarihi, seri_no, cinsiyet (+ foto).
+## Alanlar: ad, soyad, baba_adi, ana_adi, dogum_yeri, dogum_tarihi, seri_no, cinsiyet, imza (+ foto).
+## Fotoğrafın altında sahibinin imzası durur; çalışma vizesindeki imza bununla karşılaştırılır.
 
 const KAPAK_ERKEK := Color("5d7d9c")
 const KAPAK_KADIN := Color("c48a7c")
@@ -18,7 +19,7 @@ func _kur() -> void:
 	# başkadır; aynı kişi olup olmadığı yüz hatlarından anlaşılır.
 	var fon := ColorRect.new()
 	fon.color = Color("c5c8c0")
-	_oge(fon, Rect2(49, 44, 76, 96))
+	_oge(fon, Rect2(53, 41, 68, 86))
 	var foto := TextureRect.new()
 	foto.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	foto.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -26,13 +27,16 @@ func _kur() -> void:
 	var m := ShaderMaterial.new()
 	m.shader = FOTO_GOLGELEYICI
 	foto.material = m
-	_oge(foto, Rect2(49, 44, 76, 96))
-	_hedef("foto", "Fotoğraf", veri.get("foto", ""), Rect2(47, 42, 80, 100))
+	_oge(foto, Rect2(53, 41, 68, 86))
+	_hedef("foto", "Fotoğraf", veri.get("foto", ""), Rect2(51, 39, 72, 90))
 
-	_yazi("Seri No", Rect2(10, 150, 154, 12), 8.5, BASLIK_RENGI, Stil.serif(), HORIZONTAL_ALIGNMENT_CENTER)
-	_yazi(metin("seri_no"), Rect2(10, 161, 154, 22), 15, Stil.BORDO, Stil.daktilo_kalin(),
+	# sahibinin imzası (fotoğrafın altında)
+	_hedef("imza", "İmza", al("imza"), Rect2(28, 130, 118, 27))
+
+	_yazi("Seri No", Rect2(10, 158, 154, 12), 8.5, BASLIK_RENGI, Stil.serif(), HORIZONTAL_ALIGNMENT_CENTER)
+	_yazi(metin("seri_no"), Rect2(10, 168, 154, 22), 15, Stil.BORDO, Stil.daktilo_kalin(),
 		HORIZONTAL_ALIGNMENT_CENTER)
-	_hedef("seri_no", "Seri no", al("seri_no"), Rect2(38, 149, 98, 36))
+	_hedef("seri_no", "Seri no", al("seri_no"), Rect2(38, 158, 98, 34))
 
 	var x := 181.0
 	var w := 140.0
@@ -59,10 +63,13 @@ func _draw() -> void:
 				noktalar.append(_v(px, y0 + 3.2 * sin(j * 0.85 + i)))
 			draw_polyline(noktalar, desen, maxf(1.0, 0.7 * _k), true)
 	# fotoğraf çerçevesi ve köşesine taşan soğuk damga
-	draw_rect(_r(48, 43, 78, 98), Color(0.2, 0.2, 0.2, 0.75), false, maxf(1.0, _k))
+	draw_rect(_r(52, 40, 70, 88), Color(0.2, 0.2, 0.2, 0.75), false, maxf(1.0, _k))
 	var damga := Color(Stil.MOR_MUHUR, 0.42)
-	draw_arc(_v(124, 138), 20.0 * _k, 0.0, TAU, 40, damga, 1.4 * _k, true)
-	draw_arc(_v(124, 138), 15.0 * _k, 0.0, TAU, 40, damga, 0.8 * _k, true)
+	draw_arc(_v(121, 124), 18.0 * _k, 0.0, TAU, 40, damga, 1.4 * _k, true)
+	draw_arc(_v(121, 124), 13.5 * _k, 0.0, TAU, 40, damga, 0.8 * _k, true)
+	# imza
+	_noktali(30, 144, 155.5, Color(0, 0, 0, 0.22))
+	_imza_ciz(Rect2(30, 130, 114, 26), hash(metin("imza")), Color(Stil.MAVI_MUREKKEP, 0.95), metin("imza"))
 	# değerlerin altındaki basılı çizgiler
 	for i in 6:
 		_noktali(181, 319, 12.0 + i * 32.0 + 28.0, Color(0, 0, 0, 0.22))

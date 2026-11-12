@@ -17,6 +17,8 @@ const GEREKCELER := {
 	"seri": "Seri numarası geçersiz",
 	"foto": "Fotoğraf başkasına ait",
 	"mahalle": "Mahalle ilçemize bağlı değil",
+	"sahte": "Sahte mühür, imza, kaşe ya da vize",
+	"vize": "Çalışma vizesinin süresi geçmiş",
 }
 ## Kural türü → o kuralın doğurabileceği gerekçe.
 const KURAL_GEREKCESI := {
@@ -27,14 +29,18 @@ const KURAL_GEREKCESI := {
 	"seri_aralik": "seri",
 	"foto_eslesme": "foto",
 	"mahalle_listesi": "mahalle",
+	"sahtecilik": "sahte",
 }
 ## Sahtecilik kokan kusurlar: bunları müdüre havale etmek doğru karardır.
-const SUPHELI := ["seri", "foto"]
+const SUPHELI := ["seri", "foto", "sahte"]
 const ALAN_ADLARI := {"ad": "Adı", "soyad": "Soyadı", "baba_adi": "Baba adı"}
+## Cüzdan ile çalışma vizesi arasında birebir aynı olması gereken bilgiler.
+const VIZE_ALANLARI := {"seri_no": "Cüzdan seri numarası", "dogum_tarihi": "Doğum tarihi", "imza": "İmza"}
 const BELGE_ADLARI := {
 	"nufus_cuzdani": "Nüfus cüzdanı",
 	"ikametgah": "İkametgâh ilmühaberi",
 	"harc_makbuzu": "Harç makbuzu",
+	"calisma_vizesi": "Çalışma vizesi",
 }
 const ILGISIZ := {"durum": "ilgisiz", "mesaj": "Bu ikisi arasında bir bağ yok."}
 
@@ -105,6 +111,17 @@ static func kontrol(v: Dictionary, gun: Dictionary) -> Dictionary:
 				var aranan := aranan_kaydi(str(v.get("portre", "")), k)
 				if not aranan.is_empty():
 					hatalar.append(_hata("aranan", "aranan", "Gişeye gelen şahıs arananlar listesindeydi (%s)." % str(aranan.ad), k))
+			"sahtecilik":
+				for h in sahtecilik_hatalari(belgeler):
+					hatalar.append(_hata(str(h.kod), "sahte", str(h.aciklama), k, str(h.belge), str(h.alan)))
+			"vize":
+				if str(v.get("islem", "")) != str(k.get("islem", "yurt_disi")):
+					continue
+				if not belgeler.has("calisma_vizesi"):
+					hatalar.append(_hata("belge_eksik", "belge_eksik", "Çalışma vizesi yok.", k, "calisma_vizesi"))
+					continue
+				for h in vize_hatalari(belgeler, bugun, k):
+					hatalar.append(_hata(str(h.kod), str(h.gerekce), str(h.aciklama), k, "calisma_vizesi", str(h.alan)))
 
 	var gerekceler: Array[String] = []
 	for h in hatalar:
@@ -162,6 +179,9 @@ static func gunun_gerekceleri(gun: Dictionary) -> Array[String]:
 		if tur == "alan_esit":
 			for alan: String in k.get("alanlar", []):
 				adaylar.append("baba_adi" if alan == "baba_adi" else "ad_soyad")
+		elif tur == "vize":
+			adaylar.append("vize")
+			adaylar.append("sahte")
 		elif KURAL_GEREKCESI.has(tur):
 			adaylar.append(KURAL_GEREKCESI[tur])
 		for g in adaylar:
@@ -193,6 +213,9 @@ static func karsilastir(a: Dictionary, b: Dictionary, v: Dictionary, gun: Dictio
 		return ILGISIZ
 	var alan := a if a.tip == "alan" else b
 	var diger := b if a.tip == "alan" else a
+	# bilgi defterindeki örnekle karşılaştırma: mühür, imza, kaşe, vize numarası
+	if str(diger.tip) == "ornek":
+		return _ornekle_karsilastir(alan, diger, v, gun)
 	match str(diger.tip):
 		"yuz":
 			return _foto_yuz(alan, v, gun)
@@ -206,6 +229,14 @@ static func karsilastir(a: Dictionary, b: Dictionary, v: Dictionary, gun: Dictio
 static func _alan_alan(a: Dictionary, b: Dictionary, gun: Dictionary) -> Dictionary:
 	if a.belge == b.belge:
 		return {"durum": "ilgisiz", "mesaj": "İki ayrı belgeden birer bilgi seçin."}
+	# cüzdan ↔ çalışma vizesi: seri numarası, doğum tarihi ve imza birebir aynı olmalı
+	if a.anahtar == b.anahtar and VIZE_ALANLARI.has(a.anahtar) and (a.belge == "calisma_vizesi" or b.belge == "calisma_vizesi"):
+		var etiket: String = VIZE_ALANLARI[a.anahtar]
+		if str(a.deger) == str(b.deger):
+			return {"durum": "uyumlu", "mesaj": "Sorun yok: %s iki belgede de aynı." % Stil.kucuk(etiket)}
+		if Veri.kural(gun, "vize").is_empty():
+			return {"durum": "ilgisiz", "mesaj": "%s farklı; ama genelgede bunu arayan bir kural yok." % etiket}
+		return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: %s cüzdandakiyle aynı değil. Vize sahte olabilir." % Stil.kucuk(etiket)}
 	if a.anahtar != b.anahtar or not ALAN_ADLARI.has(a.anahtar):
 		return {"durum": "ilgisiz", "mesaj": "Bu iki bilgi birbiriyle karşılaştırılmaz."}
 	var ad: String = ALAN_ADLARI[a.anahtar]
@@ -278,8 +309,12 @@ static func _alan_kural(alan: Dictionary, kural: Dictionary, v: Dictionary, gun:
 					return {"durum": "uyumlu", "mesaj": "Sorun yok: %s harcı %s." % [Islemler.adi(islem), Stil.tl(beklenen)]}
 				return {"durum": "uyusmaz", "gerekce": "harc", "mesaj": "Uyuşmazlık: %s harcı %s olmalı, makbuzda %s yazıyor." % [
 					Islemler.adi(islem), Stil.tl(beklenen), Stil.tl(odenen)]}
+		"sahtecilik", "vize":
+			var s := _sahtelik_denetimi(alan, v, gun)
+			if not s.is_empty():
+				return s
 		"seri_aralik":
-			if alan.anahtar == "seri_no":
+			if alan.anahtar == "seri_no" and str(alan.belge) == "nufus_cuzdani":
 				if seri_gecerli(str(alan.deger), kural):
 					return {"durum": "uyumlu", "mesaj": "Sorun yok: seri numarası geçerli."}
 				return {"durum": "uyusmaz", "gerekce": "seri", "mesaj": "Uyuşmazlık: %s geçerli seriler arasında yok." % str(alan.deger)}
@@ -291,7 +326,139 @@ static func _alan_kural(alan: Dictionary, kural: Dictionary, v: Dictionary, gun:
 	return {"durum": "ilgisiz", "mesaj": "Bu bilgi bu kuralla ilgili değil."}
 
 
+## Belge alanını bilgi defterindeki örnekle karşılaştırır. Örnek hedefinin anahtarı neyin örneği olduğunu
+## söyler: "muhur", "imza:<kişi>", "kase_vezne", "kase_vize", "vize_no".
+static func _ornekle_karsilastir(alan: Dictionary, ornek: Dictionary, v: Dictionary, gun: Dictionary) -> Dictionary:
+	var konu := str(ornek.anahtar)
+	var uygun := {
+		"muhur": ["muhtar_muhur"], "kase_vezne": ["kase"], "kase_vize": ["vize_kase"], "vize_no": ["vize_no"],
+	}
+	if konu.begins_with("imza:"):
+		if not ["muhtar_imza", "imza"].has(str(alan.anahtar)):
+			return {"durum": "ilgisiz", "mesaj": "İmza örneği ancak bir imzayla karşılaştırılır."}
+		var kimin := konu.trim_prefix("imza:")
+		var atan := str(alan.deger)
+		if str(alan.anahtar) == "muhtar_imza":
+			var ik: Dictionary = belge_sozlugu(v).get("ikametgah", {})
+			if not bool(_alan(ik, "muhtar_imza", false)):
+				return {"durum": "ilgisiz", "mesaj": "Belgede imza yok."}
+			atan = str(_alan(ik, "imza_sahibi", _alan(ik, "muhtar")))
+			if Imza.kod(kimin) != Imza.kod(str(_alan(ik, "muhtar"))):
+				return {"durum": "ilgisiz", "mesaj": "Bu örnek başka muhtarın. Belgede adı yazan muhtarın örneğine bakın."}
+		if Imza.kod(atan) == Imza.kod(kimin):
+			return {"durum": "uyumlu", "mesaj": "Sorun yok: imza örnekle aynı elden çıkmış."}
+		return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: imza örnektekine benzemiyor. Başkası atmış."}
+	if not uygun.has(konu) or not (uygun[konu] as Array).has(str(alan.anahtar)):
+		return {"durum": "ilgisiz", "mesaj": "Bu örnek bu bilgiyle karşılaştırılmaz."}
+	var s := _sahtelik_denetimi(alan, v, gun)
+	return s if not s.is_empty() else ILGISIZ
+
+
+## Mühür, imza, kaşe ve vize numarası için "gerçek mi" denetimi (ipucu). İlgisiz alanda boş sözlük döner.
+static func _sahtelik_denetimi(alan: Dictionary, v: Dictionary, gun: Dictionary) -> Dictionary:
+	var belgeler := belge_sozlugu(v)
+	var bugun := str(gun.get("tarih", ""))
+	match str(alan.anahtar):
+		"muhtar_muhur":
+			var ik: Dictionary = belgeler.get("ikametgah", {})
+			if not bool(_alan(ik, "muhtar_muhur", false)):
+				return {"durum": "ilgisiz", "mesaj": "Belgede mühür yok."}
+			var tur := str(_alan(ik, "muhur_turu"))
+			if tur == "":
+				return {"durum": "uyumlu", "mesaj": "Sorun yok: mühür örneğe uyuyor."}
+			return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: mühür sahte (%s)." % Stil.kucuk(Damga.sahte_aciklamasi("muhtar", tur))}
+		"muhtar_imza":
+			var ik: Dictionary = belgeler.get("ikametgah", {})
+			if not bool(_alan(ik, "muhtar_imza", false)):
+				return {"durum": "ilgisiz", "mesaj": "Belgede imza yok."}
+			if Imza.kod(str(_alan(ik, "imza_sahibi", _alan(ik, "muhtar")))) == Imza.kod(str(_alan(ik, "muhtar"))):
+				return {"durum": "uyumlu", "mesaj": "Sorun yok: imza muhtarın kendi imzası."}
+			return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: imza bu muhtarın imzası değil."}
+		"kase":
+			var tur := str(_alan(belgeler.get("harc_makbuzu", {}), "kase_turu"))
+			if tur == "":
+				return {"durum": "uyumlu", "mesaj": "Sorun yok: vezne kaşesi örneğe uyuyor."}
+			return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: vezne kaşesi sahte (%s)." % Stil.kucuk(Damga.sahte_aciklamasi("vezne", tur))}
+		"vize_kase":
+			var tur := str(_alan(belgeler.get("calisma_vizesi", {}), "kase_turu"))
+			if tur == "":
+				return {"durum": "uyumlu", "mesaj": "Sorun yok: konsolosluk kaşesi örneğe uyuyor."}
+			return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: konsolosluk kaşesi sahte (%s)." % Stil.kucuk(Damga.sahte_aciklamasi("vize", tur))}
+		"vize_no":
+			var kural := Veri.kural(gun, "vize")
+			if kural.is_empty():
+				return {}
+			if vize_no_gecerli(str(alan.deger), kural):
+				return {"durum": "uyumlu", "mesaj": "Sorun yok: vize numarası geçerli."}
+			return {"durum": "uyusmaz", "gerekce": "sahte", "mesaj": "Uyuşmazlık: %s verilmiş vize numaraları arasında yok." % str(alan.deger)}
+		"bitis":
+			if Tarih.gun_no(str(alan.deger)) >= Tarih.gun_no(bugun):
+				return {"durum": "uyumlu", "mesaj": "Sorun yok: vizenin süresi dolmamış."}
+			return {"durum": "uyusmaz", "gerekce": "vize", "mesaj": "Uyuşmazlık: vizenin süresi %s günü dolmuş." % str(alan.deger)}
+	return {}
+
+
 # --- Tekil denetimler (üretici ve testler de kullanır) ---
+
+## İkametgâh ve makbuzdaki sahte mühür, imza ve kaşeler: [{kod, aciklama, belge, alan}]
+static func sahtecilik_hatalari(belgeler: Dictionary) -> Array[Dictionary]:
+	var sonuc: Array[Dictionary] = []
+	if belgeler.has("ikametgah"):
+		var ik: Dictionary = belgeler["ikametgah"]
+		var tur := str(_alan(ik, "muhur_turu"))
+		if bool(_alan(ik, "muhtar_muhur", false)) and tur != "":
+			sonuc.append({"kod": "muhur_sahte", "belge": "ikametgah", "alan": "muhtar_muhur",
+				"aciklama": "İkametgâhtaki muhtar mührü sahteydi (%s)." % Stil.kucuk(Damga.sahte_aciklamasi("muhtar", tur))})
+		var muhtar := str(_alan(ik, "muhtar"))
+		var atan := str(_alan(ik, "imza_sahibi", muhtar))
+		if bool(_alan(ik, "muhtar_imza", false)) and Imza.kod(atan) != Imza.kod(muhtar):
+			sonuc.append({"kod": "imza_sahte", "belge": "ikametgah", "alan": "muhtar_imza",
+				"aciklama": "İkametgâhtaki imza muhtar %s'in imzası değildi." % muhtar})
+	if belgeler.has("harc_makbuzu"):
+		var tur := str(_alan(belgeler["harc_makbuzu"], "kase_turu"))
+		if tur != "":
+			sonuc.append({"kod": "kase_sahte", "belge": "harc_makbuzu", "alan": "kase",
+				"aciklama": "Makbuzdaki vezne kaşesi sahteydi (%s)." % Stil.kucuk(Damga.sahte_aciklamasi("vezne", tur))})
+	return sonuc
+
+
+## Çalışma vizesindeki kusurlar: [{kod, gerekce, aciklama, alan}]. Süresi geçmiş vize "vize", gerisi "sahte"dir.
+static func vize_hatalari(belgeler: Dictionary, bugun: String, kural: Dictionary) -> Array[Dictionary]:
+	var sonuc: Array[Dictionary] = []
+	var vize: Dictionary = belgeler.get("calisma_vizesi", {})
+	var cuzdan: Dictionary = belgeler.get("nufus_cuzdani", {})
+	var no := str(_alan(vize, "vize_no"))
+	if not vize_no_gecerli(no, kural):
+		sonuc.append({"kod": "vize_no", "gerekce": "sahte", "alan": "vize_no",
+			"aciklama": "Vize numarası (%s) verilmiş numaralar arasında yoktu." % no})
+	if str(_alan(vize, "kase_turu")) != "":
+		sonuc.append({"kod": "vize_kase", "gerekce": "sahte", "alan": "vize_kase",
+			"aciklama": "Vizedeki konsolosluk kaşesi sahteydi (%s)." % Stil.kucuk(Damga.sahte_aciklamasi("vize", str(_alan(vize, "kase_turu"))))})
+	if not cuzdan.is_empty():
+		for alan: String in ["seri_no", "dogum_tarihi"]:
+			if str(_alan(vize, alan)) != str(_alan(cuzdan, alan)):
+				sonuc.append({"kod": "vize_kimlik", "gerekce": "sahte", "alan": alan,
+					"aciklama": "Vizedeki %s cüzdandakiyle aynı değildi." % Stil.kucuk(str(VIZE_ALANLARI[alan]))})
+				break
+		if Imza.kod(str(_alan(vize, "imza"))) != Imza.kod(str(_alan(cuzdan, "imza"))):
+			sonuc.append({"kod": "vize_imza", "gerekce": "sahte", "alan": "imza",
+				"aciklama": "Vizedeki imza cüzdandaki imzayla aynı elden çıkmamıştı."})
+	var bitis := str(_alan(vize, "bitis"))
+	if Tarih.gun_no(bitis) < Tarih.gun_no(bugun):
+		sonuc.append({"kod": "vize_sure", "gerekce": "vize", "alan": "bitis",
+			"aciklama": "Çalışma vizesinin süresi %s günü dolmuştu." % bitis})
+	return sonuc
+
+
+## "ÇV-84-03127": önek ve yıl kurala uymalı, numara verilmiş aralıkta olmalı.
+static func vize_no_gecerli(no: String, kural: Dictionary) -> bool:
+	var b: Dictionary = kural.get("no", {})
+	var p := no.split("-")
+	if p.size() != 3 or not p[1].is_valid_int() or not p[2].is_valid_int() or p[2].length() != 5:
+		return false
+	return p[0] == str(b.get("onek", "ÇV")) and int(p[1]) == int(b.get("yil", 84)) \
+		and int(p[2]) >= int(b.get("min", 0)) and int(p[2]) <= int(b.get("max", 99999))
+
 
 static func tarih_gecerli(tarih: String, bugun: String, kural: Dictionary) -> bool:
 	if kural.has("ay"):

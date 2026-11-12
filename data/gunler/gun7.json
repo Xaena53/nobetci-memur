@@ -8,7 +8,8 @@
 	"islemler": [
 		"kayit_ornegi",
 		"cuzdan_yenileme",
-		"nakil"
+		"nakil",
+		"yurt_disi"
 	],
 	"belgeler": [
 		"nufus_cuzdani",
@@ -23,7 +24,7 @@
 	"genelge": {
 		"sayi": "1984/7",
 		"konu": "Teftiş",
-		"metin": "Bugün dairemizde teftiş var. Bütün kurallar harfiyen uygulanacaktır; ikametgâhın geçerlilik süresi 3 aya indirilmiştir. Röntgenden geçmeyen tek bir çanta görmeyeyim. Bir haftadır nasıl çalıştığınız bugün belli olacak. Kolay gelsin."
+		"metin": "Bugün dairemizde teftiş var. Bütün kurallar harfiyen uygulanacaktır; ikametgâhın geçerlilik süresi 3 aya indirilmiştir. Bugünden itibaren bıçak, kama ve satır da binaya sokulmaz; röntgenden geçmeyen tek bir çanta görmeyeyim. Bir haftadır nasıl çalıştığınız bugün belli olacak. Kolay gelsin."
 	},
 	"kurallar": [
 		{
@@ -73,7 +74,8 @@
 			"tutarlar": {
 				"kayit_ornegi": 300,
 				"cuzdan_yenileme": 1500,
-				"nakil": 900
+				"nakil": 900,
+				"yurt_disi": 2000
 			},
 			"metin": "Makbuzdaki tutar, işlemin tarifedeki harcıyla aynı olmalıdır."
 		},
@@ -100,6 +102,11 @@
 			"metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır."
 		},
 		{
+			"id": "sahte",
+			"tur": "sahtecilik",
+			"metin": "Mühür, imza ve kaşeler bilgi defterindeki örneklere uymalıdır; uymayan evrak sahtedir."
+		},
+		{
 			"id": "makbuz_sure",
 			"tur": "tarih_sure",
 			"belge": "harc_makbuzu",
@@ -122,6 +129,18 @@
 			"metin": "İkametgâh, ilçemize bağlı bir mahalleden alınmış olmalıdır."
 		},
 		{
+			"id": "vize",
+			"tur": "vize",
+			"islem": "yurt_disi",
+			"no": {
+				"onek": "ÇV",
+				"yil": 84,
+				"min": 2000,
+				"max": 6999
+			},
+			"metin": "Yurt dışı çıkış kaydında çalışma vizesi aranır: numarası ve kaşesi gerçek, süresi dolmamış, seri numarası, doğum tarihi ve imzası cüzdandakiyle aynı olmalıdır."
+		},
+		{
 			"id": "canta",
 			"tur": "canta_kontrol",
 			"yasak": [
@@ -129,7 +148,8 @@
 				"patlayici",
 				"kesici"
 			],
-			"metin": "Çanta ve bavullar röntgenden geçirilir. Ateşli silah, mermi, patlayıcı ya da bıçak, kama, satır görülürse alarm verilir."
+			"metin": "Çanta ve bavullar röntgenden geçirilir. Ateşli silah, mermi, patlayıcı ya da bıçak, kama, satır görülürse alarm verilir.",
+			"yeni": true
 		},
 		{
 			"id": "arananlar",

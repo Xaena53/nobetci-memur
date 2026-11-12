@@ -83,17 +83,11 @@ func _ready() -> void:
 	_satirlar.append(notu)
 
 	var damga := Control.new()
-	damga.position = Vector2(KAGIT.x - 190.0, KAGIT.y - 150.0)
-	damga.size = Vector2(150, 60)
+	damga.position = Vector2(KAGIT.x - 196.0, KAGIT.y - 162.0)
+	damga.size = Vector2(150, 80)
 	damga.mouse_filter = MOUSE_FILTER_IGNORE
 	damga.draw.connect(func() -> void:
-		var renk := Color(Stil.BORDO, 0.82)
-		damga.draw_set_transform(damga.size / 2.0, deg_to_rad(-9.0), Vector2.ONE)
-		damga.draw_rect(Rect2(-70, -24, 140, 48), renk, false, 2.6)
-		damga.draw_rect(Rect2(-66, -20, 132, 40), renk, false, 1.0)
-		damga.draw_string(Stil.daktilo_kalin(), Vector2(-70, -2), "GÖRÜLMÜŞTÜR", HORIZONTAL_ALIGNMENT_CENTER, 140, 15, renk)
-		damga.draw_string(Stil.daktilo_kalin(), Vector2(-70, 14), "Müdür", HORIZONTAL_ALIGNMENT_CENTER, 140, 11, renk)
-		damga.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE))
+		Damga.ciz(damga, Rect2(Vector2.ZERO, damga.size), "gorulmustur", "", deg_to_rad(-9.0), 0.84))
 	kagit.add_child(damga)
 	_satirlar.append(damga)
 

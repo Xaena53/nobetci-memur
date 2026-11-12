@@ -1,5 +1,5 @@
 {
-	"_aciklama": "Hikâye karakterleri ve gişe ziyaretleri (diyaloglar dahil). Bütün kişi, kurum ve olaylar kurmacadır. 'kosul' sözlüğündeki her bayrak Oyun.bayraklar ile eşleşmelidir; değer liste ise içindekilerden biri yeter. 'alan' evraktaki tek tek alanları değiştirir, 'sil' belgeyi çıkarır. 'etki' karara göre uygulanır: bayrak, suphe (fark), para (fark), ikram, kira_affi, not (teleksten çıkan müdür notu), sonuc (değerlendirmeyi ezer). 'belgesiz' ziyaretçi evrak getirmez; 'satirlar'ını söyleyip gider. 'canta' ({tur, esyalar: [...]}) ziyaretçinin röntgenden geçecek çantasıdır (çanta denetimi olan günlerde); 'etki.alarm' çantadaki yasak eşya yakalanınca, 'etki.gecir' gözden kaçınca uygulanır.",
+	"_aciklama": "Hikâye karakterleri ve gişe ziyaretleri (diyaloglar dahil). Bütün kişi, kurum ve olaylar kurmacadır. 'kosul' sözlüğündeki her bayrak Oyun.bayraklar ile eşleşmelidir; değer liste ise içindekilerden biri yeter. 'alan' evraktaki tek tek alanları değiştirir, 'sil' belgeyi çıkarır. 'etki' karara göre uygulanır: bayrak, suphe (fark), para (fark), ikram, kira_affi, not (teleksten çıkan müdür notu), sonuc (değerlendirmeyi ezer). 'belgesiz' ziyaretçi evrak getirmez; 'satirlar'ını söyleyip gider. 'canta' ({tur, esyalar: [...]}) ziyaretçinin röntgenden geçecek çantasıdır (çanta denetimi olan günlerde); 'etki.alarm' çantadaki yasak eşya yakalanınca, 'etki.gecir' gözden kaçınca uygulanır. İşlemi 'yurt_disi' olan ziyaretçi çalışma vizesi de getirir; 'alan' ile vizenin alanları da değiştirilebilir (calisma_vizesi.vize_no, calisma_vizesi.kase_turu, calisma_vizesi.bitis...).",
 	"kisiler": {
 		"husnu": {
 			"portre": "husnu",
@@ -165,6 +165,36 @@
 			"mahalle": "İstasyon",
 			"muhtar": "Hamdi Ersoy",
 			"adres": "Garaj Cad. No: 18"
+		},
+		"gurbetci": {
+			"portre": "v67",
+			"ad": "AZİZ",
+			"soyad": "ORAL",
+			"baba_adi": "KADİR",
+			"ana_adi": "MÜZEYYEN",
+			"dogum_yeri": "TRABZON",
+			"dogum_tarihi": "19.07.1959",
+			"seri_no": "A-431907",
+			"cinsiyet": "E",
+			"yas": 24,
+			"mahalle": "Bağlar",
+			"muhtar": "Şükrü Akın",
+			"adres": "Bağ Yolu No: 9"
+		},
+		"usta": {
+			"portre": "v85",
+			"ad": "YAŞAR",
+			"soyad": "VAROL",
+			"baba_adi": "NAZIM",
+			"ana_adi": "KADRİYE",
+			"dogum_yeri": "SAMSUN",
+			"dogum_tarihi": "11.05.1939",
+			"seri_no": "A-266340",
+			"cinsiyet": "E",
+			"yas": 44,
+			"mahalle": "İstasyon",
+			"muhtar": "Hamdi Ersoy",
+			"adres": "Garaj Cad. No: 41"
 		}
 	},
 	"ziyaretler": [
@@ -892,6 +922,75 @@
 				"gecir": {
 					"bayrak": {
 						"bomba": "kacti"
+					}
+				}
+			}
+		},
+		{
+			"kod": "gurbetci6",
+			"gun": 6,
+			"sira": 9,
+			"kisi": "gurbetci",
+			"islem": "yurt_disi",
+			"alan": {
+				"calisma_vizesi.vize_no": "ÇV-84-07412",
+				"calisma_vizesi.kase_turu": "tek_halka",
+				"calisma_vizesi.ulke": "Almanya",
+				"calisma_vizesi.meslek": "Kaynakçı"
+			},
+			"konusma": {
+				"giris": "Almanya'ya gidiyorum abi! Tarlayı sattım, vizeyi Kenan Bey'in yazıhanesinden aldım. Üç günde çıkardılar, maşallah.",
+				"onay": "Allah razı olsun abi. İlk maaşla anama bir sarı lira yollayacağım.",
+				"eksik": "Sahte mi? Olur mu öyle şey, kırk bin lira saydım ben buna... Tarla gitti abi.",
+				"havale": "Müdüre mi? Ben bir şey yapmadım ki, parasını verdim!"
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"gurbetci": "gecti"
+					},
+					"suphe": 1
+				},
+				"eksik": {
+					"bayrak": {
+						"gurbetci": "uyarildi"
+					}
+				},
+				"havale": {
+					"bayrak": {
+						"gurbetci": "ihbar"
+					},
+					"not": "Vize sahte çıktı. Delikanlı \"Kenan Bey'in yazıhanesinden aldım\" dedi; ifadesi Savcı Bey'in dosyasına girdi. Çocuğa yazık olmuş, tarlası gitmiş."
+				}
+			}
+		},
+		{
+			"kod": "usta7",
+			"gun": 7,
+			"sira": 2,
+			"kisi": "usta",
+			"islem": "yurt_disi",
+			"alan": {
+				"calisma_vizesi.verilis": "18.10.1983",
+				"calisma_vizesi.bitis": "16.01.1984",
+				"calisma_vizesi.ulke": "Hollanda",
+				"calisma_vizesi.meslek": "Dökümcü"
+			},
+			"konusma": {
+				"giris": "Vizem dün dolmuş, biliyorum. Köyde cenaze vardı, bir gün geciktim. Bir günün lafı mı olur memur bey?",
+				"onay": "Allah senden razı olsun. Çocukların rızkı için gidiyorum.",
+				"eksik": "Bir gün... Doksan gün bekledim o vizeyi. Peki. Yeniden başvururum; çocuklar bir kış daha bekler.",
+				"havale": "Müdür Bey bir güne bakmaz inşallah."
+			},
+			"etki": {
+				"onay": {
+					"bayrak": {
+						"usta": "gecti"
+					}
+				},
+				"eksik": {
+					"bayrak": {
+						"usta": "dondu"
 					}
 				}
 			}

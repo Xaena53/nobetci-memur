@@ -8,7 +8,8 @@
 	"islemler": [
 		"kayit_ornegi",
 		"cuzdan_yenileme",
-		"nakil"
+		"nakil",
+		"yurt_disi"
 	],
 	"belgeler": [
 		"nufus_cuzdani",
@@ -22,8 +23,8 @@
 	},
 	"genelge": {
 		"sayi": "1984/6",
-		"konu": "Mahalle sınırları ve kesici aletler",
-		"metin": "Hafta sonu çıkan kararla ilçe sınırları yeniden düzenlendi: Dere ve Değirmen mahalleleri Kavaklı'ya bağlandı. Yalnızca tarife sayfasındaki mahallelerin muhtarlarından alınmış ikametgâh geçerlidir. Yeni basılan B serisi cüzdanlar da kabul edilecektir. Bugünden itibaren bıçak, kama ve satır da binaya sokulmaz; röntgende görürseniz alarm verin. Savcı Altay bugün hükümet konağında; arananlar sayfasına bir kez daha bakın."
+		"konu": "Mahalle sınırları ve çalışma vizesi",
+		"metin": "Hafta sonu çıkan kararla Dere ve Değirmen mahalleleri Kavaklı'ya bağlandı; yalnızca tarife sayfasındaki mahallelerden alınmış ikametgâh geçerlidir. B serisi cüzdanlar da kabul edilecektir. Yurt dışına işçi gidenlerin çıkış kaydı artık gişenizde yapılacak. Çalışma vizesini bilgi defterindeki örnekle karşılaştırın: piyasada sahtesi dolaşıyor, alan da satan da suçludur. Savcı Altay bugün hükümet konağında; arananlar sayfasına bir kez daha bakın."
 	},
 	"kurallar": [
 		{
@@ -72,7 +73,8 @@
 			"tutarlar": {
 				"kayit_ornegi": 300,
 				"cuzdan_yenileme": 1500,
-				"nakil": 900
+				"nakil": 900,
+				"yurt_disi": 2000
 			},
 			"metin": "Makbuzdaki tutar, işlemin tarifedeki harcıyla aynı olmalıdır."
 		},
@@ -100,6 +102,11 @@
 			"metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır."
 		},
 		{
+			"id": "sahte",
+			"tur": "sahtecilik",
+			"metin": "Mühür, imza ve kaşeler bilgi defterindeki örneklere uymalıdır; uymayan evrak sahtedir."
+		},
+		{
 			"id": "makbuz_sure",
 			"tur": "tarih_sure",
 			"belge": "harc_makbuzu",
@@ -123,15 +130,26 @@
 			"yeni": true
 		},
 		{
+			"id": "vize",
+			"tur": "vize",
+			"islem": "yurt_disi",
+			"no": {
+				"onek": "ÇV",
+				"yil": 84,
+				"min": 2000,
+				"max": 6999
+			},
+			"metin": "Yurt dışı çıkış kaydında çalışma vizesi aranır: numarası ve kaşesi gerçek, süresi dolmamış, seri numarası, doğum tarihi ve imzası cüzdandakiyle aynı olmalıdır.",
+			"yeni": true
+		},
+		{
 			"id": "canta",
 			"tur": "canta_kontrol",
 			"yasak": [
 				"silah",
-				"patlayici",
-				"kesici"
+				"patlayici"
 			],
-			"metin": "Çanta ve bavullar röntgenden geçirilir. Ateşli silah, mermi, patlayıcı ya da bıçak, kama, satır görülürse alarm verilir.",
-			"yeni": true
+			"metin": "Çanta ve bavullar röntgenden geçirilir. Ateşli silah, mermi ya da patlayıcı görülürse alarm verilir."
 		},
 		{
 			"id": "arananlar",

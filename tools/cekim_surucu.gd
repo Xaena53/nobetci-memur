@@ -32,6 +32,7 @@ func _senaryo_akis() -> void:
 	await sahneyi_bekle("AnaMenu")
 	await cek("00_menu")
 	bas("YeniOyun")
+	bas("ZorlukKolay")
 	await sahneyi_bekle("Masa")
 	Oyun.gun = int(_arg("gun", "1"))
 	await bekle(1.6)
@@ -509,3 +510,102 @@ func _senaryo_menu_gif() -> void:
 	for i in 40:
 		await cek("g_%02d" % i)
 		await bekle(0.07)
+
+
+## Bilgi defteri, çalışma vizesi, mühürler ve ipucu kipleri (kareler tools/cikti/d_*.png).
+func _senaryo_defter() -> void:
+	# menü: görev şekli seçimi
+	Oyun.kaydi_sil()
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	await bekle(2.6)
+	bas("YeniOyun")
+	await bekle(0.4)
+	var orta := dugme("ZorlukOrta")
+	fare_tasi(orta.get_global_transform() * (orta.size * 0.5))
+	await bekle(0.3)
+	await cek("d_00_gorev_sekli")
+
+	# 6. gün, orta kip: yurt dışı çıkış kaydı
+	Oyun.yeni_oyun("orta")
+	Oyun.gun = 6
+	await sahneye_git("masa")
+	await sahneyi_bekle("Masa")
+	await bekle(0.5)
+	var masa := sahne()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 11
+	for i in 300:
+		var v := VatandasUretici.uret(masa.gun, rng, [], 0)
+		if str(v.islem) == "yurt_disi" and not v.has("canta"):
+			masa.kuyruk[0] = v
+			break
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 4 and not masa._mesgul)
+	await bekle(1.8)
+	await cek("d_01_masa_vize")
+	var vize := _belge(masa, "calisma_vizesi")
+	vize.buyut(true)
+	await bekle(0.5)
+	await cek("d_02_vize_buyuk")
+	vize.buyut(false)
+	var ikamet := _belge(masa, "ikametgah")
+	ikamet.buyut(true)
+	await bekle(0.5)
+	await cek("d_03_ilmuhaber_buyuk")
+	ikamet.buyut(false)
+	await bekle(0.3)
+	# bilgi defteri: her yaprak
+	masa.defter.buyut(true)
+	await bekle(0.5)
+	for i in masa.defter.yapraklar().size():
+		masa.defter.yapraga_gec(i)
+		await bekle(0.3)
+		await cek("d_1%d_defter" % i)
+	masa.defter.buyut(false)
+	await bekle(0.4)
+	# orta kip: ipucu sorusu ve cevabı
+	masa.inceleme.aktif = true
+	await kare(2)
+	var cuzdan := _belge(masa, "nufus_cuzdani")
+	masa.inceleme.hedef_tiklandi(cuzdan.alanlar["seri_no"])
+	masa.inceleme.hedef_tiklandi(vize.alanlar["seri_no"])
+	await bekle(0.3)
+	await cek("d_20_ipucu_sorusu")
+	masa.inceleme.ipucunu_kullan()
+	await bekle(0.3)
+	await cek("d_21_ipucu_cevabi")
+	masa.inceleme.aktif = false
+
+	# sahte örnekler: sahte mühürlü ilmühaber ve sahte vize yan yana
+	Oyun.yeni_oyun("zor")
+	Oyun.gun = 7
+	await sahneye_git("masa")
+	await sahneyi_bekle("Masa")
+	await bekle(0.5)
+	masa = sahne()
+	rng.seed = 23
+	for i in 400:
+		var v := VatandasUretici.uret(masa.gun, rng, [], 0)
+		if str(v.islem) == "yurt_disi" and not v.has("canta"):
+			VatandasUretici.kusur_uygula(v, "muhur_sahte", masa.gun, rng)
+			VatandasUretici.kusur_uygula(v, "vize_kase", masa.gun, rng)
+			VatandasUretici.kusur_uygula(v, "vize_imza", masa.gun, rng)
+			masa.kuyruk[0] = v
+			break
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 4 and not masa._mesgul)
+	await bekle(1.5)
+	_belge(masa, "calisma_vizesi").buyut(true)
+	await bekle(0.5)
+	await cek("d_30_sahte_vize")
+	_belge(masa, "calisma_vizesi").buyut(false)
+	_belge(masa, "ikametgah").buyut(true)
+	await bekle(0.5)
+	await cek("d_31_sahte_muhur")
+	masa.inceleme.aktif = true
+	await kare(2)
+	masa.inceleme.hedef_tiklandi(_belge(masa, "ikametgah").alanlar["muhtar_muhur"])
+	masa.inceleme.hedef_tiklandi(masa.gise.yuz)
+	await bekle(0.3)
+	await cek("d_32_zor_kip")

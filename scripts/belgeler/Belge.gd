@@ -17,11 +17,15 @@ const SAHNELER := {
 	"nufus_cuzdani": "res://scenes/belgeler/NufusCuzdani.tscn",
 	"ikametgah": "res://scenes/belgeler/Ikametgah.tscn",
 	"harc_makbuzu": "res://scenes/belgeler/HarcMakbuzu.tscn",
+	"calisma_vizesi": "res://scenes/belgeler/CalismaVizesi.tscn",
+	"bilgi_defteri": "res://scenes/belgeler/BilgiDefteri.tscn",
 }
 const ADLAR := {
 	"nufus_cuzdani": "Nüfus cüzdanı",
 	"ikametgah": "İkametgâh ilmühaberi",
 	"harc_makbuzu": "Harç makbuzu",
+	"calisma_vizesi": "Çalışma vizesi",
+	"bilgi_defteri": "Bilgi defteri",
 }
 const BASLIK_RENGI := Color("5a5f66")
 
@@ -285,6 +289,11 @@ func buyut(b: bool) -> void:
 	if b == buyuk or tutucu == null:
 		return
 	buyuk = b
+	# araçlar, elde tutulan belgenin altında kalan yerlerinden tutulamaz (bkz. Arac._has_point)
+	if b:
+		add_to_group("elde_belge")
+	else:
+		remove_from_group("elde_belge")
 	var eski := _k
 	var yeni := BUYUTME if b else 1.0
 	if b:
@@ -328,6 +337,7 @@ func git(yarik: Vector2, gecikme: float = 0.0) -> void:
 		_gecis.kill()
 	if buyuk:
 		buyuk = false
+		remove_from_group("elde_belge")
 		_olcekle(1.0)
 	var t := create_tween()
 	t.tween_interval(gecikme)
@@ -351,7 +361,7 @@ func iz_birak(karar: String, yerel: Vector2, satirlar: PackedStringArray) -> voi
 	iz.karar = karar
 	iz.satirlar = satirlar
 	iz.belge = self
-	var boyut := Vector2(176, 74) if karar == "onay" else Vector2(168, 66)
+	var boyut := Vector2(152, 88) if karar == "onay" else Vector2(168, 66)
 	var konum := yerel / _k - boyut / 2.0
 	konum.x = clampf(konum.x, 4, maxf(4, _taban.x - boyut.x - 4))
 	konum.y = clampf(konum.y, 4, maxf(4, _taban.y - boyut.y - 4))
@@ -374,25 +384,22 @@ class KararIzi extends Control:
 	var belge: Control      ## iç sınıf dış betiğe tipli başvurursa betik çıkışta bellekte kalır
 
 	func _draw() -> void:
-		var k := size.x / (176.0 if karar == "onay" else 168.0)
+		var k := size.x / (152.0 if karar == "onay" else 168.0)
 		if karar == "onay":
 			_muhur(k)
 		else:
 			_fis(k)
 
 	func _muhur(k: float) -> void:
-		var renk := Color(Stil.BORDO, 0.86)
-		draw_set_transform(size / 2.0, deg_to_rad(-7.0), Vector2.ONE)
-		var r := Rect2(-size / 2.0 + Vector2(4, 4) * k, size - Vector2(8, 8) * k)
-		draw_rect(r, renk, false, 2.6 * k)
-		draw_rect(r.grow(-4.0 * k), renk, false, 1.0 * k)
-		var f := Stil.daktilo_kalin()
-		var y := -size.y / 2.0 + 27.0 * k
-		for i in satirlar.size():
-			var punto := roundi((16.0 if i == 0 else 10.0) * k)
-			draw_string(f, Vector2(-size.x / 2.0, y), satirlar[i], HORIZONTAL_ALIGNMENT_CENTER, size.x, punto, renk)
-			y += (17.0 if i == 0 else 13.5) * k
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		var alan := Rect2(Vector2(3, 2) * k, size - Vector2(6, 4) * k)
+		Damga.ciz(self, alan, "onay", "", deg_to_rad(-7.0), 0.88)
+		# damganın alt şeridine tarih yazılır
+		if satirlar.size() >= 3:
+			var renk := Color(Stil.BORDO, 0.86)
+			draw_set_transform(size / 2.0, deg_to_rad(-7.0), Vector2.ONE)
+			draw_string(Stil.daktilo_kalin(), Vector2(-size.x / 2.0, size.y * 0.335), satirlar[2], HORIZONTAL_ALIGNMENT_CENTER,
+				size.x, roundi(11.0 * k), renk)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 	func _fis(k: float) -> void:
 		var kenar := Stil.KIRMIZI if karar == "eksik" else Stil.MAVI_MUREKKEP

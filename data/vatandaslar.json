@@ -1,0 +1,770 @@
+{
+	"_aciklama": "Havuzdaki her yüzün kalıcı kimliği (tools/sanat/kadro.py üretir). 'imza': imza görselinin sahibi; dosyası assets/img/imza/ altındadır.",
+	"kisiler": {
+		"v01": {
+			"ad": "KÂMİL",
+			"soyad": "TURAN",
+			"baba_adi": "MAHMUT",
+			"ana_adi": "SONGÜL",
+			"dogum_yeri": "DİYARBAKIR",
+			"dogum_tarihi": "02.04.1938",
+			"imza": "Kâmil Turan"
+		},
+		"v02": {
+			"ad": "HAMİDE",
+			"soyad": "DAĞLI",
+			"baba_adi": "HÜSEYİN",
+			"ana_adi": "ŞÜKRİYE",
+			"dogum_yeri": "KIRKLARELİ",
+			"dogum_tarihi": "01.02.1923",
+			"imza": "Hamide Dağlı"
+		},
+		"v03": {
+			"ad": "SELAHATTİN",
+			"soyad": "YALÇIN",
+			"baba_adi": "MEHMET",
+			"ana_adi": "VESİLE",
+			"dogum_yeri": "MUĞLA",
+			"dogum_tarihi": "01.08.1955",
+			"imza": "Selahattin Yalçın"
+		},
+		"v04": {
+			"ad": "SEVGİ",
+			"soyad": "ÇETİN",
+			"baba_adi": "HALİL",
+			"ana_adi": "AYSEL",
+			"dogum_yeri": "BİLECİK",
+			"dogum_tarihi": "02.01.1949",
+			"imza": "Sevgi Çetin"
+		},
+		"v05": {
+			"ad": "GALİP",
+			"soyad": "ASLAN",
+			"baba_adi": "LÜTFÜ",
+			"ana_adi": "AYSEL",
+			"dogum_yeri": "ERZURUM",
+			"dogum_tarihi": "06.06.1913",
+			"imza": "Galip Aslan"
+		},
+		"v06": {
+			"ad": "ZEHRA",
+			"soyad": "IŞIK",
+			"baba_adi": "KÂMİL",
+			"ana_adi": "SABRİYE",
+			"dogum_yeri": "İSTANBUL",
+			"dogum_tarihi": "10.04.1958",
+			"imza": "Zehra Işık"
+		},
+		"v08": {
+			"ad": "SEVİM",
+			"soyad": "ESEN",
+			"baba_adi": "CELAL",
+			"ana_adi": "FERİDE",
+			"dogum_yeri": "GAZİANTEP",
+			"dogum_tarihi": "09.02.1938",
+			"imza": "Sevim Esen"
+		},
+		"v09": {
+			"ad": "CEVAT",
+			"soyad": "KALKAN",
+			"baba_adi": "OSMAN",
+			"ana_adi": "NACİYE",
+			"dogum_yeri": "GAZİANTEP",
+			"dogum_tarihi": "09.05.1948",
+			"imza": "Cevat Kalkan"
+		},
+		"v10": {
+			"ad": "GÜLER",
+			"soyad": "KOÇ",
+			"baba_adi": "HASAN",
+			"ana_adi": "ŞENGÜL",
+			"dogum_yeri": "AYDIN",
+			"dogum_tarihi": "28.07.1913",
+			"imza": "Güler Koç"
+		},
+		"v12": {
+			"ad": "NURTEN",
+			"soyad": "SARI",
+			"baba_adi": "İSMAİL",
+			"ana_adi": "HANİFE",
+			"dogum_yeri": "ERZURUM",
+			"dogum_tarihi": "23.05.1953",
+			"imza": "Nurten Sarı"
+		},
+		"v13": {
+			"ad": "NURİ",
+			"soyad": "KARAKAYA",
+			"baba_adi": "ABDULLAH",
+			"ana_adi": "SEVİM",
+			"dogum_yeri": "EDİRNE",
+			"dogum_tarihi": "09.08.1923",
+			"imza": "Nuri Karakaya"
+		},
+		"v14": {
+			"ad": "DÖNDÜ",
+			"soyad": "ÖZTÜRK",
+			"baba_adi": "AHMET",
+			"ana_adi": "SEVİM",
+			"dogum_yeri": "RİZE",
+			"dogum_tarihi": "15.04.1933",
+			"imza": "Döndü Öztürk"
+		},
+		"v15": {
+			"ad": "NAZIM",
+			"soyad": "COŞKUN",
+			"baba_adi": "MUSTAFA",
+			"ana_adi": "RAZİYE",
+			"dogum_yeri": "DENİZLİ",
+			"dogum_tarihi": "04.11.1943",
+			"imza": "Nazım Coşkun"
+		},
+		"v16": {
+			"ad": "GÖNÜL",
+			"soyad": "DEĞİRMENCİ",
+			"baba_adi": "HAYRİ",
+			"ana_adi": "ESMA",
+			"dogum_yeri": "KAYSERİ",
+			"dogum_tarihi": "28.10.1963",
+			"imza": "Gönül Değirmenci"
+		},
+		"v17": {
+			"ad": "YUSUF",
+			"soyad": "TAŞ",
+			"baba_adi": "SATILMIŞ",
+			"ana_adi": "PERİHAN",
+			"dogum_yeri": "ÇANKIRI",
+			"dogum_tarihi": "02.08.1933",
+			"imza": "Yusuf Taş"
+		},
+		"v18": {
+			"ad": "NEVİN",
+			"soyad": "UÇAR",
+			"baba_adi": "RIFAT",
+			"ana_adi": "NURİYE",
+			"dogum_yeri": "EDİRNE",
+			"dogum_tarihi": "24.09.1955",
+			"imza": "Nevin Uçar"
+		},
+		"v19": {
+			"ad": "MAHMUT",
+			"soyad": "ATEŞ",
+			"baba_adi": "İBRAHİM",
+			"ana_adi": "NEVİN",
+			"dogum_yeri": "ADANA",
+			"dogum_tarihi": "01.02.1918",
+			"imza": "Mahmut Ateş"
+		},
+		"v20": {
+			"ad": "HALİME",
+			"soyad": "BAŞARAN",
+			"baba_adi": "ALİ",
+			"ana_adi": "BİRGÜL",
+			"dogum_yeri": "KIRKLARELİ",
+			"dogum_tarihi": "27.02.1928",
+			"imza": "Halime Başaran"
+		},
+		"v21": {
+			"ad": "İLYAS",
+			"soyad": "ACAR",
+			"baba_adi": "KENAN",
+			"ana_adi": "SELMA",
+			"dogum_yeri": "ORDU",
+			"dogum_tarihi": "15.01.1964",
+			"imza": "İlyas Acar"
+		},
+		"v23": {
+			"ad": "FİKRET",
+			"soyad": "ZENGİN",
+			"baba_adi": "NURİ",
+			"ana_adi": "ŞERİFE",
+			"dogum_yeri": "TUNCELİ",
+			"dogum_tarihi": "05.02.1950",
+			"imza": "Fikret Zengin"
+		},
+		"v24": {
+			"ad": "PERİHAN",
+			"soyad": "ÖZKAN",
+			"baba_adi": "OSMAN",
+			"ana_adi": "NURTEN",
+			"dogum_yeri": "GAZİANTEP",
+			"dogum_tarihi": "03.01.1909",
+			"imza": "Perihan Özkan"
+		},
+		"v25": {
+			"ad": "RECEP",
+			"soyad": "TUNÇ",
+			"baba_adi": "SELAHATTİN",
+			"ana_adi": "SONGÜL",
+			"dogum_yeri": "BİNGÖL",
+			"dogum_tarihi": "24.12.1925",
+			"imza": "Recep Tunç"
+		},
+		"v26": {
+			"ad": "SANİYE",
+			"soyad": "DİNÇ",
+			"baba_adi": "RIFAT",
+			"ana_adi": "ŞERİFE",
+			"dogum_yeri": "ÇANAKKALE",
+			"dogum_tarihi": "01.06.1961",
+			"imza": "Saniye Dinç"
+		},
+		"v28": {
+			"ad": "FADİME",
+			"soyad": "OKUR",
+			"baba_adi": "OSMAN",
+			"ana_adi": "ZELİHA",
+			"dogum_yeri": "TUNCELİ",
+			"dogum_tarihi": "18.02.1950",
+			"imza": "Fadime Okur"
+		},
+		"v29": {
+			"ad": "ALİ",
+			"soyad": "YİĞİT",
+			"baba_adi": "NECATİ",
+			"ana_adi": "HAVVA",
+			"dogum_yeri": "ERZURUM",
+			"dogum_tarihi": "10.11.1911",
+			"imza": "Ali Yiğit"
+		},
+		"v30": {
+			"ad": "PAKİZE",
+			"soyad": "ÖZDEMİR",
+			"baba_adi": "MEHMET",
+			"ana_adi": "HAYRİYE",
+			"dogum_yeri": "KARS",
+			"dogum_tarihi": "19.07.1935",
+			"imza": "Pakize Özdemir"
+		},
+		"v31": {
+			"ad": "HALİL",
+			"soyad": "USTA",
+			"baba_adi": "AHMET",
+			"ana_adi": "AYSEL",
+			"dogum_yeri": "ERZURUM",
+			"dogum_tarihi": "16.08.1956",
+			"imza": "Halil Usta"
+		},
+		"v32": {
+			"ad": "KADRİYE",
+			"soyad": "POLAT",
+			"baba_adi": "KENAN",
+			"ana_adi": "KEZBAN",
+			"dogum_yeri": "BİNGÖL",
+			"dogum_tarihi": "07.09.1923",
+			"imza": "Kadriye Polat"
+		},
+		"v33": {
+			"ad": "İSMAİL",
+			"soyad": "KOCABAŞ",
+			"baba_adi": "GALİP",
+			"ana_adi": "ZEHRA",
+			"dogum_yeri": "AFYON",
+			"dogum_tarihi": "01.03.1945",
+			"imza": "İsmail Kocabaş"
+		},
+		"v34": {
+			"ad": "SAADET",
+			"soyad": "EKİNCİ",
+			"baba_adi": "RIZA",
+			"ana_adi": "SABRİYE",
+			"dogum_yeri": "KIRKLARELİ",
+			"dogum_tarihi": "20.12.1964",
+			"imza": "Saadet Ekinci"
+		},
+		"v35": {
+			"ad": "NECATİ",
+			"soyad": "ALTUN",
+			"baba_adi": "CEVAT",
+			"ana_adi": "NURİYE",
+			"dogum_yeri": "VAN",
+			"dogum_tarihi": "20.11.1903",
+			"imza": "Necati Altun"
+		},
+		"v36": {
+			"ad": "VESİLE",
+			"soyad": "KARABULUT",
+			"baba_adi": "ÖMER",
+			"ana_adi": "NAZMİYE",
+			"dogum_yeri": "AYDIN",
+			"dogum_tarihi": "27.12.1941",
+			"imza": "Vesile Karabulut"
+		},
+		"v37": {
+			"ad": "EKREM",
+			"soyad": "MUTLU",
+			"baba_adi": "MUHARREM",
+			"ana_adi": "FERİDE",
+			"dogum_yeri": "MARDİN",
+			"dogum_tarihi": "28.03.1953",
+			"imza": "Ekrem Mutlu"
+		},
+		"v38": {
+			"ad": "BİRGÜL",
+			"soyad": "TOPAL",
+			"baba_adi": "BEKİR",
+			"ana_adi": "ADİLE",
+			"dogum_yeri": "AFYON",
+			"dogum_tarihi": "20.04.1931",
+			"imza": "Birgül Topal"
+		},
+		"v39": {
+			"ad": "ŞÜKRÜ",
+			"soyad": "ARSLAN",
+			"baba_adi": "ZEKİ",
+			"ana_adi": "ZEYNEP",
+			"dogum_yeri": "KOCAELİ",
+			"dogum_tarihi": "08.10.1935",
+			"imza": "Şükrü Arslan"
+		},
+		"v40": {
+			"ad": "HAYRİYE",
+			"soyad": "BULUT",
+			"baba_adi": "NURİ",
+			"ana_adi": "PERİHAN",
+			"dogum_yeri": "EDİRNE",
+			"dogum_tarihi": "11.07.1957",
+			"imza": "Hayriye Bulut"
+		},
+		"v41": {
+			"ad": "KADİR",
+			"soyad": "YILMAZ",
+			"baba_adi": "RECEP",
+			"ana_adi": "PAKİZE",
+			"dogum_yeri": "KONYA",
+			"dogum_tarihi": "25.10.1921",
+			"imza": "Kadir Yılmaz"
+		},
+		"v42": {
+			"ad": "AYŞE",
+			"soyad": "ÇAKIR",
+			"baba_adi": "MEHMET",
+			"ana_adi": "GÜLER",
+			"dogum_yeri": "İSTANBUL",
+			"dogum_tarihi": "25.10.1915",
+			"imza": "Ayşe Çakır"
+		},
+		"v43": {
+			"ad": "KENAN",
+			"soyad": "TOSUN",
+			"baba_adi": "SALİH",
+			"ana_adi": "FADİME",
+			"dogum_yeri": "EDİRNE",
+			"dogum_tarihi": "04.11.1959",
+			"imza": "Kenan Tosun"
+		},
+		"v44": {
+			"ad": "GÜLSÜM",
+			"soyad": "KAYA",
+			"baba_adi": "YUSUF",
+			"ana_adi": "MÜZEYYEN",
+			"dogum_yeri": "ORDU",
+			"dogum_tarihi": "27.05.1946",
+			"imza": "Gülsüm Kaya"
+		},
+		"v45": {
+			"ad": "SÜLEYMAN",
+			"soyad": "YILDIZ",
+			"baba_adi": "FİKRET",
+			"ana_adi": "PERİHAN",
+			"dogum_yeri": "MANİSA",
+			"dogum_tarihi": "25.04.1928",
+			"imza": "Süleyman Yıldız"
+		},
+		"v46": {
+			"ad": "ZELİHA",
+			"soyad": "DUMAN",
+			"baba_adi": "SÜLEYMAN",
+			"ana_adi": "RAZİYE",
+			"dogum_yeri": "AFYON",
+			"dogum_tarihi": "03.10.1953",
+			"imza": "Zeliha Duman"
+		},
+		"v47": {
+			"ad": "SATILMIŞ",
+			"soyad": "ŞAHİN",
+			"baba_adi": "NURİ",
+			"ana_adi": "HALİME",
+			"dogum_yeri": "AĞRI",
+			"dogum_tarihi": "23.07.1941",
+			"imza": "Satılmış Şahin"
+		},
+		"v48": {
+			"ad": "SONGÜL",
+			"soyad": "GÜNDÜZ",
+			"baba_adi": "FİKRET",
+			"ana_adi": "RAZİYE",
+			"dogum_yeri": "KAYSERİ",
+			"dogum_tarihi": "12.04.1925",
+			"imza": "Songül Gündüz"
+		},
+		"v49": {
+			"ad": "CEMAL",
+			"soyad": "AVCI",
+			"baba_adi": "HALİL",
+			"ana_adi": "MÜNEVVER",
+			"dogum_yeri": "ZONGULDAK",
+			"dogum_tarihi": "13.02.1947",
+			"imza": "Cemal Avcı"
+		},
+		"v50": {
+			"ad": "EMİNE",
+			"soyad": "ÇELİK",
+			"baba_adi": "İLYAS",
+			"ana_adi": "ADİLE",
+			"dogum_yeri": "ERZİNCAN",
+			"dogum_tarihi": "23.07.1918",
+			"imza": "Emine Çelik"
+		},
+		"v51": {
+			"ad": "METİN",
+			"soyad": "AKBULUT",
+			"baba_adi": "MAHMUT",
+			"ana_adi": "HÜSNİYE",
+			"dogum_yeri": "TUNCELİ",
+			"dogum_tarihi": "04.03.1957",
+			"imza": "Metin Akbulut"
+		},
+		"v52": {
+			"ad": "MELEK",
+			"soyad": "KURT",
+			"baba_adi": "CEMAL",
+			"ana_adi": "MÜNEVVER",
+			"dogum_yeri": "KIRŞEHİR",
+			"dogum_tarihi": "09.12.1959",
+			"imza": "Melek Kurt"
+		},
+		"v53": {
+			"ad": "ŞEVKET",
+			"soyad": "KAHRAMAN",
+			"baba_adi": "TUNCAY",
+			"ana_adi": "ÜLKÜ",
+			"dogum_yeri": "ERZURUM",
+			"dogum_tarihi": "06.10.1915",
+			"imza": "Şevket Kahraman"
+		},
+		"v54": {
+			"ad": "ŞÜKRİYE",
+			"soyad": "ŞEN",
+			"baba_adi": "ŞÜKRÜ",
+			"ana_adi": "NAZMİYE",
+			"dogum_yeri": "VAN",
+			"dogum_tarihi": "21.03.1939",
+			"imza": "Şükriye Şen"
+		},
+		"v55": {
+			"ad": "DURSUN",
+			"soyad": "AKTAŞ",
+			"baba_adi": "ZEKİ",
+			"ana_adi": "AYSEL",
+			"dogum_yeri": "AĞRI",
+			"dogum_tarihi": "14.02.1931",
+			"imza": "Dursun Aktaş"
+		},
+		"v56": {
+			"ad": "HAVVA",
+			"soyad": "ÖZCAN",
+			"baba_adi": "SABRİ",
+			"ana_adi": "GÖNÜL",
+			"dogum_yeri": "KARS",
+			"dogum_tarihi": "04.04.1949",
+			"imza": "Havva Özcan"
+		},
+		"v57": {
+			"ad": "BAYRAM",
+			"soyad": "KORKMAZ",
+			"baba_adi": "BEKİR",
+			"ana_adi": "HALİME",
+			"dogum_yeri": "KONYA",
+			"dogum_tarihi": "08.03.1962",
+			"imza": "Bayram Korkmaz"
+		},
+		"v58": {
+			"ad": "ŞENGÜL",
+			"soyad": "ŞİMŞEK",
+			"baba_adi": "MUSA",
+			"ana_adi": "MÜZEYYEN",
+			"dogum_yeri": "NİĞDE",
+			"dogum_tarihi": "14.10.1903",
+			"imza": "Şengül Şimşek"
+		},
+		"v59": {
+			"ad": "DURMUŞ",
+			"soyad": "CEYLAN",
+			"baba_adi": "ORHAN",
+			"ana_adi": "RUKİYE",
+			"dogum_yeri": "AMASYA",
+			"dogum_tarihi": "20.11.1937",
+			"imza": "Durmuş Ceylan"
+		},
+		"v60": {
+			"ad": "FERİDE",
+			"soyad": "GÜLER",
+			"baba_adi": "MUHARREM",
+			"ana_adi": "MELEK",
+			"dogum_yeri": "BİTLİS",
+			"dogum_tarihi": "19.07.1954",
+			"imza": "Feride Güler"
+		},
+		"v61": {
+			"ad": "HİKMET",
+			"soyad": "YAZICI",
+			"baba_adi": "ZİYA",
+			"ana_adi": "NURİYE",
+			"dogum_yeri": "İZMİR",
+			"dogum_tarihi": "28.12.1924",
+			"imza": "Hikmet Yazıcı"
+		},
+		"v62": {
+			"ad": "HATİCE",
+			"soyad": "ÜNAL",
+			"baba_adi": "KENAN",
+			"ana_adi": "BEDRİYE",
+			"dogum_yeri": "MUĞLA",
+			"dogum_tarihi": "10.03.1945",
+			"imza": "Hatice Ünal"
+		},
+		"v63": {
+			"ad": "ORHAN",
+			"soyad": "KILIÇ",
+			"baba_adi": "HAMZA",
+			"ana_adi": "LEYLA",
+			"dogum_yeri": "AFYON",
+			"dogum_tarihi": "28.12.1952",
+			"imza": "Orhan Kılıç"
+		},
+		"v64": {
+			"ad": "ADİLE",
+			"soyad": "PARLAK",
+			"baba_adi": "SATILMIŞ",
+			"ana_adi": "ŞÜKRİYE",
+			"dogum_yeri": "SİİRT",
+			"dogum_tarihi": "26.09.1933",
+			"imza": "Adile Parlak"
+		},
+		"v65": {
+			"ad": "LÜTFÜ",
+			"soyad": "KARA",
+			"baba_adi": "HAYDAR",
+			"ana_adi": "LEYLA",
+			"dogum_yeri": "AĞRI",
+			"dogum_tarihi": "18.06.1931",
+			"imza": "Lütfü Kara"
+		},
+		"v66": {
+			"ad": "MÜZEYYEN",
+			"soyad": "ULUSOY",
+			"baba_adi": "NİHAT",
+			"ana_adi": "AYŞE",
+			"dogum_yeri": "KÜTAHYA",
+			"dogum_tarihi": "13.03.1950",
+			"imza": "Müzeyyen Ulusoy"
+		},
+		"v67": {
+			"ad": "AZİZ",
+			"soyad": "ORAL",
+			"baba_adi": "KADİR",
+			"ana_adi": "MÜZEYYEN",
+			"dogum_yeri": "TRABZON",
+			"dogum_tarihi": "19.07.1959",
+			"imza": "Aziz Oral"
+		},
+		"v68": {
+			"ad": "RAZİYE",
+			"soyad": "NALBANT",
+			"baba_adi": "TAHSİN",
+			"ana_adi": "ADİLE",
+			"dogum_yeri": "AĞRI",
+			"dogum_tarihi": "21.07.1916",
+			"imza": "Raziye Nalbant"
+		},
+		"v69": {
+			"ad": "SALİH",
+			"soyad": "AKGÜL",
+			"baba_adi": "SÜLEYMAN",
+			"ana_adi": "ZELİHA",
+			"dogum_yeri": "ANTALYA",
+			"dogum_tarihi": "10.01.1942",
+			"imza": "Salih Akgül"
+		},
+		"v70": {
+			"ad": "SULTAN",
+			"soyad": "DEMİRCİ",
+			"baba_adi": "NECATİ",
+			"ana_adi": "HAYRİYE",
+			"dogum_yeri": "AFYON",
+			"dogum_tarihi": "12.02.1956",
+			"imza": "Sultan Demirci"
+		},
+		"v71": {
+			"ad": "REFİK",
+			"soyad": "BİÇER",
+			"baba_adi": "NURİ",
+			"ana_adi": "NAZMİYE",
+			"dogum_yeri": "AFYON",
+			"dogum_tarihi": "01.05.1920",
+			"imza": "Refik Biçer"
+		},
+		"v72": {
+			"ad": "NACİYE",
+			"soyad": "KESKİN",
+			"baba_adi": "NAZIM",
+			"ana_adi": "NACİYE",
+			"dogum_yeri": "SİNOP",
+			"dogum_tarihi": "02.06.1938",
+			"imza": "Naciye Keskin"
+		},
+		"v73": {
+			"ad": "SABRİ",
+			"soyad": "GÜNAY",
+			"baba_adi": "ŞEVKET",
+			"ana_adi": "HAYRİYE",
+			"dogum_yeri": "MALATYA",
+			"dogum_tarihi": "14.03.1953",
+			"imza": "Sabri Günay"
+		},
+		"v74": {
+			"ad": "ESMA",
+			"soyad": "ÇİFTÇİ",
+			"baba_adi": "VAHİT",
+			"ana_adi": "NACİYE",
+			"dogum_yeri": "YOZGAT",
+			"dogum_tarihi": "27.11.1925",
+			"imza": "Esma Çiftçi"
+		},
+		"v75": {
+			"ad": "HAMZA",
+			"soyad": "SEVİNÇ",
+			"baba_adi": "BEKİR",
+			"ana_adi": "ŞERİFE",
+			"dogum_yeri": "ZONGULDAK",
+			"dogum_tarihi": "10.04.1964",
+			"imza": "Hamza Sevinç"
+		},
+		"v76": {
+			"ad": "KEZBAN",
+			"soyad": "GÖKSU",
+			"baba_adi": "EROL",
+			"ana_adi": "PERİHAN",
+			"dogum_yeri": "SİVAS",
+			"dogum_tarihi": "14.01.1945",
+			"imza": "Kezban Göksu"
+		},
+		"v77": {
+			"ad": "SADIK",
+			"soyad": "AYDIN",
+			"baba_adi": "CELAL",
+			"ana_adi": "ŞENGÜL",
+			"dogum_yeri": "MUŞ",
+			"dogum_tarihi": "27.09.1936",
+			"imza": "Sadık Aydın"
+		},
+		"v78": {
+			"ad": "FATMA",
+			"soyad": "UZUN",
+			"baba_adi": "DURMUŞ",
+			"ana_adi": "SULTAN",
+			"dogum_yeri": "SİVAS",
+			"dogum_tarihi": "07.09.1961",
+			"imza": "Fatma Uzun"
+		},
+		"v79": {
+			"ad": "BEKİR",
+			"soyad": "GÜRBÜZ",
+			"baba_adi": "CEVAT",
+			"ana_adi": "SULTAN",
+			"dogum_yeri": "İZMİR",
+			"dogum_tarihi": "02.08.1912",
+			"imza": "Bekir Gürbüz"
+		},
+		"v80": {
+			"ad": "MÜNEVVER",
+			"soyad": "UYSAL",
+			"baba_adi": "TURGUT",
+			"ana_adi": "KADRİYE",
+			"dogum_yeri": "KARS",
+			"dogum_tarihi": "17.11.1933",
+			"imza": "Münevver Uysal"
+		},
+		"v81": {
+			"ad": "RIFAT",
+			"soyad": "KAPLAN",
+			"baba_adi": "ADEM",
+			"ana_adi": "SAADET",
+			"dogum_yeri": "SİİRT",
+			"dogum_tarihi": "16.11.1948",
+			"imza": "Rıfat Kaplan"
+		},
+		"v82": {
+			"ad": "HANİFE",
+			"soyad": "KÖSE",
+			"baba_adi": "METİN",
+			"ana_adi": "SEVGİ",
+			"dogum_yeri": "SAKARYA",
+			"dogum_tarihi": "25.03.1910",
+			"imza": "Hanife Köse"
+		},
+		"v83": {
+			"ad": "TAHSİN",
+			"soyad": "ERGİN",
+			"baba_adi": "GALİP",
+			"ana_adi": "VESİLE",
+			"dogum_yeri": "ERZURUM",
+			"dogum_tarihi": "24.10.1927",
+			"imza": "Tahsin Ergin"
+		},
+		"v84": {
+			"ad": "ŞERİFE",
+			"soyad": "ÇOBAN",
+			"baba_adi": "VELİ",
+			"ana_adi": "NEVİN",
+			"dogum_yeri": "İSTANBUL",
+			"dogum_tarihi": "23.07.1953",
+			"imza": "Şerife Çoban"
+		},
+		"v85": {
+			"ad": "YAŞAR",
+			"soyad": "VAROL",
+			"baba_adi": "NAZIM",
+			"ana_adi": "KADRİYE",
+			"dogum_yeri": "SAMSUN",
+			"dogum_tarihi": "11.05.1939",
+			"imza": "Yaşar Varol"
+		},
+		"v86": {
+			"ad": "TÜRKAN",
+			"soyad": "DEMİR",
+			"baba_adi": "MUHARREM",
+			"ana_adi": "SANİYE",
+			"dogum_yeri": "UŞAK",
+			"dogum_tarihi": "13.12.1942",
+			"imza": "Türkan Demir"
+		},
+		"v87": {
+			"ad": "ADEM",
+			"soyad": "YAVUZ",
+			"baba_adi": "ORHAN",
+			"ana_adi": "FADİME",
+			"dogum_yeri": "ERZİNCAN",
+			"dogum_tarihi": "13.10.1955",
+			"imza": "Adem Yavuz"
+		},
+		"v88": {
+			"ad": "CEMİLE",
+			"soyad": "DOĞAN",
+			"baba_adi": "HAYRİ",
+			"ana_adi": "SONGÜL",
+			"dogum_yeri": "KÜTAHYA",
+			"dogum_tarihi": "16.04.1921",
+			"imza": "Cemile Doğan"
+		},
+		"v89": {
+			"ad": "KEMAL",
+			"soyad": "TEKİN",
+			"baba_adi": "GALİP",
+			"ana_adi": "NEVİN",
+			"dogum_yeri": "UŞAK",
+			"dogum_tarihi": "05.01.1918",
+			"imza": "Kemal Tekin"
+		}
+	}
+}

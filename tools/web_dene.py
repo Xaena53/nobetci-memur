@@ -92,6 +92,8 @@ async def calistir(ws_adresi: str) -> int:
         await bekle(22.0)                     # wasm derlenir, paket açılır, başlık yazılır
         await cek("web_1_menu")
         await tikla(262, 222)                 # "1. Yeni Oyun" (menü kâğıdının ilk satırı)
+        await bekle(1.0)
+        await tikla(262, 258)                 # görev şekli: "2. Orta"
         await bekle(7.0)
         await cek("web_2_sabah")
         await tikla(909, 601)                 # "Gişeyi Aç" (4. günden önce genelge ortada değil: 1. günde gazete var)

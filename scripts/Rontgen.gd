@@ -25,11 +25,12 @@ const EKRAN := Rect2(0.076, 0.102, 0.549, 0.755)
 const DUGME_YERI := {"gecir": Vector2(0.764, 0.384), "alarm": Vector2(0.895, 0.384)}
 const DUGME_YARICAPI := 0.036
 const DUGME_ETIKETI := {"gecir": Rect2(0.719, 0.460, 0.092, 0.054), "alarm": Rect2(0.851, 0.460, 0.091, 0.054)}
-const DUGME_YAZISI := {"gecir": "GEÇİR", "alarm": "ALARM"}
+const DUGME_PLAKASI := {"gecir": "etiket_gecir", "alarm": "etiket_alarm"}
 const TUS_YERI := [Vector2(0.7425, 0.596), Vector2(0.8318, 0.596), Vector2(0.9172, 0.596)]
 const TUS_YARISI := 0.027
 const TUS_ETIKETI := [Rect2(0.7116, 0.658, 0.0692, 0.0534), Rect2(0.7978, 0.658, 0.0696, 0.0534), Rect2(0.8841, 0.658, 0.0685, 0.0534)]
 const KIPLER := ["OLAĞAN", "NEGATİF", "YOĞUN"]
+const KIP_PLAKASI := ["etiket_olagan", "etiket_negatif", "etiket_yogun"]
 const LAMBA := Vector2(0.7397, 0.826)
 const PLAKA := Rect2(0.7895, 0.7656, 0.1623, 0.1218)
 
@@ -141,15 +142,14 @@ func _ready() -> void:
 		d.button_down.connect(_basildi.bind(ad))
 		d.button_up.connect(_basildi.bind(""))
 		_dugmeler[ad] = d
-		_plaka_yazisi(DUGME_YAZISI[ad], DUGME_ETIKETI[ad], 11, Stil.BORDO if ad == "alarm" else Color("2f4a36"))
+		_plaka(DUGME_PLAKASI[ad], DUGME_ETIKETI[ad], Vector2(68, 22))
 	for i in TUS_YERI.size():
 		var kenar := TUS_YARISI * BOYUT.x * 2.0
 		var d := _dugme("RontgenKip%d" % i, TUS_YERI[i] * BOYUT - Vector2(kenar, kenar) / 2.0, Vector2(kenar, kenar))
 		d.pressed.connect(_kip_sec.bind(i))
 		_dugmeler["kip%d" % i] = d
-		_plaka_yazisi(KIPLER[i], TUS_ETIKETI[i], 8, Stil.MUREKKEP)
-	var plaka := _plaka_yazisi("RÖNTGEN CİHAZI\nARDIÇLI NÜFUS MD.\nDEMİRBAŞ No 84/17", PLAKA, 7, Color("4a3712"))
-	plaka.add_theme_constant_override("line_spacing", -1)
+		_plaka(KIP_PLAKASI[i], TUS_ETIKETI[i], Vector2(59, 19.5))
+	_plaka("plaka_rontgen", PLAKA, Vector2(112, 64))
 	set_process(false)
 
 
@@ -169,16 +169,16 @@ func _dugme(ad: String, yer: Vector2, boyut: Vector2) -> Button:
 	return d
 
 
-func _plaka_yazisi(metin: String, alan: Rect2, punto: int, renk: Color) -> Label:
-	var l := Stil.etiket(metin, punto, renk, Stil.daktilo_kalin())
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	l.clip_text = true          # en küçük boyut sıfır olsun: etiket plakadan taşıp yazıyı kaydırmasın
-	l.mouse_filter = MOUSE_FILTER_IGNORE
-	_govde.add_child(l)
-	l.position = alan.position * BOYUT
-	l.size = alan.size * BOYUT
-	return l
+## Yazılı etiket plakası (boyalı görsel): cihazın görselindeki boş plakanın tam üstüne, ortalanarak oturur.
+func _plaka(doku_adi: String, alan: Rect2, boyut: Vector2) -> void:
+	var t := TextureRect.new()
+	t.texture = Serit.doku(doku_adi)
+	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	t.stretch_mode = TextureRect.STRETCH_SCALE
+	t.mouse_filter = MOUSE_FILTER_IGNORE
+	_govde.add_child(t)
+	t.size = boyut
+	t.position = (alan.position + alan.size / 2.0) * BOYUT - boyut / 2.0
 
 
 # --- Açılış / kapanış ---

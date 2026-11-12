@@ -18,6 +18,7 @@ func _calistir() -> void:
 	await _hikaye_testi()
 	await _cila_testi()
 	await _rontgen_testi()
+	await _defter_testi()
 	print("")
 	if _hata == 0:
 		print("DUMAN TESTİ: BAŞARILI (%d denetim)" % _adim)
@@ -37,6 +38,7 @@ func _akis_testi() -> void:
 	dogru(dugme("Devam").disabled, "kayıt yokken Devam kapalı")
 
 	bas("YeniOyun")
+	bas("ZorlukKolay")
 	bekle_dogru(await sahneyi_bekle("Masa"), "Yeni Oyun → Masa")
 	esit(Oyun.gun, 1, "ilk gün")
 	dogru(Oyun.kayit_var_mi(), "gün başında otomatik kayıt")
@@ -437,7 +439,7 @@ func _hikaye_testi() -> void:
 		"husnu1": "sure", "husnu2": "muhur", "husnu3": "belge_eksik", "husnu4": "harc", "husnu5": "harc",
 		"husnu6": "mahalle", "husnu7": "sure", "nermin2": "muhur", "kenan3": "harc", "izzet4": "sure",
 		"tarik2": "", "tarik4": "", "savci5": "", "kasap5": "aranan", "naciye6": "aranan",
-		"nermin6a": "", "nermin6b": "foto", "bavullu7": "",
+		"nermin6a": "", "nermin6b": "foto", "bavullu7": "", "gurbetci6": "sahte", "usta7": "vize",
 	}
 	var gorulen := {}
 	for gun_no in range(1, 8):
@@ -729,6 +731,185 @@ func _rontgen_testi() -> void:
 	bas("GiseyiAc")
 	await _cantayi_gecir(masa, "alarm")
 	esit(str(Oyun.bayrak("bomba", "")), "yakalandi", "saatli bomba röntgende yakalandı")
+	await bekle(0.3)
+
+
+# --- Kadro, sahtecilik, çalışma vizesi, bilgi defteri, görev şekilleri ---
+
+func _defter_testi() -> void:
+	print("-- kadro, sahtecilik, vize, görev şekli --")
+	# kadro: her yüz kalıcı bir kişi, herkesin imzası var
+	var havuz := Portreler.havuz()
+	dogru(havuz.size() >= 80, "havuzda en az 80 yüz var (%d)" % havuz.size())
+	var kimliksiz := 0
+	var imzasiz := 0
+	var adlar := {}
+	for portre in havuz:
+		var k := Veri.vatandas(portre)
+		if k.is_empty():
+			kimliksiz += 1
+			continue
+		adlar["%s %s" % [k.ad, k.soyad]] = true
+		if Imza.doku("%s %s" % [k.ad, k.soyad]) == null:
+			imzasiz += 1
+	esit(kimliksiz, 0, "her yüzün kalıcı bir kimliği var")
+	esit(imzasiz, 0, "her vatandaşın kendi imzası var")
+	esit(adlar.size(), havuz.size(), "kimse adaş değil")
+	var muhtar_imzasiz := 0
+	for m: Dictionary in (Veri.adlar().get("mahalleler", []) as Array) + (Veri.adlar().get("dis_mahalleler", []) as Array):
+		if Imza.doku(str(m.muhtar)) == null:
+			muhtar_imzasiz += 1
+	esit(muhtar_imzasiz, 0, "her muhtarın imzası var")
+	dogru(Imza.doku("mudur") != null and Imza.doku("veznedar") != null and Imza.doku("vize_memuru") != null, "müdür, veznedar ve vize memurunun imzası var")
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5
+	var a := VatandasUretici.uret(Veri.gun(2), rng, [], 0)
+	var sabit := Veri.vatandas(str(a.portre))
+	esit(str(a.kimlik.ad), str(sabit.ad), "aynı yüz her gelişinde aynı adı taşır")
+	esit(Imza.kod(str(a.belgeler[0].alanlar.imza)), Imza.kod("%s %s" % [sabit.ad, sabit.soyad]), "cüzdandaki imza sahibinin imzası")
+
+	# damgalar: her gerçek ve sahte çeşidin boyalı görseli var
+	var gorselsiz := 0
+	for cesit: String in Damga.SAHTELER:
+		if Damga.doku(Damga.doku_adi(cesit)) == null:
+			gorselsiz += 1
+		for tur: Array in Damga.SAHTELER[cesit]:
+			if Damga.doku(Damga.doku_adi(cesit, str(tur[0]))) == null:
+				gorselsiz += 1
+	esit(gorselsiz, 0, "her mühür ve kaşenin gerçeği de sahteleri de görsel olarak var")
+	esit(Damga.doku_adi("muhtar", "tek_halka"), "muhtar_tek_halka", "sahte mühür kendi görselini kullanır")
+	esit(Damga.doku_adi("vize", "renk"), "vize_gercek", "yanlış renkli kaşe gerçeğin görselidir")
+	esit(Damga.renk_adi("vize", "renk"), "mor", "  ama mürekkebi mor")
+	dogru(Damga.doku("onay") != null and Damga.doku("gorulmustur") != null and Damga.doku("daire") != null, "dairenin damgaları var")
+
+	# sahtecilik kuralı
+	var gun4 := Veri.gun(4)
+	var gun6 := Veri.gun(6)
+	dogru(Veri.kural(Veri.gun(3), "sahtecilik").is_empty() and not Veri.kural(gun4, "sahtecilik").is_empty(), "sahtecilik kuralı 4. gün başlar")
+	rng.seed = 9
+	var v := VatandasUretici.uret(gun4, rng, [], 0)
+	esit(str(Dogrulayici.kontrol(v, gun4).karar), "onay", "kusursuz vatandaş: mühür ve imza gerçek")
+	var ik: Dictionary = Dogrulayici.belge_sozlugu(v)["ikametgah"]
+	ik.alanlar["muhur_turu"] = "oval"
+	var s1 := Dogrulayici.kontrol(v, gun4)
+	dogru((s1.gerekceler as Array) == ["sahte"], "oval mühür: sahte")
+	esit(str(Dogrulayici.degerlendir("havale", "", s1).sonuc), "dogru", "  sahte evrakı havale etmek doğru")
+	esit(str(Dogrulayici.degerlendir("eksik", "sahte", s1).sonuc), "dogru", "  gerekçesiyle geri çevirmek de doğru")
+	esit(str(Dogrulayici.degerlendir("onay", "", s1).sonuc), "yanlis", "  onaylamak yanlış")
+	ik.alanlar["muhur_turu"] = ""
+	ik.alanlar["imza_sahibi"] = "Fevzi Balcı"
+	dogru((Dogrulayici.kontrol(v, gun4).gerekceler as Array) == ["sahte"], "başka muhtarın imzası: sahte")
+	ik.alanlar["imza_sahibi"] = str(ik.alanlar.muhtar)
+	Dogrulayici.belge_sozlugu(v)["harc_makbuzu"].alanlar["kase_turu"] = "cift_cerceve"
+	dogru((Dogrulayici.kontrol(v, gun4).gerekceler as Array) == ["sahte"], "çift çerçeveli vezne kaşesi: sahte")
+	dogru((Dogrulayici.kontrol(v, Veri.gun(3)).gerekceler as Array).is_empty(), "  kural yokken (3. gün) aranmaz")
+
+	# çalışma vizesi
+	dogru(Veri.kural(Veri.gun(5), "vize").is_empty() and not Veri.kural(gun6, "vize").is_empty(), "vize kuralı 6. gün başlar")
+	var kural := Veri.kural(gun6, "vize")
+	dogru(Dogrulayici.vize_no_gecerli("ÇV-84-03127", kural), "geçerli vize numarası")
+	dogru(not Dogrulayici.vize_no_gecerli("ÇV-83-03127", kural), "  geçen yılın numarası geçersiz")
+	dogru(not Dogrulayici.vize_no_gecerli("ÇV-84-07200", kural), "  verilmemiş numara geçersiz")
+	dogru(not Dogrulayici.vize_no_gecerli("CV-84-03127", kural), "  önek yanlış")
+	var yurt: Dictionary = {}
+	rng.seed = 31
+	for i in 400:
+		var aday := VatandasUretici.uret(gun6, rng, [], 0)
+		if str(aday.islem) == "yurt_disi":
+			yurt = aday
+			break
+	dogru(not yurt.is_empty(), "yurt dışı çıkış kaydı isteyen vatandaş üretildi")
+	var belgeler := Dogrulayici.belge_sozlugu(yurt)
+	dogru(belgeler.has("calisma_vizesi"), "  çalışma vizesi getirdi")
+	esit(str(Dogrulayici.kontrol(yurt, gun6).karar), "onay", "  vizesi kusursuz")
+	var vize: Dictionary = belgeler["calisma_vizesi"].alanlar
+	esit(str(vize.seri_no), str(belgeler["nufus_cuzdani"].alanlar.seri_no), "  vizedeki seri numarası cüzdanla aynı")
+	var gercek_bitis := str(vize.bitis)
+	vize["bitis"] = "15.01.1984"
+	var s2 := Dogrulayici.kontrol(yurt, gun6)
+	dogru((s2.gerekceler as Array) == ["vize"], "süresi dolmuş vize: 'vize' gerekçesi")
+	esit(str(Dogrulayici.degerlendir("havale", "", s2).sonuc), "notr", "  süresi dolmuş vize sahtecilik sayılmaz")
+	vize["bitis"] = gercek_bitis
+	vize["kase_turu"] = "renk"
+	dogru((Dogrulayici.kontrol(yurt, gun6).gerekceler as Array) == ["sahte"], "mor kaşeli vize: sahte")
+	vize["kase_turu"] = ""
+	vize["imza"] = "Fevzi Balcı"
+	dogru((Dogrulayici.kontrol(yurt, gun6).gerekceler as Array) == ["sahte"], "başkasının imzaladığı vize: sahte")
+	vize["imza"] = str(belgeler["nufus_cuzdani"].alanlar.imza)
+	(yurt.belgeler as Array).erase(belgeler["calisma_vizesi"])
+	dogru((Dogrulayici.kontrol(yurt, gun6).gerekceler as Array) == ["belge_eksik"], "vizesiz yurt dışı başvurusu: belge eksik")
+
+	# bilgi defteri masada
+	var masa: Node = await _gune_git(3)
+	dogru(not is_instance_valid(masa.defter), "3. gün masada bilgi defteri yok")
+	Oyun.yeni_oyun("orta")
+	Oyun.gun = 6
+	await sahneye_git("masa")
+	await sahneyi_bekle("Masa")
+	await bekle(0.4)
+	masa = sahne()
+	dogru(is_instance_valid(masa.defter), "6. gün bilgi defteri masada")
+	esit(masa.defter.yapraklar().size(), 4, "  defterde dört yaprak var (mühür, imza, kaşe, vize)")
+	dogru(not masa.defter.buyuk, "  defter kapalı duruyor")
+	masa.defter.buyut(true)
+	await bekle(0.3)
+	dogru(masa.defter.buyuk and masa.defter.alanlar.has("muhur"), "  çift tıklayınca açıldı; mühür örneği var")
+	masa.defter.yapraga_gec(1)
+	await kare(2)
+	dogru(masa.defter.alanlar.has("imza:Sabri Güneş"), "  imza sirkülerinde muhtarın imzası var")
+	masa.defter.buyut(false)
+
+	# görev şekli: orta kipte sonuç ipucu hakkıyla açılır
+	esit(masa.inceleme.kip, "hak", "orta kip: ipucu hakla")
+	esit(masa.inceleme.ipucu_kalan, 3, "  günde üç ipucu hakkı")
+	rng.seed = 2
+	masa.kuyruk[0] = VatandasUretici.uret(masa.gun, rng, [], 0)
+	(masa.kuyruk[0] as Dictionary).erase("canta")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 3 and not masa._mesgul, 12.0)
+	masa.inceleme.aktif = true
+	await kare(2)
+	var cuzdan := _belge(masa, "nufus_cuzdani")
+	var ikamet := _belge(masa, "ikametgah")
+	masa.inceleme.hedef_tiklandi(cuzdan.alanlar["soyad"])
+	masa.inceleme.hedef_tiklandi(ikamet.alanlar["soyad"])
+	esit(masa.inceleme.ipucu_kalan, 3, "  karşılaştırmak hak harcamaz")
+	dogru(cuzdan.alanlar["soyad"].durum != Hedef.Durum.UYUMLU, "  sonuç kendiliğinden açılmaz")
+	dogru(masa.inceleme.ipucunu_kullan(), "  ipucu istenince sonuç açılır")
+	esit(masa.inceleme.ipucu_kalan, 2, "  bir hak harcandı")
+	esit(cuzdan.alanlar["soyad"].durum, Hedef.Durum.UYUMLU, "  uyumlu bilgi yeşil işaretlendi")
+	masa.inceleme.aktif = false
+	await bekle(0.2)
+
+	# zor kipte sonuç hiç söylenmez; kolay kipte her zaman söylenir
+	Oyun.yeni_oyun("zor")
+	Oyun.gun = 2
+	await sahneye_git("masa")
+	await sahneyi_bekle("Masa")
+	await bekle(0.4)
+	masa = sahne()
+	esit(masa.inceleme.kip, "kapali", "zor kip: ipucu yok")
+	esit(int(masa.gun.zorluk), mini(3, int(Veri.gun(2).zorluk) + 1), "  sahtecilikler bir kademe daha ince")
+	Oyun.yeni_oyun("kolay")
+	Oyun.gun = 2
+	await sahneye_git("masa")
+	await sahneyi_bekle("Masa")
+	await bekle(0.4)
+	esit(sahne().inceleme.kip, "acik", "kolay kip: her karşılaştırmada ipucu")
+	Oyun.kaydet()
+	Oyun.zorluk = "zor"
+	dogru(Oyun.yukle() and Oyun.zorluk == "kolay", "görev şekli kayıtla birlikte saklanır")
+
+	# hikâye: sahte vizeli genç
+	masa = await _gune_git(6)
+	dogru(_one_al(masa, "gurbetci6"), "6. gün sahte vizeli genç kuyrukta")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 4 and not masa._mesgul, 12.0)
+	dogru(_belge(masa, "calisma_vizesi") != null, "  dört belge masada: vize de geldi")
+	var b := _belge(masa, "calisma_vizesi")
+	masa.karar_ver("havale", b, b.get_global_transform() * (b.size * 0.5))
+	esit(str(Oyun.bayrak("gurbetci", "")), "ihbar", "  havale edilince ihbar kaydedildi")
+	esit(int(masa.ozet.kazanc), Oyun.PRIM + Oyun.SUPHELI_PRIMI, "  prim ve şüpheli primi yazıldı")
 	await bekle(0.3)
 
 

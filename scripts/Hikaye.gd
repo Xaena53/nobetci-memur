@@ -128,6 +128,7 @@ static func vatandas_kur(z: Dictionary, gun: Dictionary, rng: RandomNumberGenera
 	var kimlik := {}
 	for alan: String in ["ad", "soyad", "baba_adi", "ana_adi", "dogum_yeri", "dogum_tarihi", "seri_no", "cinsiyet"]:
 		kimlik[alan] = str(kisi.get(alan, ""))
+	kimlik["imza"] = str(kisi.get("imza", "%s %s" % [kimlik.ad, kimlik.soyad]))
 	v["portre"] = str(kisi.get("portre", ""))
 	v["kimlik"] = kimlik
 	v["islem"] = str(z.get("islem", "kayit_ornegi"))
@@ -151,6 +152,11 @@ static func vatandas_kur(z: Dictionary, gun: Dictionary, rng: RandomNumberGenera
 				if typeof(deger) == TYPE_FLOAT and is_equal_approx(deger, roundf(deger)):
 					deger = int(deger)
 				b.alanlar[p[1]] = deger
+	# imzayı, belgede adı yazan muhtar atar (veride açıkça başkası gösterilmediyse)
+	if not duzeltme.has("ikametgah.imza_sahibi"):
+		for b: Dictionary in belgeler:
+			if str(b.tur) == "ikametgah":
+				b.alanlar["imza_sahibi"] = str(b.alanlar.get("muhtar", ""))
 	for tur: String in z.get("sil", []):
 		for i in range(belgeler.size() - 1, -1, -1):
 			if str(belgeler[i].tur) == tur:

@@ -3,14 +3,21 @@
 Her imza beyaz renkli bir saydamlık maskesi olarak saklanır: mürekkebin koyuluğu saydamlığa çevrilir,
 böylece oyun imzayı istediği mürekkep rengiyle çizer ve kalem baskısındaki ton farkı korunur.
 
-Çıktı: assets/img/imza/<kod>.webp      Denetim: tools/sanat/ham/imza_denetim.jpg
+Sayfalar: imzalar.png (müdür, muhtarlar, veznedar; 4x4) ve imzalar_1..4.png (vatandaşlar, hikâye kişileri,
+vize memurları; 5x5, sırası tools/sanat/kadro.py'den).
+
+Çıktı: assets/img/imza/<kod>.webp      Denetim: tools/sanat/ham/imza_denetim*.jpg
 Kullanım: python tools/sanat/imzalar.py
 """
+import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import kadro  # noqa: E402
 
 KOK = Path(__file__).resolve().parents[2]
 HAM = Path(__file__).resolve().parent / "ham"
@@ -21,6 +28,8 @@ KISILER = ["mudur", "Rıza Aksoy", "Kâzım Türkmen", "Nuri Bozkurt",
            "Hamdi Ersoy", "Sabri Güneş", "Şükrü Akın", "Bekir Sezer",
            "Osman Tuna", "Halil Çınar", "Celâl Erdem", "Fevzi Balcı",
            "Tahir Ayaz", "İdris Kökten", "Mevlüt Sarıkaya", "veznedar"]
+# imza sayfasındaki ad → dosya kodu (adı olmayan görevliler); None: atlanır
+OZEL_KODLAR = {"J. Hoffmann": "vize_memuru", "A. Keller": "vize_memuru_2", "Cevdet": None}
 HARFLER = str.maketrans({"ı": "i", "İ": "i", "ş": "s", "Ş": "s", "ğ": "g", "Ğ": "g", "ü": "u", "Ü": "u",
                          "ö": "o", "Ö": "o", "ç": "c", "Ç": "c", "â": "a", "Â": "a", "î": "i", "û": "u"})
 
@@ -35,9 +44,9 @@ def kod(kisi: str) -> str:
     return s.rstrip("_")
 
 
-def main() -> None:
-    HEDEF.mkdir(parents=True, exist_ok=True)
-    im = Image.open(HAM / "imzalar.png").convert("RGB")
+def sayfa_isle(dosya: Path, kisiler: list, sutun: int, satir: int, denetim_adi: str) -> None:
+    """Bir imza sayfasını ızgara hücrelerine göre keser; her imzayı kişinin koduyla kaydeder."""
+    im = Image.open(dosya).convert("RGB")
     a = np.array(im).astype(np.float32) / 255.0
     # mürekkep: beyazdan uzaklık (lacivert mürekkepte kırmızı ve yeşil düşer)
     koyuluk = 1.0 - np.minimum(a[..., 0], a[..., 1])
@@ -46,19 +55,22 @@ def main() -> None:
     etiket, n = ndimage.label(alfa > 0.25)
     dilimler = ndimage.find_objects(etiket)
     alanlar = ndimage.sum(alfa > 0.25, etiket, range(1, n + 1))
-    kutular = [None] * 16
+    kutular = [None] * (sutun * satir)
     for i in range(n):
         if alanlar[i] < 25:
             continue
         ys, xs = dilimler[i]
         cx, cy = (xs.start + xs.stop) / 2, (ys.start + ys.stop) / 2
-        k = min(3, int(cy / h * 4)) * 4 + min(3, int(cx / w * 4))
+        k = min(satir - 1, int(cy / h * satir)) * sutun + min(sutun - 1, int(cx / w * sutun))
         kutu = (xs.start, ys.start, xs.stop, ys.stop)
         o = kutular[k]
         kutular[k] = kutu if o is None else (min(o[0], kutu[0]), min(o[1], kutu[1]), max(o[2], kutu[2]), max(o[3], kutu[3]))
-    denetim = Image.new("RGB", (4 * 420, 4 * 190), (241, 231, 204))
+    hucre = (420, 190)
+    denetim = Image.new("RGB", (sutun * hucre[0], satir * hucre[1]), (241, 231, 204))
     ciz = ImageDraw.Draw(denetim)
-    for i, (kisi, kutu) in enumerate(zip(KISILER, kutular)):
+    for i, (kisi, kutu) in enumerate(zip(kisiler, kutular)):
+        if kisi is None:
+            continue
         if kutu is None:
             print(f"  {kisi}: BULUNAMADI")
             continue
@@ -71,16 +83,30 @@ def main() -> None:
         if parca.width > 440:
             parca = parca.resize((440, round(parca.height * 440 / parca.width)), Image.LANCZOS)
         parca.save(HEDEF / f"{kod(kisi)}.webp", quality=92, method=4, alpha_quality=100)
-        print(f"  {kod(kisi)}: {parca.width}x{parca.height}")
-        # denetim: lacivert mürekkeple kâğıt üstünde
         kucuk = parca.copy()
-        kucuk.thumbnail((400, 150))
+        kucuk.thumbnail((hucre[0] - 20, hucre[1] - 40))
         murekkep = Image.new("RGBA", kucuk.size, (43, 58, 122, 255))
         murekkep.putalpha(kucuk.getchannel("A"))
-        x, y = (i % 4) * 420, (i // 4) * 190
-        denetim.paste(murekkep, (x + (420 - kucuk.width) // 2, y + 22 + (150 - kucuk.height) // 2), murekkep)
-        ciz.text((x + 6, y + 4), kisi, fill=(90, 40, 40))
-    denetim.save(HAM / "imza_denetim.jpg", quality=90)
+        x, y = (i % sutun) * hucre[0], (i // sutun) * hucre[1]
+        denetim.paste(murekkep, (x + (hucre[0] - kucuk.width) // 2, y + 22 + (hucre[1] - 40 - kucuk.height) // 2), murekkep)
+        ciz.text((x + 6, y + 4), kod(kisi), fill=(90, 40, 40))
+    denetim.save(HAM / denetim_adi, quality=88)
+    print(f"{dosya.name}: {sum(1 for k in kisiler if k is not None)} imza")
+
+
+def main() -> None:
+    HEDEF.mkdir(parents=True, exist_ok=True)
+    # müdür, muhtarlar ve veznedar
+    if (HAM / "imzalar.png").exists():
+        sayfa_isle(HAM / "imzalar.png", KISILER, 4, 4, "imza_denetim.jpg")
+    # vatandaşlar ve hikâye kişileri: sıra tools/sanat/kadro.py'den gelir (sayfa başına 25 imza)
+    sira = kadro.imza_sirasi()
+    for no in range(4):
+        dosya = HAM / f"imzalar_{no + 1}.png"
+        if not dosya.exists():
+            continue
+        kisiler = [OZEL_KODLAR.get(k, k) for k in sira[no * 25:(no + 1) * 25]]
+        sayfa_isle(dosya, kisiler, 5, 5, f"imza_denetim_{no + 1}.jpg")
 
 
 if __name__ == "__main__":

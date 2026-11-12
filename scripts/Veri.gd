@@ -5,6 +5,7 @@ extends RefCounted
 
 const GUN_YOLU := "res://data/gunler/gun%d.json"
 const ADLAR_YOLU := "res://data/adlar.json"
+const VATANDAS_YOLU := "res://data/vatandaslar.json"
 
 static var _onbellek: Dictionary = {}
 
@@ -37,6 +38,15 @@ static func gun(no: int) -> Dictionary:
 static func adlar() -> Dictionary:
 	var v: Variant = oku(ADLAR_YOLU)
 	return v if typeof(v) == TYPE_DICTIONARY else {}
+
+
+## Havuzdaki bir yüzün kalıcı kimliği: {ad, soyad, baba_adi, ana_adi, dogum_yeri, dogum_tarihi, imza}.
+## Aynı yüz her gelişinde aynı kişidir. Kimliği olmayan yüz için boş sözlük.
+static func vatandas(portre: String) -> Dictionary:
+	var v: Variant = oku(VATANDAS_YOLU)
+	if typeof(v) != TYPE_DICTIONARY:
+		return {}
+	return ((v as Dictionary).get("kisiler", {}) as Dictionary).get(portre, {})
 
 
 ## Gündeki belirli türden ilk kural (yoksa boş sözlük).

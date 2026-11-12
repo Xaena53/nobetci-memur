@@ -18,6 +18,12 @@ const TABLO := {
 		"talep": ["Adres naklimi yaptıracaktım.", "Taşındık, kaydımı buraya aldıracağım.",
 			"Nakil işlemi için geldim."],
 	},
+	"yurt_disi": {
+		"ad": "Yurt dışı çıkış kaydı",
+		"talep": ["Yurt dışına çalışmaya gidiyorum; çıkış kaydımı yaptıracaktım.",
+			"Vizem çıktı. Çıkış kaydı lazımmış, onu yaptıracağım.",
+			"Gurbete gidiyoruz memur bey. Çıkış kaydı için geldim."],
+	},
 }
 
 

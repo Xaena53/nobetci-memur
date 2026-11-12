@@ -622,5 +622,23 @@
 		"Her şeyi karıştırdınız. Kim toplayacak şimdi?",
 		"Bir çantaya bu kadar şüphe... Hayırdır memur bey?",
 		"Koca devlet, benim çantamla uğraşıyor."
+	],
+	"ulkeler": [
+		"Almanya",
+		"Hollanda",
+		"Avusturya",
+		"Belçika",
+		"Fransa",
+		"İsviçre"
+	],
+	"meslekler": [
+		"Kaynakçı",
+		"Tornacı",
+		"Maden işçisi",
+		"Dökümcü",
+		"Montaj işçisi",
+		"Aşçı",
+		"Terzi",
+		"Marangoz"
 	]
 }

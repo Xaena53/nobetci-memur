@@ -17,8 +17,8 @@
 	],
 	"genelge": {
 		"sayi": "1984/4",
-		"konu": "Sahte cüzdan ihbarı",
-		"metin": "Dün gece adliye arşivi bombalandı; sahte cüzdan dosyaları yandı. Bugünden itibaren cüzdanın seri numarası geçerli seriler arasında olacak, fotoğraf da karşınızdaki şahsa ait olacaktır. Emniyetin aradığı kişilerin resimleri defterinizin son sayfasında. Biri gişeye gelirse evrakı ne kadar düzgün olursa olsun bana havale edin; kendiniz bir şey yapmayın."
+		"konu": "Sahte evrak ihbarı",
+		"metin": "Dün gece adliye arşivi bombalandı; sahte evrak dosyaları yandı. Bugünden itibaren cüzdanın seri numarası geçerli seriler arasında olacak, fotoğraf da karşınızdaki şahsa ait olacaktır. Emniyet bir bilgi defteri gönderdi, masanızda duruyor: gerçek mühür, imza ve kaşe örnekleri içinde. Örneğe uymayan evrak sahtedir. Aranan şahısların resimleri panodaki defterin son sayfasında; biri gişeye gelirse evrakı ne kadar düzgün olursa olsun bana havale edin."
 	},
 	"kurallar": [
 		{
@@ -88,6 +88,12 @@
 			"id": "foto",
 			"tur": "foto_eslesme",
 			"metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır.",
+			"yeni": true
+		},
+		{
+			"id": "sahte",
+			"tur": "sahtecilik",
+			"metin": "Mühür, imza ve kaşeler bilgi defterindeki örneklere uymalıdır; uymayan evrak sahtedir.",
 			"yeni": true
 		},
 		{
