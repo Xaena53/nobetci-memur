@@ -1,5 +1,7 @@
 # Nöbetçi Memur
 
+![Nöbetçi Memur logosu: kırmızı mühür çerçevesi içinde oyunun adı, köşesinde nüfus müdürlüğünün mor mührü; arkada kar altındaki müdürlük binası](docs/img/kapak_1280x720.jpg)
+
 > **1984. Bir gişe, bir mühür, bitmeyen bir kuyruk.**
 
 ![Ana menü: kar altında nüfus müdürlüğü binası, kapıdaki kuyruk ve müdürlük yazısı biçimindeki menü](docs/img/01_menu.jpg)
@@ -520,6 +522,7 @@ betiklerle hazırlandı:
 | `tools/sanat/dilimle.py` | Portre ve nesne sayfalarını saydamlık kanalından tek tek görsellere ayırır |
 | `tools/sanat/yuz_noktalari.py` | Her portrede göz, burun, ağız ve çene noktalarını bulur (OpenCV YuNet) |
 | `tools/sanat/agiz_kareleri.py` | "Ağzı açık" çeşitlemeleri ana portreye hizalar; alt yüzü yumuşak maskeyle keser |
+| `tools/sanat/logo.py` | Logoyu ham görselden temizler (mührün dolgusu, yıldızın boyu) ve mağaza kapaklarını kurar |
 | `tools/sanat/ret_damgasi.py` | Ret mührünün izini eldeki boyalı damgaların harflerinden kurar; mühür aracının yeşil ve kırmızı lastikli hâllerini üretir |
 | `tools/sanat/agiz_ara_kare.py` | Tek çeşitlemesi olan yüzlerde "hafif açık" kareyi açık kareden bükerek üretir (ağız boşluğunu daraltır) |
 | `tools/sanat/aile_figurleri.py` | Ev sahnesindeki tam boy figürleri dilimler |
@@ -575,6 +578,9 @@ python tools/ses/topla.py muhur zil  # yalnızca adı verilenleri
 - **Yazı tipleri:** Courier Prime, Old Standard TT, Caveat — SIL Open Font License 1.1
   (lisans metinleri `assets/font/` içinde)
 - **Görseller:** üretken yapay zekâ ile üretilmiş, oyun için dilimlenip işlenmiştir.
+- **Logo:** üretken yapay zekâ ile üretilmiş, elle temizlenmiştir (`tools/sanat/logo.py`). Saydam hâli
+  `docs/img/logo.png`, kâğıt üstündeki hâli `docs/img/logo_kagit.png`; mağaza kapakları
+  `docs/img/kapak_920x430.jpg` (başlık görseli), `kapak_630x500.jpg` (itch.io) ve `kapak_1280x720.jpg`.
 - **Ses efektleri:** [Freesound](https://freesound.org) üzerindeki CC0 1.0 (kamu malı) kayıtlar;
   kaydedenlerin tam listesi [`assets/ses/KAYNAKLAR.md`](assets/ses/KAYNAKLAR.md) içindedir.
 - **Müzik:**

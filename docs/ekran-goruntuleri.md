@@ -40,7 +40,8 @@ Hikâyeyi gösteren kare.
 - Sabah: 4. günün başında gazete kupürü ile genelge yan yanayken F12 ("ADLİYE ARŞİVİNDE PATLAMA").
 - Ya da oyunun sonunda gazetenin birinci sayfası, sicil özeti ve (varsa) mektupla birlikte.
 
-Kapak görseli (630 × 500) için ana menü ekranı uygundur: başlık, bina ve kuyruk aynı karededir.
+Kapak görseli hazırdır: `docs/img/kapak_630x500.jpg` (itch.io), `docs/img/kapak_920x430.jpg` (mağaza başlık görseli)
+ve `docs/img/kapak_1280x720.jpg`. Logonun saydam hâli `docs/img/logo.png` dosyasındadır; kapaklar `python tools/sanat/logo.py` ile yeniden kurulur.
 
 ## Kodla almak (geliştirici düzeneği)
 
