@@ -790,6 +790,44 @@ func _olc(ad: String, kare_sayisi: int = 240) -> Dictionary:
 	return sonuc
 
 
+## Geçiş ekranı: kasabadan kareler ve ipuçları.  `gun=N` ile o günün ekranı çekilir.
+func _senaryo_ara() -> void:
+	Oyun.ayarlari_sifirla()
+	Oyun.ara_ekran_acik = true
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	Oyun.yeni_oyun("orta")
+	Oyun.gun = int(_arg("gun", "1"))
+	Oyun.sahneye_gec("masa")
+	await bekle(1.6)
+	var ara: AraEkran = Oyun.ara_ekran()
+	# her sahne sırayla: `sahne=ad` verilirse yalnız o görsel
+	var istenen := _arg("sahne", "")
+	var no := 0
+	for s: Dictionary in ara._sahneler.duplicate():
+		if istenen != "" and not str(s.gorsel).contains(istenen):
+			continue
+		ara._sahne_no = ara._sahneler.find(s) - 1
+		ara._sonraki_sahne(true)
+		for eski in ara._sahne_katmani.get_children():
+			if eski != ara._sahne:
+				eski.queue_free()
+		await bekle(float(_arg("bekle", "5")))
+		no += 1
+		await cek("ara_%d_%s" % [no, str(s.gorsel).get_file().get_basename()])
+	if _arg("film", "") != "":
+		for i in 120:                        # 6 sn, saniyede 20 kare
+			await bekle(1.0 / 20.0)
+			get_viewport().get_texture().get_image().save_jpg(ProjectSettings.globalize_path(CIKTI + "ara_film_%s_%03d.jpg" % [_arg("film", "a"), i]), 0.92)
+	var tik := InputEventMouseButton.new()
+	tik.button_index = MOUSE_BUTTON_LEFT
+	tik.pressed = true
+	tik.position = Vector2(640, 360)
+	Input.parse_input_event(tik)
+	print("masa açıldı: ", await sahneyi_bekle("Masa"))
+	Oyun.ara_ekran_acik = false
+
+
 ## Oyun sürecinin işletim sistemindeki bellek kullanımı (MB; Windows'ta "çalışma kümesi"). Bulunamazsa 0.
 func _surec_bellegi() -> int:
 	if OS.get_name() != "Windows":

@@ -15,6 +15,7 @@ from pathlib import Path
 SURUM = "4.3.stable"
 ADRES = "https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz"
 GEREKEN = ["version.txt", "windows_release_x86_64.exe", "windows_release_x86_64_console.exe",
+           "windows_release_x86_32.exe", "windows_release_x86_32_console.exe",
            "web_nothreads_release.zip", "web_release.zip"]
 PARCA = 8 * 1024 * 1024
 
@@ -86,6 +87,7 @@ class UzakDosya:
 
 
 def main() -> None:
+    sys.stdout.reconfigure(encoding="utf-8")
     kok = Path(os.environ.get("APPDATA", Path.home() / ".local/share")) / "Godot" / "export_templates" / SURUM
     if sys.platform != "win32":
         kok = Path.home() / ".local/share/godot/export_templates" / SURUM

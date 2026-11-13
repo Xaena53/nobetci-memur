@@ -61,6 +61,7 @@ const AYAR_SECENEKLERI := {
 	"kare_siniri": [0, 30, 60, 120],
 	"efekt_kalitesi": ["dusuk", "orta", "yuksek"],
 	"doku_kalitesi": ["dusuk", "yuksek"],
+	"ara_ekran": ["bekle", "kisa", "kapali"],
 }
 const SAHNELER := {
 	"menu": "res://scenes/AnaMenu.tscn",
@@ -86,6 +87,7 @@ const VARSAYILAN_AYARLAR := {
 	"doku_kalitesi": "yuksek",     ## arka planlar: "dusuk" iken yarı çözünürlükte yüklenir (bkz. Gorsel)
 	"dusuk_cozunurluk": false,     ## oyun 1280×720 çizilip pencereye büyütülür (zayıf ekran kartları için)
 	"otomatik_kalite": true,       ## kare hızı düşük kalırsa oyun kaliteyi kendiliğinden kısar
+	"ara_ekran": "bekle",          ## güne başlarken geçiş ekranı: "bekle" (tıklayınca geçer) | "kisa" | "kapali"
 	"ekran_sarsintisi": true,  ## mühür inince masanın sarsılması
 	"titreme": true,           ## cızırdayan lamba, yanıp sönen uyarı ışıkları
 	# --- oyun ---
@@ -121,6 +123,8 @@ var _katman: CanvasLayer
 var _mola: MolaMenusu
 var _son_kayit: Dictionary = {}    ## dosyaya en son yazılan durum
 var odak_sinamasi := false         ## testler: başsız kipte de odak kaybı molasını dene
+var ara_ekran_acik := true         ## testler kapatır: geçiş ekranı tıklama beklemesin
+var _ara: Control                  ## açık geçiş ekranı (yoksa null)
 var _olculen_sahne := 0            ## kare hızı ölçülen sahnenin kimliği
 var _olcum_suresi := 0.0
 var _olcum_karesi := 0
@@ -845,6 +849,9 @@ func sahneye_gec(ad: String) -> void:
 		return
 	_geciste = true
 	_perde.mouse_filter = Control.MOUSE_FILTER_STOP
+	if ad == "masa" and ara_ekran_acik and str(ayar("ara_ekran")) != "kapali":
+		_ara_ekranla_gec(ad)
+		return
 	# Tek bir geçiş zinciri: karar, sahneyi değiştir, aç. (Bekleyen bir eşyordam kullanılmaz;
 	# geçişin ortasında oyundan çıkılırsa geçiş nesnesi bellekte asılı kalmasın.)
 	var t := create_tween()
@@ -855,6 +862,39 @@ func sahneye_gec(ad: String) -> void:
 	t.tween_callback(func() -> void:
 		_perde.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_geciste = false)
+
+
+## Güne başlarken: kısa kararma yerine kasabadan kareler ve ipuçları (bkz. AraEkran).
+## Ekran açılır, oyuncu tıklayınca (ya da "kısa" ayarında süre dolunca) sahne değişir ve ekran erir.
+func _ara_ekranla_gec(ad: String) -> void:
+	var ara := AraEkran.new()
+	ara.gun = gun
+	ara.kisa = str(ayar("ara_ekran")) == "kisa"
+	ara.modulate.a = 0.0
+	_katman.add_child(ara)
+	_ara = ara
+	var t := create_tween()
+	t.tween_property(ara, "modulate:a", 1.0, 0.3)
+	t.tween_callback(func() -> void:
+		var eski := get_tree().current_scene
+		if eski is CanvasItem:
+			eski.visible = false            # altta kalan sahne boşuna çizilmesin
+		ara.basla())
+	ara.bitti.connect(func() -> void:
+		var k := create_tween()
+		k.tween_callback(get_tree().change_scene_to_file.bind(SAHNELER[ad]))
+		k.tween_interval(0.12)
+		k.tween_property(ara, "modulate:a", 0.0, 0.4)
+		k.tween_callback(func() -> void:
+			ara.queue_free()
+			_ara = null
+			_perde.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_geciste = false), CONNECT_ONE_SHOT)
+
+
+## Açık geçiş ekranı (testler ve çekimler için); yoksa null.
+func ara_ekran() -> Control:
+	return _ara if is_instance_valid(_ara) else null
 
 
 func geciste_mi() -> bool:

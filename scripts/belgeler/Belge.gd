@@ -11,6 +11,7 @@ extends Control
 signal alindi(belge: Belge)
 signal birakildi(belge: Belge)
 signal hedef_tiklandi(hedef: Hedef)
+signal boyu_degisti(belge: Belge)       ## büyütüldü ya da küçültüldü: üstündeki inceleme çizgisi geçersizdir
 
 const BUYUTME := 1.6
 const TUTUS_BUYUMESI := 1.045         ## tutulan nesnenin öne çıkarken büyüme oranı
@@ -303,6 +304,7 @@ func buyut(b: bool) -> void:
 	if b == buyuk or tutucu == null:
 		return
 	buyuk = b
+	boyu_degisti.emit(self)
 	# araçlar, elde tutulan belgenin altında kalan yerlerinden tutulamaz (bkz. Arac._has_point)
 	if b:
 		add_to_group("elde_belge")

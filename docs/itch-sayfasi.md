@@ -27,6 +27,10 @@ Metinler Türkçe ve İngilizce olarak ayrı ayrı verilmiştir.
 |---|---|---|
 | `NobetciMemur-web.zip` | HTML | **"This file will be played in the browser"** işaretli |
 | `NobetciMemur-windows.zip` | Windows | Platform: Windows |
+| `NobetciMemur-windows-32bit.zip` | Windows | Platform: Windows; adına "32 bit, eski bilgisayarlar için" yazın |
+
+En az sistem: Windows 7 ve üstü, OpenGL 3.3 destekleyen tümleşik grafik (Intel HD 2500 ve sonrası), 2 GB bellek,
+250 MB disk, 1280×720 ekran, fare. Ayrıntısı README'nin "Sistem gereksinimleri" bölümündedir.
 
 ### Tarayıcı (embed) ayarları
 

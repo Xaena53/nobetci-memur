@@ -13,7 +13,7 @@ const RENKLER := {"mor": Color("5b3a82"), "kirmizi": Color("a3262c"), "mavi": Co
 ## Gerçek damganın mürekkebi ve belgedeki taban boyutu.
 const MUREKKEP := {"muhtar": "mor", "vezne": "mor", "vize": "kirmizi", "daire": "mor", "onay": "yesil", "ret": "kirmizi",
 	"gorulmustur": "bordo"}
-const TABAN := {"muhtar": Vector2(84, 84), "vize": Vector2(84, 84), "vezne": Vector2(108, 47), "daire": Vector2(84, 70),
+const TABAN := {"muhtar": Vector2(84, 84), "vize": Vector2(84, 84), "vezne": Vector2(108, 47), "daire": Vector2(76, 76),
 	"onay": Vector2(150, 87), "ret": Vector2(150, 87), "gorulmustur": Vector2(140, 75)}
 
 ## Sahtecilik türleri: [kod, bilgi defterindeki açıklaması]. Baştakiler göze batar, sondakiler incedir.

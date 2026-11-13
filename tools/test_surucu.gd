@@ -9,6 +9,7 @@ func _ready() -> void:
 	# testler oyuncunun kayıt ve ayar dosyalarına dokunmaz
 	Oyun.kayit_yolu = "user://test_kayit.json"
 	Oyun.ayar_yolu = "user://test_ayarlar.json"
+	Oyun.ara_ekran_acik = false
 	Oyun.ayarlari_yukle()
 	_calistir.call_deferred()
 

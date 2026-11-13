@@ -367,46 +367,8 @@ func _golgeyi_ciz() -> void:
 
 ## Her bacanın ağzına bir duman kaynağı konur. Kümeler yükseldikçe büyür, döner ve dağılır.
 func _dumani_kur() -> void:
-	var doku := _duman_dokusu()
-	var buyume := Curve.new()
-	buyume.add_point(Vector2(0.0, 0.22))
-	buyume.add_point(Vector2(0.35, 0.62))
-	buyume.add_point(Vector2(1.0, 1.0))
-	var renkler := Gradient.new()
-	# bacadan çıkarken koyu ve yoğun; yükseldikçe ağarır ve dağılır
-	renkler.offsets = PackedFloat32Array([0.0, 0.05, 0.30, 0.68, 1.0])
-	renkler.colors = PackedColorArray([Color(0.52, 0.52, 0.54, 0.0), Color(0.56, 0.56, 0.58, 0.80),
-		Color(0.76, 0.76, 0.76, 0.52), Color(0.92, 0.91, 0.89, 0.24), Color(0.96, 0.95, 0.93, 0.0)])
 	for b: Array in BACALAR:
-		var olcek := float(b[1])
-		var d := CPUParticles2D.new()
-		d.name = "Duman"
-		d.texture = doku
-		d.position = b[0]
-		d.scale = Vector2(olcek, olcek)
-		if olcek < 0.5:
-			d.modulate.a = 0.7          # uzaktaki bacalar: kasabanın üstünü sis gibi örtmesin
-		d.amount = 72 if olcek > 0.5 else 22
-		d.set_meta("tam_adet", d.amount)
-		d.lifetime = 7.0
-		d.preprocess = 7.0
-		d.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
-		d.emission_sphere_radius = 4.0
-		d.direction = Vector2(0.25, -1.0)
-		d.spread = 9.0
-		d.initial_velocity_min = 11.0
-		d.initial_velocity_max = 18.0
-		d.gravity = Vector2(8, -3)
-		d.damping_min = 1.2
-		d.damping_max = 2.4
-		d.angle_min = 0.0
-		d.angle_max = 360.0
-		d.angular_velocity_min = -14.0
-		d.angular_velocity_max = 14.0
-		d.scale_amount_min = 0.85
-		d.scale_amount_max = 1.5
-		d.scale_amount_curve = buyume
-		d.color_ramp = renkler
+		var d := KasabaSahnesi.duman(b[0], float(b[1]))
 		add_child(d)
 		_dumanlar.append(d)
 	_dumani_ayarla()
@@ -423,24 +385,6 @@ func _dumani_ayarla() -> void:
 		var tam := int(d.get_meta("tam_adet", 22))
 		d.visible = duzey > 0               # düşükte bacalar tütmez
 		d.amount = maxi(6, roundi(tam * [0.4, 0.7, 1.0][duzey]))
-
-
-## Duman kümesi: kenarı yumuşak, içi gürültüyle benekli bir yuvar (boya dokusuna uysun diye pürüzlü).
-func _duman_dokusu() -> Texture2D:
-	var boyut := 72
-	var gurultu := FastNoiseLite.new()
-	gurultu.seed = 84
-	gurultu.frequency = 0.045
-	gurultu.fractal_octaves = 3
-	var g := Image.create(boyut, boyut, false, Image.FORMAT_RGBA8)
-	var orta := (boyut - 1) / 2.0
-	for y in boyut:
-		for x in boyut:
-			var u := Vector2(x - orta, y - orta).length() / (boyut / 2.0)
-			var n := 0.5 + 0.5 * gurultu.get_noise_2d(x, y)
-			var kenar := clampf(1.0 - u - 0.28 * (1.0 - n), 0.0, 1.0)
-			g.set_pixel(x, y, Color(1, 1, 1, pow(kenar, 1.25) * (0.55 + 0.45 * n)))
-	return ImageTexture.create_from_image(g)
 
 
 # --- Seçenekler ---

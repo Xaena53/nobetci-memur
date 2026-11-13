@@ -17,7 +17,7 @@ from pathlib import Path
 KOK = Path(__file__).resolve().parents[1]
 KALITE = "0.92"
 KAYIPLI = ["assets/img/portre", "assets/img/portre/vesika", "assets/img/portre/agiz", "assets/img/portre/aranan",
-           "assets/img", "assets/img/nesne", "assets/img/kagit"]
+           "assets/img", "assets/img/nesne", "assets/img/kagit", "assets/img/kasaba"]
 
 
 def main() -> None:

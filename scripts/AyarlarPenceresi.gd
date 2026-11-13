@@ -43,6 +43,8 @@ const SAYFALAR := [
 			"secenekler": [["Sakin", 1.4], ["Olağan", 1.0], ["Telaşlı", 0.7]]},
 		{"tur": "secenek", "ad": "Yazı hızı", "anahtar": "yazi_hizi", "not": "genelge, konuşma, teleks",
 			"secenekler": [["yavaş", 0.6], ["olağan", 1.0], ["hızlı", 2.0], ["anında", 100.0]]},
+		{"tur": "secenek", "ad": "Geçiş ekranı", "anahtar": "ara_ekran", "not": "güne başlarken kareler ve ipuçları",
+			"secenekler": [["tıkla geç", "bekle"], ["kısa", "kisa"], ["kapalı", "kapali"]]},
 		{"tur": "isaret", "ad": "Arka planda mola", "anahtar": "odakta_mola", "not": "pencereden çıkınca oyun durur"},
 		{"tur": "isaret", "ad": "Ekran sarsıntısı", "anahtar": "ekran_sarsintisi", "not": "mühür inince"},
 		{"tur": "isaret", "ad": "Titreyen ışıklar", "anahtar": "titreme", "not": "lamba, uyarı ışıkları"},

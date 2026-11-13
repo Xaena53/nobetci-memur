@@ -1,5 +1,21 @@
 # Sürüm notları
 
+## 1.4.0 — kasabadan kareler, zayıf sistemler, yeni logo
+
+- **Geçiş ekranı.** Oyuna başlarken ve her yeni günün sabahında kısa kararmanın yerine Ardıçlı'dan canlı
+  bir sahne görünür: çarşı sokağı, bağ yolundan kasaba, çınarlı meydan, taş köprü, istasyon, pazar yeri,
+  gece vakti yukarı mahalle, müdürlüğün önü. Kar yağar, bacalar tüter, lambalar ve pencereler ışıldar.
+  Altta o güne kadar öğrenilen konulardan ipuçları sırayla çıkar. Tıklayınca masa açılır; ayarlardan
+  "kısa" ya da "kapalı" seçilebilir.
+- **Zayıf sistemler.** Üç yeni görüntü ayarı: doku kalitesi, düşük çözünürlük (720p çizilip pencereye
+  büyütülür) ve otomatik kalite (kare hızı düşük kalırsa oyun kaliteyi kendiliğinden kısar). Az çekirdekli
+  ya da az bellekli bilgisayarda oyun düşük ayarlarla başlar. Vatandaş görselleri yalnızca sıradaki üç
+  kişi için yüklenir. Kullanılmayan fizik motorları kapatıldı.
+- **32 bit Windows paketi.** Eski bilgisayarlar için ayrı bir paket (`NobetciMemur-windows-32bit.zip`).
+- **Logo.** Açılışta ve uygulama simgesinde oyunun logosu var: açılışta kâğıt etiket üstünde tam logo,
+  simgede logonun harfleriyle "NM" ve köşesinde nüfus müdürlüğünün mor mührü.
+- **Ayarlar.** Ekran sarsıntısı ve titreyen ışıklar OYUN yaprağına taşındı.
+
 ## 1.3.1 — ret mührü
 
 - **Ret mührü.** "Eksik evrak" fişinin yerini kırmızı lastikli bir mühür aldı: belgeye bırakılınca gerekçe

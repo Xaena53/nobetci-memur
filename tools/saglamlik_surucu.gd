@@ -27,6 +27,7 @@ var _en_dolu := 0.0          ## yerleşim denetimi: alanını en çok dolduran y
 func _ready() -> void:
 	Oyun.kayit_yolu = "user://saglamlik_kayit.json"
 	Oyun.ayar_yolu = "user://saglamlik_ayarlar.json"
+	Oyun.ara_ekran_acik = false
 	Oyun.ayarlari_yukle()
 	_calistir.call_deferred()
 
@@ -1572,6 +1573,60 @@ func _bolum_ayarlar() -> void:
 	await bekle(0.4)
 	var genelge := masa.find_child("GenelgeEkrani", true, false)
 	dogru(genelge != null and not genelge._yaziyor, "yazı hızı en yüksekteyken genelge hemen tamamlanır")
+	Oyun.ayarlari_sifirla()
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	await _ara_ekran_denetimi()
+
+
+## Geçiş ekranı: güne başlarken kasaba sahnesi ve ipuçları görünür; tıklanınca ya da süre dolunca masa açılır.
+func _ara_ekran_denetimi() -> void:
+	var veri: Dictionary = Veri.oku(AraEkran.VERI)
+	var ilk_gun := 0
+	var uzun := 0
+	for i: Dictionary in veri.get("ipuclari", []):
+		if int(i.get("gun", 1)) <= 1:
+			ilk_gun += 1
+		uzun = maxi(uzun, str(i.metin).length())
+	dogru(uzun <= 120, "ipuçları şeride iki satırda sığacak uzunlukta (en uzunu %d harf)" % uzun)
+	for s: Dictionary in veri.get("sahneler", []):
+		dogru(ResourceLoader.exists(str(s.get("gorsel", ""))), "kasaba sahnesinin görseli var: " + str(s.get("ad", "")))
+	Oyun.yeni_oyun("orta")
+	Oyun.ara_ekran_acik = true
+	Oyun.sahneye_gec("masa")
+	await kosulu_bekle(func() -> bool: return Oyun.ara_ekran() != null, 2.0)
+	var ara: AraEkran = Oyun.ara_ekran()
+	dogru(ara != null, "güne başlarken geçiş ekranı açılır")
+	if ara != null:
+		var g := ara.gorunen()
+		dogru(int(g.sahne_sayisi) >= 1, "  en az bir kasaba sahnesi gösterilir")
+		esit(int(g.ipucu_sayisi), ilk_gun, "  1. günde yalnızca o güne kadar öğrenilenlerin ipuçları çıkar")
+		dogru(str(g.ipucu) != "", "  ipucu yazılıdır")
+		await bekle(1.2)
+		dogru(Oyun.geciste_mi() and sahne().name == "AnaMenu", "  oyuncu tıklayana kadar bekler")
+		dogru(not Oyun.mola_verilebilir(), "  geçiş ekranında mola açılmaz")
+		_tus(KEY_ENTER)
+		dogru(await sahneyi_bekle("Masa"), "  tuşa basınca masa açılır")
+		esit(Oyun.ara_ekran(), null, "  ekran kaldırılır")
+	# kısa: kendiliğinden geçer
+	Oyun.ayar_degistir("ara_ekran", "kisa")
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	Oyun.gun = 6
+	Oyun.sahneye_gec("masa")
+	await kosulu_bekle(func() -> bool: return Oyun.ara_ekran() != null, 2.0)
+	ara = Oyun.ara_ekran()
+	dogru(ara != null and int(ara.gorunen().ipucu_sayisi) > ilk_gun, "ileri günlerde yeni konuların ipuçları da çıkar")
+	dogru(await sahneyi_bekle("Masa", AraEkran.KISA_SURE + 4.0), "\"kısa\" ayarında ekran kendiliğinden geçer")
+	# kapalı: eski kısa kararma
+	Oyun.ayar_degistir("ara_ekran", "kapali")
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
+	Oyun.sahneye_gec("masa")
+	await bekle(0.1)
+	esit(Oyun.ara_ekran(), null, "\"kapalı\" ayarında geçiş ekranı açılmaz")
+	dogru(await sahneyi_bekle("Masa"), "  masa doğrudan açılır")
+	Oyun.ara_ekran_acik = false
 	Oyun.ayarlari_sifirla()
 	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")

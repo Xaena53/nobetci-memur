@@ -87,6 +87,9 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] Ayarlar, GÖRÜNTÜ: pencere boyutu değişiyor ve ortalanıyor; tam ekran (F11); kare sınırı 30'da oyun akıcı; efekt kalitesi "düşük"te menüde kar seyreliyor; titreyen ışıklar kapalıyken sokak lambası sabit yanıyor.
 - [ ] Ayarlar, OYUN: yazı hızı "anında" iken genelge hemen beliriyor; fare hassasiyeti 0,5× ve 2×'te imleç beklendiği gibi yavaşlıyor / hızlanıyor, sürükleme bozulmuyor.
 - [ ] Başka pencereye geçince (Alt+Tab) oyun kendiliğinden mola veriyor; "arka planda mola" kapalıyken vermiyor.
+- [ ] Ayarlar, GÖRÜNTÜ (zayıf sistem): "düşük çözünürlük" açılınca görüntü 720p'den büyütülüyor, yazılar okunur kalıyor; doku kalitesi "düşük" iken yeni açılan ekranın arka planı biraz yumuşuyor; otomatik kalite açıkken oyun yavaşlatılırsa (örneğin başka ağır bir iş çalışırken) ayarlar kendiliğinden kısılıyor.
+- [ ] Geçiş ekranı: Yeni Oyun'da ve her sabah kasabadan bir sahne geliyor; kar yağıyor, bacalar tütüyor, lamba ve pencereler ışıldıyor; baca dumanı bacanın ağzından çıkıyor; ipucu ve sahne bekledikçe değişiyor; tıklayınca masa açılıyor. "Kısa"da kendiliğinden geçiyor, "kapalı"da hiç çıkmıyor.
+- [ ] Açılışta kâğıt etiket üstünde logo görünüyor; görev çubuğunda ve exe dosyasında "NM" simgesi var.
 - [ ] Ayarlar oyunu kapatıp açınca korunuyor.
 
 ## 4. Kulakla dinlenecekler

@@ -72,7 +72,13 @@ def damgalar(denetim: list) -> None:
         x1, y1 = min(w, kutu[2] + pay), min(h, kutu[3] + pay)
         maske = (alfa[y0:y1, x0:x1] * 255).astype(np.uint8)
         parca = Image.fromarray(np.dstack([np.full_like(maske, 255)] * 3 + [maske]), "RGBA")
-        parca.save(DAMGA / f"{ad}.webp", quality=92, method=4, alpha_quality=100)
+        yol_cikti = DAMGA / f"{ad}.webp"
+        parca.save(yol_cikti, quality=92, method=4, alpha_quality=100)
+        # kutu komşu damgaya taştıysa onun kesik parçası da girmiştir: at (bkz. kirpik_tara.py)
+        from kirpik_tara import incele, temizle
+        if any(tur == "kenarda kesik" for tur, _alan, _kutu, _temas in incele(yol_cikti)):
+            temizle(yol_cikti)
+            parca = Image.open(yol_cikti)
         denetim.append((ad, parca, (91, 58, 130)))
         print(f"  {ad}: {parca.width}x{parca.height}")
 

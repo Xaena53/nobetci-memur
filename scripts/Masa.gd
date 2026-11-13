@@ -502,6 +502,7 @@ func _belgeleri_getir() -> void:
 			continue
 		b.masaya_koy(_belge_katmani)
 		b.hedef_tiklandi.connect(inceleme.hedef_tiklandi)
+		b.boyu_degisti.connect(func(_belge: Belge) -> void: inceleme.temizle())
 		b.inceleme_ac(inceleme.aktif)
 		var yer: Vector2 = Yerlesim.BELGE_YERI.get(b.tur, Vector2(450, 230))
 		yer += Vector2(randf_range(-4, 4), randf_range(-2, 2))
@@ -573,6 +574,7 @@ func _arac_birakildi(arac: Arac, konum: Vector2) -> void:
 ## "Eksik evrak" için gerekçe penceresini açar; seçilince karar verilir.
 func _gerekce_sor(belge: Belge, konum: Vector2) -> void:
 	_mesgul = true
+	inceleme.temizle()                  # eski karşılaştırmanın balonu pencerenin arkasında kalmasın
 	_araclari_ayarla()
 	var p := GerekcePenceresi.new()
 	p.name = "GerekcePenceresi"

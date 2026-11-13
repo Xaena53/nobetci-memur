@@ -23,7 +23,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.3.1 |
+| Sürüm | 1.4.0 |
 
 ---
 
@@ -155,6 +155,17 @@ cinsiyetine göre incelip kalınlaşır.
 Kuyruk her gün başka insanlardan oluşur. Oyunda hikâye kişileriyle birlikte **89 ayrı yüz** vardır;
 her yüz kalıcı bir kişidir: adı, ana ve baba adı, doğum yeri ve tarihi, imzası hep aynıdır. Cüzdanda
 sahibinin imzası durur.
+
+### Güne başlarken: kasabadan kareler
+
+![Geçiş ekranı: gece vakti karlı bir mahalle sokağı, sokak lambası, altta daktiloyla yazılmış bir ipucu](docs/img/16_gecis.jpg)
+
+Oyuna başlarken ve her yeni günün sabahında, masaya oturmadan önce Ardıçlı'dan bir sahne görünür:
+çarşı sokağı, bağ yolundan kasabanın görünüşü, çınarlı meydan, taş köprü, istasyon, pazar yeri,
+gece vakti yukarı mahalle, müdürlüğün önü. Sahneler ana menüdeki gibi canlıdır: kar yağar, bacalar
+tüter, sokak lambası ve ışıklı pencereler hafifçe titrer. Altta o güne kadar öğrenilen konulardan bir
+ipucu durur; bekledikçe sahne de ipucu da değişir. Tıklayınca (ya da BOŞLUK, ENTER, ESC) masa açılır.
+Ayarlardan "kısa" (birkaç saniyede kendiliğinden geçer) ya da "kapalı" seçilebilir.
 
 ### Müdür izliyor
 
@@ -296,6 +307,25 @@ godot --path .               # oyunu başlatır
 Kayıt ve ayarlar kullanıcı klasöründe durur (`user://kayit.json`, `user://ayarlar.json`;
 Windows'ta `%APPDATA%\Godot\app_userdata\Nöbetçi Memur\`).
 
+### Sistem gereksinimleri
+
+Oyun 2B'dir ve Godot'un en hafif çizicisiyle (Compatibility, OpenGL 3.3) çalışır. Aşağıdaki alt
+sınırlar Godot 4.3'ün dışa aktarılmış oyunlar için verdiği gereksinimlerdir; oyunun kendi ölçümleri
+bunların çok altında kalır (bkz. [Performans](#performans)).
+
+| | En az |
+|---|---|
+| İşletim sistemi | Windows 7 ve üstü (64 bit ya da 32 bit; ikisinin de paketi vardır). Windows 10 öncesi için motorun desteği "elden geldiğince"dir. |
+| İşlemci | SSE2 destekli herhangi bir x86 işlemci |
+| Ekran kartı | OpenGL 3.3 destekleyen tümleşik grafik (Intel HD 2500 ve sonrası). OpenGL sürücüsü eski ya da sorunluysa oyun kendiliğinden Direct3D 11 üstünden (ANGLE) çalışır. |
+| Bellek | 2 GB (oyunun kendisi 200–300 MB kullanır) |
+| Disk | 250 MB |
+| Ekran | 1280×720 |
+| Tarayıcı (Web) | Firefox 79, Chrome 68, Edge 79, Safari 15.2 ve sonrası; 4 GB bellek |
+
+Bu sınırlar zayıf bir bilgisayarda elle denenmedi; geliştirme makinesindeki ölçümlere ve motorun
+belgelerine dayanır.
+
 ### Ayarlar
 
 Ana menüden ve moladan (ESC) açılan dört yapraklı bir formdur; hepsi `user://ayarlar.json` içinde saklanır.
@@ -303,11 +333,17 @@ Ana menüden ve moladan (ESC) açılan dört yapraklı bir formdur; hepsi `user:
 | Yaprak | Ayarlar |
 |---|---|
 | **SES** | Genel ses, efektler, konuşma, müzik, ortam (soba, rüzgâr) düzeyleri; müziği açıp kapatma |
-| **GÖRÜNTÜ** | Tam ekran, pencere boyutu (1280×720, 1600×900, 1920×1080), dikey eşleme, kare sınırı (30, 60, 120, yok), efekt kalitesi (kar ve duman yoğunluğu), ekran sarsıntısı, titreyen ışıklar |
-| **OYUN** | Mesai saatinin hızı, yazı hızı (genelge, konuşma, teleks), arka planda kendiliğinden mola, fare hassasiyeti |
+| **GÖRÜNTÜ** | Tam ekran, pencere boyutu (1280×720, 1600×900, 1920×1080), dikey eşleme, kare sınırı (30, 60, 120, yok), efekt kalitesi (kar ve duman yoğunluğu), doku kalitesi, düşük çözünürlük, otomatik kalite |
+| **OYUN** | Mesai saatinin hızı, yazı hızı (genelge, konuşma, teleks), geçiş ekranı (tıkla geç, kısa, kapalı), arka planda kendiliğinden mola, ekran sarsıntısı, titreyen ışıklar, fare hassasiyeti |
 | **KONTROLLER** | Tuşlar ve fare hareketleri |
 
-Zayıf bilgisayarlar için: efekt kalitesi "düşük", kare sınırı 30. Işığa duyarlı olanlar "titreyen
+Zayıf bilgisayarlar için üç ayar vardır. **Doku kalitesi** "düşük" iken arka planlar yarı
+çözünürlükte yüklenir (ekran belleği azalır). **Düşük çözünürlük** açıkken oyun 1280×720 çizilip
+pencereye büyütülür: büyük ekranlı zayıf ekran kartlarında boyanan nokta sayısı kat kat düşer.
+**Otomatik kalite** açıkken (varsayılan) oyun kare hızını izler; on saniye boyunca düşük kalırsa
+kaliteyi bir kademe kısar: önce kar ve duman, sonra çözünürlük, sonra doku, en son kare sınırı 30.
+Az çekirdekli ya da 4 GB'tan az bellekli bilgisayarda oyun ilk açılışta düşük ayarlarla başlar.
+Işığa duyarlı olanlar "titreyen
 ışıklar"ı ve "ekran sarsıntısı"nı kapatabilir. Tarayıcıda pencere, dikey eşleme ve imleç tarayıcının
 elinde olduğundan o satırlar gösterilmez. "Varsayılana dön" bütün ayarları sıfırlar.
 
@@ -336,17 +372,23 @@ okunurken geçerli aralıklara çekilir.
 Windows ve Web ön ayarları `export_presets.cfg` içindedir.
 
 ```bash
-python tools/sablon_indir.py     # dışa aktarma şablonlarından yalnız gerekenleri indirir (~65 MB, bir kez)
-bash tools/disa_aktar.sh         # build/ altına iki yapıyı ve yüklemeye hazır zip dosyalarını çıkarır
+python tools/sablon_indir.py     # dışa aktarma şablonlarından yalnız gerekenleri indirir (bir kez)
+bash tools/disa_aktar.sh         # build/ altına üç yapıyı ve yüklemeye hazır zip dosyalarını çıkarır
 python tools/web_dene.py         # Web yapısını başsız Chrome'da açıp dener (isteğe bağlı)
 ```
 
 | Çıktı | İçerik |
 |---|---|
-| `build/NobetciMemur-windows.zip` | Tek dosyalık `NobetciMemur.exe` (paket içine gömülü) |
+| `build/NobetciMemur-windows.zip` | Tek dosyalık `NobetciMemur.exe` (paket içine gömülü), 64 bit |
+| `build/NobetciMemur-windows-32bit.zip` | Aynısının 32 bit hâli: eski bilgisayarlar için |
 | `build/NobetciMemur-web.zip` | `index.html` ve eşlikçileri; itch.io'ya doğrudan yüklenir |
 
 Web yapısı iş parçacıksız şablonla üretilir: özel sunucu başlığı (COOP/COEP) gerektirmez.
+
+Exe dosyasının simgesi ve sürüm bilgisi [rcedit](https://github.com/electron/rcedit) ile yazılır;
+yolu Godot'un düzenleyici ayarlarında (`export/windows/rcedit`) tanımlı olmalıdır. Tanımlı değilse
+dışa aktarma yine tamamlanır, exe Godot'un simgesiyle çıkar. Simge (`icon.png`, `icon.ico`) ve açılış
+görseli (`assets/img/acilis.png`) logodan `python tools/sanat/logo.py` ile kurulur.
 
 Yayın belgeleri `docs/` klasöründedir:
 
@@ -370,6 +412,13 @@ makinesinde bütün sahneler kare başına 1–3 ms sürer; ölçülen ve gideri
   (`python tools/ice_aktarma.py`); ölçülen fark en kötü görselde 42,7 dB PSNR'dir
   (`python tools/sanat/kalite_olc.py`). Röntgen haritaları, imzalar ve damgalar kayıpsız kalır.
   `python tools/boyut.py` paketin dökümünü verir.
+- **Kayan yükleme penceresi.** Kuyruğun tamamı yerine yalnızca sıradaki üç vatandaşın görselleri
+  yüklenir; gişeden ayrılanın görselleri bırakılır. Masadaki doku belleği 103 MB'tan 87 MB'a indi.
+- **Zayıf sistem ayarları.** Doku kalitesi, düşük çözünürlük ve otomatik kalite (bkz. [Ayarlar](#ayarlar)).
+  Kullanılmayan fizik motorları kapalıdır (`project.godot` → `physics`).
+- **Yedek çizici.** OpenGL yerine Direct3D 11 (ANGLE) üstünde de ölçüldü: masa kare başına 3–5 ms.
+  `python tools/doku_bellegi.py` görsellerin ekran belleğindeki yerini klasör klasör döker;
+  performans ölçümü sürecin toplam belleğini de yazar (170–215 MB).
 - Duvar saati ibre gözle görülür kadar ilerleyince yeniden çizilir; kar ve duman yoğunluğu efekt
   kalitesi ayarına uyar.
 
@@ -380,7 +429,7 @@ scenes/            Sahneler: AnaMenu, Masa, GunSonu, Aile, Son (+ belgeler/, Ure
 scripts/           Oyun kodu (aşağıda)
 data/              İçerik: günler, adlar, portre künyeleri, vatandaşların sabit kimlikleri, karakterler,
                    hikâye, eşyalar (JSON)
-assets/img/        Arka planlar, portreler (+ ağız kareleri, vesikalıklar, aranan resimleri), nesneler,
+assets/img/        Arka planlar, kasaba sahneleri (kasaba/), portreler (+ ağız kareleri, vesikalıklar, aranan resimleri), nesneler,
                    kâğıt dokuları, röntgen (cihaz, çanta kabukları, eşyalar), imzalar, mühür ve kaşeler
 assets/ses/        Gerçek kayıtlardan kesilmiş efektler (.wav), döngülü ortam sesleri (.ogg),
                    muzik/ altında çalgı müzikleri; künyeler KAYNAKLAR.md içinde
@@ -420,6 +469,9 @@ akışı: `Ana Menü → Masa (09:00–17:00) → Gün Sonu → Aile → ertesi 
 | `GunSonu.gd`, `Son.gd` | Günlük puantaj; oyun sonu gazetesi |
 | `AnaMenu.gd`, `AyarlarPenceresi.gd`, `MolaMenusu.gd` | Menüler; ana menüde baca dumanı ve cızırdayan sokak lambası |
 | `Kar.gd` | Üç katmanlı, rüzgârla savrulan kar yağışı |
+| `AraEkran.gd` | Güne başlarken geçiş ekranı: kasaba sahneleri ve ipuçları (`data/ara_ekran.json`) |
+| `KasabaSahnesi.gd` | Boyalı bir sahneyi canlandırır: baca dumanı, lamba ve pencere ışığı, ağır yaklaşma; ana menünün dumanı da buradan gelir |
+| `Gorsel.gd` | Arka planları doku kalitesi ayarına göre tam ya da yarı çözünürlükte yükler |
 | `Imza.gd` | Kişiye özel imzalar: müdür, muhtarlar, veznedar, vize memuru ve bütün vatandaşlar |
 | `Serit.gd` | Masadaki kabartma şerit etiketler |
 | `Stil.gd`, `Yerlesim.gd` | Renkler ve yazı tipleri; ekran yerleşimi sabitleri |
@@ -434,6 +486,10 @@ Oyunun içeriği veridir; kod değiştirmeden genişletilebilir.
   `canta_kontrol` (`yasak`: o gün yasak eşya sınıfları). `denetim` alanı müdürün
   izlediği saat aralıklarını (dakika), `canta_orani` çantayla gelenlerin, `yasak_orani` yasak eşya
   taşıyan çantaların oranını verir.
+- **Yeni kasaba sahnesi ya da ipucu:** `data/ara_ekran.json`. Sahnenin resmi (16:9) `tools/sanat/ham/kasaba/`
+  altına konur, `python tools/sanat/kasaba.py` onu `assets/img/kasaba/` altına hazırlar;
+  `--izgara <ad> <çıktı.jpg>` bacaların, lambaların ve ışıklı pencerelerin yerini okumak için ızgaralı
+  bir önizleme yazar. İpucunun `gun` alanı ilk görüneceği gündür.
 - **Yeni eşya ya da çanta:** `data/esyalar.json`. Her eşyanın boyu, röntgendeki yoğunluğu, sınıfı
   (`kategori`) ve varsa neyi andırdığı (`benzer`) yazılır; görseli `assets/img/rontgen/esya/` altına konur.
 - **Yeni hikâye karakteri:** `data/karakterler.json`. `kisiler` kimlik bilgilerini, `ziyaretler`
@@ -523,6 +579,8 @@ betiklerle hazırlandı:
 | `tools/sanat/yuz_noktalari.py` | Her portrede göz, burun, ağız ve çene noktalarını bulur (OpenCV YuNet) |
 | `tools/sanat/agiz_kareleri.py` | "Ağzı açık" çeşitlemeleri ana portreye hizalar; alt yüzü yumuşak maskeyle keser |
 | `tools/sanat/logo.py` | Logoyu ham görselden temizler (mührün dolgusu, yıldızın boyu) ve mağaza kapaklarını kurar |
+| `tools/sanat/kasaba.py` | Kasaba sahnelerini ham görsellerden 2560×1440'a hazırlar; yer bulmak için ızgaralı önizleme yazar |
+| `tools/doku_bellegi.py` | Görsellerin ekran belleğinde tuttuğu yeri klasör klasör döker |
 | `tools/sanat/ret_damgasi.py` | Ret mührünün izini eldeki boyalı damgaların harflerinden kurar; mühür aracının yeşil ve kırmızı lastikli hâllerini üretir |
 | `tools/sanat/agiz_ara_kare.py` | Tek çeşitlemesi olan yüzlerde "hafif açık" kareyi açık kareden bükerek üretir (ağız boşluğunu daraltır) |
 | `tools/sanat/aile_figurleri.py` | Ev sahnesindeki tam boy figürleri dilimler |
@@ -578,6 +636,7 @@ python tools/ses/topla.py muhur zil  # yalnızca adı verilenleri
 - **Yazı tipleri:** Courier Prime, Old Standard TT, Caveat — SIL Open Font License 1.1
   (lisans metinleri `assets/font/` içinde)
 - **Görseller:** üretken yapay zekâ ile üretilmiş, oyun için dilimlenip işlenmiştir.
+- **Kasaba sahneleri:** üretken yapay zekâ ile, ana menü resmi üslup örneği verilerek üretilmiştir.
 - **Logo:** üretken yapay zekâ ile üretilmiş, elle temizlenmiştir (`tools/sanat/logo.py`). Saydam hâli
   `docs/img/logo.png`, kâğıt üstündeki hâli `docs/img/logo_kagit.png`; mağaza kapakları
   `docs/img/kapak_920x430.jpg` (başlık görseli), `kapak_630x500.jpg` (itch.io) ve `kapak_1280x720.jpg`.
