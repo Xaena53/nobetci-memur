@@ -62,6 +62,7 @@ const AYAR_SECENEKLERI := {
 	"efekt_kalitesi": ["dusuk", "orta", "yuksek"],
 	"doku_kalitesi": ["dusuk", "yuksek"],
 	"ara_ekran": ["bekle", "kisa", "kapali"],
+	"dil": ["otomatik", "tr", "en", "ru"],
 }
 const SAHNELER := {
 	"menu": "res://scenes/AnaMenu.tscn",
@@ -88,6 +89,7 @@ const VARSAYILAN_AYARLAR := {
 	"dusuk_cozunurluk": false,     ## oyun 1280×720 çizilip pencereye büyütülür (zayıf ekran kartları için)
 	"otomatik_kalite": true,       ## kare hızı düşük kalırsa oyun kaliteyi kendiliğinden kısar
 	"ara_ekran": "bekle",          ## güne başlarken geçiş ekranı: "bekle" (tıklayınca geçer) | "kisa" | "kapali"
+	"dil": "otomatik",             ## "tr" | "en" | "ru"; "otomatik": işletim sisteminin dili (bkz. Dil)
 	"ekran_sarsintisi": true,  ## mühür inince masanın sarsılması
 	"titreme": true,           ## cızırdayan lamba, yanıp sönen uyarı ışıkları
 	# --- oyun ---
@@ -124,6 +126,7 @@ var _mola: MolaMenusu
 var _son_kayit: Dictionary = {}    ## dosyaya en son yazılan durum
 var odak_sinamasi := false         ## testler: başsız kipte de odak kaybı molasını dene
 var ara_ekran_acik := true         ## testler kapatır: geçiş ekranı tıklama beklemesin
+var dil_sabit := ""                ## testler ve çekimler: ayar ne olursa olsun bu dil kullanılır
 var _ara: Control                  ## açık geçiş ekranı (yoksa null)
 var _olculen_sahne := 0            ## kare hızı ölçülen sahnenin kimliği
 var _olcum_suresi := 0.0
@@ -724,6 +727,14 @@ func efekt_duzeyi() -> int:
 
 
 func ayarlari_uygula() -> void:
+	# dil: "otomatik" ise sistemin dili seçilir (ayar "otomatik" kalır; ayar penceresi o anki dili işaretler)
+	var onceki_dil := Dil.kod
+	Dil.sec(dil_sabit if dil_sabit != "" else str(ayarlar.get("dil", "otomatik")))
+	if Dil.kod != onceki_dil and is_inside_tree():
+		# biçimli ve elle çizilen metinler kurulurken çevrilir: ana menü yeni dille baştan kurulur
+		var sahne := get_tree().current_scene
+		if sahne != null and str(sahne.name) == "AnaMenu" and not _geciste:
+			get_tree().reload_current_scene.call_deferred()
 	if DisplayServer.get_name() != "headless" and not OS.has_feature("web"):
 		var hedef := DisplayServer.WINDOW_MODE_FULLSCREEN if bool(ayarlar.tam_ekran) else DisplayServer.WINDOW_MODE_WINDOWED
 		if DisplayServer.window_get_mode() != hedef:

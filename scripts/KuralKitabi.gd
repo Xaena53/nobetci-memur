@@ -47,7 +47,7 @@ func yukle(gun: Dictionary) -> void:
 		if str(k.get("metin", "")) == "":
 			continue
 		no += 1
-		var yazi := "%d. %s" % [no, str(k.metin)]
+		var yazi := "%d. %s" % [no, Dil.c(str(k.metin))]
 		var yuk := _yukseklik(yazi, genislik, Stil.daktilo(), PUNTO)
 		if y + yuk > alt_sinir:
 			s = _yeni_sayfa("-%d-" % (_sayfalar.size() + 1))
@@ -190,11 +190,11 @@ func _tablo_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> float:
 			y = _ara_baslik(s, "HARÇ TARİFESİ", y)
 			var tutarlar: Dictionary = k.get("tutarlar", {})
 			for islem: String in tutarlar:
-				var ad: String = Islemler.adi(islem)
+				var ad: String = Dil.c(Islemler.adi(islem))
 				var tutar := Stil.tl(int(tutarlar[islem]))
 				# satır 37 harfi geçmez: geçerse "TL" alt satıra kayıp sonraki satırın üstüne biner
 				var nokta := maxi(2, 35 - ad.length() - tutar.length())
-				_satir_yaz(s, ad + " " + ".".repeat(nokta) + " " + tutar, y, genislik, satir_yuk, k, Stil.MUREKKEP, islem)
+				_satir_yaz(s, ad + " .".repeat(nokta) + " " + tutar, y, genislik, satir_yuk, k, Stil.MUREKKEP, islem)
 				y += satir_yuk + 2.0
 		"seri_aralik":
 			y = _ara_baslik(s, "GEÇERLİ CÜZDAN SERİLERİ", y)
@@ -228,7 +228,7 @@ func _arananlari_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> vo
 		ad.size = Vector2(foto.x + 28.0, 16.0)
 		ad.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		s.add_child(ad)
-		var lakap := Stil.etiket("lakabı \"%s\"" % str(a.get("lakap", "")), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
+		var lakap := Stil.etiket(Dil.c("lakabı \"%s\"") % str(a.get("lakap", "")), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
 		lakap.position = Vector2(x - 14.0, y + foto.y + 20.0)
 		lakap.size = Vector2(foto.x + 28.0, 15.0)
 		lakap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -310,7 +310,7 @@ func _ara_baslik(s: Control, yazi: String, y: float) -> float:
 
 
 func _yukseklik(yazi: String, genislik: float, font: Font, punto: int) -> float:
-	return font.get_multiline_string_size(yazi, HORIZONTAL_ALIGNMENT_LEFT, genislik, punto).y
+	return font.get_multiline_string_size(Dil.c(yazi), HORIZONTAL_ALIGNMENT_LEFT, genislik, punto).y
 
 
 func _sekmeleri_kur() -> void:
@@ -321,7 +321,7 @@ func _sekmeleri_kur() -> void:
 	var font := Stil.daktilo()
 	var yazi_eni := 0.0
 	for b in _basliklar:
-		yazi_eni += font.get_string_size(b, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
+		yazi_eni += font.get_string_size(Dil.c(b), HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
 	var pay := clampf((KAGIT_YERI.size.x - 12.0 - yazi_eni - 4.0 * (_sayfalar.size() - 1)) / (2.0 * _sayfalar.size()), 3.0, 9.0)
 	for i in _sayfalar.size():
 		var d := Button.new()

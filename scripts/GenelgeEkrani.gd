@@ -58,14 +58,15 @@ func ac(gun: Dictionary, gun_no: int) -> void:
 	cizgi.mouse_filter = MOUSE_FILTER_IGNORE
 	kagit.add_child(cizgi)
 	_yaz(kagit, "GENELGE", Rect2(x, 116, 200, 22), 18, Stil.BORDO, Stil.daktilo_kalin())
-	_yaz(kagit, "Sayı : %s\nTarih: %s" % [str(g.get("sayi", "")), tarih], Rect2(x + w - 150, 114, 150, 36), 12, Stil.MUREKKEP)
-	_yaz(kagit, "Konu : %s" % str(g.get("konu", "")), Rect2(x, 146, w, 18), 13, Stil.MUREKKEP, Stil.daktilo_kalin())
-	_yaz(kagit, "%d. gün — %s" % [gun_no, Tarih.uzun(tarih)], Rect2(x, 166, w, 16), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
+	_yaz(kagit, Dil.c("Sayı : %s\nTarih: %s") % [str(g.get("sayi", "")), tarih], Rect2(x + w - 150, 114, 150, 36), 12, Stil.MUREKKEP)
+	_yaz(kagit, Dil.c("Konu : %s") % Dil.c(str(g.get("konu", ""))), Rect2(x, 146, w, 18), 13, Stil.MUREKKEP, Stil.daktilo_kalin())
+	_yaz(kagit, Dil.c("%d. gün — %s") % [gun_no, Tarih.uzun(tarih)], Rect2(x, 166, w, 16), 11, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
 
-	var metin := str(g.get("metin", ""))
+	var metin := Dil.c(str(g.get("metin", "")))
 	_govde = _yaz(kagit, metin, Rect2(x, 198, w, 250), 14, Stil.MUREKKEP, null, false, true)
 	_govde.add_theme_constant_override("line_spacing", 3)
 	_govde.visible_characters = 0
+	_govde.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING   # yazarken kelimeler satır değiştirmesin
 	_toplam = metin.length()
 
 	_yaz(kagit, "Müdür", Rect2(x + w - 150, 492, 150, 16), 12, Stil.MUREKKEP, Stil.daktilo_kalin(), true)

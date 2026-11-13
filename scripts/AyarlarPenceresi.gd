@@ -39,6 +39,8 @@ const SAYFALAR := [
 		{"tur": "isaret", "ad": "Otomatik kalite", "anahtar": "otomatik_kalite", "not": "oyun yavaşlarsa kendiliğinden kısılır"},
 	]},
 	{"kod": "oyun", "ad": "OYUN", "satirlar": [
+		{"tur": "secenek", "ad": "Dil", "anahtar": "dil", "not": "oyun içinde bir sonraki ekranda geçer",
+			"secenekler": [["Türkçe", "tr"], ["English", "en"], ["Русский", "ru"]]},
 		{"tur": "secenek", "ad": "Mesai saati", "anahtar": "saat_hizi", "onek": "Hiz", "not": "günün ne kadar sürdüğü",
 			"secenekler": [["Sakin", 1.4], ["Olağan", 1.0], ["Telaşlı", 0.7]]},
 		{"tur": "secenek", "ad": "Yazı hızı", "anahtar": "yazi_hizi", "not": "genelge, konuşma, teleks",
@@ -106,7 +108,7 @@ func _ready() -> void:
 	# sekmeler: başlığın altında, daktiloyla yazılmış yaprak adları
 	var sx := SOL
 	for i in SAYFALAR.size():
-		var d := _dugme("  %s  " % str(SAYFALAR[i].ad), 14, true)
+		var d := _dugme("  %s  " % Dil.c(str(SAYFALAR[i].ad)), 14, true)
 		d.name = "AyarSekme_" + str(SAYFALAR[i].kod)
 		d.position = Vector2(sx, 96.0)
 		d.pressed.connect(sayfaya_gec.bind(i))
@@ -223,7 +225,7 @@ func _satirlari_kur(yaprak: Control, satirlar: Array) -> void:
 				for secenek: Array in s.secenekler:
 					var deger: Variant = secenek[1]
 					var yazi := str(secenek[0])
-					var d := _dugme(" %s " % yazi, 15)
+					var d := _dugme(" %s " % Dil.c(str(yazi)), 15)
 					d.name = "%s_%s" % [onek, yazi]
 					d.position = Vector2(x, y - 5.0)
 					d.pressed.connect(func() -> void:
@@ -233,8 +235,11 @@ func _satirlari_kur(yaprak: Control, satirlar: Array) -> void:
 					yaprak.add_child(d)
 					x += d.size.x + 1.0
 					_guncelleyiciler.append(func() -> void:
-						var secili := _ayni(Oyun.ayar(anahtar), deger)
-						d.text = ("[%s]" if secili else " %s ") % yazi
+						var simdiki: Variant = Oyun.ayar(anahtar)
+						if anahtar == "dil" and str(simdiki) == "otomatik":
+							simdiki = Dil.kod           # otomatik: o an kullanılan dil işaretlenir
+						var secili := _ayni(simdiki, deger)
+						d.text = ("[%s]" if secili else " %s ") % Dil.c(str(yazi))
 						d.add_theme_color_override("font_color", Stil.BORDO if secili else Stil.MUREKKEP))
 		y += SATIR + (9.0 if s.has("not") else 0.0)
 

@@ -27,6 +27,11 @@ const TABLO := {
 }
 
 
+## İşlemin ekranda görünen (seçili dile çevrilmiş) adı: iletilerde kullanılır.
+static func gorunen_adi(anahtar: String) -> String:
+	return Dil.c(adi(anahtar))
+
+
 static func adi(anahtar: String) -> String:
 	return str((TABLO.get(anahtar, {}) as Dictionary).get("ad", anahtar))
 

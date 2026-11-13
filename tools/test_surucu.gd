@@ -10,6 +10,7 @@ func _ready() -> void:
 	Oyun.kayit_yolu = "user://test_kayit.json"
 	Oyun.ayar_yolu = "user://test_ayarlar.json"
 	Oyun.ara_ekran_acik = false
+	Oyun.dil_sabit = "tr"
 	Oyun.ayarlari_yukle()
 	_calistir.call_deferred()
 

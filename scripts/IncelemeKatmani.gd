@@ -81,7 +81,7 @@ func hedef_tiklandi(h: Hedef) -> void:
 			_goster(a, h, {"durum": "notr", "mesaj": "İpucu hakkınız kalmadı. Karar sizin."})
 			return
 		_bekleyen = {"a": a, "b": h, "sonuc": sonuc}
-		_goster(a, h, {"durum": "soru", "mesaj": "İpucu ister misiniz? Bu kâğıda tıklayın (kalan hak: %d)." % ipucu_kalan})
+		_goster(a, h, {"durum": "soru", "mesaj": Dil.c("İpucu ister misiniz? Bu kâğıda tıklayın (kalan hak: %d).") % ipucu_kalan})
 		return
 	_sonucu_ac(a, h, sonuc)
 
@@ -177,6 +177,7 @@ func _goster(a: Hedef, b: Hedef, sonuc: Dictionary) -> void:
 
 
 func _balonu_ac(mesaj: String, renk: Color, orta: Vector2, kalin_kenar: bool) -> void:
+	mesaj = Dil.c(mesaj)
 	if mesaj == "":
 		_balon.visible = false
 		return
@@ -186,6 +187,9 @@ func _balonu_ac(mesaj: String, renk: Color, orta: Vector2, kalin_kenar: bool) ->
 	# Sarılan etiketin boyutu elle hesaplanır (kapsayıcılar sarılı metni baştan yanlış ölçer).
 	var metin_boyutu := Stil.daktilo_kalin().get_multiline_string_size(mesaj, HORIZONTAL_ALIGNMENT_LEFT,
 		BALON_GENISLIK, BALON_PUNTO)
+	metin_boyutu.y = Stil.sarili_yukseklik(_balon_yazi, BALON_GENISLIK)
+	if _balon_yazi.get_line_count() > 1:
+		metin_boyutu.x = BALON_GENISLIK
 	_balon_yazi.size = Vector2(BALON_GENISLIK, metin_boyutu.y)
 	var boyut := Vector2(minf(BALON_GENISLIK, metin_boyutu.x + 2.0), metin_boyutu.y) + 2.0 * BALON_BOSLUK
 	_balon.size = boyut

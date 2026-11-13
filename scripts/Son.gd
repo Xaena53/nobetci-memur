@@ -84,7 +84,7 @@ func _gazeteyi_kur() -> Control:
 	sayfa.add_child(ad)
 	_cizgi(sayfa, 88.0, w, 2.5)
 	_cizgi(sayfa, 93.0, w, 1.0)
-	var kunye := Stil.etiket("%s   •   Sayı 4125   •   Fiyatı 25 TL" % str(son.get("tarih", "")), 12, Stil.MUREKKEP_SOLUK,
+	var kunye := Stil.etiket(Dil.c("%s   •   Sayı 4125   •   Fiyatı 25 TL") % str(son.get("tarih", "")), 12, Stil.MUREKKEP_SOLUK,
 		Stil.serif_italik())
 	kunye.position = Vector2(0, 98)
 	kunye.size = Vector2(SAYFA.size.x, 16)
@@ -221,8 +221,9 @@ func _sicili_kur(ortada: bool) -> Control:
 	]
 	var y := 70.0
 	for s: Array in satirlar:
-		var nokta := maxi(2, 36 - str(s[0]).length() - str(s[1]).length())
-		var l := Stil.etiket("%s %s %s" % [s[0], ".".repeat(nokta), s[1]], 13, Stil.MUREKKEP)
+		var ad := Dil.c(str(s[0]))
+		var nokta := maxi(2, 36 - ad.length() - str(s[1]).length())
+		var l := Stil.etiket("%s %s %s" % [ad, ".".repeat(nokta), Dil.c(str(s[1]))], 13, Stil.MUREKKEP)
 		l.position = Vector2(38, y)
 		kart.add_child(l)
 		y += 21.0

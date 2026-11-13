@@ -73,7 +73,7 @@ static func saglik(aile: Dictionary, uye: String) -> int:
 
 ## "Anneniz Hacer Hanım: halsiz" gibi durum satırı.
 static func durum_metni(aile: Dictionary, uye: String) -> String:
-	return "%s: %s" % [str(BILGI[uye].hitap), SAGLIK_ADI[saglik(aile, uye)]]
+	return "%s: %s" % [Dil.c(str(BILGI[uye].hitap)), Dil.c(SAGLIK_ADI[saglik(aile, uye)])]
 
 
 ## O akşamın masraf kalemleri: [{kod, ad, tutar, not}]
@@ -97,8 +97,8 @@ static func masraflar(aile: Dictionary, gun: int) -> Array[Dictionary]:
 	for u: String in UYELER:
 		var s := saglik(aile, u)
 		if s <= 1:
-			liste.append({"kod": "ilac_" + u, "ad": "%s ilacı" % str(BILGI[u].kisa), "tutar": ILAC,
-				"not": "%s hasta." % str(BILGI[u].hitap)})
+			liste.append({"kod": "ilac_" + u, "ad": Dil.c("%s ilacı") % Dil.c(str(BILGI[u].kisa)), "tutar": ILAC,
+				"not": Dil.c("%s hasta.") % Dil.c(str(BILGI[u].hitap))})
 		elif u == "anne" and ANNE_ILACI.has(gun):
 			liste.append({"kod": "ilac_anne", "ad": "Annenizin tansiyon ilacı", "tutar": ILAC, "not": "Kutusu bitti."})
 	if OKUL.has(gun):
@@ -147,7 +147,7 @@ static func geceyi_gecir(aile: Dictionary, gun: int, odenen: Array) -> Dictionar
 	# okul
 	if kodlar.has("okul"):
 		if odenen.has("okul"):
-			satirlar.append("Elif yeni %s yastığının yanına koyup uyudu." % ("botlarını" if gun == 6 else "defterini")
+			satirlar.append(Dil.c("Elif yeni %s yastığının yanına koyup uyudu.") % ("botlarını" if gun == 6 else "defterini")
 				if gun != 4 else "Elif aidat makbuzunu çantasına özenle yerleştirdi.")
 		else:
 			aile.okul_eksigi = int(aile.okul_eksigi) + 1
@@ -174,15 +174,15 @@ static func geceyi_gecir(aile: Dictionary, gun: int, odenen: Array) -> Dictionar
 		aile.saglik[u] = sonra
 		if sonra == once:
 			continue
-		var ad := str(BILGI[u].hitap)
+		var ad := Dil.c(str(BILGI[u].hitap))
 		if sonra > once:
-			satirlar.append("%s biraz toparlandı." % ad if sonra < 3 else "%s iyileşti." % ad)
+			satirlar.append(Dil.c("%s biraz toparlandı.") % ad if sonra < 3 else Dil.c("%s iyileşti.") % ad)
 		elif sonra == 2:
-			satirlar.append("%s sabaha halsiz uyandı." % ad)
+			satirlar.append(Dil.c("%s sabaha halsiz uyandı.") % ad)
 		elif sonra == 1:
-			satirlar.append("%s gece boyu öksürdü; ateşi çıktı." % ad)
+			satirlar.append(Dil.c("%s gece boyu öksürdü; ateşi çıktı.") % ad)
 		else:
-			satirlar.append("%s ateşi düşmedi. Gece yarısı hastaneye götürdünüz." % str(BILGI[u].kisa))
+			satirlar.append(Dil.c("%s ateşi düşmedi. Gece yarısı hastaneye götürdünüz.") % Dil.c(str(BILGI[u].kisa)))
 			kritik = u
 
 	if kritik != "":

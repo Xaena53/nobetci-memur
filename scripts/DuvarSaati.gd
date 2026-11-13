@@ -120,7 +120,7 @@ func _ready() -> void:
 
 
 func _doku(ad: String) -> Texture2D:
-	var yol := NESNE % ad
+	var yol := Dil.yol(NESNE % ad)
 	return load(yol) if ResourceLoader.exists(yol) else null
 
 

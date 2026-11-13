@@ -1,0 +1,4627 @@
+[
+ {
+  "no": 1,
+  "metin": "GECE",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 2,
+  "metin": "Sabah Oldu",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 3,
+  "metin": "Devam",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 4,
+  "metin": "%s: yatakta",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 5,
+  "metin": "AKŞAM DEFTERİ",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 6,
+  "metin": "%s akşamı",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 7,
+  "metin": "Eldeki para: %s",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 8,
+  "metin": "Lambayı Söndür",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 9,
+  "metin": "Bu akşam ödenecek: %s",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 10,
+  "metin": "Yarına kalan: %s",
+  "yer": "scripts/Aile.gd"
+ },
+ {
+  "no": 11,
+  "metin": "Hacer Hanım",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 12,
+  "metin": "Anneniz",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 13,
+  "metin": "Annenizin",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 14,
+  "metin": "Elif",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 15,
+  "metin": "Kızınız Elif",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 16,
+  "metin": "Can",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 17,
+  "metin": "Oğlunuz Can",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 18,
+  "metin": "Can'ın",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 19,
+  "metin": "ağır hasta",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 20,
+  "metin": "Elif'e defter ve kalem",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 21,
+  "metin": "Okul aile birliği aidatı",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 22,
+  "metin": "Elif'e kışlık bot",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 23,
+  "metin": "Ev sahibi dün de bekledi.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 24,
+  "metin": "Son uyarı: bu akşam ödenmezse tahliye.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 25,
+  "metin": "Kira",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 26,
+  "metin": "Ev sahibi bu akşam kirayı istemedi.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 27,
+  "metin": "Kömür",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 28,
+  "metin": "Yiyecek",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 29,
+  "metin": "Nermin Hanım bir tencere yemek getirdi.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 30,
+  "metin": "%s ilacı",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 31,
+  "metin": "%s hasta.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 32,
+  "metin": "Annenizin tansiyon ilacı",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 33,
+  "metin": "Kutusu bitti.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 34,
+  "metin": "Ev sahibi kapıya geldi. Kirayı yarına bıraktınız.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 35,
+  "metin": "Ev sahibi merdivenden bağırdı: \"Yarın akşam kira yoksa eşyalar sokakta!\"",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 36,
+  "metin": "Ev sahibi iki hamalla geldi. Eşyalar kapının önüne indirildi.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 37,
+  "metin": "Soba yanmadı. Ev sabaha kadar buz gibiydi.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 38,
+  "metin": "Soba yine yanmadı. Camların içi buz tuttu.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 39,
+  "metin": "Sofraya bu akşam yalnız çay kondu. Çocuklar aç yattı.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 40,
+  "metin": "Elif yeni %s yastığının yanına koyup uyudu.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 41,
+  "metin": "botlarını",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 42,
+  "metin": "Elif aidat makbuzunu çantasına özenle yerleştirdi.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 43,
+  "metin": "Elif bir şey demedi; çantasını sessizce topladı.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 44,
+  "metin": "%s biraz toparlandı.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 45,
+  "metin": "%s iyileşti.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 46,
+  "metin": "%s sabaha halsiz uyandı.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 47,
+  "metin": "%s gece boyu öksürdü; ateşi çıktı.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 48,
+  "metin": "%s ateşi düşmedi. Gece yarısı hastaneye götürdünüz.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 49,
+  "metin": "Soba yandı, karınlar doydu. Sakin bir geceydi.",
+  "yer": "scripts/AileDurumu.gd"
+ },
+ {
+  "no": 50,
+  "metin": "NÖBETÇİ MEMUR",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 51,
+  "metin": "ARDIÇLI İLÇESİ NÜFUS MÜDÜRLÜĞÜ",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 52,
+  "metin": "Konu : Yedi günlük gişe nöbeti",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 53,
+  "metin": "Sayı : 1984/1",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 54,
+  "metin": "Ardıçlı, Ocak 1984",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 55,
+  "metin": "Yeni Oyun",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 56,
+  "metin": "Ayarlar",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 57,
+  "metin": "Cikis",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 58,
+  "metin": "Çıkış",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 59,
+  "metin": "Zorluk",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 60,
+  "metin": "Vazgeç",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 61,
+  "metin": "Müdür",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 62,
+  "metin": "SÜRÜM %s  ·  BÜTÜN KİŞİ, KURUM VE OLAYLAR KURMACADIR",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 63,
+  "metin": "(kayıt yok)",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 64,
+  "metin": "1. Eski kayıt silinsin mi?",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 65,
+  "metin": "1. Yeni Oyun",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 66,
+  "metin": "Konu : Görev şekli",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 67,
+  "metin": "Nasıl bir mesai istersiniz?",
+  "yer": "scripts/AnaMenu.gd"
+ },
+ {
+  "no": 68,
+  "metin": "MÜDÜRE HAVALE",
+  "yer": "scripts/Arac.gd"
+ },
+ {
+  "no": 69,
+  "metin": "kalan hak: %d",
+  "yer": "scripts/Arac.gd"
+ },
+ {
+  "no": 70,
+  "metin": "%d. GÜN",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 71,
+  "metin": "İPUCU",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 72,
+  "metin": "devam etmek için tıklayın",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 73,
+  "metin": "Ardıçlı",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 74,
+  "metin": "Ocak",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 75,
+  "metin": "Şubat",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 76,
+  "metin": "Mart",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 77,
+  "metin": "Nisan",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 78,
+  "metin": "Mayıs",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 79,
+  "metin": "Haziran",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 80,
+  "metin": "Temmuz",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 81,
+  "metin": "Ağustos",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 82,
+  "metin": "Eylül",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 83,
+  "metin": "Ekim",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 84,
+  "metin": "Kasım",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 85,
+  "metin": "Aralık",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 86,
+  "metin": "Pazar",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 87,
+  "metin": "Pazartesi",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 88,
+  "metin": "Salı",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 89,
+  "metin": "Çarşamba",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 90,
+  "metin": "Perşembe",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 91,
+  "metin": "Cuma",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 92,
+  "metin": "Cumartesi",
+  "yer": "scripts/AraEkran.gd"
+ },
+ {
+  "no": 93,
+  "metin": "SES",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 94,
+  "metin": "Genel ses",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 95,
+  "metin": "Efektler",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 96,
+  "metin": "Konuşma",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 97,
+  "metin": "Müzik",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 98,
+  "metin": "Ortam",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 99,
+  "metin": "soba, rüzgâr",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 100,
+  "metin": "Müzik çalsın",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 101,
+  "metin": "radyo ve menü müziği",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 102,
+  "metin": "GÖRÜNTÜ",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 103,
+  "metin": "Tam ekran",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 104,
+  "metin": "Pencere boyutu",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 105,
+  "metin": "Dikey eşleme",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 106,
+  "metin": "görüntü yırtılmasını önler",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 107,
+  "metin": "Kare sınırı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 108,
+  "metin": "düşük sınır pili ve fanı korur",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 109,
+  "metin": "Efekt kalitesi",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 110,
+  "metin": "kar ve duman yoğunluğu",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 111,
+  "metin": "düşük",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 112,
+  "metin": "yüksek",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 113,
+  "metin": "Doku kalitesi",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 114,
+  "metin": "arka planlar; yeni ekranda geçer",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 115,
+  "metin": "Düşük çözünürlük",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 116,
+  "metin": "720p çizilir, pencereye büyütülür",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 117,
+  "metin": "Otomatik kalite",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 118,
+  "metin": "oyun yavaşlarsa kendiliğinden kısılır",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 119,
+  "metin": "OYUN",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 120,
+  "metin": "Dil",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 121,
+  "metin": "oyun içinde bir sonraki ekranda geçer",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 122,
+  "metin": "Türkçe",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 123,
+  "metin": "English",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 124,
+  "metin": "Mesai saati",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 125,
+  "metin": "Hiz",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 126,
+  "metin": "günün ne kadar sürdüğü",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 127,
+  "metin": "Sakin",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 128,
+  "metin": "Olağan",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 129,
+  "metin": "Telaşlı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 130,
+  "metin": "Yazı hızı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 131,
+  "metin": "genelge, konuşma, teleks",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 132,
+  "metin": "yavaş",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 133,
+  "metin": "olağan",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 134,
+  "metin": "hızlı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 135,
+  "metin": "anında",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 136,
+  "metin": "Geçiş ekranı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 137,
+  "metin": "güne başlarken kareler ve ipuçları",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 138,
+  "metin": "tıkla geç",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 139,
+  "metin": "kısa",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 140,
+  "metin": "kapalı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 141,
+  "metin": "Arka planda mola",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 142,
+  "metin": "pencereden çıkınca oyun durur",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 143,
+  "metin": "Ekran sarsıntısı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 144,
+  "metin": "mühür inince",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 145,
+  "metin": "Titreyen ışıklar",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 146,
+  "metin": "lamba, uyarı ışıkları",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 147,
+  "metin": "Fare hassasiyeti",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 148,
+  "metin": "imlecin hızı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 149,
+  "metin": "KONTROLLER",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 150,
+  "metin": "Fare ile sürükle",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 151,
+  "metin": "belgeyi masada taşır",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 152,
+  "metin": "Çift tık",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 153,
+  "metin": "belgeyi ya da bilgi defterini büyütür",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 154,
+  "metin": "BOŞLUK",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 155,
+  "metin": "inceleme: iki bilgiye tıkla, karşılaştır",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 156,
+  "metin": "Mührü bırak",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 157,
+  "metin": "belgeye: yeşil onaylar, kırmızı reddeder",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 158,
+  "metin": "Havale pusulasını bırak",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 159,
+  "metin": "şüpheli evrakı müdüre yollar",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 160,
+  "metin": "gerekçe penceresinde gerekçeyi seçer",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 161,
+  "metin": "ENTER",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 162,
+  "metin": "genelgeyi tamamlar, gişeyi açar",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 163,
+  "metin": "ESC",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 164,
+  "metin": "mola; açık pencereyi kapatır",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 165,
+  "metin": "tam ekran",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 166,
+  "metin": "ekran görüntüsü",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 167,
+  "metin": "AYARLAR",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 168,
+  "metin": "[ varsayılana dön ]",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 169,
+  "metin": "Tamam",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 170,
+  "metin": "[ ] kapalı",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 171,
+  "metin": "[x] açık",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 172,
+  "metin": "Nüfus cüzdanı",
+  "yer": "scripts/belgeler/Belge.gd"
+ },
+ {
+  "no": 173,
+  "metin": "İkametgâh ilmühaberi",
+  "yer": "scripts/belgeler/Belge.gd"
+ },
+ {
+  "no": 174,
+  "metin": "Harç makbuzu",
+  "yer": "scripts/belgeler/Belge.gd"
+ },
+ {
+  "no": 175,
+  "metin": "Çalışma vizesi",
+  "yer": "scripts/belgeler/Belge.gd"
+ },
+ {
+  "no": 176,
+  "metin": "Bilgi defteri",
+  "yer": "scripts/belgeler/Belge.gd"
+ },
+ {
+  "no": 177,
+  "metin": "MÜHÜR",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 178,
+  "metin": "İMZA",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 179,
+  "metin": "KAŞE",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 180,
+  "metin": "VİZE",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 181,
+  "metin": "MUHTARLIK MÜHRÜ",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 182,
+  "metin": "Gerçek mührün özellikleri",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 183,
+  "metin": "Mühür örneği",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 184,
+  "metin": "· Çift dış halka\n· İç halka\n· Üstte MAHALLE\n  MUHTARLIĞI\n· Altta ARDIÇLI\n· Yıldız ve T.C.\n· Mor mürekkep",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 185,
+  "metin": "Mühür bütün mahallelerde aynıdır; muhtarı imzasından tanırsınız. Mühür belgeye hafif yamuk ya da silik basılmış olabilir; bunlar sahtelik sayılmaz.",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 186,
+  "metin": "Örneğe uymayan mühür sahtedir: evrak müdüre havale edilir.",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 187,
+  "metin": "SAHTE ÖRNEKLERİ",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 188,
+  "metin": "Emniyetin ele geçirdiği mühürlerden",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 189,
+  "metin": "İMZA SİRKÜLERİ",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 190,
+  "metin": "Mahalle muhtarlarının tatbik imzaları",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 191,
+  "metin": "%s Mah.",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 192,
+  "metin": "İmza örneği",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 193,
+  "metin": "VEZNE KAŞESİ",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 194,
+  "metin": "Harç makbuzundaki tahsil kaşesi",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 195,
+  "metin": "Vezne kaşesi örneği",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 196,
+  "metin": "· Tek çerçeve, mor mürekkep\n· Üstte TAHSİL EDİLMİŞTİR\n· Altta ARDIÇLI MALMÜDÜRLÜĞÜ",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 197,
+  "metin": "Sahte örnekleri",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 198,
+  "metin": "Sahte evrak ayrıntıda belli olur",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 199,
+  "metin": "1. Belgeyi çift tıklayıp elinize alın; yazılar büyür.\n\n2. Mührü ve kaşeyi örnekle yan yana getirin: halka sayısı, yazı, mürekkep rengi, yıldız.\n\n3. İmzayı sirkülerdeki imzayla karşılaştırın: baş harfler, eğim, alttaki çizgi.\n\n4. Sahte evrak geri çevrilmez; müdüre havale edilir.",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 200,
+  "metin": "KONSOLOSLUK KAŞESİ",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 201,
+  "metin": "Çalışma vizesindeki kaşe",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 202,
+  "metin": "Konsolosluk kaşesi örneği",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 203,
+  "metin": "· Kırmızı mürekkep\n· Çift dış halka\n· İç halka\n· Üstte KONSOLOSLUK\n  ÇALIŞMA ŞUBESİ\n· Altta ANKARA\n· Ortada VİZE",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 204,
+  "metin": "ÇALIŞMA VİZESİ",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 205,
+  "metin": "Yurt dışı çıkış kaydında aranır",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 206,
+  "metin": "ÇV",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 207,
+  "metin": "1. Vize numarası:",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 208,
+  "metin": "Geçerli vize numaraları",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 209,
+  "metin": "2. Son geçerlilik günü geçmemiş olmalıdır.\n\n3. Cüzdan seri numarası ve doğum tarihi, cüzdandakiyle harfi harfine aynıdır.\n\n4. Hamilin imzası, cüzdandaki imzayla aynı elden çıkmıştır.\n\n5. Konsolosluk kaşesi KAŞE sayfasındaki örneğe uyar.",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 210,
+  "metin": "6. Vize memurunun imzası:",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 211,
+  "metin": "SIK GÖRÜLEN SAHTECİLİKLER",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 212,
+  "metin": "Emniyetin tespitleri",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 213,
+  "metin": "· Geçen yılın numarası: %s-%02d-…\n\n· Henüz verilmemiş numara: %05d ve üstü\n\n· Önek harfleri yanlış: CV, ÇY, ÇW\n\n",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 214,
+  "metin": "· Kaşe mor, oval ya da tek halkalı\n\n· Seri numarasında ya da doğum tarihinde tek rakam farkı\n\n· Hamilin imzası başkasının eli",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 215,
+  "metin": "Sahte vizeyi taşıyan çoğu zaman kandırılmıştır: tarlasını satmış, borca girmiştir. Vize yine de sahtedir; evrak müdüre havale edilir.",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 216,
+  "metin": " da sahtedir.",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 217,
+  "metin": "Konsolosluk Çalışma Şubesi — Ankara",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 218,
+  "metin": "Vize numarası",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 219,
+  "metin": "Soyadı",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 220,
+  "metin": "Adı",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 221,
+  "metin": "Doğum Tarihi",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 222,
+  "metin": "Cüzdan Seri No",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 223,
+  "metin": "Gideceği Ülke",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 224,
+  "metin": "Mesleği",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 225,
+  "metin": "Veriliş Tarihi",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 226,
+  "metin": "Son Geçerlilik Günü",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 227,
+  "metin": "Konsolosluk kaşesi",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 228,
+  "metin": "Hamilin İmzası",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 229,
+  "metin": "Hamilin imzası",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 230,
+  "metin": "Vize Memuru",
+  "yer": "scripts/belgeler/CalismaVizesi.gd"
+ },
+ {
+  "no": 231,
+  "metin": "HARÇ MAKBUZU",
+  "yer": "scripts/belgeler/HarcMakbuzu.gd"
+ },
+ {
+  "no": 232,
+  "metin": "Ardıçlı Malmüdürlüğü Veznesi",
+  "yer": "scripts/belgeler/HarcMakbuzu.gd"
+ },
+ {
+  "no": 233,
+  "metin": "İşlem",
+  "yer": "scripts/belgeler/HarcMakbuzu.gd"
+ },
+ {
+  "no": 234,
+  "metin": "Tutar",
+  "yer": "scripts/belgeler/HarcMakbuzu.gd"
+ },
+ {
+  "no": 235,
+  "metin": "Tarih",
+  "yer": "scripts/belgeler/HarcMakbuzu.gd"
+ },
+ {
+  "no": 236,
+  "metin": "Vezne kaşesi",
+  "yer": "scripts/belgeler/HarcMakbuzu.gd"
+ },
+ {
+  "no": 237,
+  "metin": "ARDIÇLI İLÇESİ",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 238,
+  "metin": "İKAMETGÂH İLMÜHABERİ",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 239,
+  "metin": "Mahallesi",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 240,
+  "metin": "Baba Adı",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 241,
+  "metin": "Adresi",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 242,
+  "metin": "Yukarıda kimliği yazılı şahsın mahallemizde ikamet ettiği tasdik olunur.",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 243,
+  "metin": "Mahalle Muhtarı",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 244,
+  "metin": "Muhtar imzası",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 245,
+  "metin": "Mühür",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 246,
+  "metin": "Muhtar mührü",
+  "yer": "scripts/belgeler/Ikametgah.gd"
+ },
+ {
+  "no": 247,
+  "metin": "NÜFUS CÜZDANI",
+  "yer": "scripts/belgeler/NufusCuzdani.gd"
+ },
+ {
+  "no": 248,
+  "metin": "Fotoğraf",
+  "yer": "scripts/belgeler/NufusCuzdani.gd"
+ },
+ {
+  "no": 249,
+  "metin": "İmza",
+  "yer": "scripts/belgeler/NufusCuzdani.gd"
+ },
+ {
+  "no": 250,
+  "metin": "Seri No",
+  "yer": "scripts/belgeler/NufusCuzdani.gd"
+ },
+ {
+  "no": 251,
+  "metin": "Seri no",
+  "yer": "scripts/belgeler/NufusCuzdani.gd"
+ },
+ {
+  "no": 252,
+  "metin": "Ana Adı",
+  "yer": "scripts/belgeler/NufusCuzdani.gd"
+ },
+ {
+  "no": 253,
+  "metin": "Doğum Yeri",
+  "yer": "scripts/belgeler/NufusCuzdani.gd"
+ },
+ {
+  "no": 254,
+  "metin": "Öf...",
+  "yer": "scripts/CanliPortre.gd"
+ },
+ {
+  "no": 255,
+  "metin": "Pöf!",
+  "yer": "scripts/CanliPortre.gd"
+ },
+ {
+  "no": 256,
+  "metin": "Hıh!",
+  "yer": "scripts/CanliPortre.gd"
+ },
+ {
+  "no": 257,
+  "metin": "Cık cık...",
+  "yer": "scripts/CanliPortre.gd"
+ },
+ {
+  "no": 258,
+  "metin": "Ay ay...",
+  "yer": "scripts/CanliPortre.gd"
+ },
+ {
+  "no": 259,
+  "metin": "Mürekkep mavi",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 260,
+  "metin": "Oval basılmış",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 261,
+  "metin": "Dış halka tek",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 262,
+  "metin": "Yıldız yok",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 263,
+  "metin": "İç halka yok",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 264,
+  "metin": "Yazım hatası",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 265,
+  "metin": "Başka ilçenin mührü",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 266,
+  "metin": "Çerçeve çift",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 267,
+  "metin": "Alt satır yok",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 268,
+  "metin": "Mürekkep mor",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 269,
+  "metin": "Ortası boş",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 270,
+  "metin": "Örneğe uymuyor",
+  "yer": "scripts/Damga.gd"
+ },
+ {
+  "no": 271,
+  "metin": "Gerekli belge eksik",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 272,
+  "metin": "Ad ya da soyad uyuşmuyor",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 273,
+  "metin": "Baba adı uyuşmuyor",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 274,
+  "metin": "Belgenin süresi geçmiş",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 275,
+  "metin": "Mühür ya da imza eksik",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 276,
+  "metin": "Harç tutarı yanlış",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 277,
+  "metin": "Seri numarası geçersiz",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 278,
+  "metin": "Fotoğraf başkasına ait",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 279,
+  "metin": "Mahalle ilçemize bağlı değil",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 280,
+  "metin": "Sahte mühür, imza, kaşe ya da vize",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 281,
+  "metin": "Çalışma vizesinin süresi geçmiş",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 282,
+  "metin": "Baba adı",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 283,
+  "metin": "Cüzdan seri numarası",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 284,
+  "metin": "Doğum tarihi",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 285,
+  "metin": "Bu ikisi arasında bir bağ yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 286,
+  "metin": "%s yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 287,
+  "metin": "%s belgelerde farklı yazılmış (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 288,
+  "metin": "%s tarihi (%s) geçerlilik süresinin dışında.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 289,
+  "metin": "İkametgâhta muhtar mührü yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 290,
+  "metin": "İkametgâhta muhtar imzası yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 291,
+  "metin": "%s harcı %s olmalı; makbuzda %s yazıyor.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 292,
+  "metin": "Cüzdanın seri numarası (%s) geçerli seriler arasında yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 293,
+  "metin": "Cüzdandaki fotoğraf başvuran kişiye ait değildi.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 294,
+  "metin": "%s Mahallesi ilçemize bağlı değil.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 295,
+  "metin": "Gişeye gelen şahıs arananlar listesindeydi (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 296,
+  "metin": "Çalışma vizesi yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 297,
+  "metin": "Aranan bir şahsın evrakını onayladınız! ",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 298,
+  "metin": "Aranan şahsı geri çevirip elinizden kaçırdınız. ",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 299,
+  "metin": "Kusurlu evrakı onayladınız. ",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 300,
+  "metin": "Evrakı tam olan vatandaşı geri çevirdiniz.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 301,
+  "metin": "Geri çevirmeniz yerinde, gerekçeniz yanlış. ",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 302,
+  "metin": "Müdür evrakı kusursuz buldu, işlemi kendisi yaptı.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 303,
+  "metin": "Müdür evrakı geri çevirdi. ",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 304,
+  "metin": "DİKKAT: Camdaki kişi arananlar listesinde. Müdüre havale edin.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 305,
+  "metin": "Sorun yok: camdaki kişi arananlar listesinde görünmüyor.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 306,
+  "metin": "Sorun yok: camdaki kişi resimdeki şahsa benzemiyor.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 307,
+  "metin": "Vizenin süresi için genelgede bir kural yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 308,
+  "metin": "İki ayrı belgeden birer bilgi seçin.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 309,
+  "metin": "Sorun yok: %s iki belgede de aynı.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 310,
+  "metin": "%s farklı; ama genelgede bunu arayan bir kural yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 311,
+  "metin": "Uyuşmazlık: %s cüzdandakiyle aynı değil. Vize sahte olabilir.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 312,
+  "metin": "Bu iki bilgi birbiriyle karşılaştırılmaz.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 313,
+  "metin": "%s farklı yazılmış; ama genelgede bunu arayan bir kural yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 314,
+  "metin": "Uyuşmazlık: %s tutmuyor (%s ≠ %s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 315,
+  "metin": "Yüzle ancak cüzdandaki fotoğraf karşılaştırılır.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 316,
+  "metin": "Sorun yok: fotoğraf başvuran kişiye ait.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 317,
+  "metin": "Fotoğraf pek benzemiyor; ama genelgede bunu arayan bir kural yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 318,
+  "metin": "Uyuşmazlık: fotoğraftaki kişi başvuran değil.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 319,
+  "metin": "Takvimle ancak belgenin düzenlenme tarihi karşılaştırılır.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 320,
+  "metin": "Bu belgenin tarihi için genelgede bir süre kuralı yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 321,
+  "metin": "Sorun yok: belge süresi içinde (en eski geçerli tarih %s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 322,
+  "metin": "Uyuşmazlık: belgeye ileri bir tarih atılmış.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 323,
+  "metin": "Uyuşmazlık: belge çok eski. En erken %s tarihli olmalıydı.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 324,
+  "metin": "Bu kural için iki ayrı belgedeki aynı bilgiyi seçin.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 325,
+  "metin": "Eksik belge varsa fişle doğrudan geri çevirin.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 326,
+  "metin": "Cüzdan fotoğrafı yanıltabilir; aranan resmini camdaki yüzle karşılaştırın.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 327,
+  "metin": "Aranan resmini, camın ardındaki vatandaşın yüzüyle karşılaştırın.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 328,
+  "metin": "Fotoğrafı, camın ardındaki vatandaşın yüzüyle karşılaştırın.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 329,
+  "metin": "Sorun yok: muhtar mührü yerinde.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 330,
+  "metin": "Uyuşmazlık: muhtar mührü basılmamış.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 331,
+  "metin": "Sorun yok: muhtar imzası yerinde.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 332,
+  "metin": "Uyuşmazlık: muhtar imzası atılmamış.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 333,
+  "metin": "Sorun yok: %s harcı %s.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 334,
+  "metin": "Uyuşmazlık: %s harcı %s olmalı, makbuzda %s yazıyor.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 335,
+  "metin": "Sorun yok: seri numarası geçerli.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 336,
+  "metin": "Uyuşmazlık: %s geçerli seriler arasında yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 337,
+  "metin": "Sorun yok: %s Mahallesi ilçemize bağlı.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 338,
+  "metin": "Uyuşmazlık: %s Mahallesi listede yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 339,
+  "metin": "Bu bilgi bu kuralla ilgili değil.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 340,
+  "metin": "Bu örnek bir muhtarın imzası. Hamilin imzasını cüzdandaki imzayla karşılaştırın.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 341,
+  "metin": "İmza örneği ancak bir imzayla karşılaştırılır.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 342,
+  "metin": "Belgede imza yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 343,
+  "metin": "Bu örnek başka muhtarın. Belgede adı yazan muhtarın örneğine bakın.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 344,
+  "metin": "Sorun yok: imza örnekle aynı elden çıkmış.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 345,
+  "metin": "Uyuşmazlık: imza örnektekine benzemiyor. Başkası atmış.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 346,
+  "metin": "Bu örnek bu bilgiyle karşılaştırılmaz.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 347,
+  "metin": "Belgede mühür yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 348,
+  "metin": "Sorun yok: mühür örneğe uyuyor.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 349,
+  "metin": "Uyuşmazlık: mühür sahte (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 350,
+  "metin": "Sorun yok: imza muhtarın kendi imzası.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 351,
+  "metin": "Uyuşmazlık: imza bu muhtarın imzası değil.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 352,
+  "metin": "Sorun yok: vezne kaşesi örneğe uyuyor.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 353,
+  "metin": "Uyuşmazlık: vezne kaşesi sahte (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 354,
+  "metin": "Sorun yok: konsolosluk kaşesi örneğe uyuyor.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 355,
+  "metin": "Uyuşmazlık: konsolosluk kaşesi sahte (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 356,
+  "metin": "Sorun yok: vize numarası geçerli.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 357,
+  "metin": "Uyuşmazlık: %s verilmiş vize numaraları arasında yok.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 358,
+  "metin": "Sorun yok: vizenin süresi dolmamış.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 359,
+  "metin": "Uyuşmazlık: vizenin süresi %s günü dolmuş.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 360,
+  "metin": "İkametgâhtaki muhtar mührü sahteydi (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 361,
+  "metin": "İkametgâhtaki imza muhtar %s'in imzası değildi.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 362,
+  "metin": "Makbuzdaki vezne kaşesi sahteydi (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 363,
+  "metin": "Vize numarası (%s) verilmiş numaralar arasında yoktu.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 364,
+  "metin": "Vizedeki konsolosluk kaşesi sahteydi (%s).",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 365,
+  "metin": "Vizedeki %s cüzdandakiyle aynı değildi.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 366,
+  "metin": "Vizedeki imza cüzdandaki imzayla aynı elden çıkmamıştı.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 367,
+  "metin": "Çalışma vizesinin süresi %s günü dolmuştu.",
+  "yer": "scripts/Dogrulayici.gd"
+ },
+ {
+  "no": 368,
+  "metin": "Bugünün tarihi",
+  "yer": "scripts/DuvarSaati.gd"
+ },
+ {
+  "no": 369,
+  "metin": "%s  •  Sayı %d  •  Fiyatı 25 TL",
+  "yer": "scripts/Gazete.gd"
+ },
+ {
+  "no": 370,
+  "metin": "GENELGE",
+  "yer": "scripts/GenelgeEkrani.gd"
+ },
+ {
+  "no": 371,
+  "metin": "Sayı : %s\nTarih: %s",
+  "yer": "scripts/GenelgeEkrani.gd"
+ },
+ {
+  "no": 372,
+  "metin": "Konu : %s",
+  "yer": "scripts/GenelgeEkrani.gd"
+ },
+ {
+  "no": 373,
+  "metin": "%d. gün — %s",
+  "yer": "scripts/GenelgeEkrani.gd"
+ },
+ {
+  "no": 374,
+  "metin": "Gişeyi Aç",
+  "yer": "scripts/GenelgeEkrani.gd"
+ },
+ {
+  "no": 375,
+  "metin": "RET — GEREKÇESİ",
+  "yer": "scripts/GerekcePenceresi.gd"
+ },
+ {
+  "no": 376,
+  "metin": "« : incelemede bulduğunuz kusur",
+  "yer": "scripts/GerekcePenceresi.gd"
+ },
+ {
+  "no": 377,
+  "metin": "Vatandaşın yüzü",
+  "yer": "scripts/Gise.gd"
+ },
+ {
+  "no": 378,
+  "metin": "GÜNLÜK PUANTAJ",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 379,
+  "metin": "İşlem gören vatandaş",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 380,
+  "metin": "Doğru işlem",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 381,
+  "metin": "İhtar",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 382,
+  "metin": "Uyarı (gerekçe yanlış)",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 383,
+  "metin": "Müdüre havale",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 384,
+  "metin": "Röntgende yakalanan / kaçan",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 385,
+  "metin": "Kapanışta yarıda kalan",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 386,
+  "metin": "Yevmiye",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 387,
+  "metin": "Prim",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 388,
+  "metin": "İhtar kesintisi",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 389,
+  "metin": "GÜNÜN KAZANCI",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 390,
+  "metin": "Eldeki para",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 391,
+  "metin": "(çekmecedeki zarf: %s — bunu kimse bilmiyor)",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 392,
+  "metin": "Müdür Çağırıyor",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 393,
+  "metin": "Eve Git",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 394,
+  "metin": "Müdürün notu: %d ihtar. Kesintiyi yaptım; canı yanan memurun gözü açılır.",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 395,
+  "metin": "Müdürün notu: Bugün gişenizden şikâyet gelmedi. Buna alışabilirim.",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 396,
+  "metin": "Müdürün notu: Gişede çay demlenmez, vatandaşın işi görülür. Yarın daha çok işlem bekliyorum.",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 397,
+  "metin": "Müdürün notu: Hatasız, ama ağır. Kuyruk kapıya kadar uzadı.",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 398,
+  "metin": "Müdürün notu: İdare eder. Yarın genelgeyi iki kere okuyun.",
+  "yer": "scripts/GunSonu.gd"
+ },
+ {
+  "no": 399,
+  "metin": "ARDIÇLI POSTASI",
+  "yer": "scripts/Hikaye.gd"
+ },
+ {
+  "no": 400,
+  "metin": "İHTAR",
+  "yer": "scripts/IhtarFisi.gd"
+ },
+ {
+  "no": 401,
+  "metin": "UYARI",
+  "yer": "scripts/IhtarFisi.gd"
+ },
+ {
+  "no": 402,
+  "metin": "NOT",
+  "yer": "scripts/IhtarFisi.gd"
+ },
+ {
+  "no": 403,
+  "metin": "İHTAR %d",
+  "yer": "scripts/IhtarFisi.gd"
+ },
+ {
+  "no": 404,
+  "metin": "— MÜDÜR",
+  "yer": "scripts/IhtarFisi.gd"
+ },
+ {
+  "no": 405,
+  "metin": "Yan yana kondu. Karar sizin.",
+  "yer": "scripts/IncelemeKatmani.gd"
+ },
+ {
+  "no": 406,
+  "metin": "İpucu hakkınız kalmadı. Karar sizin.",
+  "yer": "scripts/IncelemeKatmani.gd"
+ },
+ {
+  "no": 407,
+  "metin": "İpucu ister misiniz? Bu kâğıda tıklayın (kalan hak: %d).",
+  "yer": "scripts/IncelemeKatmani.gd"
+ },
+ {
+  "no": 408,
+  "metin": "Nüfus kayıt örneği",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 409,
+  "metin": "Nüfus kayıt örneği alacaktım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 410,
+  "metin": "Bir nüfus kayıt örneği lazım oldu.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 411,
+  "metin": "Kayıt örneği çıkartacaktım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 412,
+  "metin": "Cüzdan yenileme",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 413,
+  "metin": "Cüzdanımı yenileyecektim.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 414,
+  "metin": "Nüfus cüzdanım eskidi, yenisini çıkartacağım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 415,
+  "metin": "Cüzdan yenileme için gelmiştim.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 416,
+  "metin": "Adres nakli",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 417,
+  "metin": "Adres naklimi yaptıracaktım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 418,
+  "metin": "Taşındık, kaydımı buraya aldıracağım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 419,
+  "metin": "Nakil işlemi için geldim.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 420,
+  "metin": "Yurt dışı çıkış kaydı",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 421,
+  "metin": "Yurt dışına çalışmaya gidiyorum; çıkış kaydımı yaptıracaktım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 422,
+  "metin": "Vizem çıktı. Çıkış kaydı lazımmış, onu yaptıracağım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 423,
+  "metin": "Gurbete gidiyoruz memur bey. Çıkış kaydı için geldim.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 424,
+  "metin": "İşlem yaptıracaktım.",
+  "yer": "scripts/Islemler.gd"
+ },
+ {
+  "no": 425,
+  "metin": "KURALLAR",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 426,
+  "metin": "GENELGE DEFTERİ",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 427,
+  "metin": "YENİ",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 428,
+  "metin": "TARİFE",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 429,
+  "metin": "TARİFE VE LİSTELER",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 430,
+  "metin": "ARANANLAR",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 431,
+  "metin": "Emniyet Müdürlüğü tebliği",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 432,
+  "metin": "YASAK",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 433,
+  "metin": "YASAK EŞYA",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 434,
+  "metin": "Röntgen cihazı talimatı",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 435,
+  "metin": "Kural",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 436,
+  "metin": "HARÇ TARİFESİ",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 437,
+  "metin": "GEÇERLİ CÜZDAN SERİLERİ",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 438,
+  "metin": "İLÇEMİZE BAĞLI MAHALLELER",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 439,
+  "metin": "lakabı \"%s\"",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 440,
+  "metin": "YAKALANDI",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 441,
+  "metin": "Aranan şahıs",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 442,
+  "metin": "Resimler eskidir; şahıslar kılık değiştirmiş olabilir. Biri gişenize gelirse evrakına bakmadan müdüre havale edin. Kendiniz bir şey yapmayın.",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 443,
+  "metin": "Benzerine aldanmayın: saç kurutma makinesi tabanca, sucuk dinamit değildir. Boş alarm mesaiden yer.",
+  "yer": "scripts/KuralKitabi.gd"
+ },
+ {
+  "no": 444,
+  "metin": "ONAY",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 445,
+  "metin": "RET",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 446,
+  "metin": "O çanta benim değil! Bir yanlışlık var!",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 447,
+  "metin": "Çantamı didik didik ettiniz; bulduğunuz bu mu?",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 448,
+  "metin": "Bekçi çantadan %s çıkardı; şahıs jandarmaya teslim edildi. Dikkatiniz sicilinize işlendi.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 449,
+  "metin": "Bekçi çantayı boşalttı: şüphelendiğiniz şey %s çıktı. Vatandaş boş yere bekledi, mesaiden %d dakika gitti.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 450,
+  "metin": " Bugünkü %d. boş alarmınız: ihtar.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 451,
+  "metin": "Röntgenden geçirdiğiniz çantada %s vardı; şahıs binaya onunla girdi.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 452,
+  "metin": " Camdan izliyordum: çift ihtar.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 453,
+  "metin": " Üstelik: ",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 454,
+  "metin": "Düşünürsünüz.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 455,
+  "metin": "Mektubu Katla",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 456,
+  "metin": "Zarfı çekmecenize atarken sizi gördüm. Para müsadere edildi; iki ihtar yazdım.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 457,
+  "metin": "Anlaştık.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 458,
+  "metin": "Siz bilirsiniz.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 459,
+  "metin": "ONAYLANMIŞTIR",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 460,
+  "metin": "Ardıçlı Nüfus Md.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 461,
+  "metin": "Eksik evrak",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 462,
+  "metin": "REDDEDİLMİŞTİR",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 463,
+  "metin": "Müdürlük makamına",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 464,
+  "metin": "arz olunur.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 465,
+  "metin": "Şüpheniz yerindeymiş; evrak sahte çıktı. Dikkatiniz sicilinize işlendi.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 466,
+  "metin": "EKSİK EVRAK",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 467,
+  "metin": "Kapatıyorsunuz demek. Sonra konuşuruz.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 468,
+  "metin": "Saat beş mi oldu? Ama daha işim bitmemişti!",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 469,
+  "metin": "AÇIK · İPUCU %d",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 470,
+  "metin": "İPUCU HAKKI %d",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 471,
+  "metin": "Tepsi",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 472,
+  "metin": "Belgeler",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 473,
+  "metin": "Fisler",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 474,
+  "metin": "Araclar",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 475,
+  "metin": "İHTAR 0",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 476,
+  "metin": "Mektup",
+  "yer": "scripts/Mektup.gd"
+ },
+ {
+  "no": 477,
+  "metin": "ÇAY MOLASI",
+  "yer": "scripts/MolaMenusu.gd"
+ },
+ {
+  "no": 478,
+  "metin": "Kuyruk bekler. Çay beklemez.",
+  "yer": "scripts/MolaMenusu.gd"
+ },
+ {
+  "no": 479,
+  "metin": "Gişeye Dön",
+  "yer": "scripts/MolaMenusu.gd"
+ },
+ {
+  "no": 480,
+  "metin": "Ana Menüye Dön",
+  "yer": "scripts/MolaMenusu.gd"
+ },
+ {
+  "no": 481,
+  "metin": "Ana menüye dönerseniz bugünkü mesai\nsabahtan yeniden başlar.",
+  "yer": "scripts/MolaMenusu.gd"
+ },
+ {
+  "no": 482,
+  "metin": "Kolay",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 483,
+  "metin": "Her karşılaştırmada ipucu; saat ağır işler.",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 484,
+  "metin": "Orta",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 485,
+  "metin": "Günde üç ipucu hakkı; gerisi sizin gözünüz.",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 486,
+  "metin": "Zor",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 487,
+  "metin": "İpucu yok. Defter, büyüteç ve siz.",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 488,
+  "metin": "Masa",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 489,
+  "metin": "Aile",
+  "yer": "scripts/Oyun.gd"
+ },
+ {
+  "no": 490,
+  "metin": "<svg xmlns=",
+  "yer": "scripts/Portreler.gd"
+ },
+ {
+  "no": 491,
+  "metin": "OLAĞAN",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 492,
+  "metin": "NEGATİF",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 493,
+  "metin": "YOĞUN",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 494,
+  "metin": "Rontgen",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 495,
+  "metin": "BANT ÇALIŞIYOR",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 496,
+  "metin": "çanta",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 497,
+  "metin": " · KARAR BEKLENİYOR",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 498,
+  "metin": "ALARM",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 499,
+  "metin": "GEÇTİ",
+  "yer": "scripts/Rontgen.gd"
+ },
+ {
+  "no": 500,
+  "metin": "Efekt",
+  "yer": "scripts/Ses.gd"
+ },
+ {
+  "no": 501,
+  "metin": "Muzik",
+  "yer": "scripts/Ses.gd"
+ },
+ {
+  "no": 502,
+  "metin": "Radyo",
+  "yer": "scripts/Ses.gd"
+ },
+ {
+  "no": 503,
+  "metin": "Konusma",
+  "yer": "scripts/Ses.gd"
+ },
+ {
+  "no": 504,
+  "metin": "Master",
+  "yer": "scripts/Ses.gd"
+ },
+ {
+  "no": 505,
+  "metin": "Ana Menü",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 506,
+  "metin": "%s   •   Sayı 4125   •   Fiyatı 25 TL",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 507,
+  "metin": "KÜÇÜK İLANLAR",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 508,
+  "metin": "SİCİL ÖZETİ",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 509,
+  "metin": "çok",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 510,
+  "metin": "Çalışılan gün",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 511,
+  "metin": "Toplam ihtar",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 512,
+  "metin": "Hakkındaki şüphe",
+  "yer": "scripts/Son.gd"
+ },
+ {
+  "no": 513,
+  "metin": "Label",
+  "yer": "scripts/Stil.gd"
+ },
+ {
+  "no": 514,
+  "metin": "Button",
+  "yer": "scripts/Stil.gd"
+ },
+ {
+  "no": 515,
+  "metin": "Ali",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 516,
+  "metin": "Kaya",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 517,
+  "metin": "Ayşe",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 518,
+  "metin": "Ankara",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 519,
+  "metin": "Okul Sok.",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 520,
+  "metin": "Almanya",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 521,
+  "metin": "Kaynakçı",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 522,
+  "metin": "Çarşı",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 523,
+  "metin": "Rıza Aksoy",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 524,
+  "metin": "ÇY",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 525,
+  "metin": "ÇW",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 526,
+  "metin": "İyi günler.",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 527,
+  "metin": "Sağ olun.",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 528,
+  "metin": "Peki efendim.",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 529,
+  "metin": "O çanta benim değil!",
+  "yer": "scripts/VatandasUretici.gd"
+ },
+ {
+  "no": 530,
+  "metin": "Zarf",
+  "yer": "scripts/Zarf.gd"
+ },
+ {
+  "no": 531,
+  "metin": "ÇEKMECEYE AT",
+  "yer": "scripts/Zarf.gd"
+ },
+ {
+  "no": 532,
+  "metin": "GERİ İT",
+  "yer": "scripts/Zarf.gd"
+ },
+ {
+  "no": 533,
+  "metin": "BOŞLUK tuşu inceleme modunu açar. İki bilgiye tıklayın; aralarına bir çizgi çekilir.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 534,
+  "metin": "Belgeye çift tıklarsanız elinize kalkıp büyür. Küçük yazılar böyle okunur.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 535,
+  "metin": "Evraktaki tarihi duvardaki takvimle karşılaştırın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 536,
+  "metin": "Fotoğraf eskidir. Saça, bıyığa, şapkaya aldanmayın; buruna, göze, kaşa, çeneye bakın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 537,
+  "metin": "Ret mührü gerekçe sorar. Doğru gerekçeyi seçmek gerekir.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 538,
+  "metin": "Müdüre havale pusulası günde iki kez kullanılır. Sahtecilikten şüphelendiğiniz evraka saklayın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 539,
+  "metin": "Doğru karar prim kazandırır. Günde üçüncü ihtardan itibaren maaşınız kesilir.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 540,
+  "metin": "Müdür jaluziyi açmışsa dikkat: o bakarken yapılan hata çift ihtar sayılır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 541,
+  "metin": "Her sabah genelgeyi sonuna kadar okuyun. Kurallar gün gün değişir.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 542,
+  "metin": "ESC çay molasıdır: oyun durur, ayarlar oradan açılır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 543,
+  "metin": "Akşam eve dönünce kira, kömür ve yiyecek sizi bekler. Kira üç akşam ödenmezse tahliye gelir.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 544,
+  "metin": "Kömür alınmazsa ev soğur, yiyecek alınmazsa herkes aç yatar. Soğuk ve aç geceler sağlığı bozar.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 545,
+  "metin": "Hasta olan ilaçsız kalırsa ağırlaşır. İlaç parasını bir kenara ayırın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 546,
+  "metin": "Oyun ağır çalışıyorsa ayarlardan düşük çözünürlüğü ve düşük doku kalitesini deneyin.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 547,
+  "metin": "Vatandaşın sabrı sınırsız sürmez. Öfleyip pöflemeye başladıysa elinizi çabuk tutun.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 548,
+  "metin": "Evraktaki tutarı tarifeyle karşılaştırın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 549,
+  "metin": "Arananlar listesindeki resimler eski dosya resimleridir. Aranan şahıs gişeye kılık değiştirip gelir.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 550,
+  "metin": "Listedeki resme benzeyen masum vatandaşlar da gelir. Karar vermeden yüz hatlarını karşılaştırın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 551,
+  "metin": "Bilgi defterine çift tıklayın: gerçek mühür, imza ve kaşe örnekleri oradadır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 552,
+  "metin": "Sahte evrakın yeri müdürün masasıdır: havale pusulasını kullanın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 553,
+  "metin": "Mühürde mürekkebin rengine, yıldıza, iç halkaya ve yazıdaki harflere bakın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 554,
+  "metin": "Evraktaki imza, o mahallenin muhtarının sirkülerdeki imzasıyla aynı olmalıdır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 555,
+  "metin": "Röntgende YOĞUN kipi yalnızca maden parçalarını bırakır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 556,
+  "metin": "Saç kurutma makinesi tabancaya, sucuk dinamite benzer. Alarma basmadan iyi bakın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 557,
+  "metin": "Temiz çantaya alarm vermek mesaiden 12 dakika götürür; günün ikinci boş alarmı ihtardır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 558,
+  "metin": "Yasak eşyaların röntgendeki görünüşü genelge defterinin YASAK sayfasındadır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 559,
+  "metin": "Vizedeki seri numarası, doğum tarihi ve imza cüzdandakiyle aynı olmalıdır.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 560,
+  "metin": "Vize numarası geçerli aralıkta, konsolosluk kaşesi gerçek olmalıdır. Bilgi defterine bakın.",
+  "yer": "data/ara_ekran.json:metin"
+ },
+ {
+  "no": 561,
+  "metin": "bir çift ayakkabı",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 562,
+  "metin": "somun ekmek",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 563,
+  "metin": "turşu kavanozu",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 564,
+  "metin": "gazoz şişesi",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 565,
+  "metin": "çalar saat",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 566,
+  "metin": "el radyosu",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 567,
+  "metin": "saç kurutma makinesi",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 568,
+  "metin": "ütü",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 569,
+  "metin": "çaydanlık",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 570,
+  "metin": "terzi makası",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 571,
+  "metin": "anahtar destesi",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 572,
+  "metin": "gözlük",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 573,
+  "metin": "şemsiye",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 574,
+  "metin": "yün yumağı",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 575,
+  "metin": "çatal kaşık",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 576,
+  "metin": "el matkabı",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 577,
+  "metin": "bir bağ mum",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 578,
+  "metin": "fotoğraf makinesi",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 579,
+  "metin": "pense ile tornavida",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 580,
+  "metin": "sigara tabakası ile çakmak",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 581,
+  "metin": "deste deste para",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 582,
+  "metin": "para kutusu",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 583,
+  "metin": "toplu tabanca",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 584,
+  "metin": "şarjör ve mermi",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 585,
+  "metin": "el bombası",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 586,
+  "metin": "saatli bomba",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 587,
+  "metin": "dinamit lokumu",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 588,
+  "metin": "satır",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 589,
+  "metin": "ekmek bıçağı",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 590,
+  "metin": "bez çanta",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 591,
+  "metin": "evrak çantası",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 592,
+  "metin": "el çantası",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 593,
+  "metin": "Ateşli silah ve mermi",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 594,
+  "metin": "Patlayıcı madde",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 595,
+  "metin": "Bıçak, kama, satır",
+  "yer": "data/esyalar.json:ad"
+ },
+ {
+  "no": 596,
+  "metin": "Göreve başlama",
+  "yer": "data/gunler/gun1.json:konu"
+ },
+ {
+  "no": 597,
+  "metin": "2 numaralı gişede bugün göreve başlıyorsunuz. Vatandaş, nüfus kayıt örneği için nüfus cüzdanı ve ikametgâh ilmühaberiyle başvurur. Evrakı tam olanı mühürleyip onaylayın; kusurlu olanı gerekçesini yazarak geri çevirin. Şüpheli gördüğünüz evrakı bana havale edebilirsiniz; ama kapımı günde iki kereden fazla çaldırmayın. Sizden önceki memuru sorana cevap vermeyin; bana yollayın.",
+  "yer": "data/gunler/gun1.json:metin"
+ },
+ {
+  "no": 598,
+  "metin": "Her başvuruda nüfus cüzdanı ve ikametgâh ilmühaberi aranır.",
+  "yer": "data/gunler/gun1.json:metin"
+ },
+ {
+  "no": 599,
+  "metin": "Ad ve soyad bütün belgelerde aynı olmalıdır.",
+  "yer": "data/gunler/gun1.json:metin"
+ },
+ {
+  "no": 600,
+  "metin": "İkametgâh son 6 ay içinde alınmış olmalıdır.",
+  "yer": "data/gunler/gun1.json:metin"
+ },
+ {
+  "no": 601,
+  "metin": "Muhtarlık belgeleri",
+  "yer": "data/gunler/gun2.json:konu"
+ },
+ {
+  "no": 602,
+  "metin": "Mühürsüz ilmühaberler yüzünden kaymakamlıktan yazı geldi. Bugünden itibaren ikametgâhta muhtarın mührü ve imzası zorunludur. Baba adı da bütün belgelerde aynı olacaktır; \"muhtar öyle yazmış\" mazereti kabul edilmez. Arada bir odamın camından gişeyi izleyeceğim: ben bakarken yapılan hata iki ihtar sayılır.",
+  "yer": "data/gunler/gun2.json:metin"
+ },
+ {
+  "no": 603,
+  "metin": "İkametgâhta muhtarın mührü ve imzası bulunmalıdır.",
+  "yer": "data/gunler/gun2.json:metin"
+ },
+ {
+  "no": 604,
+  "metin": "Baba adı bütün belgelerde aynı olmalıdır.",
+  "yer": "data/gunler/gun2.json:metin"
+ },
+ {
+  "no": 605,
+  "metin": "Harç uygulaması",
+  "yer": "data/gunler/gun3.json:konu"
+ },
+ {
+  "no": 606,
+  "metin": "Bugünden itibaren her işlem için harç makbuzu aranacaktır. Makbuzdaki tutar, defterin tarife sayfasındaki tutarla aynı olmalıdır. Gişenizde artık cüzdan yenileme ve adres nakli işlemleri de yapılacaktır. Makbuzsuz vatandaşı vezneye yollayın.",
+  "yer": "data/gunler/gun3.json:metin"
+ },
+ {
+  "no": 607,
+  "metin": "Her başvuruda nüfus cüzdanı, ikametgâh ve harç makbuzu aranır.",
+  "yer": "data/gunler/gun3.json:metin"
+ },
+ {
+  "no": 608,
+  "metin": "Makbuzdaki tutar, işlemin tarifedeki harcıyla aynı olmalıdır.",
+  "yer": "data/gunler/gun3.json:metin"
+ },
+ {
+  "no": 609,
+  "metin": "Sahte evrak ihbarı",
+  "yer": "data/gunler/gun4.json:konu"
+ },
+ {
+  "no": 610,
+  "metin": "Dün gece adliye arşivi bombalandı; sahte evrak dosyaları yandı. Bugünden itibaren cüzdanın seri numarası geçerli seriler arasında olacak, fotoğraf da karşınızdaki şahsa ait olacaktır. Emniyet bir bilgi defteri gönderdi, masanızda duruyor: gerçek mühür, imza ve kaşe örnekleri içinde. Örneğe uymayan evrak sahtedir. Aranan şahısların resimleri panodaki defterin son sayfasında; biri gişeye gelirse evrakı ne kadar düzgün olursa olsun bana havale edin.",
+  "yer": "data/gunler/gun4.json:metin"
+ },
+ {
+  "no": 611,
+  "metin": "Cüzdanın seri numarası geçerli seriler arasında olmalıdır.",
+  "yer": "data/gunler/gun4.json:metin"
+ },
+ {
+  "no": 612,
+  "metin": "Cüzdandaki fotoğraf başvuran kişiye ait olmalıdır.",
+  "yer": "data/gunler/gun4.json:metin"
+ },
+ {
+  "no": 613,
+  "metin": "Mühür, imza ve kaşeler bilgi defterindeki örneklere uymalıdır; uymayan evrak sahtedir.",
+  "yer": "data/gunler/gun4.json:metin"
+ },
+ {
+  "no": 614,
+  "metin": "Arananlar listesindeki şahıs, evrakı ne olursa olsun müdüre havale edilir.",
+  "yer": "data/gunler/gun4.json:metin"
+ },
+ {
+  "no": 615,
+  "metin": "Kasap",
+  "yer": "data/gunler/gun4.json:lakap"
+ },
+ {
+  "no": 616,
+  "metin": "Terzi",
+  "yer": "data/adlar.json:meslekler"
+ },
+ {
+  "no": 617,
+  "metin": "Harç zammı ve röntgen cihazı",
+  "yer": "data/gunler/gun5.json:konu"
+ },
+ {
+  "no": 618,
+  "metin": "Harçlara zam gelmiştir; yeni tarife bu sabah yürürlüğe girdi. Eski tarifeden yatırılmış makbuz kabul edilmez. Makbuz en çok 3 gün önce kesilmiş olmalıdır. Zammı ben yapmadım; şikâyeti bana getirmeyin. Valiliğin gönderdiği röntgen cihazı gişenize kuruldu: çantayla gelenin eşyası evrakından önce banttan geçecek. Ekranda silah ya da patlayıcı görürseniz kırmızı düğmeye basın; gerisini bekçi halleder. Her gördüğünüz demire alarm vermeyin, bekçinin de bir sabrı var.",
+  "yer": "data/gunler/gun5.json:metin"
+ },
+ {
+  "no": 619,
+  "metin": "Harç makbuzu en çok 3 gün önce kesilmiş olmalıdır.",
+  "yer": "data/gunler/gun5.json:metin"
+ },
+ {
+  "no": 620,
+  "metin": "Çanta ve bavullar röntgenden geçirilir. Ateşli silah, mermi ya da patlayıcı görülürse alarm verilir.",
+  "yer": "data/gunler/gun5.json:metin"
+ },
+ {
+  "no": 621,
+  "metin": "Mahalle sınırları ve çalışma vizesi",
+  "yer": "data/gunler/gun6.json:konu"
+ },
+ {
+  "no": 622,
+  "metin": "Hafta sonu çıkan kararla Dere ve Değirmen mahalleleri Kavaklı'ya bağlandı; yalnızca tarife sayfasındaki mahallelerden alınmış ikametgâh geçerlidir. B serisi cüzdanlar da kabul edilecektir. Yurt dışına işçi gidenlerin çıkış kaydı artık gişenizde yapılacak. Çalışma vizesini bilgi defterindeki örnekle karşılaştırın: piyasada sahtesi dolaşıyor, alan da satan da suçludur. Savcı Altay bugün hükümet konağında; arananlar sayfasına bir kez daha bakın.",
+  "yer": "data/gunler/gun6.json:metin"
+ },
+ {
+  "no": 623,
+  "metin": "Yukarı",
+  "yer": "data/gunler/gun6.json:mahalleler"
+ },
+ {
+  "no": 624,
+  "metin": "Aşağı",
+  "yer": "data/gunler/gun6.json:mahalleler"
+ },
+ {
+  "no": 625,
+  "metin": "İstasyon",
+  "yer": "data/gunler/gun6.json:mahalleler"
+ },
+ {
+  "no": 626,
+  "metin": "Cumhuriyet",
+  "yer": "data/gunler/gun6.json:mahalleler"
+ },
+ {
+  "no": 627,
+  "metin": "Bağlar",
+  "yer": "data/gunler/gun6.json:mahalleler"
+ },
+ {
+  "no": 628,
+  "metin": "Hisar",
+  "yer": "data/gunler/gun6.json:mahalleler"
+ },
+ {
+  "no": 629,
+  "metin": "Yeni",
+  "yer": "data/gunler/gun6.json:mahalleler"
+ },
+ {
+  "no": 630,
+  "metin": "İkametgâh, ilçemize bağlı bir mahalleden alınmış olmalıdır.",
+  "yer": "data/gunler/gun6.json:metin"
+ },
+ {
+  "no": 631,
+  "metin": "Yurt dışı çıkış kaydında çalışma vizesi aranır: numarası ve kaşesi gerçek, süresi dolmamış, seri numarası, doğum tarihi ve imzası cüzdandakiyle aynı olmalıdır.",
+  "yer": "data/gunler/gun6.json:metin"
+ },
+ {
+  "no": 632,
+  "metin": "Teftiş",
+  "yer": "data/gunler/gun7.json:konu"
+ },
+ {
+  "no": 633,
+  "metin": "Bugün dairemizde teftiş var. Bütün kurallar harfiyen uygulanacaktır; ikametgâhın geçerlilik süresi 3 aya indirilmiştir. Bugünden itibaren bıçak, kama ve satır da binaya sokulmaz; röntgenden geçmeyen tek bir çanta görmeyeyim. Bir haftadır nasıl çalıştığınız bugün belli olacak. Kolay gelsin.",
+  "yer": "data/gunler/gun7.json:metin"
+ },
+ {
+  "no": 634,
+  "metin": "İkametgâh son 3 ay içinde alınmış olmalıdır.",
+  "yer": "data/gunler/gun7.json:metin"
+ },
+ {
+  "no": 635,
+  "metin": "Çanta ve bavullar röntgenden geçirilir. Ateşli silah, mermi, patlayıcı ya da bıçak, kama, satır görülürse alarm verilir.",
+  "yer": "data/gunler/gun7.json:metin"
+ },
+ {
+  "no": 636,
+  "metin": "İLDE BANKA SOYGUNU",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 637,
+  "metin": "Dört maskeli kişi cuma günü il merkezindeki bir banka şubesini soydu. Soyguncuların kaçtığı araç sahte nüfus cüzdanıyla kiralanmış. Emniyet, kendine \"Kara Ardıç\" diyen çeteden şüpheleniyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 638,
+  "metin": "ESKİ GİŞE MEMURU KAYIP",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 639,
+  "metin": "Nüfus müdürlüğünün 2 numaralı gişesinde yıllarca çalışan memur Ş.K.'den bir haftadır haber alınamıyor. Sahte cüzdan soruşturmasında ifadesine başvurulacaktı. Gişeye yeni memur atandı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 640,
+  "metin": "Sahte cüzdan dosyasına Savcı Hikmet Altay bakacak. Savcı: \"Bu kâğıtlar birinin masasından geçti; o masayı bulacağım.\" Öte yandan nüfus işlemlerine harç geldi; kuyruktaki vatandaş söyleniyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 641,
+  "metin": "Savcı Hikmet Altay",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 642,
+  "metin": "ADLİYE ARŞİVİNDE PATLAMA",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 643,
+  "metin": "Gece yarısı adliye binasının arşivinde bomba patladı. Sahte cüzdan dosyalarının durduğu oda kül oldu; gece bekçisi yaralı. Görgü tanıkları patlamadan önce sokakta beyaz bir otomobil gördüklerini söyledi.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 644,
+  "metin": "SAVCI: DOSYA YANAR, SUÇ YANMAZ",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 645,
+  "metin": "Savcı Altay, yanan dosyaların suretlerinin kendisinde olduğunu açıkladı; pazartesi Ardıçlı'da keşif yapacak. Emniyet iki kişiyi arıyor: \"Kasap\" lakaplı Bekir Yaman ve \"Terzi\" Naciye.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 646,
+  "metin": "Aranan Bekir Yaman (“Kasap”), eski bir resminde",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 647,
+  "metin": "TETİKÇİ GİŞEDE YAKALANDI",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 648,
+  "metin": "Aranan Bekir Yaman, cuma günü nüfus müdürlüğü gişesinde sahte cüzdanla işlem yaptırırken yakalandı. Gişe memurunun dikkati övgü topladı. Savcı Altay bugün ilçede; \"Terzi\" Naciye hâlâ aranıyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 649,
+  "metin": "Yakalanan Bekir Yaman",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 650,
+  "metin": "SAVCI BUGÜN ARDIÇLI'DA",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 651,
+  "metin": "Savcı Altay bugün hükümet konağında keşif yapacak. Konağın çevresinde sıkı güvenlik var. Arananlardan \"Kasap\" ve \"Terzi\"den iz yok; halk tedirgin.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 652,
+  "metin": "SUİKAST PLANI ÇÖKTÜ",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 653,
+  "metin": "Savcı Altay'a kurulan pusu, iki tetikçinin önceden yakalanmasıyla boşa çıktı. \"Kara Ardıç\"ın ilçedeki adamı olduğu öne sürülen müteahhit K.D. gözaltında. Bugün nüfus müdürlüğünde teftiş var.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 654,
+  "metin": "Gözaltına alınan müteahhit K.D.",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 655,
+  "metin": "SAVCIYA SİLAHLI SALDIRI",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 656,
+  "metin": "Savcı Altay dün akşam hükümet konağı çıkışında silahlı saldırıya uğradı. Koruması yaralandı; savcı yara almadan kurtuldu. Saldırganlardan biri kaçtı. Bugün nüfus müdürlüğünde teftiş var.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 657,
+  "metin": "SAVCI ALTAY SUİKASTTA ÖLDÜ",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 658,
+  "metin": "Savcı Hikmet Altay dün akşam hükümet konağı çıkışında uğradığı silahlı saldırıda hayatını kaybetti. Saldırganların ilçeye sahte kimlikle yerleştiği anlaşıldı; kimliklerin hangi gişeden geçtiği araştırılıyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 659,
+  "metin": "Savcı Hikmet Altay (1929–1984)",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 660,
+  "metin": "Elif kapıda karşıladı: \"Mühür bastın mı? Kaç tane?\" Anneniz çorbayı ocaktan indirdi; Can paçanıza yapıştı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 661,
+  "metin": "Nermin Hanım'ın fasulyesi sofrada. Anneniz kaşığı bıraktı: \"Bu tencere neyin karşılığı evladım?\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 662,
+  "metin": "Nermin Hanım balkondan baktı, selam vermeden içeri girdi. Anneniz: \"Komşuyla aran mı açıldı?\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 663,
+  "metin": "Anneniz radyoyu kıstı: \"Senden önceki memur kaybolmuş diyorlar. Sen kimsenin işine karışma evladım.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 664,
+  "metin": "Ceketinizin cebindeki zarfı anneniz gördü. Bir şey sormadı; yalnız uzun uzun baktı. Elif ödevini okudu: \"Evimizin direği gişede çalışır.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 665,
+  "metin": "Elif ödevini okudu: \"Benim ailem. Evimizde dört kişiyiz. Evimizin direği gişede çalışır, hiç yalan söylemez.\" Can alkışladı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 666,
+  "metin": "Ev sahibi bu akşam kapıyı çalmadı. Anneniz kapıyı yine de iki kere kilitledi: \"Adliyeyi bombalayan nüfusu da bombalar.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 667,
+  "metin": "Anneniz kapıyı iki kere kilitledi: \"Adliyeyi bombalayan nüfusu da bombalar. Sen o gişede ne iş yapıyorsun evladım?\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 668,
+  "metin": "Hafta sonu. Cumartesi Elif'le pazara çıktınız; Can ilk kardan adamını yaptı. Pazar sabahı kapının altında bir kâğıt buldunuz: \"GÖRDÜĞÜNÜ UNUT.\" Annenize göstermediniz.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 669,
+  "metin": "Hafta sonu. Cumartesi pazardan et aldınız. Anneniz sofrada rahmetliyi andı: \"O hakkı olmayan lokmayı yemezdi.\" Et tabakta kaldı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 670,
+  "metin": "Hafta sonu. Cumartesi Elif'le pazara çıktınız; Can ilk kardan adamını yaptı. Pazar akşamı anneniz rahmetliyi andı: \"O da senin gibiydi; akşam eve hep yorgun, hep alnı açık gelirdi.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 671,
+  "metin": "Elif sordu: \"Savcı amcayı sen de gördün mü? İyi biri mi?\" \"İyi biri\" dediniz. Anneniz pencereden hükümet konağına baktı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 672,
+  "metin": "Sokakta jandarma devriyesi dolaşıyor. Anneniz perdeyi kapattı: \"Bu akşam kimse cama çıkmasın.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 673,
+  "metin": "Son akşam. Soba çıtırdıyor, Can dizinizde uyudu. Yarın müdürlükten bir yazı gelecek; içinde ne yazacağını bu bir hafta belirledi.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 674,
+  "metin": "Gece yarısı bir patlamayla yataktan fırladınız. Camlar zangırdadı; adliye tarafında gökyüzü kızardı. Can sabaha kadar koynunuzdan çıkmadı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 675,
+  "metin": "Akşam hükümet konağının önü sakindi. Savcının arabası jandarma eşliğinde ilçeden ayrıldı. İlk kez erken uyudunuz.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 676,
+  "metin": "Akşam ezanından sonra iki el silah sesi duyuldu. Radyo geç saatte verdi haberi: Savcı yara almadan kurtulmuş.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 677,
+  "metin": "Akşam ezanından sonra üç el silah sesi duyuldu. Sokak lambaları söndü. Radyo gece yarısı verdi haberi: Savcı Hikmet Altay hayatını kaybetmiş.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 678,
+  "metin": "Yatmadan önce bir patlama duyuldu; bu kez yakından. Hükümet Caddesi'nin üstünde duman vardı. Nüfus dairesi o yöndeydi.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 679,
+  "metin": "18 Ocak 1984 Çarşamba",
+  "yer": "data/hikaye.json:gazete_tarihi"
+ },
+ {
+  "no": 680,
+  "metin": "GİŞE MEMURUNA TERFİ",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 681,
+  "metin": "Ardıçlı Nüfus Müdürlüğü'nün 2 numaralı gişesine bir hafta önce atanan memur, teftişten yüzünün akıyla çıktı. Müdür Cevdet Bey: \"Bir haftada bu kadar az ihtar, bu dairede görülmüş şey değil.\" Memur, şefliğe yükseltildi; gişe camına artık öbür taraftan bakacak.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 682,
+  "metin": "Müdür Cevdet Bey",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 683,
+  "metin": "TERFİ",
+  "yer": "data/hikaye.json:damga"
+ },
+ {
+  "no": 684,
+  "metin": "NÜFUS MÜDÜRLÜĞÜNDE HAYAT OLAĞAN",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 685,
+  "metin": "Teftiş sona erdi. 2 numaralı gişenin yeni memuru hakkında \"vasat\" kanaati bildirildi; görevine aynı masada devam edecek. Kuyruk yarın da kapıya kadar uzayacak, mühür yarın da ıstampaya batacak.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 686,
+  "metin": "Çaycı Rıfkı: “Yeni memur çayı açık içiyor.”",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 687,
+  "metin": "YERİNDE",
+  "yer": "data/hikaye.json:damga"
+ },
+ {
+  "no": 688,
+  "metin": "HATALI MEMURA UZAK TAYİN",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 689,
+  "metin": "2 numaralı gişenin memuru, bir haftada aldığı ihtarların ardından ilin en uzak bucağına tayin edildi. Müdür Cevdet Bey: \"Mührü çok bastı; ama neye bastığına az baktı.\" Ailenin eşyası bugün bir kamyonete yüklendi.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 690,
+  "metin": "SÜRGÜN",
+  "yer": "data/hikaye.json:damga"
+ },
+ {
+  "no": 691,
+  "metin": "GİŞE MEMURU AÇIĞA ALINDI",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 692,
+  "metin": "2 numaralı gişenin memuru, hakkındaki rüşvet ve kayırma iddiaları üzerine açığa alındı. Müfettişler çekmecede izahı yapılamayan para bulunduğunu bildirdi. Memurun ailesi evden çıkarken komşular perdelerini kapattı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 693,
+  "metin": "Soruşturmayı yürüten Başkomiser T. Ersoy",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 694,
+  "metin": "AÇIĞA ALINDI",
+  "yer": "data/hikaye.json:damga"
+ },
+ {
+  "no": 695,
+  "metin": "BORCA BATAN MEMUR İSTİFA ETTİ",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 696,
+  "metin": "2 numaralı gişenin memuru, maaşı kesintilerden sonra borcunu karşılamayınca görevinden ayrıldı. Ailenin memlekete, anne tarafının köyüne döndüğü öğrenildi. Gişeye bir haftada ikinci kez yeni memur aranıyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 697,
+  "metin": "Komşusu N.A.: “Kimseye yük olmadılar.”",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 698,
+  "metin": "İSTİFA",
+  "yer": "data/hikaye.json:damga"
+ },
+ {
+  "no": 699,
+  "metin": "MEMURUN EVİNDE HASTALIK",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 700,
+  "metin": "2 numaralı gişenin memuru, ağır hastalanan yakınının başında beklemek üzere izne ayrıldı. Hastanın soğuk evde ve ilaçsız kaldığı öğrenildi. Müdürlük, memurun yerine vekil görevlendirdi.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 701,
+  "metin": "İZİNDE",
+  "yer": "data/hikaye.json:damga"
+ },
+ {
+  "no": 702,
+  "metin": "KİRASINI ÖDEYEMEYEN MEMUR SOKAKTA",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 703,
+  "metin": "2 numaralı gişenin memuru, üç akşam üst üste ödenmeyen kira yüzünden evinden çıkarıldı. Aile bir süre akraba yanında kalacak. Ev sahibi İ.B.: \"Mühür basana mühür basılmaz mı sanıyordu?\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 704,
+  "metin": "Ev sahibi İ.B.",
+  "yer": "data/hikaye.json:foto_alt"
+ },
+ {
+  "no": 705,
+  "metin": "TAHLİYE",
+  "yer": "data/hikaye.json:damga"
+ },
+ {
+  "no": 706,
+  "metin": "\"Kara Ardıç\" davasında iddianame hazır. Savcı Altay: \"Bu işte bir gişe memurunun dikkati, bir bölük askerden çok iş gördü.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 707,
+  "metin": "SAVCI GÖREVİNİN BAŞINDA",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 708,
+  "metin": "Saldırıdan yara almadan kurtulan Savcı Altay soruşturmayı sürdürüyor. Kaçan saldırganın izi sürülüyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 709,
+  "metin": "SAVCI ALTAY TOPRAĞA VERİLDİ",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 710,
+  "metin": "Savcı Hikmet Altay bugün toprağa verildi. Dosyası yeni bir savcıya devredildi; saldırganların kullandığı kimliklerin geçtiği gişe soruşturuluyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 711,
+  "metin": "DERE MAHALLESİ'NDEN BİR YATILI",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 712,
+  "metin": "Parasız yatılı sınavını kazanan Yusuf Karaca (10), dedesinin bir haftada tamamladığı evrakla okuluna kaydoldu. Dede Hüsnü Karaca: \"Yedi gün gittim geldim; sekizincide torunum gitti.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 713,
+  "metin": "KAYIT SÜRESİ DOLDU",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 714,
+  "metin": "Parasız yatılı sınavını kazanan Yusuf Karaca'nın (10) kaydı, evrakı süresinde tamamlanamadığı için yapılamadı. Dedesi: \"Kural kuraldır demişler. Yusuf seneye yine kazanır.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 715,
+  "metin": "BAŞKOMİSERDEN TAKDİR",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 716,
+  "metin": "Sahte cüzdan şebekesini izleyen Başkomiser Tarık Ersoy, raporunda 2 numaralı gişeyi \"ilçenin en güvenilir masası\" diye andı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 717,
+  "metin": "BAVULDAN SAATLİ BOMBA ÇIKTI",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 718,
+  "metin": "Nüfus müdürlüğüne bırakılmak istenen bavuldaki saatli bomba, gişedeki röntgen cihazında fark edildi. Bavulu getiren genç gözaltında. Müdür: \"Cihaz valilikten, göz memurdan.\"",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 719,
+  "metin": "NÜFUS DAİRESİNDE PATLAMA",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 720,
+  "metin": "Teftiş günü mesai bitiminde arşiv odasında bir bavul patladı. Ölen yok; kırk yıllık nüfus kütükleri kül oldu. Bavulun röntgen cihazından nasıl geçtiği soruşturuluyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 721,
+  "metin": "SAHTE VİZE YAZIHANESİNE BASKIN",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 722,
+  "metin": "Gişede yakalanan sahte çalışma vizesinin izi sürüldü: müteahhit K.D.'nin yazıhanesinde boş vize kâğıtları ve kaşeler bulundu. Tarlasını satıp vize alan genç şikâyetçi oldu.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 723,
+  "metin": "ALMANYA HAYALİ GİŞEDE BİTTİ",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 724,
+  "metin": "Tarlasını satıp aldığı vizenin sahte olduğunu nüfus gişesinde öğrenen genç, yola çıkmadan döndü. \"Sınırda öğrenseydim hâlim nice olurdu\" dedi; parasını geri almak için dava açtı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 725,
+  "metin": "SINIRDA SAHTE VİZE",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 726,
+  "metin": "Ardıçlı'dan yola çıkan genç işçi, sınır kapısında sahte çalışma vizesiyle yakalandı. Vizeyi almak için tarlasını satmıştı. Çıkış kaydının hangi gişede yapıldığı araştırılıyor.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 727,
+  "metin": "SINIRDAN GERİ ÇEVRİLDİ",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 728,
+  "metin": "Vizesinin süresi bir gün önce dolan dökümcü, sınır kapısından geri çevrildi. Yol parası da kış da ona kaldı.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 729,
+  "metin": "Sayın Memur,\n\nYusuf'un kaydı oldu. Okuma yazmam yok; bunu Yusuf'a ben söyledim, o yazdı.\n\nKâğıdımın eksiği vardı, biliyorum. Siz de biliyordunuz. Beni yine de geri çevirmediniz. Başınıza iş açtıysam hakkınızı helal edin.\n\nYusuf büyüyünce memur olacakmış. \"Cama öbür taraftan bakacağım\" diyor.\n\nEllerinizden öper.\nHüsnü Karaca",
+  "yer": "data/hikaye.json:mektup"
+ },
+ {
+  "no": 730,
+  "metin": "KAYIP",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 731,
+  "metin": "Nüfus cüzdanımı kaybettim, hükümsüzdür. Yenisi için üç gündür gişe kuyruğundayım. H.T.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 732,
+  "metin": "SATILIK",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 733,
+  "metin": "Az yanmış kömür sobası, borusuyla. Müracaat: Yukarı Mahalle, Çeşme Sokak.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 734,
+  "metin": "Nüfus Müdürlüğü'ne sabırlı gişe memuru alınacaktır. Mühür ve ıstampa idareden.",
+  "yer": "data/hikaye.json:metin"
+ },
+ {
+  "no": 735,
+  "metin": "Selamünaleyküm evladım. Torunum Yusuf için bir kayıt örneği alacaktım. Kâğıtlarım tamam, hepsi burada.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 736,
+  "metin": "Allah senden razı olsun evladım! Koşup Yusuf'a müjdeyi vereyim.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 737,
+  "metin": "Eski mi? İki sene önce aldım, daha gıcır gıcır... Peki evladım, muhtara bir daha gideyim.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 738,
+  "metin": "Müdüre mi? Ben ne kabahat işledim evladım?",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 739,
+  "metin": "Dediğini yaptım evladım, muhtar yenisini yazdı. Mührü köye götürmüş; \"imzam yeter\" dedi.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 740,
+  "metin": "Elin dert görmesin evladım. Yusuf'un yüzü gülecek.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 741,
+  "metin": "Mühür ha... Muhtar köyden cumaya döner. Yusuf'un kaydı salıya kadar bekler, inşallah yetişir.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 742,
+  "metin": "Peki evladım. Müdür Bey de insaf sahibidir inşallah.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 743,
+  "metin": "Mührü bastırdım, bak mosmor. Yusuf parasız yatılıyı kazandı evladım; kaydına bu kâğıt lazım. Makbuz mu? O da neymiş?",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 744,
+  "metin": "Makbuzsuz mu oldu? Allah devlete zeval vermesin, sana da.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 745,
+  "metin": "Demek artık kâğıdın da harcı var. Oğlumla gelinimi toprağa verirken bile bu kadar kâğıt istememişlerdi.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 746,
+  "metin": "Yine mi müdür? Olsun, yol bildim artık.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 747,
+  "metin": "Vezneye gittim evladım. Memur \"iki yüz elli\" dedi; kulağım ağır işitir, yirmi beş verdim, aldı. Olmuştur herhalde?",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 748,
+  "metin": "Yirmi beş lirayla oldu ha! Rahmetli hanım görse \"pazarlıkçı\" derdi.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 749,
+  "metin": "İki yüz elli mi? Bu parayla Yusuf'a iki pabuç alınır. Neyse... Yarın tamamlarım.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 750,
+  "metin": "Müdür Bey'e selam götüreyim bari.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 751,
+  "metin": "Bu sefer tamam evladım: iki yüz elli lira, kuruşu kuruşuna. Dün akşam yatırdım. ...Zam mı? Bir gecede mi?",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 752,
+  "metin": "Elli liranın lafı mı olur diyen çıktı sonunda. Sağ ol evladım.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 753,
+  "metin": "Dün iki yüz elli, bugün üç yüz. Ben yaşlandım, harç gençleşti. Farkı yatırıp gelirim.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 754,
+  "metin": "Zammı müdür mü yaptı evladım? Sorarım ona.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 755,
+  "metin": "Sucuk o evladım. Yusuf yatılıda yesin diye aldım; dinamit benim neyime?",
+  "yer": "data/karakterler.json:alarm_bos"
+ },
+ {
+  "no": 756,
+  "metin": "Farkı da yatırdım evladım, cuma günü. Şimdi de mahallem başka ilçeye mi gitmiş? Ben yerimden kıpırdamadım ki!",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 757,
+  "metin": "Dere Mahallesi nereye bağlıysa bağlı olsun; Yusuf okula bağlı kalsın yeter.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 758,
+  "metin": "Yetmiş dört yıldır aynı evdeyim. İlçe benden taşınmış, haberim yok. Yarın son gün evladım.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 759,
+  "metin": "Müdür Bey mahalleyi geri getirir mi dersin?",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 760,
+  "metin": "Saat o evladım; Yusuf yatılıda sabah kalksın diye. Mumlar da elektrik kesilirse...",
+  "yer": "data/karakterler.json:alarm_bos"
+ },
+ {
+  "no": 761,
+  "metin": "Bugün son gün evladım; Yusuf'un kaydı akşama kapanıyor. Kendimi kızımın evine, Çarşı'ya yazdırdım. Makbuz cumadan kalma, dört gün olmuş diyorlar. Bir gün için torunum okulsuz mu kalacak?",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 762,
+  "metin": "...Bastın mı? Evladım, sen bu mührü Yusuf'un ömrüne bastın.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 763,
+  "metin": "Anladım evladım. Sen de emir kulusun. Yusuf'a \"seneye\" derim. Seneye ben sağ olursam.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 764,
+  "metin": "Müdür Bey'e ha... Peki. O da \"kural\" derse kural.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 765,
+  "metin": "Karaca'nın evrakını kendi imzamla tamamladım. Bir günlük makbuz için bir çocuk okulsuz bırakılmaz. Bunu genelgeye yazmam; siz de kimseye söylemezsiniz.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 766,
+  "metin": "Ben Yusuf. Dedem Hüsnü Karaca hasta yatıyor, gelemedi.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 767,
+  "metin": "Bu mektubu size yolladı. \"Elinden öp\" dedi. Ben yarın yatılı okula gidiyorum.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 768,
+  "metin": "Aa, komşum! Gişe sana ne de yakışmış. Kızıma kayıt örneği lazım. İmza mı? Muhtarı evde bulamadım; aramızda kalsın, basıver şunu.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 769,
+  "metin": "Canım komşum! Akşama sana bir tencere kuru fasulye yolluyorum.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 770,
+  "metin": "Öyle olsun. Komşu komşunun külüne muhtaçtır, unutma.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 771,
+  "metin": "Müdüre mi? Ayıp ettin komşu.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 772,
+  "metin": "Bugün evrak işim yok komşu; sana bir haber getirdim.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 773,
+  "metin": "Dün gece patlamadan önce adliyenin oralarda beyaz bir otomobil görmüşler. İçinde gözlüklü bir adam varmış. Senin gişeye de uğruyormuş diyorlar; gözünü dört aç.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 774,
+  "metin": "Muhtarı evinde bastırdım. Bak, bu sefer eksiksiz. ...O gün ben de fazla üstüne vardım komşu, hakkını helal et.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 775,
+  "metin": "Oh. Akşama bir tencere yemek yolluyorum; bu sefer karşılıksız.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 776,
+  "metin": "Yine mi? Sen benimle uğraşıyorsun komşu.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 777,
+  "metin": "Eksiksiz kâğıdı da müdüre mi yolluyorsun?",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 778,
+  "metin": "Kardeşim Muammer İzmir'de, gelemedi; cüzdanını bana bıraktı. Geçen sefer idare etmiştin, bu da öyle olsun komşu.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 779,
+  "metin": "Senin gibi komşu bulunmaz. Fasulyenin yanına bu sefer pilav da var.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 780,
+  "metin": "Demek o gün gönlünden kopmuş, bugün kopmadı. Anladım.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 781,
+  "metin": "Kardeşimin cüzdanını müdüre mi götürüyorsun? Vay komşu vay.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 782,
+  "metin": "Hayırlı işler. Kenan Dalgıç, müteahhit; bu ilçede kimi sorsanız tanır. Harçta ufak bir eksik varmış. Şu zarf farkı da kapatır, çay paranızı da.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 783,
+  "metin": "Anlaşacağımızı biliyordum. Yine görüşürüz.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 784,
+  "metin": "Dik durmak güzeldir. Aç karnına zordur ama.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 785,
+  "metin": "Müdüre mi? Küçük hesap yapıyorsunuz memur.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 786,
+  "metin": "Akıllıca. Mührü de basarsınız artık.",
+  "yer": "data/karakterler.json:zarf"
+ },
+ {
+  "no": 787,
+  "metin": "Geri mi itiyorsunuz? Siz bilirsiniz.",
+  "yer": "data/karakterler.json:zarf_geri"
+ },
+ {
+  "no": 788,
+  "metin": "Zarfı tutanakla teslim aldım. Böyle adam bir kere gelmez; gözünüzü açık tutun.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 789,
+  "metin": "Yine ben. Birazdan yeğenim Halil gelecek; nakil yaptıracak.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 790,
+  "metin": "Evrakında pürüz çıkarsa görmeyiverin. Zarf masanızda kalsın; kimse bir şey görmedi.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 791,
+  "metin": "Güzel. Yeğenim sizden memnun kalacak.",
+  "yer": "data/karakterler.json:zarf"
+ },
+ {
+  "no": 792,
+  "metin": "Peki. Yeğenim yine de gelecek.",
+  "yer": "data/karakterler.json:zarf_geri"
+ },
+ {
+  "no": 793,
+  "metin": "Düşünürsünüz. Yeğenim birazdan burada.",
+  "yer": "data/karakterler.json:zarf_bekledi"
+ },
+ {
+  "no": 794,
+  "metin": "Ooo, kiracım! Demek burada mühür basıyorsun. Şu nakil işimi görüver. İlmühaber biraz eski, ama ev sahibine de zorluk çıkarılmaz ya. Kirayı sonra konuşuruz.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 795,
+  "metin": "Aferin. Bu akşam kapını çalmam.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 796,
+  "metin": "Vay. Kiranın gününü de ben böyle şaşmaz hesaplarım.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 797,
+  "metin": "Beni müdüre mi çıkarıyorsun? Akşam görüşürüz kiracı.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 798,
+  "metin": "Kayıt örneği.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 799,
+  "metin": "Eksik mi? İlginç.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 800,
+  "metin": "Buyurun, götürün.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 801,
+  "metin": "Kayıt örneği. Geçen sefer çabuk olmuştu.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 802,
+  "metin": "Yine çabuk oldu.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 803,
+  "metin": "Demek bugün titizsiniz.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 804,
+  "metin": "Müdüre mi? Nihayet.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 805,
+  "metin": "Havale ettiğiniz şahsı odama aldım. Evrakı kusursuzdu; yine de aynı yüzü iki ayrı adla fark etmeniz not edildi.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 806,
+  "metin": "Başkomiser Tarık Ersoy. Gişenize iki ayrı adla geldim; ikincisinde beni müdüre yolladınız.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 807,
+  "metin": "Sizden önceki memur çetenin kâğıtlarını bu masadan geçiriyordu. Sahte cüzdan aranınca ilk bu gişeye bakılırdı.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 808,
+  "metin": "Raporuma şunu yazıyorum: Artık bakılmayacak.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 809,
+  "metin": "Başkomiser Tarık Ersoy. Selim Aktuğ da bendim, Nail Duru da.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 810,
+  "metin": "İki ayrı adla geldim; evrakıma baktınız, yüzüme bakmadınız.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 811,
+  "metin": "Sizden önceki memur da kâğıda bakar, yüze bakmazdı. Onu şimdi sorguluyoruz.",
+  "yer": "data/karakterler.json:satirlar"
+ },
+ {
+  "no": 812,
+  "metin": "İyi günler. Savcı Hikmet Altay. Soruşturma dosyası için kendi kayıt örneğim gerekti; sıramı bekledim, evrakım burada.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 813,
+  "metin": "Teşekkür ederim. Bu ilçede kâğıda dikkatle bakan az memur kaldı. Siz bakmaya devam edin; pazartesi görüşürüz.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 814,
+  "metin": "Öyle mi? Demek savcıya da kolaylık yok. Güzel; yeniden bakarım.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 815,
+  "metin": "Müdürünüze selamımı götüreyim o hâlde.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 816,
+  "metin": "Nakil. Çabuk olsun.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 817,
+  "metin": "Kenan Bey'e selamınızı söylerim.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 818,
+  "metin": "Ne müdürü? Bırak kolumu!",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 819,
+  "metin": "Satır o. Ekmek teknem. Yasak mı?",
+  "yer": "data/karakterler.json:alarm_bos"
+ },
+ {
+  "no": 820,
+  "metin": "Havale ettiğiniz şahıs, aranan Bekir Yaman çıktı. Jandarma arka kapıdan teslim aldı. Bugün bu gişe ilk kez yüzümü ağarttı.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 821,
+  "metin": "Adres naklim için geldim. Yeni evim Hükümet Caddesi'nde, konağın tam karşısı. Manzarası güzel.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 822,
+  "metin": "Elinize sağlık. Bu akşam perdeleri asarım.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 823,
+  "metin": "Eksik mi? Kâğıtlarımı ben hazırlamıştım hâlbuki. Neyse.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 824,
+  "metin": "Müdür mü? Durun, bir yanlışlık var!",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 825,
+  "metin": "Dikiş çantam o benim! Dokunmayın!",
+  "yer": "data/karakterler.json:alarm"
+ },
+ {
+  "no": 826,
+  "metin": "Havale ettiğiniz kadın, aranan \"Terzi\" Naciye. Çantasından konağın krokisi çıktı. Savcıya haber verildi.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 827,
+  "metin": "El çantasından toplu tabanca ile konağın krokisi çıktı. Kadın, aranan \"Terzi\" Naciye. Savcıya haber verildi.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 828,
+  "metin": "Nakil için geldim. Bavul mu? Kışlık çamaşır. İşim bitene kadar şuraya, arşivin yanına bırakayım.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 829,
+  "metin": "Sağ olun. Bavulu sonra alırım.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 830,
+  "metin": "Yarın gelirim. Bavul kalsın burada, ağır.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 831,
+  "metin": "Müdüre gerek yok, acelem var!",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 832,
+  "metin": "Ben yalnızca taşıyorum! İçinde ne olduğunu bilmiyorum!",
+  "yer": "data/karakterler.json:alarm"
+ },
+ {
+  "no": 833,
+  "metin": "Bavuldan saatli bomba çıktı; saat on yediye kuruluymuş. Arşiv odası, içindeki kırk yıllık kayıtla birlikte yerinde duruyor. Müfettiş Bey elinizi sıkmak istiyor.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 834,
+  "metin": "Almanya'ya gidiyorum abi! Tarlayı sattım, vizeyi Kenan Bey'in yazıhanesinden aldım. Üç günde çıkardılar, maşallah.",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 835,
+  "metin": "Allah razı olsun abi. İlk maaşla anama bir sarı lira yollayacağım.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 836,
+  "metin": "Sahte mi? Olur mu öyle şey, kırk bin lira saydım ben buna... Tarla gitti abi.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 837,
+  "metin": "Müdüre mi? Ben bir şey yapmadım ki, parasını verdim!",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 838,
+  "metin": "Vize sahte çıktı. Delikanlı \"Kenan Bey'in yazıhanesinden aldım\" dedi; ifadesi Savcı Bey'in dosyasına girdi. Çocuğa yazık olmuş, tarlası gitmiş.",
+  "yer": "data/karakterler.json:not"
+ },
+ {
+  "no": 839,
+  "metin": "Hollanda",
+  "yer": "data/adlar.json:ulkeler"
+ },
+ {
+  "no": 840,
+  "metin": "Dökümcü",
+  "yer": "data/adlar.json:meslekler"
+ },
+ {
+  "no": 841,
+  "metin": "Vizem dün dolmuş, biliyorum. Köyde cenaze vardı, bir gün geciktim. Bir günün lafı mı olur memur bey?",
+  "yer": "data/karakterler.json:giris"
+ },
+ {
+  "no": 842,
+  "metin": "Allah senden razı olsun. Çocukların rızkı için gidiyorum.",
+  "yer": "data/karakterler.json:onay"
+ },
+ {
+  "no": 843,
+  "metin": "Bir gün... Doksan gün bekledim o vizeyi. Peki. Yeniden başvururum; çocuklar bir kış daha bekler.",
+  "yer": "data/karakterler.json:eksik"
+ },
+ {
+  "no": 844,
+  "metin": "Müdür Bey bir güne bakmaz inşallah.",
+  "yer": "data/karakterler.json:havale"
+ },
+ {
+  "no": 845,
+  "metin": "Hayırlı işler efendim.",
+  "yer": "data/adlar.json:selam"
+ },
+ {
+  "no": 846,
+  "metin": "Kolay gelsin.",
+  "yer": "data/adlar.json:selam"
+ },
+ {
+  "no": 847,
+  "metin": "İyi günler efendim.",
+  "yer": "data/adlar.json:selam"
+ },
+ {
+  "no": 848,
+  "metin": "Selamünaleyküm.",
+  "yer": "data/adlar.json:selam"
+ },
+ {
+  "no": 849,
+  "metin": "Günaydın efendim.",
+  "yer": "data/adlar.json:selam"
+ },
+ {
+  "no": 850,
+  "metin": "Kolay gelsin efendim.",
+  "yer": "data/adlar.json:selam"
+ },
+ {
+  "no": 851,
+  "metin": "Merhaba, hayırlı işler.",
+  "yer": "data/adlar.json:selam"
+ },
+ {
+  "no": 852,
+  "metin": "Kolay gelsin evladım.",
+  "yer": "data/adlar.json:selam_yasli"
+ },
+ {
+  "no": 853,
+  "metin": "Hayırlı işler evladım.",
+  "yer": "data/adlar.json:selam_yasli"
+ },
+ {
+  "no": 854,
+  "metin": "Selamünaleyküm evladım.",
+  "yer": "data/adlar.json:selam_yasli"
+ },
+ {
+  "no": 855,
+  "metin": "Allah kolaylık versin evladım.",
+  "yer": "data/adlar.json:selam_yasli"
+ },
+ {
+  "no": 856,
+  "metin": "Sabahtan beri sıradayım.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 857,
+  "metin": "Dışarıda ayaz var, içerisi iyiymiş.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 858,
+  "metin": "Otobüsüm on ikide kalkıyor.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 859,
+  "metin": "Muhtar, kâğıtların tamam olduğunu söyledi.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 860,
+  "metin": "Üçüncü gelişim bu.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 861,
+  "metin": "Evrakı dün akşam hazırladım.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 862,
+  "metin": "Çocuk okuldan çıkmadan döneyim diyorum.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 863,
+  "metin": "Dükkânı çırağa bıraktım, acelem var.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 864,
+  "metin": "Köyden geldim, akşama dönmem lazım.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 865,
+  "metin": "Kardan yollar kapanmadan yetişeyim.",
+  "yer": "data/adlar.json:laf"
+ },
+ {
+  "no": 866,
+  "metin": "Allah razı olsun.",
+  "yer": "data/adlar.json:onay"
+ },
+ {
+  "no": 867,
+  "metin": "Eksik olmayın efendim.",
+  "yer": "data/adlar.json:onay"
+ },
+ {
+  "no": 868,
+  "metin": "Sağ olun, hayırlı işler.",
+  "yer": "data/adlar.json:onay"
+ },
+ {
+  "no": 869,
+  "metin": "Elinize sağlık.",
+  "yer": "data/adlar.json:onay"
+ },
+ {
+  "no": 870,
+  "metin": "Oh, şükür. Hayırlı günler.",
+  "yer": "data/adlar.json:onay"
+ },
+ {
+  "no": 871,
+  "metin": "Çok teşekkür ederim.",
+  "yer": "data/adlar.json:onay"
+ },
+ {
+  "no": 872,
+  "metin": "Bu iş de bitti, şükür.",
+  "yer": "data/adlar.json:onay"
+ },
+ {
+  "no": 873,
+  "metin": "Eline sağlık evladım.",
+  "yer": "data/adlar.json:onay_yasli"
+ },
+ {
+  "no": 874,
+  "metin": "Allah tuttuğunu altın etsin.",
+  "yer": "data/adlar.json:onay_yasli"
+ },
+ {
+  "no": 875,
+  "metin": "Çok yaşa evladım.",
+  "yer": "data/adlar.json:onay_yasli"
+ },
+ {
+  "no": 876,
+  "metin": "Yine mi? Üçüncü gelişim bu!",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 877,
+  "metin": "Peki efendim, tamamlayıp gelirim.",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 878,
+  "metin": "Muhtara soracağım bunu.",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 879,
+  "metin": "Bir kâğıt için yine yol tepeceğiz.",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 880,
+  "metin": "Bu memlekette iş bir günde bitmez zaten.",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 881,
+  "metin": "Neresi eksikmiş, anlamadım ki...",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 882,
+  "metin": "Hay Allah. Yarın yine gelirim.",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 883,
+  "metin": "Canınız sağ olsun, gider getiririm.",
+  "yer": "data/adlar.json:eksik"
+ },
+ {
+  "no": 884,
+  "metin": "Bu yaşta beni yollarda süründürme evladım.",
+  "yer": "data/adlar.json:eksik_yasli"
+ },
+ {
+  "no": 885,
+  "metin": "Peki evladım, yarın yine gelirim.",
+  "yer": "data/adlar.json:eksik_yasli"
+ },
+ {
+  "no": 886,
+  "metin": "Gözlerim görmüyor, kim yazdıysa yanlış yazmış.",
+  "yer": "data/adlar.json:eksik_yasli"
+ },
+ {
+  "no": 887,
+  "metin": "Müdür Bey'e mi? Hayırdır?",
+  "yer": "data/adlar.json:havale"
+ },
+ {
+  "no": 888,
+  "metin": "Peki efendim, bekliyorum.",
+  "yer": "data/adlar.json:havale"
+ },
+ {
+  "no": 889,
+  "metin": "Bir yanlışlık olmasın sakın.",
+  "yer": "data/adlar.json:havale"
+ },
+ {
+  "no": 890,
+  "metin": "Müdürün odası şu kapı mı?",
+  "yer": "data/adlar.json:havale"
+ },
+ {
+  "no": 891,
+  "metin": "O çanta benim değil! Emanet almıştım!",
+  "yer": "data/adlar.json:alarm"
+ },
+ {
+  "no": 892,
+  "metin": "Bir yanlışlık var! Kim koymuş onu oraya?",
+  "yer": "data/adlar.json:alarm"
+ },
+ {
+  "no": 893,
+  "metin": "Vallahi haberim yok, garajda biri elime tutuşturdu!",
+  "yer": "data/adlar.json:alarm"
+ },
+ {
+  "no": 894,
+  "metin": "Bırakın kolumu! Avukatımı isterim!",
+  "yer": "data/adlar.json:alarm"
+ },
+ {
+  "no": 895,
+  "metin": "Otobüsü kaçırırsam hesabını sizden sorarım.",
+  "yer": "data/adlar.json:alarm_bos"
+ },
+ {
+  "no": 896,
+  "metin": "Her şeyi karıştırdınız. Kim toplayacak şimdi?",
+  "yer": "data/adlar.json:alarm_bos"
+ },
+ {
+  "no": 897,
+  "metin": "Bir çantaya bu kadar şüphe... Hayırdır memur bey?",
+  "yer": "data/adlar.json:alarm_bos"
+ },
+ {
+  "no": 898,
+  "metin": "Koca devlet, benim çantamla uğraşıyor.",
+  "yer": "data/adlar.json:alarm_bos"
+ },
+ {
+  "no": 899,
+  "metin": "Avusturya",
+  "yer": "data/adlar.json:ulkeler"
+ },
+ {
+  "no": 900,
+  "metin": "Belçika",
+  "yer": "data/adlar.json:ulkeler"
+ },
+ {
+  "no": 901,
+  "metin": "Fransa",
+  "yer": "data/adlar.json:ulkeler"
+ },
+ {
+  "no": 902,
+  "metin": "İsviçre",
+  "yer": "data/adlar.json:ulkeler"
+ },
+ {
+  "no": 903,
+  "metin": "Tornacı",
+  "yer": "data/adlar.json:meslekler"
+ },
+ {
+  "no": 904,
+  "metin": "Maden işçisi",
+  "yer": "data/adlar.json:meslekler"
+ },
+ {
+  "no": 905,
+  "metin": "Montaj işçisi",
+  "yer": "data/adlar.json:meslekler"
+ },
+ {
+  "no": 906,
+  "metin": "Aşçı",
+  "yer": "data/adlar.json:meslekler"
+ },
+ {
+  "no": 907,
+  "metin": "Marangoz",
+  "yer": "data/adlar.json:meslekler"
+ },
+ {
+  "no": 908,
+  "metin": "orta",
+  "yer": "tools/dil/ek_metinler.json"
+ },
+ {
+  "no": 909,
+  "metin": "yok",
+  "yer": "tools/dil/ek_metinler.json"
+ },
+ {
+  "no": 910,
+  "metin": "hasta",
+  "yer": "tools/dil/ek_metinler.json"
+ },
+ {
+  "no": 911,
+  "metin": "halsiz",
+  "yer": "tools/dil/ek_metinler.json"
+ },
+ {
+  "no": 912,
+  "metin": "iyi",
+  "yer": "tools/dil/ek_metinler.json"
+ },
+ {
+  "no": 913,
+  "metin": "Elif'in",
+  "yer": "tools/dil/ek_metinler.json"
+ },
+ {
+  "no": 914,
+  "metin": "NASIL BAKILIR",
+  "yer": "scripts/belgeler/BilgiDefteri.gd"
+ },
+ {
+  "no": 915,
+  "metin": "Çarşı Sokağı",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 916,
+  "metin": "Bağ yolundan Ardıçlı",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 917,
+  "metin": "Çınarlı Meydan, akşamüstü",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 918,
+  "metin": "Taş Köprü",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 919,
+  "metin": "Ardıçlı İstasyonu",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 920,
+  "metin": "Pazar Yeri",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 921,
+  "metin": "Yukarı Mahalle, gece",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 922,
+  "metin": "Hükümet Caddesi",
+  "yer": "data/ara_ekran.json:ad"
+ },
+ {
+  "no": 923,
+  "metin": "SAVCI ALTAY DOSYAYI ALDI",
+  "yer": "data/hikaye.json:manset"
+ },
+ {
+  "no": 924,
+  "metin": "SAVCI ALTAY DOSYAYI TAMAMLADI",
+  "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 925,
+  "metin": "ELEMAN ARANIYOR",
+  "yer": "data/hikaye.json:baslik"
+ }
+]

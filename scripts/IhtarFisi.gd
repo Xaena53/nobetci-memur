@@ -32,16 +32,16 @@ func hazirla(metin: String, no: int, cesidi: String) -> void:
 	cesit = cesidi
 	match cesit:
 		"uyari":
-			_baslik = "UYARI"
+			_baslik = Dil.c("UYARI")
 			_renk = Color("7a5a12")
 			_ton = Color(1.0, 1.10, 0.78)
 		"not":
-			_baslik = "NOT"
+			_baslik = Dil.c("NOT")
 			_renk = Stil.MAVI_MUREKKEP
 			_ton = Color(0.90, 1.06, 1.12)
 		_:
-			_baslik = "İHTAR %d" % no
-	_satirlar = sar(metin, SATIR_HARFI)
+			_baslik = Dil.c("İHTAR %d") % no
+	_satirlar = sar(Dil.c(metin), SATIR_HARFI)
 	var govde := _satirlar.size() * SATIR
 	size = Vector2(GENISLIK, 16.0 + 20.0 + 8.0 + govde + 8.0 + 14.0 + 16.0)
 	pivot_offset = size / 2.0
@@ -117,7 +117,7 @@ func _draw() -> void:
 	for satir in _satirlar:
 		draw_string(Stil.daktilo(), Vector2(x, y), satir, HORIZONTAL_ALIGNMENT_LEFT, -1, PUNTO, Stil.MUREKKEP)
 		y += SATIR
-	draw_string(Stil.daktilo_kalin(), Vector2(x, y + 9.0), "— MÜDÜR", HORIZONTAL_ALIGNMENT_RIGHT, genislik, 10,
+	draw_string(Stil.daktilo_kalin(), Vector2(x, y + 9.0), Dil.c("— MÜDÜR"), HORIZONTAL_ALIGNMENT_RIGHT, genislik, 10,
 		Color(_renk, 0.9))
 
 

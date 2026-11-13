@@ -215,7 +215,7 @@ static func son(sonuc: Dictionary, bayraklar: Dictionary) -> Dictionary:
 		if kosul_tutar(y.get("kosul", null), bayraklar):
 			yan.append(y)
 	return {
-		"tarih": str(s.get("gazete_tarihi", "")),
+		"tarih": Dil.c(str(s.get("gazete_tarihi", ""))),
 		"manset": str(bas.get("manset", "")),
 		"metin": str(bas.get("metin", "")),
 		"foto": str(bas.get("foto", "")),

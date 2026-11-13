@@ -14,7 +14,7 @@ var doku_adi := "serit_bos":         ## KLASOR altındaki görselin adı
 		queue_redraw()
 var metin := "":                     ## boş şeridin üstüne yazılacak yazı (boşsa görseldeki yazı görünür)
 	set(m):
-		metin = m
+		metin = Dil.c(m)
 		queue_redraw()
 var parlak := false:                 ## yazı sıcak sarıya döner (açık durumu)
 	set(p):
@@ -35,10 +35,12 @@ static func olustur(ad: String, boyut: Vector2, yazi: String = "") -> Serit:
 
 
 static func doku(ad: String) -> Texture2D:
-	if not _dokular.has(ad):
-		var yol := KLASOR + ad + ".webp"
-		_dokular[ad] = load(yol) if ResourceLoader.exists(yol) else null
-	return _dokular[ad]
+	# yazılı görsellerin dile özgü hâli varsa o yüklenir (bkz. Dil.yol); önbellek dile göre tutulur
+	var anahtar := Dil.kod + "/" + ad
+	if not _dokular.has(anahtar):
+		var yol := Dil.yol(KLASOR + ad + ".webp")
+		_dokular[anahtar] = load(yol) if ResourceLoader.exists(yol) else null
+	return _dokular[anahtar]
 
 
 func _draw() -> void:

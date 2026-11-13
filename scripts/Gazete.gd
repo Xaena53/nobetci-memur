@@ -24,7 +24,7 @@ func kur(genislik: float, tarih: String, haber: Dictionary) -> void:
 	_cizgi(y, w, 2.0)
 	_cizgi(y + 4.0, w, 1.0)
 	y += 9.0
-	var kunye := Stil.etiket("%s  •  Sayı %d  •  Fiyatı 25 TL" % [Tarih.uzun(tarih), 4107 + Tarih.gun_no(tarih) % 30],
+	var kunye := Stil.etiket(Dil.c("%s  •  Sayı %d  •  Fiyatı 25 TL") % [Tarih.uzun(tarih), 4107 + Tarih.gun_no(tarih) % 30],
 		10, Stil.MUREKKEP_SOLUK, Stil.serif_italik())
 	kunye.position = Vector2(0, y)
 	kunye.size = Vector2(genislik, 14)
@@ -78,7 +78,7 @@ static func blok_ekle(ebeveyn: Control, metin: String, punto: int, font: Font, r
 	l.add_theme_constant_override("line_spacing", satir_arasi)
 	if ortali:
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var satirlar := font.get_multiline_string_size(metin, HORIZONTAL_ALIGNMENT_LEFT, alan.size.x, punto)
+	var satirlar := font.get_multiline_string_size(Dil.c(metin), HORIZONTAL_ALIGNMENT_LEFT, alan.size.x, punto)
 	var satir_sayisi := maxi(1, roundi(satirlar.y / font.get_height(punto)))
 	var yukseklik := satirlar.y + (satir_sayisi - 1) * satir_arasi + 4.0
 	l.position = alan.position

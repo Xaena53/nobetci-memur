@@ -9,7 +9,8 @@ extends Control
 ## Kapının üstündeki işlemeli tabela arka plan görselinin parçasıdır.
 
 const ARKA_PLAN := "res://assets/img/menu_arkaplan.webp"
-const BASLIK := "NÖBETÇİ MEMUR"
+const BASLIK_TR := "NÖBETÇİ MEMUR"
+var BASLIK := ""                               ## başlığın seçili dildeki hâli (harf harf yazılır)
 const LAMBA := Vector2(564, 363)               ## sokak lambasının ampulü
 const LAMBA_DIBI := Vector2(548, 664)          ## direğin dibinde, karın üstündeki ışık gölü
 ## Bacalar: [ağzın yeri, ölçek]. İlk ikisi müdürlük binasının, ötekiler uzaktaki evlerin bacaları.
@@ -107,9 +108,11 @@ func _kagidi_kur() -> void:
 	_yaz("ARDIÇLI İLÇESİ NÜFUS MÜDÜRLÜĞÜ", Rect2(0, 61, KAGIT.x, 18), 13, Stil.MUREKKEP, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
 	_cizgi(Rect2(KENAR, 84, w, 1.5), 0.75)
 
+	BASLIK = Dil.c(BASLIK_TR)
 	_baslik = _yaz(BASLIK, Rect2(0, 88, KAGIT.x, 56), 44, Stil.MUREKKEP, Stil.daktilo_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
 	_baslik.name = "Baslik"
 	_baslik.visible_characters = 0
+	_baslik.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING   # yazarken kelimeler satır değiştirmesin
 
 	_konu = _yaz("Konu : Yedi günlük gişe nöbeti", Rect2(KENAR, 148, w, 16), 12, Stil.MUREKKEP, Stil.daktilo_kalin())
 	_sonrakiler.append(_konu)
@@ -188,13 +191,13 @@ func _cizgi(alan: Rect2, koyuluk: float) -> ColorRect:
 func _imzayi_ciz(alt: Control) -> void:
 	var b := alt.size
 	Imza.ciz(alt, Rect2(b.x - 150.0, -12.0, 136.0, 56.0), "mudur", Stil.MAVI_MUREKKEP)
-	alt.draw_string(Stil.daktilo_kalin(), Vector2(b.x - 150.0, 54.0), "Müdür", HORIZONTAL_ALIGNMENT_CENTER, 136.0, 12, Stil.MUREKKEP)
+	alt.draw_string(Stil.daktilo_kalin(), Vector2(b.x - 150.0, 54.0), Dil.c("Müdür"), HORIZONTAL_ALIGNMENT_CENTER, 136.0, 12, Stil.MUREKKEP)
 	Damga.ciz(alt, Rect2(2, -12, 92, 78), "daire", "", deg_to_rad(-12.0), 0.78)
 
 
 ## Sürüm ve uyarı: masadaki etiketler gibi kabartma şerit.
 func _kunyeyi_kur() -> void:
-	var metin := "SÜRÜM %s  ·  BÜTÜN KİŞİ, KURUM VE OLAYLAR KURMACADIR" % str(ProjectSettings.get_setting("application/config/version", "1.0"))
+	var metin := Dil.c("SÜRÜM %s  ·  BÜTÜN KİŞİ, KURUM VE OLAYLAR KURMACADIR") % str(ProjectSettings.get_setting("application/config/version", "1.0"))
 	var kunye := Stil.etiket(metin, 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
 	kunye.name = "Kunye"
 	kunye.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Color("1d1b19"), Color(0, 0, 0, 0.5), 1, 2, 2), 8, 3))
@@ -241,7 +244,7 @@ func _basligi_bitir() -> void:
 func _secenek(ad: String, metin: String, no: int, y: float, kip_satiri: bool = false) -> Button:
 	var d := Button.new()
 	d.name = ad
-	d.text = "%d. %s" % [no, metin]
+	d.text = "%d. %s" % [no, Dil.c(metin)]
 	d.focus_mode = FOCUS_NONE
 	d.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	d.mouse_default_cursor_shape = CURSOR_POINTING_HAND
@@ -285,7 +288,7 @@ func _secenek(ad: String, metin: String, no: int, y: float, kip_satiri: bool = f
 func _satiri_ciz(d: Button, sus: Control) -> void:
 	var b := d.size
 	var font := Stil.daktilo_kalin()
-	var yazi_eni := font.get_string_size(d.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
+	var yazi_eni := font.get_string_size(Dil.c(d.text), HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
 	var kutu := Rect2(b.x - 30.0, 7.0, 18.0, 18.0)
 	var secili := d.is_hovered() and not d.disabled
 	var murekkep := Color(Stil.BORDO if secili else Stil.MUREKKEP, 0.42 if d.disabled else 0.85)
@@ -293,7 +296,7 @@ func _satiri_ciz(d: Button, sus: Control) -> void:
 		sus.draw_rect(Rect2(0, 1, b.x, b.y - 2), Color(Stil.BORDO, 0.07))
 	var x := 8.0 + yazi_eni + 12.0
 	if d.disabled:
-		sus.draw_string(Stil.el_yazisi(), Vector2(x, 23.0), "(kayıt yok)", HORIZONTAL_ALIGNMENT_LEFT, -1, 19, Color(Stil.MAVI_MUREKKEP, 0.85))
+		sus.draw_string(Stil.el_yazisi(), Vector2(x, 23.0), Dil.c("(kayıt yok)"), HORIZONTAL_ALIGNMENT_LEFT, -1, 19, Color(Stil.MAVI_MUREKKEP, 0.85))
 		x += 96.0
 	while x < kutu.position.x - 8.0:
 		sus.draw_circle(Vector2(x, 21.5), 1.0, Color(murekkep, murekkep.a * 0.7))

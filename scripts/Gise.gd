@@ -31,10 +31,8 @@ var _canta_dugmesi: Button
 var _canta_hareketi: Tween
 var _canta_isigi: Tween
 var _canta_yeri := Vector2.ZERO
-var eller: VatandasElleri           ## vatandaşın elleri (duruma göre poz değiştirir)
 var _kolluk: Array[TextureRect] = []    ## yakalamada cama gelen iki görevli
 var _yakalaniyor := false
-var _el_donusu := 0.0               ## bu süre dolunca eller eşiğe döner
 
 
 func _ready() -> void:
@@ -49,10 +47,6 @@ func _ready() -> void:
 	portre.efekt.connect(func(ad: String) -> void: efekt.emit(ad))
 	add_child(portre)
 
-	eller = VatandasElleri.new()
-	eller.name = "Eller"
-	eller.size = size
-	add_child(eller)
 
 	for i in 2:
 		var k := TextureRect.new()
@@ -118,7 +112,6 @@ func gelsin(portre_kimligi: String) -> void:
 	yuz.durum = Hedef.Durum.BOS
 	yuz.visible = false
 	_sabir = randf_range(ILK_SABIR.x, ILK_SABIR.y)
-	eller.hazirla(portre_kimligi)
 	if _hareket != null:
 		_hareket.kill()
 	_hareket = create_tween()
@@ -126,10 +119,7 @@ func gelsin(portre_kimligi: String) -> void:
 	_hareket.parallel().tween_property(portre, "modulate", Color.WHITE, GELIS_SURESI)
 	_hareket.tween_callback(func() -> void:
 		portre.yuruyor = false
-		yuz.visible = true
-		# cama gelince evrakını uzatır, sonra ellerini eşiğe koyar
-		eller.goster("uzat")
-		_el_donusu = 1.6)
+		yuz.visible = true)
 
 
 ## İşi biten vatandaş sağa doğru yürüyüp çekilir.
@@ -140,7 +130,6 @@ func gitsin() -> void:
 	yuz.visible = false
 	yuz.durum = Hedef.Durum.BOS
 	canta_kaldir()
-	eller.gizle()
 	portre.konusuyor = false
 	portre.yuruyor = true
 	if _hareket != null:
@@ -226,12 +215,6 @@ func _cantayi_oynat(hedef: Vector2, sure: float, gecikme: float = 0.0) -> void:
 func konus(acik: bool) -> void:
 	if kimlik != "":
 		portre.konusuyor = acik
-		# konuşurken arada eliyle anlatır
-		if acik and eller.poz == "esik" and randf() < 0.55:
-			eller.goster("acik")
-			_el_donusu = 60.0
-		elif not acik and eller.poz == "acik":
-			_el_donusu = 0.5
 
 
 ## Karara verilen tepki: "onay" sevinir, "eksik" üzülür, "havale" şaşırır.
@@ -241,19 +224,12 @@ func tepki(karar: String) -> void:
 	match karar:
 		"onay":
 			portre.sevin()
-			eller.goster("esik")
 		"eksik":
 			portre.uzul()
-			eller.goster("yalvar")
-			_el_donusu = 60.0
 		"havale":
 			portre.sas()
-			eller.goster("acik")
-			_el_donusu = 60.0
 		"alarm":
 			portre.sas()
-			eller.goster("teslim")
-			_el_donusu = 60.0
 
 
 ## Sabır sayacını baştan kurar (oyuncu vatandaşla ilgilenince).
@@ -264,23 +240,17 @@ func sabri_tazele() -> void:
 func _process(delta: float) -> void:
 	if kimlik == "" or portre.yuruyor or _yakalaniyor:
 		return
-	if _el_donusu > 0.0:
-		_el_donusu -= delta
-		if _el_donusu <= 0.0:
-			eller.goster("esik")
 	if portre.konusuyor:
 		return
 	_sabir -= delta
 	if _sabir <= 0.0:
 		_sabir = randf_range(SONRAKI_SABIR.x, SONRAKI_SABIR.y)
 		portre.ofle()
-		eller.goster("parmak")          # sabrı taşan parmak sallar
-		_el_donusu = 1.7
 
 
 # --- Yakalama ---
 
-## Şüpheli yakalanır: iki görevli iki yandan dalar, şüpheli ellerini kaldırır, yaka paça yere
+## Şüpheli yakalanır: iki görevli iki yandan dalar, şüpheli korkar ve bağırır, yaka paça yere
 ## yatırılır, kaldırılıp kolundan sürüklenerek götürülür. Bitince gişe boşalır.
 func yakala() -> void:
 	if kimlik == "" or _yakalaniyor:
@@ -291,8 +261,7 @@ func yakala() -> void:
 	yuz.durum = Hedef.Durum.BOS
 	canta_kaldir()
 	portre.konusuyor = false
-	portre.kork()                       # görevlileri görür: korkar, elleri havaya kalkar
-	eller.goster("teslim")
+	portre.kork()                       # görevlileri görür: korkar
 	if _hareket != null:
 		_hareket.kill()
 	var yer := portre.position
@@ -329,7 +298,6 @@ func yakala() -> void:
 		_hareket.tween_property(portre, "position:x", yer.x + (9.0 if adim % 2 == 0 else -9.0), 0.055).set_delay(adim * 0.055)
 	await Oyun.bekle(0.75)
 	# 3) yaka paça yere: şüpheli öne devrilip eşiğin altına iner, görevliler üstüne çöker
-	eller.gizle()
 	portre.aci_cek()
 	_hareket = create_tween().set_parallel()
 	_hareket.tween_property(portre, "ek_donme", 0.62, 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)

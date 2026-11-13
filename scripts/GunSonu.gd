@@ -43,7 +43,7 @@ func _ready() -> void:
 	y += 18.0
 	_baslik(kagit, "GÜNLÜK PUANTAJ", y, 22, Stil.MUREKKEP, Stil.daktilo_kalin())
 	y += 30.0
-	_baslik(kagit, "%d. gün — %s" % [Oyun.gun, Tarih.uzun(str(gun.get("tarih", "")))], y, 12, Stil.MUREKKEP_SOLUK,
+	_baslik(kagit, Dil.c("%d. gün — %s") % [Oyun.gun, Tarih.uzun(str(gun.get("tarih", "")))], y, 12, Stil.MUREKKEP_SOLUK,
 		Stil.daktilo_italik())
 	y += 30.0
 
@@ -69,7 +69,7 @@ func _ready() -> void:
 	y = _satir(kagit, "Eldeki para", Stil.tl(Oyun.para), x, y, Stil.BORDO if Oyun.para < 0 else Stil.MUREKKEP, true)
 	if int(o.get("zarf", 0)) > 0:
 		# puantajda yeri olmayan para: kenara kurşun kalemle düşülmüş not
-		var zarf := Stil.etiket("(çekmecedeki zarf: %s — bunu kimse bilmiyor)" % Stil.tl(int(o.zarf)), 17, Stil.MAVI_MUREKKEP, Stil.el_yazisi())
+		var zarf := Stil.etiket(Dil.c("(çekmecedeki zarf: %s — bunu kimse bilmiyor)") % Stil.tl(int(o.zarf)), 17, Stil.MAVI_MUREKKEP, Stil.el_yazisi())
 		zarf.position = Vector2(x + 8.0, y - 6.0)
 		zarf.rotation = deg_to_rad(-1.2)
 		kagit.add_child(zarf)
@@ -131,7 +131,7 @@ func _mudur_notu(o: Dictionary) -> String:
 	var ihtar := int(o.get("ihtar", 0))
 	var dogru := int(o.get("dogru", 0))
 	if ihtar >= Oyun.IHTAR_ESIGI:
-		return "Müdürün notu: %d ihtar. Kesintiyi yaptım; canı yanan memurun gözü açılır." % ihtar
+		return Dil.c("Müdürün notu: %d ihtar. Kesintiyi yaptım; canı yanan memurun gözü açılır.") % ihtar
 	if ihtar == 0 and dogru >= 6:
 		return "Müdürün notu: Bugün gişenizden şikâyet gelmedi. Buna alışabilirim."
 	if dogru <= 2:
@@ -153,6 +153,7 @@ func _baslik(kagit: Control, metin: String, y: float, punto: int, renk: Color, f
 ## "Etiket ............ değer" biçiminde noktalı satır.
 func _satir(kagit: Control, etiket: String, deger: String, x: float, y: float, renk: Color = Stil.MUREKKEP,
 		kalin: bool = false) -> float:
+	etiket = Dil.c(etiket)
 	var nokta := maxi(2, SATIR_HARFI - etiket.length() - deger.length() - 2)
 	var l := Stil.etiket("%s %s %s" % [etiket, ".".repeat(nokta), deger], 15, renk,
 		Stil.daktilo_kalin() if kalin else Stil.daktilo())

@@ -54,7 +54,7 @@ func ac(gerekceler: Array[String], bulunanlar: Array, yakin: Vector2) -> void:
 		var bulundu := bulunanlar.has(kod)
 		var d := Button.new()
 		d.name = "Gerekce_" + kod
-		d.text = "%d. %s%s" % [i + 1, Dogrulayici.GEREKCELER.get(kod, kod), "  «" if bulundu else ""]
+		d.text = "%d. %s%s" % [i + 1, Dil.c(str(Dogrulayici.GEREKCELER.get(kod, kod))), "  «" if bulundu else ""]
 		d.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		d.focus_mode = FOCUS_NONE
 		d.position = Vector2(10, y)

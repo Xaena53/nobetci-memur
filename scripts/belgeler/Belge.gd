@@ -168,13 +168,40 @@ func _olcekle(k: float) -> void:
 		var d: Control = o.d
 		var r: Rect2 = o.r
 		if o.p > 0.0:
-			d.add_theme_font_size_override("font_size", maxi(6, roundi(o.p * k)))
+			d.add_theme_font_size_override("font_size", _sigan_punto(d, r.size * k, maxi(6, roundi(o.p * k))))
 		d.position = r.position * k
 		d.size = r.size * k
 	pivot_offset = size / 2.0
 	if tutucu != null:
 		tutucu.ortala()
 	queue_redraw()
+
+
+## Yazı alanına sığmıyorsa (çeviride uzayan başlıklar ve satırlar) punto küçülür: tek satırlıkta en,
+## sarılanda yükseklik ölçülür. Kutudan taşan yazı komşu alanın üstüne binmesin.
+func _sigan_punto(d: Control, alan: Vector2, punto: int) -> int:
+	if not d is Label or alan.x < 4.0:
+		return punto
+	var l := d as Label
+	var yazi := Dil.c(l.text)
+	if yazi.strip_edges() == "":
+		return punto
+	var font := l.get_theme_font("font")
+	var en_az := maxi(5, roundi(punto * 0.55))
+	while punto > en_az:
+		if l.autowrap_mode == TextServer.AUTOWRAP_OFF:
+			var en := 0.0
+			for satir in yazi.split("
+"):
+				en = maxf(en, font.get_string_size(satir, HORIZONTAL_ALIGNMENT_LEFT, -1, punto).x)
+			if en <= alan.x * 0.94:            # kenara yapışmasın: küçük bir pay
+				break
+		else:
+			var boy := font.get_multiline_string_size(yazi, HORIZONTAL_ALIGNMENT_LEFT, alan.x - 2.0, punto).y
+			if alan.y < 4.0 or boy <= alan.y + 1.0:
+				break
+		punto -= 1
+	return punto
 
 
 # --- Çizim yardımcıları (taban koordinatı → ekran) ---
@@ -421,7 +448,7 @@ class KararIzi extends Control:
 		var renk := Color(Damga.RENKLER[Damga.renk_adi(cesit)], 0.88)
 		# gerekçe: mührün altına aynı mürekkeple, daktiloyla
 		for i in range(3, satirlar.size()):
-			draw_string(Stil.daktilo_kalin(), Vector2(0, muhur_boyu.y + (10.0 + (i - 3) * 12.0) * k), satirlar[i],
+			draw_string(Stil.daktilo_kalin(), Vector2(0, muhur_boyu.y + (10.0 + (i - 3) * 12.0) * k), Dil.c(satirlar[i]),
 				HORIZONTAL_ALIGNMENT_CENTER, size.x, roundi(10.0 * k), renk)
 		# damganın alt şeridine tarih yazılır
 		if satirlar.size() >= 3:
@@ -443,7 +470,7 @@ class KararIzi extends Control:
 		for i in satirlar.size():
 			var renk := Stil.KAGIT_BEYAZ if i == 0 else Stil.MUREKKEP
 			var punto := roundi((11.0 if i == 0 else 10.0) * k)
-			draw_string(f if i == 0 else Stil.daktilo(), Vector2(r.position.x + 5.0 * k, y), satirlar[i],
+			draw_string(f if i == 0 else Stil.daktilo(), Vector2(r.position.x + 5.0 * k, y), Dil.c(satirlar[i]),
 				HORIZONTAL_ALIGNMENT_CENTER if i == 0 else HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 10.0 * k, punto, renk)
 			y += (19.0 if i == 0 else 13.0) * k
 		# zımba teli

@@ -13,7 +13,7 @@ func _kur() -> void:
 	_taban = Vector2(336, 212)
 
 	_yazi("T.C.", Rect2(10, 11, 154, 13), 9.5, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
-	_yazi("NÜFUS CÜZDANI", Rect2(10, 23, 154, 15), 11, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
+	_yazi("NÜFUS CÜZDANI", Rect2(12, 23, 146, 15), 11, BASLIK_RENGI, Stil.serif_kalin(), HORIZONTAL_ALIGNMENT_CENTER)
 
 	# Vesikalık fotoğraf: yıllar önce çekilmiş, siyah-beyaz baskı. Sahibi bugün başka giyinir, saçı
 	# başkadır; aynı kişi olup olmadığı yüz hatlarından anlaşılır.

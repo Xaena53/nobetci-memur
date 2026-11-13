@@ -7,6 +7,9 @@ const CIKTI := "res://tools/cikti/"
 func _calistir() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(CIKTI))
 	var arg := OS.get_cmdline_user_args()
+	# `dil=en` ya da `dil=ru`: çekim o dilde yapılır (verilmezse Türkçe)
+	Oyun.dil_sabit = _arg("dil", "tr")
+	Oyun.ayarlari_uygula()
 	var senaryo: String = arg[0] if arg.size() > 0 else "akis"
 	var ad := "_senaryo_" + senaryo
 	if has_method(ad):
@@ -24,6 +27,16 @@ func cek(ad: String) -> void:
 	var yol := ProjectSettings.globalize_path(CIKTI + ad + ".png")
 	goruntu.save_png(yol)
 	print("çekildi: ", yol)
+	if Dil.kod != "tr":
+		for t in turkce_kalanlar():
+			print("  TR? [%s] %s" % [ad, t])
+	if Dil.kod != "tr":
+		for t in tasanlar():
+			print("  TAS [%s] %s" % [ad, t])
+	if _arg("metinler", "") != "":
+		# ekrandaki bütün yazılar: Türkçe ve çevrilmiş koşunun dökümleri karşılaştırılır (tools/dil/karsilastir.py)
+		for t in gorunen_metinler():
+			print("  TXT %s" % t)
 
 
 func _senaryo_akis() -> void:
@@ -790,25 +803,139 @@ func _olc(ad: String, kare_sayisi: int = 240) -> Dictionary:
 	return sonuc
 
 
-## Gişe: eller ve yakalama. Kareler `eller_*` ve `yakala_*` adlarıyla yazılır.
-func _senaryo_eller() -> void:
+## Gişe: yakalama sahnesi. Kareler `yakala_*` adlarıyla yazılır.
+func _senaryo_yakala() -> void:
 	Oyun.ayarlari_sifirla()
 	var masa: Node = await _gune_git(2)
 	bas("GiseyiAc")
 	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
-	await bekle(0.4)
-	await cek("eller_1_uzat")
-	await bekle(2.0)
-	await cek("eller_2_esik")
-	for p: String in ["acik", "parmak", "yalvar", "teslim"]:
-		masa.gise.eller.goster(p)
-		masa.gise._el_donusu = 60.0
-		await bekle(0.7)
-		await cek("eller_3_" + p)
+	await bekle(1.5)
 	masa.gise.yakala()
 	for i in 34:
 		await bekle(0.1)
 		get_viewport().get_texture().get_image().get_region(Rect2i(0, 0, 480, 300)).save_jpg(ProjectSettings.globalize_path(CIKTI + "yakala_%02d.jpg" % i), 0.9)
+
+
+## Çeviri denetimi: ekranda Türkçe kalmış yazıları döker (Türkçeye özgü harf içeren Label ve Button metinleri).
+## Kişi ve yer adları da listeye girer; gözle ayıklanır.
+func turkce_kalanlar(kok: Node = null) -> PackedStringArray:
+	var bulunan := PackedStringArray()
+	var kuyruk: Array[Node] = [kok if kok != null else get_tree().root]
+	while not kuyruk.is_empty():
+		var d: Node = kuyruk.pop_back()
+		kuyruk.append_array(d.get_children())
+		if not (d is Label or d is Button) or not (d as CanvasItem).is_visible_in_tree():
+			continue
+		var metin := Dil.c(str(d.get("text")))
+		for harf: String in ["ç", "ğ", "ı", "ö", "ş", "ü", "Ç", "Ğ", "İ", "Ö", "Ş", "Ü"]:
+			if metin.contains(harf):
+				bulunan.append(metin.replace("
+", " ⏎ ").left(90))
+				break
+	return bulunan
+
+
+## Çeviride alanına sığmayan yazılar: tek satırlık (sarmayan) Label ve Button metinlerinden, yazının eni
+## düğümün eninden büyük olanlar. Başsız kipte en ölçümü doğrudur (yükseklik ölçümü değildir).
+func tasanlar() -> PackedStringArray:
+	var bulunan := PackedStringArray()
+	var kuyruk: Array[Node] = [get_tree().root]
+	while not kuyruk.is_empty():
+		var d: Node = kuyruk.pop_back()
+		kuyruk.append_array(d.get_children())
+		if not (d is Label or d is Button) or not (d as CanvasItem).is_visible_in_tree():
+			continue
+		var k := d as Control
+		var metin := Dil.c(str(k.get("text")))
+		if metin.strip_edges() == "" or k.size.x < 8.0:
+			continue
+		if k is Label and (k as Label).autowrap_mode != TextServer.AUTOWRAP_OFF:
+			continue
+		var font := k.get_theme_font("font")
+		var punto := k.get_theme_font_size("font_size")
+		var en := 0.0
+		for satir in metin.split("
+"):
+			en = maxf(en, font.get_string_size(satir, HORIZONTAL_ALIGNMENT_LEFT, -1, punto).x)
+		var pay := 0.0
+		if k is Button:
+			var kutu := k.get_theme_stylebox("normal")
+			pay = kutu.get_margin(SIDE_LEFT) + kutu.get_margin(SIDE_RIGHT) if kutu != null else 0.0
+		if en > k.size.x - pay + 1.5:
+			bulunan.append("%s  (yazı %d, alan %d, punto %d)" % [metin.replace("
+", " ⏎ ").left(60), int(en), int(k.size.x - pay), punto])
+	return bulunan
+
+
+## Ekranda görünen bütün Label ve Button metinleri (gösterildikleri dilde).
+func gorunen_metinler() -> PackedStringArray:
+	var bulunan := PackedStringArray()
+	var kuyruk: Array[Node] = [get_tree().root]
+	while not kuyruk.is_empty():
+		var d: Node = kuyruk.pop_back()
+		kuyruk.append_array(d.get_children())
+		if (d is Label or d is Button) and (d as CanvasItem).is_visible_in_tree() and str(d.get("text")).strip_edges() != "":
+			bulunan.append(Dil.c(str(d.get("text"))).replace("
+", " ⏎ "))
+	return bulunan
+
+
+## Konuşma balonu denetimi: bütün metinler (ve en uzun selam + istek + laf birleşimleri) üç dilde balona
+## konur; her sayfanın yazısı balonun kutusuna sığıyor mu bakılır. Gerçek pencerede çalışır (yazı
+## yüksekliği başsız kipte yanlış ölçülür). Sonuç: "BALON <dil>: ..." satırları.
+func _senaryo_balon() -> void:
+	var masa: Node = await _gune_git(1)
+	await bekle(0.5)
+	var balon: KonusmaBalonu = masa.balon
+	var sozler: Array[String] = []
+	var sozluk: Variant = Veri.oku("res://data/dil/en.json")
+	for k: String in (sozluk as Dictionary).keys():
+		sozler.append(k)
+	var adlar := Veri.adlar()
+	for islem: String in Islemler.TABLO:
+		for selam_k: String in ["selam", "selam_yasli"]:
+			for selam: Variant in adlar.get(selam_k, []):
+				for talep: Variant in Islemler.talepler(islem):
+					for laf: Variant in adlar.get("laf", []):
+						sozler.append("%s|%s|%s" % [selam, talep, laf])
+	for dil: String in ["tr", "en", "ru"]:
+		Oyun.dil_sabit = dil
+		Oyun.ayarlari_uygula()
+		var hata := 0
+		var cok_sayfa := 0
+		var en_cok := 0
+		for soz in sozler:
+			var metin := soz
+			if soz.begins_with(""):
+				var p := soz.substr(1).split("|")
+				metin = "%s %s %s" % [Dil.c(p[0]), Dil.c(p[1]), Dil.c(p[2])]
+			balon.soyle(metin)
+			var sayfa := 1
+			while true:
+				var yuk := Stil.sarili_yukseklik(balon._yazi, balon._yazi_eni())
+				var kutu: Rect2 = balon._kutu
+				if yuk > kutu.size.y - 2.0 * KonusmaBalonu.IC_BOSLUK.y + 0.5 or kutu.size.y > balon.size.y + 0.5:
+					hata += 1
+					print("BALON HATA [%s] sayfa %d, yazı %d > kutu %d: %s" % [dil, sayfa, int(yuk), int(kutu.size.y), balon._yazi.text.left(80)])
+				if balon.kalan_sayfa() == 0:
+					break
+				balon._sayfayi_ac(false)
+				sayfa += 1
+			en_cok = maxi(en_cok, sayfa)
+			if sayfa > 1:
+				cok_sayfa += 1
+			balon.sus()
+		print("BALON %s: %d söz, taşan %d, sayfalara bölünen %d, en çok %d sayfa" % [dil, sozler.size(), hata, cok_sayfa, en_cok])
+	# örnek: en uzun hikâye konuşması üç dilde
+	for dil: String in ["tr", "en", "ru"]:
+		Oyun.dil_sabit = dil
+		Oyun.ayarlari_uygula()
+		balon.soyle("Bugün son gün evladım; Yusuf'un kaydı akşama kapanıyor. Kendimi kızımın evine, Çarşı'ya yazdırdım. Makbuz cumadan kalma, dört gün olmuş diyorlar. Bir gün için torunum okulsuz mu kalacak?")
+		balon._yaziyor = false
+		balon._yazi.visible_characters = -1
+		await cek("balon_" + dil)
+	Oyun.dil_sabit = "tr"
+	Oyun.ayarlari_uygula()
 
 
 ## Akşam odası: canlandırmalar. `film=ad` verilirse 6 saniyelik kare dizisi de yazar; `soguk=1` kömürsüz.

@@ -1,5 +1,16 @@
 # Sürüm notları
 
+## 1.6.0 — üç dil
+
+- **İngilizce ve Rusça.** Oyunun bütün metinleri (arayüz, genelgeler, belgeler, konuşmalar, gazeteler,
+  ipuçları, sonlar) çevrildi. Dil, ayarların OYUN yaprağından seçilir; ilk açılışta sistemin dili kullanılır.
+  Yazılı görseller de (masa etiketleri, röntgen plakaları, bilgi defteri kapağı, takvim yaprakları, onay,
+  ret ve "görülmüştür" damgaları) her dilde ayrı hazırlandı. Kişi, mahalle ve il adları özgün kalır.
+- **Konuşma balonu.** Uzun sözler artık balondan taşmaz: önce punto küçülür, yetmezse söz cümle cümle
+  sayfalara bölünür. Yazarken sözcükler satır değiştirmez.
+- **Belgeler.** Çeviride uzayan başlık ve satırlar alanına sığacak kadar küçülür.
+- **Eller kaldırıldı.** Vatandaşların ayrı el katmanı, gövdeyle bağlantısız durduğu için oyundan çıkarıldı.
+
 ## 1.5.0 — canlanan ev, eller, yakalama, yeni saat ve takvim
 
 - **Ev canlanır.** Nine örgü örer, Elif defterine yazar, Can yerinde oturup kamyonunu iter: üçü de

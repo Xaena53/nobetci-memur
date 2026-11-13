@@ -214,7 +214,7 @@ func ac(canta: Dictionary) -> void:
 func _goruntu_oturdu(canta_adi: String) -> void:
 	karar_bekliyor = true
 	_lamba_acik = false
-	_durum.text = Stil.buyuk(canta_adi) + " · KARAR BEKLENİYOR"
+	_durum.text = Stil.buyuk(canta_adi) + Dil.c(" · KARAR BEKLENİYOR")
 	_isaretler.queue_redraw()
 
 

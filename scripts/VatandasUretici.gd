@@ -568,10 +568,11 @@ static func _baska_portre(portre: String, rng: RandomNumberGenerator, zorluk: in
 
 static func _konusma(v: Dictionary, adlar: Dictionary, rng: RandomNumberGenerator) -> Dictionary:
 	var yasli := int(v.get("yas", 40)) >= 62
-	var selam := str(_sec(adlar.get("selam_yasli" if yasli else "selam", ["İyi günler."]), rng))
-	var giris := selam + " " + str(_sec(Islemler.talepler(str(v.islem)), rng))
+	# cümleler birleştirilmeden önce çevrilir (birleşik hâli sözlükte bulunmaz)
+	var selam := Dil.c(str(_sec(adlar.get("selam_yasli" if yasli else "selam", ["İyi günler."]), rng)))
+	var giris := selam + " " + Dil.c(str(_sec(Islemler.talepler(str(v.islem)), rng)))
 	if rng.randf() < 0.32:
-		giris += " " + str(_sec(adlar.get("laf", [""]), rng))
+		giris += " " + Dil.c(str(_sec(adlar.get("laf", [""]), rng)))
 	return {
 		"giris": giris.strip_edges(),
 		"onay": str(_sec(adlar.get("onay_yasli" if yasli and rng.randf() < 0.6 else "onay", ["Sağ olun."]), rng)),

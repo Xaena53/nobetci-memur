@@ -3,8 +3,6 @@
   takvim.png    yedi takvim yaprağı (koyu zeminde)      → assets/img/nesne/takvim_<gün>.webp
   saat.png      çevirmeli saat, rakam kartları, ibreler  → assets/img/nesne/saat_*.webp
   mutfak.png    tencere, çaydanlık, kestane tavası       → assets/img/nesne/{tencere,caydanlik,kestane}.webp
-  el_erkek.png  altı el pozu (3×2)                       → assets/img/el/erkek_<poz>.webp
-  el_kadin.png  altı el pozu (3×2)                       → assets/img/el/kadin_<poz>.webp
   kolluk.png    iki kolluk görevlisi büstü               → assets/img/portre/kolluk_{1,2}.webp
 
 İbrelerin dönme merkezi (halkanın ortası) ve yaprakların ölçüleri data/varliklar.json dosyasına yazılır.
@@ -22,7 +20,6 @@ from scipy import ndimage
 KOK = Path(__file__).resolve().parents[2]
 HAM = Path(__file__).resolve().parent / "ham" / "yeni"
 IMG = KOK / "assets" / "img"
-POZLAR = ["esik", "uzat", "acik", "parmak", "yalvar", "teslim"]
 GUNLER = [9, 10, 11, 12, 13, 16, 17]
 
 
@@ -115,28 +112,6 @@ def mutfak() -> None:
         yaz(kes(im, kutu, 220), IMG / "nesne" / f"{ad}.webp")
 
 
-def eller(ad: str, bilgi: dict) -> None:
-    im = Image.open(HAM / f"el_{ad}.png").convert("RGBA")
-    alfa = np.array(im.getchannel("A"))
-    kutular = parcalar(alfa, 3000, 4)
-    w, h = im.size
-    hucreler = {}
-    for k in kutular:
-        cx, cy = (k[0] + k[2]) / 2, (k[1] + k[3]) / 2
-        no = min(1, int(cy / (h / 2))) * 3 + min(2, int(cx / (w / 3)))
-        o = hucreler.get(no)
-        hucreler[no] = k if o is None else (min(o[0], k[0]), min(o[1], k[1]), max(o[2], k[2]), max(o[3], k[3]))
-    assert len(hucreler) == 6, sorted(hucreler)
-    # bütün pozlar aynı ölçekte küçültülür (eller birbirine göre boy değiştirmesin)
-    olcek = 300.0 / max(k[2] - k[0] for k in hucreler.values())
-    for no, poz in enumerate(POZLAR):
-        k = hucreler[no]
-        parca = kes(im, k, 10 ** 6)
-        parca = parca.resize((max(1, round(parca.width * olcek)), max(1, round(parca.height * olcek))), Image.LANCZOS)
-        yaz(parca, IMG / "el" / f"{ad}_{poz}.webp")
-    bilgi["el_pozlari"] = POZLAR
-
-
 def kolluk() -> None:
     im = Image.open(HAM / "kolluk.png").convert("RGBA")
     kutular = sorted(parcalar(np.array(im.getchannel("A")), 50000, 2), key=lambda k: k[0])
@@ -147,12 +122,10 @@ def kolluk() -> None:
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
-    bilgi = {"aciklama": "tools/sanat/yeni_varliklar.py üretir: ibrelerin dönme merkezi (0..1), saatin gösterge penceresi (0..1), takvim yaprakları, el pozları."}
+    bilgi = {"aciklama": "tools/sanat/yeni_varliklar.py üretir: ibrelerin dönme merkezi (0..1), saatin gösterge penceresi (0..1), takvim yaprakları."}
     takvim(bilgi)
     saat(bilgi)
     mutfak()
-    eller("erkek", bilgi)
-    eller("kadin", bilgi)
     kolluk()
     (KOK / "data" / "varliklar.json").write_text(json.dumps(bilgi, ensure_ascii=False, indent="\t") + "\n", encoding="utf-8", newline="\n")
     print("data/varliklar.json yazıldı")

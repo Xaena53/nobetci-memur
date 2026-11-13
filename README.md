@@ -23,7 +23,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.5.0 |
+| Sürüm | 1.6.0 |
 
 ---
 
@@ -147,17 +147,29 @@ kurutma makinesi tabancaya, sucuk dinamite, bir bağ mum patlayıcıya benzer.
 
 ![Konuşma canlandırması: Hüsnü Amca camda konuşuyor](docs/img/konusma.gif)
 
-Vatandaşlar camın ardında yürüyerek gelir, konuşur, beklerken nefes alır ve göz kırpar. Evraklarını
-elleriyle uzatır, ellerini eşiğe koyar, konuşurken eliyle anlatırlar. Sabırları taşınca öfleyip pöfler,
-parmak sallarlar. Kararınıza sevinir, üzülür (ellerini kenetleyip rica ederler) ya da şaşırırlar.
-Aranan, sahteci ya da yasak eşya taşıyan şahıs yakalanınca iki görevli cama dalar; şahıs ellerini
-kaldırır, yere yatırılır ve götürülür. Konuşma, her yüz için ayrı
+Vatandaşlar camın ardında yürüyerek gelir, konuşur, beklerken nefes alır ve göz kırpar. Sabırları
+taşınca öfleyip pöflerler. Kararınıza sevinir, üzülür ya da şaşırırlar.
+Aranan, sahteci ya da yasak eşya taşıyan şahıs yakalanınca iki görevli cama dalar; şahıs korkar,
+bağırır, yere yatırılır ve götürülür. Konuşma, her yüz için ayrı
 ayrı boyanmış ağız kareleriyle canlandırılır; sesi kısa, anlaşılmaz bir mırıltıdır ve kişinin yaşına,
 cinsiyetine göre incelip kalınlaşır.
 
 Kuyruk her gün başka insanlardan oluşur. Oyunda hikâye kişileriyle birlikte **89 ayrı yüz** vardır;
 her yüz kalıcı bir kişidir: adı, ana ve baba adı, doğum yeri ve tarihi, imzası hep aynıdır. Cüzdanda
 sahibinin imzası durur.
+
+### Diller
+
+Oyun Türkçe, İngilizce ve Rusça oynanabilir (ayarlar → OYUN → Dil; ilk açılışta sistemin dili seçilir).
+Kaynak metin Türkçedir; çeviriler `data/dil/<dil>.json` sözlüklerindedir. Yazılı görsellerin dile özgü
+hâlleri `assets/img/nesne/<dil>/` ve `assets/img/damga/<dil>/` altındadır. Kişi, mahalle, il adları ve
+belge numaraları çevrilmez.
+
+Çeviri hattı: `python tools/dil/cikar.py` metinleri numaralar (`tools/dil/kaynak.json`), çeviriler
+`tools/dil/ceviri/*.json` dosyalarına yazılır, `python tools/dil/derle.py` yer tutucuları ve satır
+sayılarını denetleyip sözlükleri kurar. `bash tools/dil/tara.sh <dil> <klasör>` bütün çekim senaryolarını o
+dilde çalıştırır; günlükte Türkçe kalan (`TR?`) ve alanına sığmayan (`TAS`) yazılar listelenir.
+`bash tools/cek.sh balon` bütün konuşmaların üç dilde balona sığdığını denetler.
 
 ### Akşam evde
 
@@ -481,7 +493,6 @@ akışı: `Ana Menü → Masa (09:00–17:00) → Gün Sonu → Aile → ertesi 
 | `Kar.gd` | Üç katmanlı, rüzgârla savrulan kar yağışı |
 | `EvCanlandirma.gd` | Akşam odası: pencere karı, soba ateşi (`soba_atesi.gdshader`), kıvılcım, ocaktaki kap ve buharı |
 | `VideoFigur.gd` | Aile üyelerinin canlandırma videolarını saydam zeminle oynatır (`video_figur.gdshader`, `data/figur_videolari.json`) |
-| `VatandasElleri.gd` | Gişedeki vatandaşın el pozları ve geçişleri; kol ağzını giysinin rengine boyar (`el.gdshader`) |
 | `DuvarSaati.gd` | Kadranın boyalı ibreleri, günün takvim yaprağı, kartları dönen çevirmeli saat |
 | `AraEkran.gd` | Güne başlarken geçiş ekranı: kasaba sahneleri ve ipuçları (`data/ara_ekran.json`) |
 | `KasabaSahnesi.gd` | Boyalı bir sahneyi canlandırır: baca dumanı, lamba ve pencere ışığı, ağır yaklaşma; ana menünün dumanı da buradan gelir |

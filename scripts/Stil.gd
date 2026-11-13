@@ -25,6 +25,11 @@ const MOR_MUHUR := Color("5b3a82")      # muhtar mührü ıstampası
 const GECE := Color("1f1b17")
 
 const FONT_KLASORU := "res://assets/font/"
+const KIRIL_YEDEGI := {
+	"CourierPrime-Regular.ttf": "AnonymousPro-Regular.ttf",
+	"CourierPrime-Bold.ttf": "AnonymousPro-Bold.ttf",
+	"CourierPrime-Italic.ttf": "AnonymousPro-Italic.ttf",
+}
 
 static var _fontlar := {}
 static var _tema: Theme
@@ -34,6 +39,10 @@ static func _font(dosya: String) -> Font:
 	if not _fontlar.has(dosya):
 		var yol := FONT_KLASORU + dosya
 		_fontlar[dosya] = load(yol) if ResourceLoader.exists(yol) else ThemeDB.fallback_font
+		# Courier Prime'da Kiril harfleri yoktur: Rusça metinde eksik harfler Anonymous Pro'dan gelir
+		var yedek_yol := FONT_KLASORU + str(KIRIL_YEDEGI.get(dosya, ""))
+		if KIRIL_YEDEGI.has(dosya) and ResourceLoader.exists(yedek_yol) and _fontlar[dosya] is FontFile:
+			(_fontlar[dosya] as FontFile).fallbacks = [load(yedek_yol)]
 	return _fontlar[dosya]
 
 
@@ -122,12 +131,31 @@ static func tema() -> Theme:
 
 ## Türkçe kurallarıyla büyük harf ("i" → "İ", "ı" → "I").
 static func buyuk(metin: String) -> String:
-	return metin.replace("i", "İ").replace("ı", "I").to_upper()
+	return Dil.buyuk(metin)
 
 
 ## Türkçe kurallarıyla küçük harf ("I" → "ı", "İ" → "i").
 static func kucuk(metin: String) -> String:
-	return metin.replace("I", "ı").replace("İ", "i").to_lower()
+	return Dil.kucuk(metin)
+
+
+## Sarılan (autowrap) bir etiketin verilen enle kaç piksel yükseklik tutacağı. Ölçüm etiketin kendi
+## satır kırmasıyla yapılır: `Font.get_multiline_string_size` kelimeleri başka yerden kırabildiği için
+## kısa ölçüp yazının kutudan taşmasına yol açıyordu.
+static func sarili_yukseklik(l: Label, en: float) -> float:
+	l.size = Vector2(en, l.size.y)
+	# Label yeniden boyutlanınca satırlarını ancak çizimde yeniden kırar; yazı yeniden atanınca hemen kırar
+	var metin := l.text
+	var gorunen := l.visible_characters
+	l.visible_characters = -1             # kırma yalnız görünen harflerle yapılıyorsa bütün metin ölçülsün
+	l.text = ""
+	l.text = metin
+	var n := l.get_line_count()
+	l.visible_characters = gorunen
+	var font := l.get_theme_font("font")
+	var punto := l.get_theme_font_size("font_size")
+	var satir := font.get_height(punto) + l.get_theme_constant("line_spacing")
+	return n * satir
 
 
 ## 1250 → "1.250 TL"

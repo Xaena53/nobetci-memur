@@ -300,7 +300,7 @@ func _canta_karari(karar: String) -> void:
 func _canta_yakalandi(yasak: Array[String], etki: Variant) -> void:
 	_sonucu_isle("alarm", {"sonuc": "dogru", "supheli_yakalandi": true})
 	ozet["canta_yakalanan"] = int(ozet.get("canta_yakalanan", 0)) + 1
-	_bekleyen_fis = {"cesit": "not", "metin": "Bekçi çantadan %s çıkardı; şahıs jandarmaya teslim edildi. Dikkatiniz sicilinize işlendi." % Canta.adlari_yaz(yasak)}
+	_bekleyen_fis = {"cesit": "not", "metin": Dil.c("Bekçi çantadan %s çıkardı; şahıs jandarmaya teslim edildi. Dikkatiniz sicilinize işlendi.") % Canta.adlari_yaz(yasak)}
 	if typeof(etki) == TYPE_DICTIONARY:
 		Hikaye.etki_uygula(etki)
 		if (etki as Dictionary).has("not"):
@@ -319,12 +319,12 @@ func _bos_alarm(canta: Dictionary) -> void:
 	ozet["bos_alarm"] = bos_alarm
 	dakika = maxf(dakika, minf(dakika + ALARM_KAYBI, MESAI_SONU - 1.0))     # saat geri gitmez
 	saat.dakika = dakika
-	var mesaj := "Bekçi çantayı boşalttı: şüphelendiğiniz şey %s çıktı. Vatandaş boş yere bekledi, mesaiden %d dakika gitti." % [
+	var mesaj := Dil.c("Bekçi çantayı boşalttı: şüphelendiğiniz şey %s çıktı. Vatandaş boş yere bekledi, mesaiden %d dakika gitti.") % [
 		Canta.yaniltan(canta, gun), ALARM_KAYBI]
 	if bos_alarm >= 2:
 		gunluk_ihtar += 2 if denetimde else 1
 		ozet.ihtar = gunluk_ihtar
-		mesaj += " Bugünkü %d. boş alarmınız: ihtar." % bos_alarm
+		mesaj += Dil.c(" Bugünkü %d. boş alarmınız: ihtar.") % bos_alarm
 		(ozet.ihtarlar as Array).append(mesaj)
 		Ses.cal("ihtar", 1.0, -9.0)
 		teleks.yazdir(mesaj, gunluk_ihtar, "ihtar")
@@ -357,7 +357,7 @@ func _cantadan_evraka(bekleme: float) -> void:
 func _canta_kacagini_isle() -> void:
 	var yasak: Array = vatandas.get("canta_kacti", [])
 	ozet["canta_kacan"] = int(ozet.get("canta_kacan", 0)) + 1
-	var mesaj := "Röntgenden geçirdiğiniz çantada %s vardı; şahıs binaya onunla girdi." % Canta.adlari_yaz(yasak)
+	var mesaj := Dil.c("Röntgenden geçirdiğiniz çantada %s vardı; şahıs binaya onunla girdi.") % Canta.adlari_yaz(yasak)
 	if denetimde:
 		gunluk_ihtar += 2
 		mesaj += " Camdan izliyordum: çift ihtar."
@@ -367,7 +367,7 @@ func _canta_kacagini_isle() -> void:
 	ozet.ihtar = gunluk_ihtar
 	(ozet.ihtarlar as Array).append(mesaj)
 	if str(_bekleyen_fis.get("cesit", "")) == "ihtar":
-		_bekleyen_fis.metin = str(_bekleyen_fis.metin) + " Üstelik: " + mesaj
+		_bekleyen_fis.metin = str(_bekleyen_fis.metin) + Dil.c(" Üstelik: ") + mesaj
 	else:
 		_bekleyen_fis = {"cesit": "ihtar", "metin": mesaj}
 
@@ -700,7 +700,7 @@ func _fis_yaz(cesit: String, metin: String) -> void:
 	elif yeni_agir < eski_agir:
 		_bekleyen_fis.metin = eski_metin + " " + metin
 	elif cesit == "ihtar":
-		_bekleyen_fis.metin = eski_metin + " Üstelik: " + metin
+		_bekleyen_fis.metin = eski_metin + Dil.c(" Üstelik: ") + metin
 	else:
 		_bekleyen_fis = {"cesit": cesit, "metin": metin}
 
@@ -717,9 +717,9 @@ func _fisi_goster() -> void:
 
 func _fis_satirlari(gerekce: String) -> PackedStringArray:
 	# gerekçeyi fişe sığacak kısa satırlara böl
-	var satirlar := PackedStringArray(["EKSİK EVRAK"])
+	var satirlar := PackedStringArray([Dil.c("EKSİK EVRAK")])
 	var satir := ""
-	for k in gerekce.split(" "):
+	for k in Dil.c(gerekce).split(" "):
 		if (satir + " " + k).strip_edges().length() > 22 and satir != "":
 			satirlar.append(satir)
 			satir = k
@@ -895,7 +895,7 @@ func _incele_seridini_yaz(acik: bool) -> void:
 	if inceleme.kip == "hak":
 		# sayı taşıyan şerit: boş bandın üstüne kabartma yazı
 		_incele_seridi.doku_adi = "serit_bos"
-		_incele_seridi.metin = ("AÇIK · İPUCU %d" if acik else "İPUCU HAKKI %d") % inceleme.ipucu_kalan
+		_incele_seridi.metin = Dil.c("AÇIK · İPUCU %d" if acik else "İPUCU HAKKI %d") % inceleme.ipucu_kalan
 		_incele_seridi.parlak = acik
 	else:
 		_incele_seridi.doku_adi = "serit_inceleme_acik" if acik else "serit_incele"
@@ -936,6 +936,7 @@ func _sahneyi_kur() -> void:
 	add_child(balon)
 	balon.basladi.connect(gise.konus.bind(true))
 	balon.bitti.connect(gise.konus.bind(false))
+	balon.duraksadi.connect(gise.konus.bind(false))
 
 	kural_kitabi = KuralKitabi.new()
 	kural_kitabi.name = "KuralKitabi"
@@ -1161,7 +1162,7 @@ func _igne_ciz() -> void:
 
 func _igneyi_guncelle() -> void:
 	_igne.queue_redraw()
-	_ihtar_seridi.metin = "İHTAR %d" % gunluk_ihtar
+	_ihtar_seridi.metin = Dil.c("İHTAR %d") % gunluk_ihtar
 
 
 ## Bir denetimi (düğme, etiket, gösterge) tepsideki yerine, masa perspektifiyle yerleştirir.

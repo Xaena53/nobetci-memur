@@ -99,7 +99,7 @@ func _kur() -> void:
 	var dizi := VBoxContainer.new()
 	dizi.add_theme_constant_override("separation", 0)
 	kunye.add_child(dizi)
-	dizi.add_child(Stil.etiket("%d. GÜN" % gun, 30, Stil.BORDO, Stil.daktilo_kalin()))
+	dizi.add_child(Stil.etiket(Dil.c("%d. GÜN") % gun, 30, Stil.BORDO, Stil.daktilo_kalin()))
 	dizi.add_child(Stil.etiket(_tarih_metni(), 15, Stil.MUREKKEP, Stil.daktilo()))
 	_yer_adi = Stil.etiket("", 14, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
 	dizi.add_child(_yer_adi)
@@ -149,7 +149,7 @@ func _tarih_metni() -> String:
 	var ay := clampi(int(parca[1]), 1, 12)
 	var an := Time.get_unix_time_from_datetime_dict({"year": int(parca[2]), "month": ay, "day": int(parca[0]), "hour": 12})
 	var haftanin_gunu := int(Time.get_datetime_dict_from_unix_time(an).get("weekday", 0))
-	return "%d %s %s, %s" % [int(parca[0]), AYLAR[ay - 1], parca[2], GUNLER[haftanin_gunu]]
+	return "%d %s %s, %s" % [int(parca[0]), Dil.c(AYLAR[ay - 1]), parca[2], Dil.c(GUNLER[haftanin_gunu])]
 
 
 ## Ekran tam görünür olunca çağrılır: süre işlemeye, tıklama sayılmaya başlar.
@@ -204,7 +204,7 @@ func _sonraki_sahne(ilk: bool) -> void:
 	_sahne = KasabaSahnesi.new()
 	_sahne.tanim = _sahneler[_sahne_no]
 	_sahne_katmani.add_child(_sahne)
-	_yer_adi.text = str(_sahne.tanim.get("ad", ""))
+	_yer_adi.text = Dil.c(str(_sahne.tanim.get("ad", "")))
 	_kar.isik = _sahne.ana_lamba()
 	_kunyeyi_yerlestir.call_deferred(str(_sahne.tanim.get("kunye", "sol")))
 	if ilk or eski == null:

@@ -141,7 +141,10 @@ func _geceyi_goster() -> void:
 	var olay := str(gece.get("olay", ""))
 	if olay != "":
 		y = Gazete.blok_ekle(icerik, olay, 19, Stil.daktilo_italik(), Color("e6b98a"), Rect2(240, y, 800, 0), true, 3) + 26.0
-	var metin := "\n\n".join(PackedStringArray(gece.get("satirlar", [])))
+	var cevrili := PackedStringArray()
+	for satir: Variant in gece.get("satirlar", []):
+		cevrili.append(Dil.c(str(satir)))
+	var metin := "\n\n".join(cevrili)
 	Gazete.blok_ekle(icerik, metin, 19, Stil.daktilo(), Color("e8dfc8"), Rect2(240, y, 800, 0), true, 3)
 	t.tween_property(icerik, "modulate:a", 1.0, 0.6)
 
@@ -256,7 +259,7 @@ func _odayi_kur() -> void:
 	for uye: String in AileDurumu.UYELER:
 		var saglik := AileDurumu.saglik(Oyun.aile, uye)
 		var renk := Color("1d1b19") if saglik >= 3 else (Color("6b4a12") if saglik == 2 else Stil.BORDO)
-		var yazi := AileDurumu.durum_metni(Oyun.aile, uye) if saglik > 0 else "%s: yatakta" % str(AileDurumu.BILGI[uye].hitap)
+		var yazi := AileDurumu.durum_metni(Oyun.aile, uye) if saglik > 0 else Dil.c("%s: yatakta") % Dil.c(str(AileDurumu.BILGI[uye].hitap))
 		var l := Stil.etiket(Stil.buyuk(yazi), 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
 		l.name = "Durum_" + uye
 		l.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(renk, Color(0, 0, 0, 0.45), 1, 2, 2), 6, 2))
@@ -326,7 +329,7 @@ func _defteri_kur() -> void:
 	baslik.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	defter.add_child(baslik)
 	var gun := Veri.gun(Oyun.gun)
-	var tarih := Stil.etiket("%s akşamı" % Tarih.uzun(str(gun.get("tarih", ""))), 12, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
+	var tarih := Stil.etiket(Dil.c("%s akşamı") % Tarih.uzun(str(gun.get("tarih", ""))), 12, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
 	tarih.position = Vector2(0, 62)
 	tarih.size = Vector2(DEFTER.size.x, 16)
 	tarih.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -340,7 +343,7 @@ func _defteri_kur() -> void:
 		notu.name = "AksamNotu"
 		notu.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		notu.add_theme_constant_override("line_spacing", -3)
-		var yuk := Stil.el_yazisi().get_multiline_string_size(olan, HORIZONTAL_ALIGNMENT_LEFT, w, 18).y
+		var yuk := Stil.el_yazisi().get_multiline_string_size(Dil.c(olan), HORIZONTAL_ALIGNMENT_LEFT, w, 18).y
 		var satir := maxi(1, roundi(yuk / Stil.el_yazisi().get_height(18)))
 		yuk -= 3.0 * (satir - 1)
 		notu.position = Vector2(x, y)
@@ -348,7 +351,7 @@ func _defteri_kur() -> void:
 		defter.add_child(notu)
 		y += yuk + 12.0
 
-	var eldeki := Stil.etiket("Eldeki para: %s" % Stil.tl(Oyun.para), 16, Stil.MUREKKEP, Stil.daktilo_kalin())
+	var eldeki := Stil.etiket(Dil.c("Eldeki para: %s") % Stil.tl(Oyun.para), 16, Stil.MUREKKEP, Stil.daktilo_kalin())
 	eldeki.position = Vector2(x, y)
 	defter.add_child(eldeki)
 	y += 30.0
@@ -439,8 +442,8 @@ func _kalem_satiri(k: Dictionary, w: float, sikisma: float = 1.0) -> Control:
 func _guncelle() -> void:
 	var harcanan := toplam()
 	var kalan := Oyun.para - harcanan
-	_toplam_yazi.text = "Bu akşam ödenecek: %s" % Stil.tl(harcanan)
-	_kalan_yazi.text = "Yarına kalan: %s" % Stil.tl(kalan)
+	_toplam_yazi.text = Dil.c("Bu akşam ödenecek: %s") % Stil.tl(harcanan)
+	_kalan_yazi.text = Dil.c("Yarına kalan: %s") % Stil.tl(kalan)
 	for kod: String in _satirlar:
 		var s: Button = _satirlar[kod]
 		(s.get_node("Kutu") as Control).queue_redraw()

@@ -71,7 +71,7 @@ static func ay_ekle(metin: String, adet: int) -> String:
 
 
 static func haftanin_gunu(metin: String) -> String:
-	return GUNLER[posmod(gun_no(metin), 7)]
+	return Dil.c(GUNLER[posmod(gun_no(metin), 7)])
 
 
 ## "09.01.1984" → "9 Ocak 1984 Pazartesi"
@@ -79,7 +79,7 @@ static func uzun(metin: String, gun_adi: bool = true) -> String:
 	var t := coz(metin)
 	if t.is_empty():
 		return metin
-	var s := "%d %s %d" % [t.gun, AYLAR[t.ay - 1], t.yil]
+	var s := "%d %s %d" % [t.gun, Dil.c(AYLAR[t.ay - 1]), t.yil]
 	return s + " " + haftanin_gunu(metin) if gun_adi else s
 
 

@@ -137,7 +137,7 @@ func _fis_ciz() -> void:
 		draw_texture_rect(doku, r, false)       # koçanın tamamı (yarısı kesilince yazısı da kesiliyordu)
 	else:
 		Kagit.parca_ciz(self, r, "sayfa", Stil.KAGIT_BEYAZ)
-		draw_string(Stil.daktilo_kalin(), Vector2(0, 14), BASLIKLAR.get(tur, ""), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Stil.MUREKKEP)
+		draw_string(Stil.daktilo_kalin(), Vector2(0, 14), Dil.c(str(BASLIKLAR.get(tur, ""))), HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Stil.MUREKKEP)
 	if tur == "havale" and kalan >= 0:
-		draw_string(Stil.daktilo(), Vector2(0, size.y * 0.64), "kalan hak: %d" % kalan, HORIZONTAL_ALIGNMENT_CENTER, size.x, 12,
+		draw_string(Stil.daktilo(), Vector2(0, size.y * 0.64), Dil.c("kalan hak: %d") % kalan, HORIZONTAL_ALIGNMENT_CENTER, size.x, 12,
 			Stil.MUREKKEP)

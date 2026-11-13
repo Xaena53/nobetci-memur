@@ -16,6 +16,8 @@ Kullanım: python tools/sanat/figur_video.py <ad> <figür_x> <figür_y> <ölçek
   (başlangıç karesi hazırlanırken kullanılan değerler; kare klipte küçüldüyse betik oranlar).
   gidiş_dönüş_başı verilirse klip o kareden başlar, ileri oynayıp geri sarar (poz başa dönmüyorsa).
   hız_çarpanı (örn. 0.5) hareketi yavaşlatır: klibin 24 karesi de alınır, saniyede 24×çarpan kare oynatılır.
+  bolge=x0,x1  klibin yalnız bu yatay dilimi işlenir (bir klipte yan yana birkaç figür varsa)
+  cikti=<ad>   çıktı dosyasının ve kaydın adı (verilmezse klibin adı)
 """
 import json
 import shutil
@@ -48,6 +50,9 @@ def ayikla(kare: Image.Image) -> tuple:
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
+    # adlı seçenekler: bolge=x0,x1 (klibin yalnız bu yatay dilimi alınır), cikti=<ad> (çıktı dosyasının adı)
+    secenek = dict(a.split("=", 1) for a in sys.argv[1:] if "=" in a)
+    sys.argv = [a for a in sys.argv if "=" not in a]
     ad = sys.argv[1]
     fx, fy, olcek = float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])
     tuval_eni = float(sys.argv[5]) if len(sys.argv) > 5 else 0.0
@@ -63,6 +68,12 @@ def main() -> None:
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(klip), "-vf", f"fps={cekim_hizi}", str(gecici / "k_%03d.png")], check=True)
     yollar = sorted(gecici.glob("k_*.png"))
     kareler = [ayikla(Image.open(y)) for y in yollar]
+    dilim_x = 0
+    tam_en = kareler[0][1].shape[1]
+    if "bolge" in secenek:
+        b0, b1 = (int(v) for v in secenek["bolge"].split(","))
+        kareler = [(r[:, b0:b1], a[:, b0:b1]) for r, a in kareler]
+        dilim_x = b0
     h, w = kareler[0][1].shape
     if len(sys.argv) > 6:
         # gidiş-dönüş döngüsü: poz ilk kareye dönmeyen klipler için. Baştaki kareler (poz otururken) atılır,
@@ -83,7 +94,7 @@ def main() -> None:
             i = len(kareler) - ERITME + j
             kareler[i] = (kareler[i][0] * (1 - t) + kareler[0][0] * t, kareler[i][1] * (1 - t) + kareler[0][1] * t)
     # klip, başlangıç karesinden küçük üretilmiş olabilir
-    oran = w / tuval_eni if tuval_eni > 0 else 1.0
+    oran = tam_en / tuval_eni if tuval_eni > 0 else 1.0
     fx, fy, olcek = fx * oran, fy * oran, olcek * oran
     birlesik = np.max(np.stack([k[1] for k in kareler]), axis=0) > 0.5
     ys, xs = np.nonzero(birlesik)
@@ -113,15 +124,16 @@ def main() -> None:
         cift.paste(mat, (en, 0))
         cift.save(cikti / f"c_{i:03d}.png")
     HEDEF.mkdir(parents=True, exist_ok=True)
-    hedef = HEDEF / f"{ad}.ogv"
+    cikti_adi = secenek.get("cikti", ad)
+    hedef = HEDEF / f"{cikti_adi}.ogv"
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(oynatma_hizi), "-i", str(cikti / "c_%03d.png"),
                     "-c:v", "libtheora", "-q:v", "8", "-pix_fmt", "yuv444p", str(hedef)], check=True)
     bilgi = json.loads(BILGI.read_text(encoding="utf-8")) if BILGI.exists() else {}
     bilgi["aciklama"] = "tools/sanat/figur_video.py üretir. 'kutu': videonun, figürün boyalı resmine göre yeri [x, y, en, boy] (resmin piksel biriminde)."
-    bilgi[ad] = {"kutu": [round(float(v), 2) for v in ((x0 - fx) / olcek, (y0 - fy) / olcek, (x1 - x0) / olcek, (y1 - y0) / olcek)],
+    bilgi[cikti_adi] = {"kutu": [round(float(v), 2) for v in ((x0 + dilim_x - fx) / olcek, (y0 - fy) / olcek, (x1 - x0) / olcek, (y1 - y0) / olcek)],
                  "kare": len(kareler), "hiz": oynatma_hizi}
     BILGI.write_text(json.dumps(bilgi, ensure_ascii=False, indent="\t") + "\n", encoding="utf-8", newline="\n")
-    print(f"{ad}: klip {w}x{h}, {len(kareler)} kare, video {en * 2}x{boy}, {hedef.stat().st_size // 1024} KB, kutu {bilgi[ad]['kutu']}")
+    print(f"{cikti_adi}: klip {w}x{h}, {len(kareler)} kare, video {en * 2}x{boy}, {hedef.stat().st_size // 1024} KB, kutu {bilgi[cikti_adi]['kutu']}")
     shutil.rmtree(gecici, ignore_errors=True)
 
 

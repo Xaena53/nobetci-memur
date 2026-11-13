@@ -69,10 +69,12 @@ static func renk_adi(damga_cesidi: String, sahtelik: String = "") -> String:
 
 
 static func doku(ad: String) -> Texture2D:
-	if not _dokular.has(ad):
-		var yol := KLASOR + ad + ".webp"
-		_dokular[ad] = load(yol) if ResourceLoader.exists(yol) else null
-	return _dokular[ad]
+	# yazılı damgaların (onay, ret, görülmüştür) dile özgü hâli varsa o yüklenir (bkz. Dil.yol)
+	var anahtar := Dil.kod + "/" + ad
+	if not _dokular.has(anahtar):
+		var yol := Dil.yol(KLASOR + ad + ".webp")
+		_dokular[anahtar] = load(yol) if ResourceLoader.exists(yol) else null
+	return _dokular[anahtar]
 
 
 ## Sahteliğin okunur açıklaması (ihtar ve ipucu metinleri için).

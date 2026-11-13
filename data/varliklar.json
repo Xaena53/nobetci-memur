@@ -26,13 +26,5 @@
 	"saat_saniye": [
 		0.0331,
 		0.4905
-	],
-	"el_pozlari": [
-		"esik",
-		"uzat",
-		"acik",
-		"parmak",
-		"yalvar",
-		"teslim"
 	]
 }

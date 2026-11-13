@@ -35,7 +35,7 @@ func yapraklar() -> Array:
 func _kur() -> void:
 	_imzalar.clear()
 	if _kapak == null and ResourceLoader.exists(KAPAK):
-		_kapak = load(KAPAK)
+		_kapak = load(Dil.yol(KAPAK))           # kapaktaki yazının dile özgü hâli
 	if not _acik:
 		_taban = KAPALI      # kapak, yazısıyla birlikte boyalı görseldir
 		return
@@ -116,8 +116,7 @@ func _muhur_yapragi() -> void:
 	_ornek_hedefi("muhur", "Mühür örneği", Rect2(SOL, 54, 102, 102))
 	_yazi("· Çift dış halka\n· İç halka\n· Üstte MAHALLE\n  MUHTARLIĞI\n· Altta ARDIÇLI\n· Yıldız ve T.C.\n· Mor mürekkep",
 		Rect2(SOL + 106, 58, 94, 100), 7.6, Stil.MUREKKEP, Stil.daktilo(), HORIZONTAL_ALIGNMENT_LEFT, true)
-	_yazi("Mühür bütün mahallelerde aynıdır; muhtarı imzasından tanırsınız. Mühür belgeye hafif yamuk ya da silik "
-		+ "basılmış olabilir; bunlar sahtelik sayılmaz.", Rect2(SOL, 166, EN, 60), 7.6, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik(),
+	_yazi("Mühür bütün mahallelerde aynıdır; muhtarı imzasından tanırsınız. Mühür belgeye hafif yamuk ya da silik basılmış olabilir; bunlar sahtelik sayılmaz.", Rect2(SOL, 166, EN, 60), 7.6, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik(),
 		HORIZONTAL_ALIGNMENT_LEFT, true)
 	_yazi("Örneğe uymayan mühür sahtedir: evrak müdüre havale edilir.", Rect2(SOL, 236, EN, 30), 8, Stil.BORDO,
 		Stil.daktilo_kalin(), HORIZONTAL_ALIGNMENT_LEFT, true)
@@ -135,7 +134,7 @@ func _imza_yapragi() -> void:
 		var x := SOL if i < 5 else SAG
 		var y := 52.0 + (i % 5) * 47.0
 		_yazi(str(m.muhtar), Rect2(x, y + 6, 86, 12), 8.4, Stil.MUREKKEP, Stil.daktilo_kalin())
-		_yazi("%s Mah." % str(m.ad), Rect2(x, y + 18, 86, 11), 7.4, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
+		_yazi(Dil.c("%s Mah.") % str(m.ad), Rect2(x, y + 18, 86, 11), 7.4, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik())
 		var alan := Rect2(x + 86, y, 110, 42)
 		_imzalar.append({"alan": alan, "kisi": str(m.muhtar)})
 		_ornek_hedefi("imza:" + str(m.muhtar), "İmza örneği", alan.grow(1.0))
@@ -152,9 +151,7 @@ func _kase_yapragi() -> void:
 
 	if Veri.kural(veri.get("gun", {}), "vize").is_empty():
 		_baslik(SAG, "NASIL BAKILIR", "Sahte evrak ayrıntıda belli olur")
-		_yazi("1. Belgeyi çift tıklayıp elinize alın; yazılar büyür.\n\n2. Mührü ve kaşeyi örnekle yan yana getirin: "
-			+ "halka sayısı, yazı, mürekkep rengi, yıldız.\n\n3. İmzayı sirkülerdeki imzayla karşılaştırın: baş harfler, "
-			+ "eğim, alttaki çizgi.\n\n4. Sahte evrak geri çevrilmez; müdüre havale edilir.",
+		_yazi("1. Belgeyi çift tıklayıp elinize alın; yazılar büyür.\n\n2. Mührü ve kaşeyi örnekle yan yana getirin: halka sayısı, yazı, mürekkep rengi, yıldız.\n\n3. İmzayı sirkülerdeki imzayla karşılaştırın: baş harfler, eğim, alttaki çizgi.\n\n4. Sahte evrak geri çevrilmez; müdüre havale edilir.",
 			Rect2(SAG, 54, EN, 220), 7.8, Stil.MUREKKEP, Stil.daktilo(), HORIZONTAL_ALIGNMENT_LEFT, true)
 		return
 	_baslik(SAG, "KONSOLOSLUK KAŞESİ", "Çalışma vizesindeki kaşe")
@@ -175,21 +172,17 @@ func _vize_yapragi() -> void:
 	_yazi("1. Vize numarası:", Rect2(SOL, 54, EN, 12), 8, Stil.MUREKKEP, Stil.daktilo_kalin())
 	_yazi("%s  —  %s" % [ilk, son], Rect2(SOL + 8, 67, EN - 8, 14), 8.6, Stil.BORDO, Stil.daktilo_kalin())
 	_ornek_hedefi("vize_no", "Geçerli vize numaraları", Rect2(SOL, 52, EN, 31))
-	_yazi("2. Son geçerlilik günü geçmemiş olmalıdır.\n\n3. Cüzdan seri numarası ve doğum tarihi, cüzdandakiyle harfi "
-		+ "harfine aynıdır.\n\n4. Hamilin imzası, cüzdandaki imzayla aynı elden çıkmıştır.\n\n5. Konsolosluk kaşesi "
-		+ "KAŞE sayfasındaki örneğe uyar.", Rect2(SOL, 88, EN, 130), 7.8, Stil.MUREKKEP, Stil.daktilo(),
+	_yazi("2. Son geçerlilik günü geçmemiş olmalıdır.\n\n3. Cüzdan seri numarası ve doğum tarihi, cüzdandakiyle harfi harfine aynıdır.\n\n4. Hamilin imzası, cüzdandaki imzayla aynı elden çıkmıştır.\n\n5. Konsolosluk kaşesi KAŞE sayfasındaki örneğe uyar.", Rect2(SOL, 88, EN, 130), 7.8, Stil.MUREKKEP, Stil.daktilo(),
 		HORIZONTAL_ALIGNMENT_LEFT, true)
 	_yazi("6. Vize memurunun imzası:", Rect2(SOL, 222, EN, 12), 7.8, Stil.MUREKKEP, Stil.daktilo())
 	_imzalar.append({"alan": Rect2(SOL + 60, 234, 110, 40), "kisi": "vize_memuru", "renk": Color(0.10, 0.10, 0.12, 0.9)})
 
 	_baslik(SAG, "SIK GÖRÜLEN SAHTECİLİKLER", "Emniyetin tespitleri")
-	_yazi("· Geçen yılın numarası: %s-%02d-…\n\n· Henüz verilmemiş numara: %05d ve üstü\n\n· Önek harfleri yanlış: CV, ÇY, ÇW\n\n"
+	_yazi(Dil.c("· Geçen yılın numarası: %s-%02d-…\n\n· Henüz verilmemiş numara: %05d ve üstü\n\n· Önek harfleri yanlış: CV, ÇY, ÇW\n\n")
 		% [str(b.get("onek", "ÇV")), int(b.get("yil", 84)) - 1, int(b.get("max", 6999)) + 1]
-		+ "· Kaşe mor, oval ya da tek halkalı\n\n· Seri numarasında ya da doğum tarihinde tek rakam farkı\n\n"
-		+ "· Hamilin imzası başkasının eli", Rect2(SAG, 54, EN, 170), 7.8, Stil.MUREKKEP, Stil.daktilo(),
+		+ Dil.c("· Kaşe mor, oval ya da tek halkalı\n\n· Seri numarasında ya da doğum tarihinde tek rakam farkı\n\n· Hamilin imzası başkasının eli"), Rect2(SAG, 54, EN, 170), 7.8, Stil.MUREKKEP, Stil.daktilo(),
 		HORIZONTAL_ALIGNMENT_LEFT, true)
-	_yazi("Sahte vizeyi taşıyan çoğu zaman kandırılmıştır: tarlasını satmış, borca girmiştir. Vize yine de sahtedir; "
-		+ "evrak müdüre havale edilir.", Rect2(SAG, 228, EN, 50), 7.6, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik(),
+	_yazi("Sahte vizeyi taşıyan çoğu zaman kandırılmıştır: tarlasını satmış, borca girmiştir. Vize yine de sahtedir; evrak müdüre havale edilir.", Rect2(SAG, 228, EN, 50), 7.6, Stil.MUREKKEP_SOLUK, Stil.daktilo_italik(),
 		HORIZONTAL_ALIGNMENT_LEFT, true)
 
 
@@ -216,7 +209,7 @@ func _sahte_izgara(cesit: String, x0: float, y0: float, sutun: int, boyut: Vecto
 		_yazi(str(liste[i][1]), Rect2(hucre.x - 2, hucre.y + boyut.y + 1, adim.x, 20), 6.8, Stil.BORDO, Stil.daktilo(),
 			HORIZONTAL_ALIGNMENT_CENTER, true)
 	if liste.size() > adet:
-		_yazi(str(liste[adet][1]) + " da sahtedir.", Rect2(x0, y0 + 2.0 * adim.y + 2.0, EN, 12), 7.2, Stil.BORDO, Stil.daktilo_italik())
+		_yazi(Dil.c(str(liste[adet][1])) + Dil.c(" da sahtedir."), Rect2(x0, y0 + 2.0 * adim.y + 2.0, EN, 12), 7.2, Stil.BORDO, Stil.daktilo_italik())
 
 
 ## İnceleme modunda tıklanabilen örnek (belgedeki karşılığıyla karşılaştırılır).
