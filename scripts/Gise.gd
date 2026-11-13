@@ -291,7 +291,7 @@ func yakala() -> void:
 	yuz.durum = Hedef.Durum.BOS
 	canta_kaldir()
 	portre.konusuyor = false
-	portre.sas()
+	portre.kork()                       # görevlileri görür: korkar, elleri havaya kalkar
 	eller.goster("teslim")
 	if _hareket != null:
 		_hareket.kill()
@@ -319,18 +319,20 @@ func yakala() -> void:
 	await Oyun.bekle(0.16)
 	efekt.emit("adim")
 	await Oyun.bekle(0.14)
-	# 2) yakalama: görevliler üstüne abanır, şüpheli silkelenir
+	# 2) yakalama: görevliler üstüne abanır, şüpheli silkelenir, öfkeyle bağırır
 	efekt.emit("yakalama")
+	portre.ofkelen()
 	_hareket = create_tween().set_parallel()
 	_hareket.tween_property(_kolluk[0], "rotation", 0.20, 0.12)
 	_hareket.tween_property(_kolluk[1], "rotation", -0.20, 0.12)
 	for adim in 6:
 		_hareket.tween_property(portre, "position:x", yer.x + (9.0 if adim % 2 == 0 else -9.0), 0.055).set_delay(adim * 0.055)
-	await Oyun.bekle(0.40)
+	await Oyun.bekle(0.75)
 	# 3) yaka paça yere: şüpheli öne devrilip eşiğin altına iner, görevliler üstüne çöker
 	eller.gizle()
+	portre.aci_cek()
 	_hareket = create_tween().set_parallel()
-	_hareket.tween_property(portre, "rotation", 0.62, 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_hareket.tween_property(portre, "ek_donme", 0.62, 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	_hareket.tween_property(portre, "position", yer + Vector2(26.0, portre.size.y * 0.78), 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	for i in 2:
 		_hareket.tween_property(_kolluk[i], "position:y", _kolluk[i].position.y + 84.0, 0.24).set_delay(0.05).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
@@ -348,7 +350,8 @@ func yakala() -> void:
 	# 5) kaldırıp götürme: şüpheli iki görevlinin arasında, başı önde, sağa sürüklenir
 	_hareket = create_tween().set_parallel()
 	_hareket.tween_property(portre, "position", yer + Vector2(8.0, 20.0), 0.30).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_hareket.tween_property(portre, "rotation", 0.20, 0.30)
+	_hareket.tween_property(portre, "ek_donme", 0.20, 0.30)
+	portre.ofkelen()                    # kaldırılırken hâlâ direnir
 	for i in 2:
 		_hareket.tween_property(_kolluk[i], "position:y", size.y - _kolluk[i].size.y + 6.0, 0.30).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 		_hareket.tween_property(_kolluk[i], "rotation", 0.08 if i == 0 else -0.08, 0.30)
@@ -363,7 +366,6 @@ func yakala() -> void:
 	await Oyun.bekle(1.0)
 	portre.visible = false
 	portre.yuruyor = false
-	portre.rotation = 0.0
 	portre.sifirla()
 	for k in _kolluk:
 		k.visible = false

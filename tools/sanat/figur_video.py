@@ -11,10 +11,11 @@ canlandırmadır (döngüye girer). Bu betik:
      yeri en yakın figür rengiyle doldurulur (kenarda saçak olmasın),
   5. videonun figür resmine göre yerini data/figur_videolari.json dosyasına yazar.
 
-Kullanım: python tools/sanat/figur_video.py <ad> <figür_x> <figür_y> <ölçek> [tuval_eni] [gidiş_dönüş_başı]
+Kullanım: python tools/sanat/figur_video.py <ad> <figür_x> <figür_y> <ölçek> [tuval_eni] [gidiş_dönüş_başı] [hız_çarpanı]
   figür_x, figür_y, ölçek: figür resminin klibin ilk karesindeki yeri ve büyütme oranı
   (başlangıç karesi hazırlanırken kullanılan değerler; kare klipte küçüldüyse betik oranlar).
   gidiş_dönüş_başı verilirse klip o kareden başlar, ileri oynayıp geri sarar (poz başa dönmüyorsa).
+  hız_çarpanı (örn. 0.5) hareketi yavaşlatır: klibin 24 karesi de alınır, saniyede 24×çarpan kare oynatılır.
 """
 import json
 import shutil
@@ -54,7 +55,12 @@ def main() -> None:
     gecici = HAM / f"{ad}_kareler"
     shutil.rmtree(gecici, ignore_errors=True)
     gecici.mkdir(parents=True)
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(klip), "-vf", f"fps={KARE_HIZI}", str(gecici / "k_%03d.png")], check=True)
+    # hız çarpanı verilirse klibin bütün kareleri (saniyede 24) alınır ve daha yavaş oynatılır:
+    # hareket yavaşlar ama kare atlamadığı için akıcı kalır
+    carpan = float(sys.argv[7]) if len(sys.argv) > 7 else 1.0
+    cekim_hizi = KARE_HIZI if carpan == 1.0 else 24
+    oynatma_hizi = KARE_HIZI if carpan == 1.0 else max(6, round(24 * carpan))
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(klip), "-vf", f"fps={cekim_hizi}", str(gecici / "k_%03d.png")], check=True)
     yollar = sorted(gecici.glob("k_*.png"))
     kareler = [ayikla(Image.open(y)) for y in yollar]
     h, w = kareler[0][1].shape
@@ -108,12 +114,12 @@ def main() -> None:
         cift.save(cikti / f"c_{i:03d}.png")
     HEDEF.mkdir(parents=True, exist_ok=True)
     hedef = HEDEF / f"{ad}.ogv"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(KARE_HIZI), "-i", str(cikti / "c_%03d.png"),
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(oynatma_hizi), "-i", str(cikti / "c_%03d.png"),
                     "-c:v", "libtheora", "-q:v", "8", "-pix_fmt", "yuv444p", str(hedef)], check=True)
     bilgi = json.loads(BILGI.read_text(encoding="utf-8")) if BILGI.exists() else {}
     bilgi["aciklama"] = "tools/sanat/figur_video.py üretir. 'kutu': videonun, figürün boyalı resmine göre yeri [x, y, en, boy] (resmin piksel biriminde)."
     bilgi[ad] = {"kutu": [round(float(v), 2) for v in ((x0 - fx) / olcek, (y0 - fy) / olcek, (x1 - x0) / olcek, (y1 - y0) / olcek)],
-                 "kare": len(kareler), "hiz": KARE_HIZI}
+                 "kare": len(kareler), "hiz": oynatma_hizi}
     BILGI.write_text(json.dumps(bilgi, ensure_ascii=False, indent="\t") + "\n", encoding="utf-8", newline="\n")
     print(f"{ad}: klip {w}x{h}, {len(kareler)} kare, video {en * 2}x{boy}, {hedef.stat().st_size // 1024} KB, kutu {bilgi[ad]['kutu']}")
     shutil.rmtree(gecici, ignore_errors=True)

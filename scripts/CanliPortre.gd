@@ -45,6 +45,9 @@ var ek_kas := 0.0
 var ek_yanak := 0.0
 var ek_nefes := 0.0
 var ek_agiz := 0.0
+var ek_kirpma := 0.0          ## gözlerin zorla kısılması (0 açık .. 1 kapalı): acı, korku
+var ek_donme := 0.0           ## gövdenin dönmesi (radyan): yakalanırken öne devrilir
+var titreme := 0.0            ## 0..1: korkudan ya da öfkeden titreme (baş küçük ve hızlı sarsılır)
 
 var _tepki: Tween
 var _pufler: Array[Dictionary] = []
@@ -124,6 +127,10 @@ func sifirla() -> void:
 	ek_yanak = 0.0
 	ek_nefes = 0.0
 	ek_agiz = 0.0
+	ek_kirpma = 0.0
+	ek_donme = 0.0
+	titreme = 0.0
+	rotation = 0.0
 	konusuyor = false
 	_agiz = 0.0
 	_nida.visible = false
@@ -175,6 +182,49 @@ func sas() -> void:
 	t.tween_property(self, "ek_kas", 0.0, 0.3)
 	t.parallel().tween_property(self, "ek_egim", 0.0, 0.3)
 	t.parallel().tween_property(self, "ek_bas:y", 0.0, 0.3)
+
+
+## Korku: kaşlar fırlar, ağız açılır (nefesi kesilir), baş geri çekilir, titrer, gözler sık kırpılır.
+func kork() -> void:
+	var t := _yeni_tepki()
+	titreme = 1.0
+	t.tween_property(self, "ek_kas", 1.0, 0.08)
+	t.parallel().tween_property(self, "ek_agiz", 0.62, 0.10)
+	t.parallel().tween_property(self, "ek_bas:y", -0.012, 0.12)
+	t.parallel().tween_property(self, "ek_nefes", 0.9, 0.12)
+	# sağa sola bakınır
+	t.tween_property(self, "ek_egim", -0.05, 0.14)
+	t.tween_property(self, "ek_egim", 0.05, 0.16)
+	t.tween_property(self, "ek_egim", 0.0, 0.12)
+
+
+## Öfke: kaşlar çatılır, bağırır (ağız açılıp kapanır), başını silkeler.
+func ofkelen() -> void:
+	var t := _yeni_tepki()
+	titreme = 0.55
+	ek_nefes = 0.6
+	t.tween_property(self, "ek_kas", -1.0, 0.10)
+	t.parallel().tween_property(self, "ek_bas:y", 0.006, 0.10)
+	for i in 5:
+		t.tween_property(self, "ek_agiz", 1.0, 0.07)
+		t.parallel().tween_property(self, "ek_egim", 0.075 if i % 2 == 0 else -0.075, 0.11)
+		t.tween_callback(func() -> void: efekt.emit("hece"))
+		t.tween_property(self, "ek_agiz", 0.30, 0.07)
+	t.tween_property(self, "ek_egim", 0.0, 0.1)
+	t.parallel().tween_property(self, "ek_agiz", 0.45, 0.1)
+
+
+## Acı: yere çarparken gözler sıkılır, ağız açılır, kaşlar kalkar.
+func aci_cek() -> void:
+	var t := _yeni_tepki()
+	titreme = 0.3
+	t.tween_property(self, "ek_kirpma", 1.0, 0.06)
+	t.parallel().tween_property(self, "ek_agiz", 1.0, 0.06)
+	t.parallel().tween_property(self, "ek_kas", 0.8, 0.06)
+	t.tween_interval(0.45)
+	t.tween_property(self, "ek_kirpma", 0.0, 0.18)
+	t.parallel().tween_property(self, "ek_agiz", 0.4, 0.18)
+	t.parallel().tween_property(self, "ek_kas", -0.8, 0.18)
 
 
 ## Sabrı taşınca: derin nefes alır, yanaklarını şişirir, "Öf..." diye üfler.
@@ -293,9 +343,15 @@ func _process(delta: float) -> void:
 		kas += 0.35 * sin(_zaman * 2.1)
 	bas.y += 0.007 * absf(sin(_adim)) * _yurume
 	egim += 0.035 * sin(_adim) * _yurume
-	rotation = 0.022 * sin(_adim) * _yurume
+	rotation = 0.022 * sin(_adim) * _yurume + ek_donme
+	if titreme > 0.0:
+		# korku ya da öfke: baş küçük, hızlı ve düzensiz sarsılır; gözler sık sık kırpılır
+		bas += Vector2(sin(_zaman * 47.0) + 0.6 * sin(_zaman * 31.0 + 1.3), sin(_zaman * 39.0 + 0.7)) * 0.0026 * titreme
+		egim += 0.012 * sin(_zaman * 23.0) * titreme
+		if titreme > 0.5 and _kirpma_bekleme > 0.45:
+			_kirpma_bekleme = randf_range(0.18, 0.45)
 
-	_malzeme.set_shader_parameter("kirpma", _kirpma)
+	_malzeme.set_shader_parameter("kirpma", maxf(_kirpma, ek_kirpma))
 	_malzeme.set_shader_parameter("agiz_acik", clampf(_agiz + ek_agiz, 0.0, 1.0))
 	_malzeme.set_shader_parameter("yanak", ek_yanak)
 	_malzeme.set_shader_parameter("bas", bas + ek_bas)
