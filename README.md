@@ -672,4 +672,6 @@ python tools/ses/topla.py muhur zil  # yalnızca adı verilenleri
     kamu malı (Gallica Digital Library, Wikimedia Commons üzerinden).
   - Bağlama, taksim ve ney kayıtları — Freesound, CC0 1.0.
 
-Bu depo özeldir; oyunun kodu ve içeriği için bir lisans henüz belirlenmemiştir.
+Oyunun kodu, verisi, metinleri ve görselleri özel mülktür: **tüm hakları saklıdır** ([`LICENSE`](LICENSE)).
+Başkalarına ait bileşenlerin lisansları ve yükümlülükleri
+[`UCUNCU-TARAF-LISANSLARI.md`](UCUNCU-TARAF-LISANSLARI.md) dosyasındadır. Bu depo özeldir.
