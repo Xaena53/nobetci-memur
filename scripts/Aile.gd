@@ -175,7 +175,7 @@ func _odayi_kur() -> void:
 	zemin.size = Yerlesim.EKRAN.size
 	zemin.mouse_filter = MOUSE_FILTER_IGNORE
 	if ResourceLoader.exists(ARKA_PLAN):
-		zemin.texture = load(ARKA_PLAN)
+		zemin.texture = Gorsel.yukle(ARKA_PLAN)
 	add_child(zemin)
 
 	# sofradakiler figürlerin arkasında kalır

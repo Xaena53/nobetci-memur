@@ -58,7 +58,7 @@ func _ready() -> void:
 	zemin.size = Yerlesim.EKRAN.size
 	zemin.mouse_filter = MOUSE_FILTER_IGNORE
 	if ResourceLoader.exists(ARKA_PLAN):
-		zemin.texture = load(ARKA_PLAN)
+		zemin.texture = Gorsel.yukle(ARKA_PLAN)
 	else:
 		zemin.modulate = Stil.DUVAR_KOYU
 	add_child(zemin)
@@ -421,7 +421,7 @@ func _dumani_ayarla() -> void:
 	_duman_duzeyi = duzey
 	for d in _dumanlar:
 		var tam := int(d.get_meta("tam_adet", 22))
-		d.visible = duzey > 0 or tam > 30
+		d.visible = duzey > 0               # düşükte bacalar tütmez
 		d.amount = maxi(6, roundi(tam * [0.4, 0.7, 1.0][duzey]))
 
 

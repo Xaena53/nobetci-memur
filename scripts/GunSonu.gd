@@ -20,7 +20,7 @@ func _ready() -> void:
 
 	if ResourceLoader.exists(ARKA_PLAN):
 		var zemin := TextureRect.new()
-		zemin.texture = load(ARKA_PLAN)
+		zemin.texture = Gorsel.yukle(ARKA_PLAN)
 		zemin.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		zemin.size = Yerlesim.EKRAN.size
 		zemin.modulate = Color(0.30, 0.28, 0.26)

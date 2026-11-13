@@ -785,15 +785,45 @@ func _olc(ad: String, kare_sayisi: int = 240) -> Dictionary:
 		"cizim": int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),
 		"nesne": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
 		"doku_mb": Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED) / 1048576.0}
-	print("PERF %-26s ort %6.2f ms (%5.0f kare/sn)  p99 %6.2f  en uzun %6.2f  çizim %4d  düğüm %5d  doku %5.1f MB" % [
-		ad, sonuc.ort, 1000.0 / maxf(0.001, sonuc.ort), sonuc.p99, sonuc.en_uzun, sonuc.cizim, sonuc.nesne, sonuc.doku_mb])
+	print("PERF %-26s ort %6.2f ms (%5.0f kare/sn)  p99 %6.2f  en uzun %6.2f  çizim %4d  düğüm %5d  doku %5.1f MB  bellek %4d MB" % [
+		ad, sonuc.ort, 1000.0 / maxf(0.001, sonuc.ort), sonuc.p99, sonuc.en_uzun, sonuc.cizim, sonuc.nesne, sonuc.doku_mb, _surec_bellegi()])
 	return sonuc
 
 
+## Oyun sürecinin işletim sistemindeki bellek kullanımı (MB; Windows'ta "çalışma kümesi"). Bulunamazsa 0.
+func _surec_bellegi() -> int:
+	if OS.get_name() != "Windows":
+		return 0
+	var cikti: Array = []
+	OS.execute("tasklist", ["/FI", "PID eq %d" % OS.get_process_id(), "/FO", "CSV", "/NH"], cikti)
+	if cikti.is_empty():
+		return 0
+	var parca := str(cikti[0]).strip_edges().split("\",\"")
+	if parca.size() < 5:
+		return 0
+	var sayi := ""
+	for h in parca[4]:
+		if h >= "0" and h <= "9":
+			sayi += h
+	@warning_ignore("integer_division")
+	return int(sayi) / 1024 if sayi != "" else 0
+
+
 ## Sahnelerin kare sürelerini ve takılmalarını ölçer (dikey eşleme kapalı: gerçek maliyet görünür).
+## `profil=dusuk` ile en düşük görüntü ayarlarında ölçer.
 func _senaryo_performans() -> void:
+	Oyun.ayar_degistir("otomatik_kalite", false)
+	var dusuk := _arg("profil", "") == "dusuk"
+	if dusuk or _arg("efekt", "") == "dusuk":
+		Oyun.ayar_degistir("efekt_kalitesi", "dusuk")
+	if dusuk or _arg("doku", "") == "dusuk":
+		Oyun.ayar_degistir("doku_kalitesi", "dusuk")
+	if dusuk or _arg("cozunurluk", "") == "dusuk":
+		Oyun.ayar_degistir("dusuk_cozunurluk", true)
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	Engine.max_fps = 0
+	print("PERF çizici: %s | %s | %s" % [RenderingServer.get_video_adapter_name(), RenderingServer.get_video_adapter_api_version(),
+		str(OS.get_video_adapter_driver_info())])
 	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")
 	await bekle(1.0)

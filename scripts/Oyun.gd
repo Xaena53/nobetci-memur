@@ -60,6 +60,7 @@ const AYAR_SECENEKLERI := {
 	"pencere_boyutu": ["1280x720", "1600x900", "1920x1080"],
 	"kare_siniri": [0, 30, 60, 120],
 	"efekt_kalitesi": ["dusuk", "orta", "yuksek"],
+	"doku_kalitesi": ["dusuk", "yuksek"],
 }
 const SAHNELER := {
 	"menu": "res://scenes/AnaMenu.tscn",
@@ -82,6 +83,9 @@ const VARSAYILAN_AYARLAR := {
 	"dikey_esleme": true,
 	"kare_siniri": 0,          ## saniyedeki en çok kare (0: sınır yok)
 	"efekt_kalitesi": "yuksek",    ## kar, duman gibi süsler: "dusuk" | "orta" | "yuksek"
+	"doku_kalitesi": "yuksek",     ## arka planlar: "dusuk" iken yarı çözünürlükte yüklenir (bkz. Gorsel)
+	"dusuk_cozunurluk": false,     ## oyun 1280×720 çizilip pencereye büyütülür (zayıf ekran kartları için)
+	"otomatik_kalite": true,       ## kare hızı düşük kalırsa oyun kaliteyi kendiliğinden kısar
 	"ekran_sarsintisi": true,  ## mühür inince masanın sarsılması
 	"titreme": true,           ## cızırdayan lamba, yanıp sönen uyarı ışıkları
 	# --- oyun ---
@@ -117,6 +121,10 @@ var _katman: CanvasLayer
 var _mola: MolaMenusu
 var _son_kayit: Dictionary = {}    ## dosyaya en son yazılan durum
 var odak_sinamasi := false         ## testler: başsız kipte de odak kaybı molasını dene
+var _olculen_sahne := 0            ## kare hızı ölçülen sahnenin kimliği
+var _olcum_suresi := 0.0
+var _olcum_karesi := 0
+var _dusuk_pencere := 0            ## üst üste düşük çıkan ölçüm penceresi sayısı
 var _isinlanan := Vector2(-1, -1)  ## fare hassasiyeti: imleci en son taşıdığımız yer
 var _gorunurluk_geri_cagrisi: Variant   ## Web: sekme gizlenince çağrılan JavaScript işlevi (başvurusu yaşamalı)
 
@@ -644,6 +652,8 @@ func _imza(metin: String) -> String:
 
 func ayarlari_yukle() -> void:
 	ayarlar = VARSAYILAN_AYARLAR.duplicate()
+	if not FileAccess.file_exists(ayar_yolu):
+		_ilk_profil()
 	var veri: Variant = _json_oku(ayar_yolu)
 	if typeof(veri) == TYPE_DICTIONARY:
 		for anahtar: String in VARSAYILAN_AYARLAR:
@@ -718,7 +728,76 @@ func ayarlari_uygula() -> void:
 		if DisplayServer.window_get_vsync_mode() != esleme:
 			DisplayServer.window_set_vsync_mode(esleme)
 	Engine.max_fps = int(ayar("kare_siniri"))
+	# düşük çözünürlük: sahne tasarım çözünürlüğünde (1280×720) çizilir, pencereye büyütülür;
+	# büyük ekranlı zayıf ekran kartlarında boyanan piksel sayısı kat kat azalır
+	var kok := get_tree().root
+	var olcek_kipi := Window.CONTENT_SCALE_MODE_VIEWPORT if bool(ayar("dusuk_cozunurluk")) else Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	if kok.content_scale_mode != olcek_kipi:
+		kok.content_scale_mode = olcek_kipi
 	ayarlar_degisti.emit()
+
+
+# --- Kendiliğinden kalite ayarı ---
+
+## Kare hızını beşer saniyelik pencerelerle izler; iki pencere üst üste düşük kalırsa kaliteyi bir kademe kısar.
+func _process(delta: float) -> void:
+	if not bool(ayar("otomatik_kalite")) or get_tree().paused or _geciste:
+		return
+	if DisplayServer.get_name() == "headless" or not DisplayServer.window_is_focused():
+		return                              # arka plandaki pencereyi işletim sistemi yavaşlatır: ölçüm yanıltır
+	var sahne := get_tree().current_scene
+	var kimlik := sahne.get_instance_id() if sahne != null else 0
+	if kimlik != _olculen_sahne:
+		_olculen_sahne = kimlik             # yeni sahne: yükleme takılmaları ölçüme girmesin
+		_olcum_suresi = -3.0
+		_olcum_karesi = 0
+		return
+	_olcum_suresi += delta
+	if _olcum_suresi < 0.0:
+		return
+	_olcum_karesi += 1
+	if _olcum_suresi < 5.0:
+		return
+	var kare_hizi := _olcum_karesi / _olcum_suresi
+	_olcum_suresi = 0.0
+	_olcum_karesi = 0
+	var hedef := float(int(ayar("kare_siniri"))) if int(ayar("kare_siniri")) > 0 else 60.0
+	if kare_hizi < minf(40.0, hedef * 0.66):
+		_dusuk_pencere += 1
+		if _dusuk_pencere >= 2:
+			_dusuk_pencere = 0
+			kaliteyi_dusur()
+	else:
+		_dusuk_pencere = 0
+
+
+## Kaliteyi bir kademe kısar ve neyi kıstığını döndürür (kısacak bir şey kalmadıysa boş metin).
+## Sıra: efekt kalitesi → düşük çözünürlük → doku kalitesi → kare sınırı 30.
+func kaliteyi_dusur() -> String:
+	var duzey := efekt_duzeyi()
+	if duzey > 0:
+		ayar_degistir("efekt_kalitesi", AYAR_SECENEKLERI.efekt_kalitesi[duzey - 1])
+		return "efekt_kalitesi"
+	if not bool(ayar("dusuk_cozunurluk")):
+		ayar_degistir("dusuk_cozunurluk", true)
+		return "dusuk_cozunurluk"
+	if str(ayar("doku_kalitesi")) != "dusuk":
+		ayar_degistir("doku_kalitesi", "dusuk")
+		return "doku_kalitesi"
+	if int(ayar("kare_siniri")) == 0 or int(ayar("kare_siniri")) > 30:
+		ayar_degistir("kare_siniri", 30)
+		return "kare_siniri"
+	return ""
+
+
+## İlk açılışta (ayar dosyası yokken) donanıma göre başlangıç ayarı: az çekirdekli ya da az bellekli
+## bilgisayarda süsler ve arka planlar düşükten başlar. Oyuncu ayarlardan değiştirebilir.
+func _ilk_profil() -> void:
+	var bellek := int(OS.get_memory_info().get("physical", -1))
+	var zayif := OS.get_processor_count() <= 2 or (bellek > 0 and bellek < 3_400_000_000)
+	if zayif:
+		ayarlar["efekt_kalitesi"] = "dusuk"
+		ayarlar["doku_kalitesi"] = "dusuk"
 
 
 ## Pencereyi ayarlardaki boyuta getirir ve ekranın ortasına alır (yalnız pencere kipinde, masaüstünde).

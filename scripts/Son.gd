@@ -19,7 +19,7 @@ func _ready() -> void:
 	Ses.muzik(["ney"], -7.0, false, 3.0)
 	if ResourceLoader.exists(ARKA_PLAN):
 		var zemin := TextureRect.new()
-		zemin.texture = load(ARKA_PLAN)
+		zemin.texture = Gorsel.yukle(ARKA_PLAN)
 		zemin.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		zemin.size = Yerlesim.EKRAN.size
 		zemin.modulate = Color(0.20, 0.19, 0.18)

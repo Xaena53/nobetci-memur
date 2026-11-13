@@ -10,6 +10,8 @@ Ham görselde iki kusur giderilir:
   docs/img/logo_kagit.png               krem kâğıt üstünde
   docs/img/kapak_920x430.jpg            mağaza başlık görseli (menü sahnesinin üstünde logo)
   docs/img/kapak_630x500.jpg            itch.io kapak görseli
+  assets/img/acilis.png                 oyun açılırken görünen logo (kâğıt etiket)
+  icon.png, icon.ico                    uygulama simgesi: logonun harflerinden "NM", köşesinde mor mühür
 
 Kullanım: python tools/sanat/logo.py
 """
@@ -22,6 +24,7 @@ from PIL import Image, ImageDraw, ImageFilter
 KOK = Path(__file__).resolve().parents[2]
 HAM = Path(__file__).resolve().parent / "ham" / "logo" / "logo_ham.png"
 KAGIT = (240, 232, 214)
+MUHUR = {}          # muhru_temizle doldurur: {"katman": yalnız mor mürekkep (RGBA), "kutu": (x0, y0, x1, y1)}
 
 
 def hsv(rgb: np.ndarray) -> tuple:
@@ -65,6 +68,12 @@ def muhru_temizle(a: np.ndarray) -> np.ndarray:
     toplam = ust_alfa + alt_alfa * (1.0 - ust_alfa)
     cikti[..., :3] = np.where(disk[..., None], renk, cikti[..., :3])
     cikti[..., 3] = np.where(disk, toplam * 255.0, cikti[..., 3])
+    # simge için: mührün yalnız mor mürekkebi (altındaki kırmızı olmadan)
+    katman = np.zeros(a.shape, np.float32)
+    katman[..., :3] = (mor_renk * 0.82)[None, None, :]
+    katman[..., 3] = ust_alfa * 255.0
+    MUHUR["katman"] = np.clip(katman, 0, 255).astype(np.uint8)
+    MUHUR["kutu"] = (int(cx - r), int(cy - r), int(cx + r) + 1, int(cy + r) + 1)
     return np.clip(cikti, 0, 255).astype(np.uint8)
 
 
@@ -117,6 +126,94 @@ def kirp(im: Image.Image, pay: int = 60) -> Image.Image:
     return im.crop((max(0, kutu[0] - pay), max(0, kutu[1] - pay), min(im.width, kutu[2] + pay), min(im.height, kutu[3] + pay)))
 
 
+def kagit_dokusu(im: Image.Image, guc: float = 3.0) -> Image.Image:
+    """Düz renkli kâğıda hafif bir pürüz verir (saydamlık korunur)."""
+    e = np.array(im.convert("RGBA")).astype(np.float32)
+    e[..., :3] = np.clip(e[..., :3] + np.random.default_rng(1984).normal(0, guc, (im.height, im.width, 1)), 0, 255)
+    return Image.fromarray(e.astype(np.uint8), "RGBA")
+
+
+def kagit_etiket(lg: Image.Image, egim: float) -> tuple:
+    """Logoyu krem bir kâğıt etiketin üstüne koyar. (etiket, gölgesi) döner; ikisi aynı boydadır."""
+    en = lg.width
+    pay = int(en * 0.045)
+    etiket = Image.new("RGBA", (lg.width + 2 * pay, lg.height + 2 * pay), (0, 0, 0, 0))
+    ImageDraw.Draw(etiket).rounded_rectangle((0, 0, etiket.width - 1, etiket.height - 1), radius=max(3, pay // 3), fill=KAGIT + (255,))
+    etiket = kagit_dokusu(etiket)
+    etiket.alpha_composite(lg, (pay, pay))
+    etiket = etiket.rotate(egim, resample=Image.BICUBIC, expand=True)
+    gol = Image.new("RGBA", etiket.size, (0, 0, 0, 0))
+    gol.putalpha(etiket.getchannel("A").point(lambda v: int(v * 0.55)))
+    gol = gol.filter(ImageFilter.GaussianBlur(max(4, en // 70)))
+    return etiket, gol
+
+
+def acilis(logo: Image.Image, en: int = 640) -> Image.Image:
+    """Açılış görseli: koyu zeminin ortasında duracak kâğıt etiket (saydam zemin, gölgesiyle)."""
+    lg = logo.resize((en, int(en * logo.height / logo.width)), Image.LANCZOS)
+    etiket, gol = kagit_etiket(lg, -1.6)
+    pay = 28
+    tuval = Image.new("RGBA", (etiket.width + 2 * pay, etiket.height + 2 * pay), (0, 0, 0, 0))
+    tuval.alpha_composite(gol, (pay + 5, pay + 7))
+    tuval.alpha_composite(etiket, (pay, pay))
+    return tuval
+
+
+def _harfler(logo: Image.Image) -> tuple:
+    """Logodaki ilk satırın ilk harfini (N) ve ikinci satırın ilk harfini (M) keser."""
+    from scipy import ndimage
+    a = np.array(logo)
+    ton, doy, _par = hsv(a[..., :3])
+    kirmizi = ((ton < 22) | (ton > 335)) & (doy > 0.5) & (a[..., 3] > 128)
+    etiketler, adet = ndimage.label(kirmizi)
+    h, w = kirmizi.shape
+    satir = {0: [], 1: []}
+    for no, dilim in enumerate(ndimage.find_objects(etiketler), 1):
+        y0, y1, x0, x1 = dilim[0].start, dilim[0].stop, dilim[1].start, dilim[1].stop
+        if (x1 - x0) > w * 0.5 or (y1 - y0) < h * 0.15 or (y1 - y0) > h * 0.5:
+            continue                                  # çerçeve, çizgi, yıldız, noktalar
+        satir[0 if (y0 + y1) / 2 < h / 2 else 1].append((x0, no, dilim))
+    cikti = []
+    for i in (0, 1):
+        _x, no, dilim = min(satir[i])
+        parca = a[dilim].copy()
+        parca[..., 3] = np.where(etiketler[dilim] == no, parca[..., 3], 0)
+        cikti.append(Image.fromarray(parca, "RGBA"))
+    return cikti[0], cikti[1]
+
+
+def simge(logo: Image.Image, boyut: int = 1024) -> Image.Image:
+    """Uygulama simgesi: krem kâğıt, kırmızı çift çerçeve, logonun harfleriyle "NM", köşede mor mühür."""
+    n, m = _harfler(logo)
+    kirmizi = tuple(int(v) for v in np.median(np.array(n)[np.array(n)[..., 3] > 250][:, :3], axis=0))
+    b = boyut
+    maske = Image.new("L", (b, b), 0)
+    ImageDraw.Draw(maske).rounded_rectangle((0, 0, b - 1, b - 1), radius=int(b * 0.19), fill=255)
+    tuval = kagit_dokusu(Image.new("RGBA", (b, b), KAGIT + (255,)), 2.5)
+    cizim = ImageDraw.Draw(tuval)
+    k1, k2 = int(b * 0.075), int(b * 0.118)
+    cizim.rounded_rectangle((k1, k1, b - k1, b - k1), radius=int(b * 0.13), outline=kirmizi + (255,), width=int(b * 0.028))
+    cizim.rounded_rectangle((k2, k2, b - k2, b - k2), radius=int(b * 0.095), outline=kirmizi + (255,), width=max(2, int(b * 0.008)))
+    # harfler: aynı boya getirilir, yan yana, ortanın biraz üstünde
+    boy = int(b * 0.33)
+    n = n.resize((int(n.width * boy / n.height), boy), Image.LANCZOS)
+    m = m.resize((int(m.width * boy / m.height), boy), Image.LANCZOS)
+    ara = int(b * 0.035)
+    toplam = n.width + ara + m.width
+    x = (b - toplam) // 2
+    y = int(b * 0.235)
+    tuval.alpha_composite(n, (x, y))
+    tuval.alpha_composite(m, (x + n.width + ara, y))
+    # mühür: sağ alt köşede, çerçevenin üstüne basılmış
+    x0, y0, x1, y1 = MUHUR["kutu"]
+    muhur = Image.fromarray(MUHUR["katman"], "RGBA").crop((x0, y0, x1, y1))
+    cap = int(b * 0.40)
+    muhur = muhur.resize((cap, cap), Image.LANCZOS)
+    tuval.alpha_composite(muhur, (int(b * 0.545), int(b * 0.545)))
+    tuval.putalpha(maske)
+    return tuval
+
+
 def kapak(logo: Image.Image, boyut: tuple, logo_orani: float, yer: tuple) -> Image.Image:
     """Menü sahnesinin üstünde, krem bir kâğıt etiketin içinde logo. `yer`: etiketin ortası (0..1)."""
     arka = Image.open(KOK / "assets" / "img" / "menu_arkaplan.webp").convert("RGB")
@@ -139,20 +236,7 @@ def kapak(logo: Image.Image, boyut: tuple, logo_orani: float, yer: tuple) -> Ima
 
     en = int(boyut[0] * logo_orani)
     lg = logo.resize((en, int(en * logo.height / logo.width)), Image.LANCZOS)
-    # kâğıt etiket: logonun çerçevesinden biraz büyük, hafif eğik, gölgeli
-    pay = int(en * 0.045)
-    etiket = Image.new("RGBA", (lg.width + 2 * pay, lg.height + 2 * pay), (0, 0, 0, 0))
-    cizim = ImageDraw.Draw(etiket)
-    cizim.rounded_rectangle((0, 0, etiket.width - 1, etiket.height - 1), radius=max(3, pay // 3), fill=KAGIT + (255,))
-    doku = np.random.default_rng(1984).normal(0, 3.0, (etiket.height, etiket.width, 1))
-    e = np.array(etiket).astype(np.float32)
-    e[..., :3] = np.clip(e[..., :3] + doku, 0, 255)
-    etiket = Image.fromarray(e.astype(np.uint8), "RGBA")
-    etiket.alpha_composite(lg, (pay, pay))
-    etiket = etiket.rotate(-2.2, resample=Image.BICUBIC, expand=True)
-    gol = Image.new("RGBA", etiket.size, (0, 0, 0, 0))
-    gol.putalpha(etiket.getchannel("A").point(lambda v: int(v * 0.55)))
-    gol = gol.filter(ImageFilter.GaussianBlur(max(4, en // 70)))
+    etiket, gol = kagit_etiket(lg, -2.2)
     tuval = arka.convert("RGBA")
     x = int(boyut[0] * yer[0] - etiket.width / 2)
     y = int(boyut[1] * yer[1] - etiket.height / 2)
@@ -179,6 +263,11 @@ def main() -> None:
     kapak(logo, (920, 430), 0.50, (0.30, 0.50)).save(belgeler / "kapak_920x430.jpg", quality=93)
     kapak(logo, (630, 500), 0.72, (0.50, 0.40)).save(belgeler / "kapak_630x500.jpg", quality=93)
     kapak(logo, (1280, 720), 0.46, (0.29, 0.44)).save(belgeler / "kapak_1280x720.jpg", quality=93)
+    acilis(logo).save(KOK / "assets" / "img" / "acilis.png", optimize=True)
+    buyuk = simge(logo)
+    buyuk.resize((256, 256), Image.LANCZOS).save(KOK / "icon.png", optimize=True)
+    buyuk.resize((256, 256), Image.LANCZOS).save(KOK / "icon.ico", sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
+    buyuk.save(HAM.parent / "simge_1024.png")
 
 
 if __name__ == "__main__":

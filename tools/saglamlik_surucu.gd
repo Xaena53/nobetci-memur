@@ -1462,6 +1462,36 @@ func _bolum_ayarlar() -> void:
 	esit(Oyun.fare_hedefi(Vector2(100, 100), Vector2(10, -4), 2.0, Rect2(0, 0, 1280, 720)), Vector2(110, 96), "fare hassasiyeti 2×: imleç hareketin bir katı daha ilerler")
 	esit(Oyun.fare_hedefi(Vector2(100, 100), Vector2(10, -4), 0.5, Rect2(0, 0, 1280, 720)), Vector2(95, 102), "  0,5×: yarısı kadar geri çekilir")
 	esit(Oyun.fare_hedefi(Vector2(1275, 5), Vector2(30, -30), 2.0, Rect2(0, 0, 1280, 720)), Vector2(1279, 0), "  imleç görünümün dışına taşmaz")
+	# zayıf sistem ayarları: düşük çözünürlük, doku kalitesi, kendiliğinden kısılan kalite
+	Oyun.ayar_degistir("dusuk_cozunurluk", true)
+	esit(get_tree().root.content_scale_mode, Window.CONTENT_SCALE_MODE_VIEWPORT, "düşük çözünürlük: sahne 720p çizilip pencereye büyütülür")
+	Oyun.ayar_degistir("dusuk_cozunurluk", false)
+	esit(get_tree().root.content_scale_mode, Window.CONTENT_SCALE_MODE_CANVAS_ITEMS, "  kapatılınca pencere çözünürlüğünde çizilir")
+	var tam := Gorsel.yukle("res://assets/img/masa_arkaplan.webp")
+	Oyun.ayar_degistir("doku_kalitesi", "dusuk")
+	var yarim := Gorsel.yukle("res://assets/img/masa_arkaplan.webp")
+	esit(Vector2(yarim.get_size()), Vector2(tam.get_size()) / 2.0, "doku kalitesi düşükken arka plan yarı çözünürlükte yüklenir")
+	dogru(Gorsel.yukle("res://assets/img/masa_arkaplan.webp") == yarim, "  küçültülmüş kopya yeniden kullanılır")
+	dogru(Gorsel.yukle("res://assets/img/olmayan.webp") == null, "  olmayan görsel hata vermez")
+	Oyun.ayarlari_sifirla()
+	var adimlar := PackedStringArray()
+	for i in 8:
+		var adim := Oyun.kaliteyi_dusur()
+		if adim == "":
+			break
+		adimlar.append(adim)
+	esit(", ".join(adimlar), "efekt_kalitesi, efekt_kalitesi, dusuk_cozunurluk, doku_kalitesi, kare_siniri",
+		"otomatik kalite kademe kademe kısar: önce süsler, sonra çözünürlük, doku, kare sınırı")
+	esit([Oyun.ayar("efekt_kalitesi"), Oyun.ayar("dusuk_cozunurluk"), Oyun.ayar("doku_kalitesi"), Oyun.ayar("kare_siniri")],
+		["dusuk", true, "dusuk", 30], "  en düşük kademede bütün kısıtlar açık")
+	esit(Oyun.kaliteyi_dusur(), "", "  kısacak bir şey kalmayınca durur")
+	Oyun.ayarlari_sifirla()
+	Portreler.doku("v01")
+	Portreler.vesikalik("v01")
+	Portreler.agiz_dokusu("v01")
+	Portreler.birak("v01")
+	dogru(not Portreler._onbellek.has("v01") and not Portreler._onbellek.has("vesika/v01") and not Portreler._onbellek.has("agiz/v01"),
+		"gişeden ayrılan vatandaşın görselleri bellekten bırakılır")
 	# kar taneleri kaliteye göre azalır
 	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")

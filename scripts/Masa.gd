@@ -20,6 +20,7 @@ const MESAI_BASI := 9 * 60     ## 09:00 (dakika)
 const MESAI_SONU := 17 * 60    ## 17:00
 const KARAR_ADLARI := {"onay": "ONAY", "eksik": "RET", "havale": "MÜDÜRE HAVALE"}
 const ALARM_KAYBI := 12        ## boş yere verilen alarmın yediği mesai (dakika)
+const ON_YUKLEME_PENCERESI := 3        ## kuyruğun başından kaç vatandaşın görselleri önceden yüklenir
 const RADYO_LISTESI := ["saz_semaisi", "harman_dali", "saz", "taksim"]    ## masadaki radyonun çaldıkları (assets/ses/muzik)
 const VARSAYILAN_SOZ := {
 	"alarm": "O çanta benim değil! Bir yanlışlık var!",
@@ -176,32 +177,38 @@ func _kuyrugu_kur() -> void:
 		son_yer = yer
 
 
-## Günün kuyruğunda kullanılacak görsellerin yükleme sırasını kurar (sıradaki vatandaş önce).
+## Kuyruğun başındaki birkaç vatandaşın görsellerini yükleme sırasına koyar. Gerisi, sıra ilerledikçe
+## eklenir (_sonraki_vatandas): bellekte her an yalnızca yaklaşan vatandaşların görselleri durur.
 func _on_yuklemeyi_kur() -> void:
 	Portreler.bosalt()                  # önceki günün yüzleri bellekten çıkar
 	_on_yukleme.clear()
-	for v: Dictionary in kuyruk:
-		var yuz := str(v.get("portre", ""))
-		_on_yukleme.append(func() -> void: Portreler.doku(yuz))
-		_on_yukleme.append(func() -> void: Portreler.agiz_dokusu(yuz))
-		for b: Dictionary in v.get("belgeler", []):
-			var foto := str(b.get("foto", ""))
-			if foto != "":
-				_on_yukleme.append(func() -> void: Portreler.vesikalik(foto))
-			var alanlar: Dictionary = b.get("alanlar", {})
-			for alan: String in ["imza", "imza_sahibi", "muhtar"]:
-				var kisi := str(alanlar.get(alan, ""))
-				if kisi != "":
-					_on_yukleme.append(func() -> void: Imza.doku(kisi))
-		if v.has("canta"):
-			var canta: Dictionary = v.canta
-			var tur := str(canta.get("tur", ""))
-			_on_yukleme.append(func() -> void:
-				Canta.kabuk_dokusu(tur)
-				Canta.dis_doku(tur))
-			for e: Dictionary in canta.get("esyalar", []):
-				var esya := str(e.get("ad", ""))
-				_on_yukleme.append(func() -> void: Canta.esya_dokusu(esya))
+	for i in mini(ON_YUKLEME_PENCERESI, kuyruk.size()):
+		_on_yuklemeye_ekle(kuyruk[i])
+
+
+## Bir vatandaşın görsellerini yükleme sırasına ekler.
+func _on_yuklemeye_ekle(v: Dictionary) -> void:
+	var yuz := str(v.get("portre", ""))
+	_on_yukleme.append(func() -> void: Portreler.doku(yuz))
+	_on_yukleme.append(func() -> void: Portreler.agiz_dokusu(yuz))
+	for b: Dictionary in v.get("belgeler", []):
+		var foto := str(b.get("foto", ""))
+		if foto != "":
+			_on_yukleme.append(func() -> void: Portreler.vesikalik(foto))
+		var alanlar: Dictionary = b.get("alanlar", {})
+		for alan: String in ["imza", "imza_sahibi", "muhtar"]:
+			var kisi := str(alanlar.get(alan, ""))
+			if kisi != "":
+				_on_yukleme.append(func() -> void: Imza.doku(kisi))
+	if v.has("canta"):
+		var canta: Dictionary = v.canta
+		var tur := str(canta.get("tur", ""))
+		_on_yukleme.append(func() -> void:
+			Canta.kabuk_dokusu(tur)
+			Canta.dis_doku(tur))
+		for e: Dictionary in canta.get("esyalar", []):
+			var esya := str(e.get("ad", ""))
+			_on_yukleme.append(func() -> void: Canta.esya_dokusu(esya))
 
 
 func _sonraki_vatandas() -> void:
@@ -213,6 +220,9 @@ func _sonraki_vatandas() -> void:
 		return
 	vatandas = kuyruk.pop_front()
 	_ziyaret_no += 1
+	# sıra ilerledi: pencerenin ucuna yeni giren vatandaşın görselleri yüklenmeye başlasın
+	if kuyruk.size() >= ON_YUKLEME_PENCERESI:
+		_on_yuklemeye_ekle(kuyruk[ON_YUKLEME_PENCERESI - 1])
 	tespitler.clear()
 	Ses.cal("zil", 1.0, -10.0)
 	_ses_perdesi = _perde_bul(str(vatandas.portre))
@@ -520,6 +530,7 @@ func _vatandasi_ugurla(karar: String) -> void:
 	Ses.gecikmeli("kagit_kay", 0.25, 1.15, -14.0)
 	await Oyun.bekle(1.0)
 	gise.gitsin()
+	Portreler.birak(str(vatandas.get("portre", "")))
 	vatandas = {}
 	_ugurlaniyor = false
 	_fisi_goster()
@@ -882,7 +893,7 @@ func _sahneyi_kur() -> void:
 	if ResourceLoader.exists(ARKA_PLAN):
 		var zemin := TextureRect.new()
 		zemin.name = "ArkaPlan"
-		zemin.texture = load(ARKA_PLAN)
+		zemin.texture = Gorsel.yukle(ARKA_PLAN)
 		zemin.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		zemin.stretch_mode = TextureRect.STRETCH_SCALE
 		zemin.size = Yerlesim.EKRAN.size

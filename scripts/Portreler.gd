@@ -35,6 +35,13 @@ static func bosalt() -> void:
 	_onbellek.clear()
 
 
+## Tek bir yüzün görsellerini bırakır (vatandaş gişeden ayrılınca): doku belleği kuyruğun yalnızca
+## yaklaşan bölümüyle sınırlı kalır.
+static func birak(kimlik: String) -> void:
+	for anahtar: String in [kimlik, "vesika/" + kimlik, "agiz/" + kimlik, "aranan/" + kimlik]:
+		_onbellek.erase(anahtar)
+
+
 static func bilgi(kimlik: String) -> Dictionary:
 	return kunye().get(kimlik, {})
 

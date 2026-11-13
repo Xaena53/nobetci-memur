@@ -11,7 +11,7 @@ const KATMANLAR := [
 	[44, 6.5, 12.0, 96.0, 142.0, 0.46, 1.7],
 ]
 const KENAR := 40.0
-const YOGUNLUK := [0.34, 0.66, 1.0]   ## efekt kalitesine göre tane sayısının oranı
+const YOGUNLUK := [0.22, 0.66, 1.0]   ## efekt kalitesine göre tane sayısının oranı
 
 var isik := Vector2(-1000, -1000)     ## ışık kaynağının yeri (sokak lambası)
 var isik_gucu := 0.0                  ## 0 sönük .. 1 yanıyor
