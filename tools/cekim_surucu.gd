@@ -790,6 +790,50 @@ func _olc(ad: String, kare_sayisi: int = 240) -> Dictionary:
 	return sonuc
 
 
+## Gişe: eller ve yakalama. Kareler `eller_*` ve `yakala_*` adlarıyla yazılır.
+func _senaryo_eller() -> void:
+	Oyun.ayarlari_sifirla()
+	var masa: Node = await _gune_git(2)
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+	await bekle(0.4)
+	await cek("eller_1_uzat")
+	await bekle(2.0)
+	await cek("eller_2_esik")
+	for p: String in ["acik", "parmak", "yalvar", "teslim"]:
+		masa.gise.eller.goster(p)
+		masa.gise._el_donusu = 60.0
+		await bekle(0.7)
+		await cek("eller_3_" + p)
+	masa.gise.yakala()
+	for i in 34:
+		await bekle(0.1)
+		get_viewport().get_texture().get_image().get_region(Rect2i(0, 0, 480, 300)).save_jpg(ProjectSettings.globalize_path(CIKTI + "yakala_%02d.jpg" % i), 0.9)
+
+
+## Akşam odası: canlandırmalar. `film=ad` verilirse 6 saniyelik kare dizisi de yazar; `soguk=1` kömürsüz.
+func _senaryo_ev() -> void:
+	Oyun.ayarlari_sifirla()
+	Oyun.yeni_oyun("orta")
+	Oyun.gun = int(_arg("gun", "2"))
+	Oyun.para = 2000
+	await sahneye_git("aile")
+	await sahneyi_bekle("Aile")
+	var aile := sahne()
+	await bekle(0.6)
+	if _arg("soguk", "") == "":
+		aile.sec("komur", true)
+		aile.sec("yemek", true)
+	await bekle(2.0)
+	await cek("ev_1")
+	await bekle(1.3)
+	await cek("ev_2")
+	if _arg("film", "") != "":
+		for i in 120:
+			await bekle(1.0 / 20.0)
+			get_viewport().get_texture().get_image().save_jpg(ProjectSettings.globalize_path(CIKTI + "ev_film_%s_%03d.jpg" % [_arg("film", "a"), i]), 0.92)
+
+
 ## Geçiş ekranı: kasabadan kareler ve ipuçları.  `gun=N` ile o günün ekranı çekilir.
 func _senaryo_ara() -> void:
 	Oyun.ayarlari_sifirla()

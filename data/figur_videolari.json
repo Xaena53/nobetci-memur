@@ -1,0 +1,33 @@
+{
+	"aciklama": "tools/sanat/figur_video.py üretir. 'kutu': videonun, figürün boyalı resmine göre yeri [x, y, en, boy] (resmin piksel biriminde).",
+	"anne_boy": {
+		"kutu": [
+			-16.9,
+			-3.52,
+			478.87,
+			808.45
+		],
+		"kare": 134,
+		"hiz": 15
+	},
+	"elif_boy": {
+		"kutu": [
+			-1.23,
+			-10.49,
+			375.31,
+			540.12
+		],
+		"kare": 112,
+		"hiz": 15
+	},
+	"can_boy": {
+		"kutu": [
+			-1.94,
+			-1.29,
+			371.61,
+			437.42
+		],
+		"kare": 71,
+		"hiz": 15
+	}
+}

@@ -1,5 +1,20 @@
 # Sürüm notları
 
+## 1.5.0 — canlanan ev, eller, yakalama, yeni saat ve takvim
+
+- **Ev canlanır.** Nine örgü örer, Elif defterine yazar, Can yerinde oturup kamyonunu iter: üçü de
+  figürün kendi resminden üretilmiş gerçek canlandırma videolarıdır. Pencerenin ardında kar yağar,
+  soba yanıyorsa alevi oynar, kıvılcım sıçrar ve çevresini aydınlatır; ocaktaki tencere (yemek alındıysa)
+  ya da çaydanlık tüter. Hasta olan aile üyesi elindeki işi bırakır.
+- **Vatandaşların elleri.** Cama gelen vatandaş evrakını uzatır, ellerini eşiğe koyar; konuşurken
+  eliyle anlatır, sabrı taşınca parmak sallar, reddedilince ellerini kenetler. Kol ağzı giysinin rengini alır.
+- **Yakalama.** Aranan, sahteci ya da yasak eşya taşıyan şahıs artık gişeden yürüyüp gitmez: iki görevli
+  iki yandan dalar, şahıs ellerini kaldırır, yaka paça yere yatırılır ve kolundan sürüklenerek götürülür.
+- **Saat ve takvim.** Takvimde her günün boyalı yaprağı var; kadrana rakamlar ve boyalı ibreler geldi;
+  takvimin altındaki şeridin yerini kartları dönen çevirmeli saat aldı.
+- **Düzeltmeler.** Dairenin mührü (menüdeki ve belgelerdeki) komşu kaşenin kesik parçasını taşıyordu ve
+  yazısında son harf eksikti. Büyütülen belgenin ve ret penceresinin üstünde eski inceleme balonu kalıyordu.
+
 ## 1.4.0 — kasabadan kareler, zayıf sistemler, yeni logo
 
 - **Geçiş ekranı.** Oyuna başlarken ve her yeni günün sabahında kısa kararmanın yerine Ardıçlı'dan canlı

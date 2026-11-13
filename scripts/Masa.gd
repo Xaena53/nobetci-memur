@@ -47,6 +47,7 @@ var bos_alarm := 0                      ## bugün boş yere verilen alarm sayıs
 var gise: Gise
 var balon: KonusmaBalonu
 var saat: DuvarSaati
+var _yakalanacak := false           ## sıradaki uğurlamada vatandaş gözaltına alınacak (aranan, sahteci, yasak eşya)
 var kural_kitabi: KuralKitabi
 var inceleme: IncelemeKatmani
 var teleks: Teleks
@@ -530,7 +531,11 @@ func _vatandasi_ugurla(karar: String) -> void:
 	_belgeleri_gonder(0.25)
 	Ses.gecikmeli("kagit_kay", 0.25, 1.15, -14.0)
 	await Oyun.bekle(1.0)
-	gise.gitsin()
+	if _yakalanacak:
+		_yakalanacak = false
+		await gise.yakala()             # şüpheli yaka paça götürülür
+	else:
+		gise.gitsin()
 	Portreler.birak(str(vatandas.get("portre", "")))
 	vatandas = {}
 	_ugurlaniyor = false
@@ -647,6 +652,7 @@ func karar_ver(karar: String, belge: Belge, konum: Vector2, gerekce: String = ""
 
 func _sonucu_isle(karar: String, d: Dictionary) -> void:
 	ozet.islenen += 1
+	_yakalanacak = bool(d.get("supheli_yakalandi", false))
 	if karar == "havale":
 		ozet.havale += 1
 	match str(d.sonuc):
@@ -811,6 +817,13 @@ func _gise_sesi(ad: String) -> void:
 			Ses.cal("hece", _ses_perdesi, -9.0, 0.14)
 		"ofle":
 			Ses.cal("ofle_k" if _ses_kadin else "ofle", 1.0, -6.0, 0.06)
+		"yakalama":     # boğuşma: kumaş hışırtısı ve ayak sesi
+			Ses.cal("kagit_kay", 0.7, -5.0, 0.1)
+			Ses.cal("adim", 0.85, -3.0, 0.08)
+		"yere_serme":   # gövde yere çarpar
+			Ses.cal("muhur", 0.5, -2.0, 0.04)
+			Ses.cal("kepenk", 1.6, -12.0)
+			_sarsinti(7.0)
 
 
 func _rontgen_sesi(ad: String) -> void:

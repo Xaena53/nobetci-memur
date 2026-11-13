@@ -89,6 +89,10 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] Başka pencereye geçince (Alt+Tab) oyun kendiliğinden mola veriyor; "arka planda mola" kapalıyken vermiyor.
 - [ ] Ayarlar, GÖRÜNTÜ (zayıf sistem): "düşük çözünürlük" açılınca görüntü 720p'den büyütülüyor, yazılar okunur kalıyor; doku kalitesi "düşük" iken yeni açılan ekranın arka planı biraz yumuşuyor; otomatik kalite açıkken oyun yavaşlatılırsa (örneğin başka ağır bir iş çalışırken) ayarlar kendiliğinden kısılıyor.
 - [ ] Geçiş ekranı: Yeni Oyun'da ve her sabah kasabadan bir sahne geliyor; kar yağıyor, bacalar tütüyor, lamba ve pencereler ışıldıyor; baca dumanı bacanın ağzından çıkıyor; ipucu ve sahne bekledikçe değişiyor; tıklayınca masa açılıyor. "Kısa"da kendiliğinden geçiyor, "kapalı"da hiç çıkmıyor.
+- [ ] Ev: nine örüyor, Elif yazıyor, Can kamyonu itiyor (videolar akıcı, figürlerin çevresinde saçak yok, döngü sıçramıyor); pencerede kar yağıyor; kömür alınınca alev oynuyor, tencere tütüyor; kömür alınmayınca soba sönük.
+- [ ] Gişe: vatandaş evrakını uzatıyor, elleri eşikte duruyor, konuşurken ve reddedilince poz değişiyor; eller yüzü ya da çantayı kapatmıyor.
+- [ ] Yakalama: 4. günden sonra arananı havale edince ya da 5. günden sonra yasak eşyaya alarm verince iki görevli geliyor, şahıs yere yatırılıp götürülüyor; ses ve sarsıntı yerinde.
+- [ ] Duvar: takvim yaprağı günün tarihini gösteriyor, çevirmeli saatin kartları dakika değişince dönüyor, ibreler doğru saati gösteriyor.
 - [ ] Açılışta kâğıt etiket üstünde logo görünüyor; görev çubuğunda ve exe dosyasında "NM" simgesi var.
 - [ ] Ayarlar oyunu kapatıp açınca korunuyor.
 

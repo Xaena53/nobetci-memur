@@ -23,7 +23,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.4.0 |
+| Sürüm | 1.5.0 |
 
 ---
 
@@ -147,14 +147,23 @@ kurutma makinesi tabancaya, sucuk dinamite, bir bağ mum patlayıcıya benzer.
 
 ![Konuşma canlandırması: Hüsnü Amca camda konuşuyor](docs/img/konusma.gif)
 
-Vatandaşlar camın ardında yürüyerek gelir, konuşur, beklerken nefes alır ve göz kırpar. Sabırları
-taşınca öfleyip pöflerler. Kararınıza sevinir, üzülür ya da şaşırırlar. Konuşma, her yüz için ayrı
+Vatandaşlar camın ardında yürüyerek gelir, konuşur, beklerken nefes alır ve göz kırpar. Evraklarını
+elleriyle uzatır, ellerini eşiğe koyar, konuşurken eliyle anlatırlar. Sabırları taşınca öfleyip pöfler,
+parmak sallarlar. Kararınıza sevinir, üzülür (ellerini kenetleyip rica ederler) ya da şaşırırlar.
+Aranan, sahteci ya da yasak eşya taşıyan şahıs yakalanınca iki görevli cama dalar; şahıs ellerini
+kaldırır, yere yatırılır ve götürülür. Konuşma, her yüz için ayrı
 ayrı boyanmış ağız kareleriyle canlandırılır; sesi kısa, anlaşılmaz bir mırıltıdır ve kişinin yaşına,
 cinsiyetine göre incelip kalınlaşır.
 
 Kuyruk her gün başka insanlardan oluşur. Oyunda hikâye kişileriyle birlikte **89 ayrı yüz** vardır;
 her yüz kalıcı bir kişidir: adı, ana ve baba adı, doğum yeri ve tarihi, imzası hep aynıdır. Cüzdanda
 sahibinin imzası durur.
+
+### Akşam evde
+
+Akşam odası canlıdır: nine örgü örer, Elif ödevini yazar, Can kamyonunu sürer; pencerenin ardında kar
+yağar, soba harlı yanar, ocaktaki tencere tüter. Kömür alınmazsa soba söner, oda soğur; hasta olan
+aile üyesi elindeki işi bırakır.
 
 ### Güne başlarken: kasabadan kareler
 
@@ -433,6 +442,7 @@ assets/img/        Arka planlar, kasaba sahneleri (kasaba/), portreler (+ ağız
                    kâğıt dokuları, röntgen (cihaz, çanta kabukları, eşyalar), imzalar, mühür ve kaşeler
 assets/ses/        Gerçek kayıtlardan kesilmiş efektler (.wav), döngülü ortam sesleri (.ogg),
                    muzik/ altında çalgı müzikleri; künyeler KAYNAKLAR.md içinde
+assets/video/      Aile üyelerinin canlandırma videoları (Theora; renk ve saydamlık yan yana)
 assets/font/       Courier Prime, Old Standard TT, Caveat (+ lisans metinleri)
 assets/shader/     portre.gdshader (canlı portre), foto.gdshader (vesikalık baskı),
                    rontgen_esya.gdshader ve rontgen_ekran.gdshader (röntgen görüntüsü)
@@ -469,6 +479,10 @@ akışı: `Ana Menü → Masa (09:00–17:00) → Gün Sonu → Aile → ertesi 
 | `GunSonu.gd`, `Son.gd` | Günlük puantaj; oyun sonu gazetesi |
 | `AnaMenu.gd`, `AyarlarPenceresi.gd`, `MolaMenusu.gd` | Menüler; ana menüde baca dumanı ve cızırdayan sokak lambası |
 | `Kar.gd` | Üç katmanlı, rüzgârla savrulan kar yağışı |
+| `EvCanlandirma.gd` | Akşam odası: pencere karı, soba ateşi (`soba_atesi.gdshader`), kıvılcım, ocaktaki kap ve buharı |
+| `VideoFigur.gd` | Aile üyelerinin canlandırma videolarını saydam zeminle oynatır (`video_figur.gdshader`, `data/figur_videolari.json`) |
+| `VatandasElleri.gd` | Gişedeki vatandaşın el pozları ve geçişleri; kol ağzını giysinin rengine boyar (`el.gdshader`) |
+| `DuvarSaati.gd` | Kadranın boyalı ibreleri, günün takvim yaprağı, kartları dönen çevirmeli saat |
 | `AraEkran.gd` | Güne başlarken geçiş ekranı: kasaba sahneleri ve ipuçları (`data/ara_ekran.json`) |
 | `KasabaSahnesi.gd` | Boyalı bir sahneyi canlandırır: baca dumanı, lamba ve pencere ışığı, ağır yaklaşma; ana menünün dumanı da buradan gelir |
 | `Gorsel.gd` | Arka planları doku kalitesi ayarına göre tam ya da yarı çözünürlükte yükler |
@@ -579,6 +593,12 @@ betiklerle hazırlandı:
 | `tools/sanat/yuz_noktalari.py` | Her portrede göz, burun, ağız ve çene noktalarını bulur (OpenCV YuNet) |
 | `tools/sanat/agiz_kareleri.py` | "Ağzı açık" çeşitlemeleri ana portreye hizalar; alt yüzü yumuşak maskeyle keser |
 | `tools/sanat/logo.py` | Logoyu ham görselden temizler (mührün dolgusu, yıldızın boyu) ve mağaza kapaklarını kurar |
+| `tools/sanat/figur_video.py` | Yeşil zeminde üretilmiş figür klibini döngüye sokar, zemini ayıklar, "renk + saydamlık" Theora videosuna çevirir |
+| `tools/sanat/klip_duzelt.py` | Kamerası yakınlaşmış klibi özgün çerçevesine geri oturtur |
+| `tools/sanat/yeni_varliklar.py` | Takvim yaprakları, saat parçaları, mutfak kapları, el pozları ve görevli büstlerini ham sayfalardan dilimler |
+| `tools/sanat/ev_pencere.py` | Ev resminin penceresindeki boyalı (duran) kar tanelerini siler |
+| `tools/sanat/kirpik_tara.py` | Dilimlenmiş görsellerde komşudan kalmış kesik parçaları arar ve temizler |
+| `tools/sanat/daire_muhru.py` | Dairenin mühründeki eksik harfi tamamlar |
 | `tools/sanat/kasaba.py` | Kasaba sahnelerini ham görsellerden 2560×1440'a hazırlar; yer bulmak için ızgaralı önizleme yazar |
 | `tools/doku_bellegi.py` | Görsellerin ekran belleğinde tuttuğu yeri klasör klasör döker |
 | `tools/sanat/ret_damgasi.py` | Ret mührünün izini eldeki boyalı damgaların harflerinden kurar; mühür aracının yeşil ve kırmızı lastikli hâllerini üretir |
@@ -636,6 +656,8 @@ python tools/ses/topla.py muhur zil  # yalnızca adı verilenleri
 - **Yazı tipleri:** Courier Prime, Old Standard TT, Caveat — SIL Open Font License 1.1
   (lisans metinleri `assets/font/` içinde)
 - **Görseller:** üretken yapay zekâ ile üretilmiş, oyun için dilimlenip işlenmiştir.
+- **Canlandırmalar:** aile üyelerinin hareketleri, kendi boyalı resimlerinden üretken yapay zekâ ile
+  üretilmiş kısa kliplerdir (`assets/video/`).
 - **Kasaba sahneleri:** üretken yapay zekâ ile, ana menü resmi üslup örneği verilerek üretilmiştir.
 - **Logo:** üretken yapay zekâ ile üretilmiş, elle temizlenmiştir (`tools/sanat/logo.py`). Saydam hâli
   `docs/img/logo.png`, kâğıt üstündeki hâli `docs/img/logo_kagit.png`; mağaza kapakları

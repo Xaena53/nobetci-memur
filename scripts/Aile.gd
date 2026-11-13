@@ -26,12 +26,14 @@ var _sabah_oldu := false             ## sabaha geçildi mi (gün bir kez ilerler
 
 var _soguk: ColorRect
 var _soba: Control
+var _ev: EvCanlandirma
 var _sofra: Control
 var _satirlar: Dictionary = {}                ## kod -> Control
 var _toplam_yazi: Label
 var _kalan_yazi: Label
 var _yat: Button
 var _figurler: Dictionary = {}                ## üye -> CanliPortre
+var _videolar: Dictionary = {}                ## üye -> VideoFigur (canlandırması olanlar)
 var _dokular: Dictionary = {}
 
 
@@ -178,6 +180,12 @@ func _odayi_kur() -> void:
 		zemin.texture = Gorsel.yukle(ARKA_PLAN)
 	add_child(zemin)
 
+	# canlandırma: pencere karı, soba ateşi, ocaktaki kap (figürlerin arkasında)
+	_ev = EvCanlandirma.new()
+	_ev.name = "EvCanlandirma"
+	add_child(_ev)
+	add_child(_ev.arka)
+
 	# sofradakiler figürlerin arkasında kalır
 	_sofra = Control.new()
 	_sofra.name = "Sofra"
@@ -206,6 +214,15 @@ func _odayi_kur() -> void:
 		else:
 			_figurler[uye] = p
 			etiket_yerleri[uye] = Vector2(bas_x, p.position.y - 21.0)
+			# gerçek canlandırma: figürün videosu varsa boyalı resmin tam üstünde o oynar
+			# (efekt kalitesi düşükken video açılmaz; durağan resim kalır)
+			if Oyun.efekt_duzeyi() > 0 and VideoFigur.var_mi(str(f.kimlik)):
+				var v := VideoFigur.new()
+				v.name = "Video_" + uye
+				add_child(v)
+				v.kur(str(f.kimlik), p.position, FIGUR_OLCEGI)
+				_videolar[uye] = v
+				p.visible = false
 	golgeler.draw.connect(func() -> void:
 		# figürlerin yere düşen yumuşak gölgesi
 		for f: Dictionary in FIGURLER:
@@ -224,6 +241,9 @@ func _odayi_kur() -> void:
 	_soba.mouse_filter = MOUSE_FILTER_IGNORE
 	_soba.draw.connect(_sobayi_ciz)
 	add_child(_soba)
+	# ateşin ışığı ve buhar figürlerin önünde; nine, Elif ve Can'ın el hareketleri de buradan yürür
+	add_child(_ev.on)
+	_ev.kur(zemin.texture)
 
 	_soguk = ColorRect.new()
 	_soguk.name = "Soguk"
@@ -251,20 +271,22 @@ func _odayi_kur() -> void:
 			_dokular[ad] = load(yol)
 
 
-func _process(_delta: float) -> void:
+## Sobanın ve ocağın durumu seçilen kalemlere uyar: kömür alındıysa soba yanar; yemek varsa ocakta
+## tencere, yoksa (soba yanıyorsa) çaydanlık durur.
+func _evi_guncelle() -> void:
+	if _ev == null:
+		return
+	var yaniyor := bool(secili.get("komur", false))
+	_ev.soba_yaniyor = yaniyor
+	_ev.ocakta = "tencere" if bool(secili.get("yemek", false)) else ("caydanlik" if yaniyor else "")
 	if _soba != null:
 		_soba.queue_redraw()
 
 
-## Sobanın camı: kömür alınmadıysa söner (boyalı alevin üstü kararır), alındıysa parlar.
+## Sobanın camı: kömür alınmadıysa söner (boyalı alevin üstü kararır). Yanan sobanın alevini,
+## kıvılcımını ve ışığını EvCanlandirma çizer.
 func _sobayi_ciz() -> void:
-	if bool(secili.get("komur", false)):
-		var nabiz := 0.75 + 0.25 * sin(Time.get_ticks_msec() / 230.0)
-		var m := SOBA_CAMI.get_center()
-		_soba.draw_circle(m, 62.0, Color(1.0, 0.55, 0.20, 0.07 * nabiz))
-		_soba.draw_circle(m, 38.0, Color(1.0, 0.60, 0.22, 0.10 * nabiz))
-		_soba.draw_rect(SOBA_CAMI, Color(1.0, 0.70, 0.30, 0.16 * nabiz))
-	else:
+	if not bool(secili.get("komur", false)):
 		_soba.draw_rect(SOBA_CAMI.grow(2.0), Color(0.07, 0.06, 0.06, 0.86))
 
 
@@ -430,6 +452,7 @@ func _guncelle() -> void:
 		(s.get_node("Ad") as Label).modulate.a = 0.45 if yetmez else 1.0
 		(s.get_node("Tutar") as Label).modulate.a = 0.45 if yetmez else 1.0
 	_sofra.queue_redraw()
+	_evi_guncelle()
 	var isinacak := bool(secili.get("komur", false))
 	var hedef := 0.0 if isinacak else 0.20
 	if _yat != null and not _yat.disabled:
@@ -448,3 +471,7 @@ func _guncelle() -> void:
 		var p: CanliPortre = _figurler[uye]
 		p.modulate = Color(0.84, 0.90, 0.89) if saglik <= 1 else (Color(0.93, 0.96, 0.97) if saglik == 2 else Color.WHITE)
 		p.canlilik = 0.45 if saglik <= 1 else (0.75 if saglik == 2 else 1.0)
+		if _videolar.has(uye):
+			var v: VideoFigur = _videolar[uye]
+			v.modulate = p.modulate
+			v.durdur(saglik <= 1)           # hasta olan elindeki işi bırakır

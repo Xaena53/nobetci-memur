@@ -1,0 +1,38 @@
+{
+	"aciklama": "tools/sanat/yeni_varliklar.py üretir: ibrelerin dönme merkezi (0..1), saatin gösterge penceresi (0..1), takvim yaprakları, el pozları.",
+	"takvim_gunleri": [
+		9,
+		10,
+		11,
+		12,
+		13,
+		16,
+		17
+	],
+	"saat_pencere": [
+		0.1111,
+		0.3172,
+		0.775,
+		0.4345
+	],
+	"saat_akrep": [
+		0.0917,
+		0.5205
+	],
+	"saat_yelkovan": [
+		0.039,
+		0.4792
+	],
+	"saat_saniye": [
+		0.0331,
+		0.4905
+	],
+	"el_pozlari": [
+		"esik",
+		"uzat",
+		"acik",
+		"parmak",
+		"yalvar",
+		"teslim"
+	]
+}

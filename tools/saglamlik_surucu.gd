@@ -1630,3 +1630,38 @@ func _ara_ekran_denetimi() -> void:
 	Oyun.ayarlari_sifirla()
 	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")
+	await _canlandirma_denetimi()
+
+
+## 1.5.0 canlandırmaları: boyalı takvim ve saat, vatandaşın elleri, yakalama, ev videoları.
+func _canlandirma_denetimi() -> void:
+	for g in 7:
+		var tarih := str(Veri.gun(g + 1).get("tarih", ""))
+		dogru(ResourceLoader.exists("res://assets/img/nesne/takvim_%s.webp" % tarih.substr(0, 2)), "takvim yaprağı var: " + tarih)
+	for cins: String in ["erkek", "kadin"]:
+		for poz: String in VatandasElleri.POZLAR:
+			dogru(ResourceLoader.exists(VatandasElleri.YOL % [cins, poz]), "el pozu var: %s %s" % [cins, poz])
+	for uye: String in ["anne_boy", "elif_boy", "can_boy"]:
+		dogru(VideoFigur.var_mi(uye), "aile canlandırması var: " + uye)
+	Oyun.yeni_oyun("orta")
+	var masa: Node = await _gune_git(1)
+	esit(masa.saat.takvim.deger, "09.01.1984", "takvim günün tarihini taşır")
+	dogru(masa.saat._yaprak.texture != null, "  boyalı yaprak takılıdır")
+	bas("GiseyiAc")
+	await kosulu_bekle(func() -> bool: return masa.belgeler.size() >= 1 and not masa._mesgul, 16.0)
+	await bekle(0.6)
+	esit(masa.gise.eller.poz, "uzat", "cama gelen vatandaş evrakını uzatır")
+	await bekle(2.0)
+	esit(masa.gise.eller.poz, "esik", "  sonra ellerini eşiğe koyar")
+	masa.gise.tepki("eksik")
+	esit(masa.gise.eller.poz, "yalvar", "reddedilen vatandaş ellerini kenetler")
+	masa.gise.tepki("alarm")
+	esit(masa.gise.eller.poz, "teslim", "alarmda ellerini kaldırır")
+	masa.gise.yakala()
+	await bekle(0.5)
+	dogru(masa.gise._kolluk[0].visible and masa.gise._kolluk[1].visible, "yakalamada iki görevli cama gelir")
+	await kosulu_bekle(func() -> bool: return not masa.gise._yakalaniyor, 6.0)
+	dogru(not masa.gise.portre.visible and not masa.gise._kolluk[0].visible, "  şüpheli götürülünce gişe boşalır")
+	esit(masa.gise.eller.poz, "", "  eller de çekilir")
+	await sahneye_git("menu")
+	await sahneyi_bekle("AnaMenu")
