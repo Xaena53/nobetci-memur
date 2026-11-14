@@ -96,6 +96,7 @@ const VARSAYILAN_AYARLAR := {
 	"saat_hizi": 1.0,          ## oyun dakikası başına gerçek saniye (küçüldükçe gün hızlanır)
 	"yazi_hizi": 1.0,          ## genelge, konuşma ve teleks yazısının hızı (100: anında)
 	"odakta_mola": true,       ## pencere arka plana geçince kendiliğinden mola
+	"ogretici": true,          ## ilk gün masanın tanıtımı; yeni sayfa ya da araç gelince gösterilir (bkz. Rehber)
 	"fare_hassasiyeti": 1.0,   ## imlecin hızı (1: işletim sistemindeki gibi)
 }
 
@@ -126,6 +127,10 @@ var _mola: MolaMenusu
 var _son_kayit: Dictionary = {}    ## dosyaya en son yazılan durum
 var odak_sinamasi := false         ## testler: başsız kipte de odak kaybı molasını dene
 var ara_ekran_acik := true         ## testler kapatır: geçiş ekranı tıklama beklemesin
+var ogretici_acik := true          ## testler ve çekimler kapatır: öğretici adımları gişeyi bekletmesin
+var ogretici_yolu := "user://ogretici.json"   ## görülen öğretici dersleri
+var _gorulen_dersler: Array = []
+var _dersler_yuklendi := false
 var dil_sabit := ""                ## testler ve çekimler: ayar ne olursa olsun bu dil kullanılır
 var _ara: Control                  ## açık geçiş ekranı (yoksa null)
 var _olculen_sahne := 0            ## kare hızı ölçülen sahnenin kimliği
@@ -699,11 +704,52 @@ func ayar(ad: String) -> Variant:
 func ayar_degistir(ad: String, deger: Variant) -> void:
 	if not VARSAYILAN_AYARLAR.has(ad):
 		return
+	var onceki: Variant = ayarlar.get(ad)
 	ayarlar[ad] = _ayari_duzelt(ad, deger)
+	if ad == "ogretici" and bool(ayarlar[ad]) and not bool(onceki):
+		ogretici_sifirla()               # yeniden açılan öğretici dersleri baştan gösterir
 	ayarlari_uygula()
 	if ad == "pencere_boyutu" or ad == "tam_ekran":
 		_pencereyi_boyutla()
 	_ayarlari_yaz()
+
+
+# --- Öğretici ---
+
+## Bu ders gösterilmeli mi? (öğretici açık ve ders daha önce görülmemiş)
+func ogretici_gosterilsin(ders: String) -> bool:
+	if not ogretici_acik or not bool(ayar("ogretici")):
+		return false
+	_dersleri_yukle()
+	return not _gorulen_dersler.has(ders)
+
+
+func ogretici_gordu(ders: String) -> void:
+	if ders == "":
+		return
+	_dersleri_yukle()
+	if _gorulen_dersler.has(ders):
+		return
+	_gorulen_dersler.append(ders)
+	var dosya := FileAccess.open(ogretici_yolu, FileAccess.WRITE)
+	if dosya != null:
+		dosya.store_string(JSON.stringify(_gorulen_dersler))
+
+
+## Görülen dersleri unutur: öğretici baştan gösterilir.
+func ogretici_sifirla() -> void:
+	_gorulen_dersler.clear()
+	_dersler_yuklendi = true
+	if FileAccess.file_exists(ogretici_yolu):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(ogretici_yolu))
+
+
+func _dersleri_yukle() -> void:
+	if _dersler_yuklendi:
+		return
+	_dersler_yuklendi = true
+	var veri: Variant = _json_oku(ogretici_yolu)
+	_gorulen_dersler = (veri as Array).filter(func(x: Variant) -> bool: return typeof(x) == TYPE_STRING) 		if typeof(veri) == TYPE_ARRAY else []
 
 
 ## Bütün ayarları varsayılanlarına döndürür.

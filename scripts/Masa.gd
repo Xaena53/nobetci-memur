@@ -138,8 +138,71 @@ func _genelgeyi_goster() -> void:
 	g.name = "GenelgeEkrani"
 	_ust_katman.add_child(g)
 	g.ac(gun, Oyun.gun)
-	g.kapandi.connect(giseyi_ac)
+	g.kapandi.connect(_rehberi_goster)
 	g.harf_yazildi.connect(Ses.cal.bind("daktilo", 1.0, -11.0, 0.08, 0.045))
+
+
+## Genelgeden sonra, gişe açılmadan: öğretici (ilk gün masanın tanıtımı; yeni bir sayfa ya da araç
+## geldiyse onu gösteren adım). Görülmüş ders yoksa gişe hemen açılır.
+func _rehberi_goster() -> void:
+	var adimlar := rehber_adimlari().filter(func(a: Dictionary) -> bool:
+		return Oyun.ogretici_gosterilsin(str(a.ders)))
+	if adimlar.is_empty():
+		giseyi_ac()
+		return
+	var r := Rehber.new()
+	r.name = "Rehber"
+	_ust_katman.add_child(r)
+	r.bitti.connect(giseyi_ac)
+	var liste: Array[Dictionary] = []
+	liste.assign(adimlar)
+	r.baslat(liste)
+
+
+## Öğretici adımları. "temel" dersi masanın tanıtımıdır; ötekiler o gün masada olan yeni sayfa ve araçlar.
+func rehber_adimlari() -> Array[Dictionary]:
+	var a: Array[Dictionary] = [
+		{"ders": "temel_gise", "baslik": "Gişe", "hedef": func() -> Rect2: return Yerlesim.GISE_ACIKLIK,
+			"metin": "Vatandaşlar bu camın ardına gelir. Evrakları alttaki yarıktan masanıza kayar; söyledikleri balonda yazar."},
+		{"ders": "temel_pano", "baslik": "Genelge defteri", "hedef": func() -> Rect2: return kural_kitabi.get_global_rect(),
+			"metin": "Günün kuralları bu panoda. Her evrakı bu kurallara göre denetleyin. Kırmızı yazılan kural o gün yeni gelmiştir."},
+		{"ders": "temel_sekme", "baslik": "Sayfalar", "hedef": func() -> Rect2: return kural_kitabi.sekme_alani(),
+			"metin": "Üstteki sekmelere tıklayıp sayfa çevirin. Günler ilerledikçe tarife, arananlar listesi gibi yeni sayfalar buraya eklenir; eklendiği gün size gösterilir."},
+		{"ders": "temel_masa", "baslik": "Evraklar", "hedef": func() -> Rect2: return Rect2(36, 338, 870, 362),
+			"metin": "Evrakları fareyle sürükleyip masada yan yana koyun. Çift tıklayınca evrak elinize gelir ve büyür; ince yazılar böyle okunur."},
+		{"ders": "temel_incele", "baslik": "Büyüteç", "hedef": func() -> Rect2: return _incele_dugmesi.get_global_rect(),
+			"metin": "Büyütece tıklayın ya da BOŞLUK'a basın. Sonra iki şeye sırayla tıklayın (iki belgedeki ad, ya da bir kural ile bir satır): uyuşup uyuşmadıkları söylenir."},
+		{"ders": "temel_muhur", "baslik": "Mühürler", "hedef": func() -> Rect2: return _arac_alani(["onay", "eksik"]),
+			"metin": "Evrak kurallara uyuyorsa yeşil ONAY mührünü, uymuyorsa kırmızı RET mührünü alıp evrakın üstüne basın. Ret verirken gerekçeyi seçersiniz."},
+		{"ders": "temel_havale", "baslik": "Müdüre havale", "hedef": func() -> Rect2: return _arac_alani(["havale"]),
+			"metin": "Aranan bir şahıs ya da karar veremediğiniz bir durum olursa bu koçandan bir yaprağı evraka bırakın. Günlük havale hakkınız sınırlıdır."},
+		{"ders": "temel_ihtar", "baslik": "İhtarlar", "hedef": func() -> Rect2: return _igne.get_global_rect().grow(6.0),
+			"metin": "Doğru karar prim getirir. Yanlış kararda müdürün ihtarı teleksten çıkar ve bu iğneye takılır; ihtarlar maaştan keser."},
+		{"ders": "temel_saat", "baslik": "Mesai", "hedef": func() -> Rect2: return Rect2(630, 18, 96, 218),
+			"metin": "Mesai 17.00'de biter; saat yalnızca gişe açıkken işler. Sıkışırsanız ESC ile mola verebilirsiniz. Hazırsanız gişeyi açıyoruz."},
+	]
+	if kural_kitabi.sayfa_var_mi("TARİFE"):
+		a.append({"ders": "tarife", "baslik": "Yeni sayfa: Tarife", "hedef": func() -> Rect2: return kural_kitabi.sekme_alani("TARİFE"),
+			"metin": "Harç tutarları, geçerli cüzdan serileri ve ilçeye bağlı mahalleler bu sayfada. Makbuzdaki tutarı, cüzdanın serisini ve mahalleyi buradan karşılaştırın."})
+	if kural_kitabi.sayfa_var_mi("ARANANLAR"):
+		a.append({"ders": "arananlar", "baslik": "Yeni sayfa: Arananlar", "hedef": func() -> Rect2: return kural_kitabi.sekme_alani("ARANANLAR"),
+			"metin": "Emniyetin aradığı şahısların resimleri bu sayfada. Camdaki yüzü bunlarla karşılaştırın; aranan biri gelirse evrakına bakmadan müdüre havale edin."})
+	if kural_kitabi.sayfa_var_mi("YASAK"):
+		a.append({"ders": "yasak", "baslik": "Yeni sayfa: Yasak eşya", "hedef": func() -> Rect2: return kural_kitabi.sekme_alani("YASAK"),
+			"metin": "Çantalı gelenin çantası önce röntgenden geçer: eşikteki çantaya tıklayın ve ekrandaki görüntüyü bu sayfadaki örneklerle karşılaştırın. Temizse yeşil düğmeyle geçirin, yasak eşya varsa kırmızıyla alarm verin."})
+	if defter != null:
+		a.append({"ders": "defter", "baslik": "Yeni: Bilgi defteri", "hedef": func() -> Rect2: return defter.get_global_rect(),
+			"metin": "Mühür, imza ve damga örnekleri bu defterde. Çift tıklayıp açın, evraktaki mühür ve imzayı örnekleriyle karşılaştırın; sahtesi ayrıntıda belli olur."})
+	return a
+
+
+func _arac_alani(turler: Array) -> Rect2:
+	var alan := Rect2()
+	for t: String in turler:
+		if araclar.has(t):
+			var r := (araclar[t] as Control).get_global_rect()
+			alan = r if not alan.has_area() else alan.merge(r)
+	return alan
 
 
 func giseyi_ac() -> void:

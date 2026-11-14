@@ -94,6 +94,7 @@ Her gün için: genelge okunuyor, gişe açılıyor, kuyruk işleniyor, gün son
 - [ ] Duvar: takvim yaprağı günün tarihini gösteriyor, çevirmeli saatin kartları dakika değişince dönüyor, ibreler doğru saati gösteriyor.
 - [ ] Açılışta kâğıt etiket üstünde logo görünüyor; görev çubuğunda ve exe dosyasında "NM" simgesi var.
 - [ ] Dil: OYUN yaprağından English ve Русский seçilince menü baştan kuruluyor; masada etiketler, plakalar, takvim, damgalar ve bütün yazılar o dilde; Rusça harfler daktilo yazısında düzgün görünüyor. Uzun konuşmalar balondan taşmıyor (gerekirse sayfa sayfa geliyor).
+- [ ] Öğretici: yeni oyunun ilk gününde genelgeden sonra masa adım adım tanıtılıyor; 3. günde tarife sekmesi, 4. günde arananlar ve bilgi defteri, 5. günde yasak eşya gösteriliyor. Ayarlardan öğretici kapatılıp açılınca dersler baştan geliyor.
 - [ ] Ayarlar oyunu kapatıp açınca korunuyor.
 
 ## 4. Kulakla dinlenecekler

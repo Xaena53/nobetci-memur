@@ -4623,5 +4623,155 @@
   "no": 925,
   "metin": "ELEMAN ARANIYOR",
   "yer": "data/hikaye.json:baslik"
+ },
+ {
+  "no": 926,
+  "metin": "Öğretici",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 927,
+  "metin": "açınca dersler baştan gösterilir",
+  "yer": "scripts/AyarlarPenceresi.gd"
+ },
+ {
+  "no": 928,
+  "metin": "Gişe",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 929,
+  "metin": "Vatandaşlar bu camın ardına gelir. Evrakları alttaki yarıktan masanıza kayar; söyledikleri balonda yazar.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 930,
+  "metin": "Genelge defteri",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 931,
+  "metin": "Günün kuralları bu panoda. Her evrakı bu kurallara göre denetleyin. Kırmızı yazılan kural o gün yeni gelmiştir.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 932,
+  "metin": "Sayfalar",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 933,
+  "metin": "Üstteki sekmelere tıklayıp sayfa çevirin. Günler ilerledikçe tarife, arananlar listesi gibi yeni sayfalar buraya eklenir; eklendiği gün size gösterilir.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 934,
+  "metin": "Evraklar",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 935,
+  "metin": "Evrakları fareyle sürükleyip masada yan yana koyun. Çift tıklayınca evrak elinize gelir ve büyür; ince yazılar böyle okunur.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 936,
+  "metin": "Büyüteç",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 937,
+  "metin": "Büyütece tıklayın ya da BOŞLUK'a basın. Sonra iki şeye sırayla tıklayın (iki belgedeki ad, ya da bir kural ile bir satır): uyuşup uyuşmadıkları söylenir.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 938,
+  "metin": "Mühürler",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 939,
+  "metin": "Evrak kurallara uyuyorsa yeşil ONAY mührünü, uymuyorsa kırmızı RET mührünü alıp evrakın üstüne basın. Ret verirken gerekçeyi seçersiniz.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 940,
+  "metin": "Aranan bir şahıs ya da karar veremediğiniz bir durum olursa bu koçandan bir yaprağı evraka bırakın. Günlük havale hakkınız sınırlıdır.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 941,
+  "metin": "İhtarlar",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 942,
+  "metin": "Doğru karar prim getirir. Yanlış kararda müdürün ihtarı teleksten çıkar ve bu iğneye takılır; ihtarlar maaştan keser.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 943,
+  "metin": "Mesai",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 944,
+  "metin": "Mesai 17.00'de biter; saat yalnızca gişe açıkken işler. Sıkışırsanız ESC ile mola verebilirsiniz. Hazırsanız gişeyi açıyoruz.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 945,
+  "metin": "Yeni sayfa: Tarife",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 946,
+  "metin": "Harç tutarları, geçerli cüzdan serileri ve ilçeye bağlı mahalleler bu sayfada. Makbuzdaki tutarı, cüzdanın serisini ve mahalleyi buradan karşılaştırın.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 947,
+  "metin": "Yeni sayfa: Arananlar",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 948,
+  "metin": "Emniyetin aradığı şahısların resimleri bu sayfada. Camdaki yüzü bunlarla karşılaştırın; aranan biri gelirse evrakına bakmadan müdüre havale edin.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 949,
+  "metin": "Yeni sayfa: Yasak eşya",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 951,
+  "metin": "Yeni: Bilgi defteri",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 952,
+  "metin": "Mühür, imza ve damga örnekleri bu defterde. Çift tıklayıp açın, evraktaki mühür ve imzayı örnekleriyle karşılaştırın; sahtesi ayrıntıda belli olur.",
+  "yer": "scripts/Masa.gd"
+ },
+ {
+  "no": 953,
+  "metin": "Geç",
+  "yer": "scripts/Rehber.gd"
+ },
+ {
+  "no": 954,
+  "metin": "İleri",
+  "yer": "scripts/Rehber.gd"
+ },
+ {
+  "no": 955,
+  "metin": "(devam)",
+  "yer": "tools/dil/ek_metinler.json"
+ },
+ {
+  "no": 956,
+  "metin": "Çantalı gelenin çantası önce röntgenden geçer: eşikteki çantaya tıklayın ve ekrandaki görüntüyü bu sayfadaki örneklerle karşılaştırın. Temizse yeşil düğmeyle geçirin, yasak eşya varsa kırmızıyla alarm verin.",
+  "yer": "scripts/Masa.gd"
  }
 ]

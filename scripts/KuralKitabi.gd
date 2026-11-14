@@ -91,6 +91,22 @@ func yukle(gun: Dictionary) -> void:
 	inceleme_ac(_inceleme)
 
 
+## Sekmelerin ekrandaki yeri: `baslik` verilirse yalnız o sekme, verilmezse hepsi (öğretici gösterir).
+## Sekme yoksa boş dikdörtgen.
+func sekme_alani(baslik: String = "") -> Rect2:
+	var alan := Rect2()
+	for i in _sekmeler.size():
+		if baslik != "" and _basliklar[i] != baslik:
+			continue
+		var r := _sekmeler[i].get_global_rect()
+		alan = r if not alan.has_area() else alan.merge(r)
+	return alan
+
+
+func sayfa_var_mi(baslik: String) -> bool:
+	return _basliklar.has(baslik)
+
+
 func inceleme_ac(acik: bool) -> void:
 	_inceleme = acik
 	for h in hedefler:
@@ -190,12 +206,7 @@ func _tablo_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> float:
 			y = _ara_baslik(s, "HARÇ TARİFESİ", y)
 			var tutarlar: Dictionary = k.get("tutarlar", {})
 			for islem: String in tutarlar:
-				var ad: String = Dil.c(Islemler.adi(islem))
-				var tutar := Stil.tl(int(tutarlar[islem]))
-				# satır 37 harfi geçmez: geçerse "TL" alt satıra kayıp sonraki satırın üstüne biner
-				var nokta := maxi(2, 35 - ad.length() - tutar.length())
-				_satir_yaz(s, ad + " .".repeat(nokta) + " " + tutar, y, genislik, satir_yuk, k, Stil.MUREKKEP, islem)
-				y += satir_yuk + 2.0
+				y = _tarife_satiri(s, Dil.c(Islemler.adi(islem)), Stil.tl(int(tutarlar[islem])), y, genislik, k, islem)
 		"seri_aralik":
 			y = _ara_baslik(s, "GEÇERLİ CÜZDAN SERİLERİ", y)
 			for a: Dictionary in k.get("araliklar", []):
@@ -210,6 +221,57 @@ func _tablo_yaz(s: Control, k: Dictionary, y: float, genislik: float) -> float:
 			_satir_yaz(s, yazi, y, genislik, yuk, k)
 			y += yuk + 2.0
 	return y
+
+
+## Tarife satırı: işlemin adı solda, tutar sağa yaslı; arası noktalarla dolar. Ad uzunsa (çeviride)
+## alt satıra sarar, noktalar ve tutar son satırın hizasında durur: tutar hiçbir dilde kaymaz.
+func _tarife_satiri(s: Control, ad: String, tutar: String, y: float, genislik: float, k: Dictionary,
+		anahtar: String) -> float:
+	# ölçüler etiketin kendi fontuyla alınır (Rusçada yedek font devreye girer)
+	var t := Stil.etiket(tutar, PUNTO, Stil.MUREKKEP)
+	var font := t.get_theme_font("font")
+	var tutar_eni := font.get_string_size(tutar, HORIZONTAL_ALIGNMENT_LEFT, -1, PUNTO).x
+	var ad_eni := genislik - tutar_eni - 26.0          # en az birkaç nokta sığsın
+	var ad_etiketi := Stil.etiket(ad, PUNTO, Stil.MUREKKEP)
+	ad_etiketi.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	ad_etiketi.add_theme_constant_override("line_spacing", 0)
+	ad_etiketi.position = Vector2(KENAR, y)
+	s.add_child(ad_etiketi)
+	var yuk := maxf(16.0, Stil.sarili_yukseklik(ad_etiketi, ad_eni))
+	ad_etiketi.size = Vector2(ad_eni, yuk)
+	# son satırın bittiği yer: noktalar oradan başlar
+	var satir_boyu := font.get_height(PUNTO)
+	var son_y := y + yuk - satir_boyu
+	var satirlar := ad_etiketi.get_line_count()
+	var son_satir := ad
+	if satirlar > 1:
+		# son satırın metni: sözcükleri sığdırarak bul
+		var sozler := ad.split(" ", false)
+		var satir := ""
+		for soz in sozler:
+			var aday := (satir + " " + soz).strip_edges()
+			if satir != "" and font.get_string_size(aday, HORIZONTAL_ALIGNMENT_LEFT, -1, PUNTO).x > ad_eni:
+				satir = soz
+			else:
+				satir = aday
+		son_satir = satir
+	var bas_x := KENAR + font.get_string_size(son_satir, HORIZONTAL_ALIGNMENT_LEFT, -1, PUNTO).x + 4.0
+	var bit_x := KENAR + genislik - tutar_eni - 10.0
+	var nokta_eni := font.get_string_size(" .", HORIZONTAL_ALIGNMENT_LEFT, -1, PUNTO).x
+	var nokta := Stil.etiket(" .".repeat(maxi(1, int((bit_x - bas_x) / nokta_eni))), PUNTO, Stil.MUREKKEP_SOLUK)
+	nokta.position = Vector2(bas_x, son_y)
+	nokta.size = Vector2(maxf(0.0, bit_x - bas_x), satir_boyu)
+	nokta.clip_text = true
+	nokta.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	s.add_child(nokta)
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	t.position = Vector2(KENAR, son_y)              # sağa yaslı: tutar her zaman sayfanın kenarında biter
+	t.size = Vector2(genislik, satir_boyu)
+	s.add_child(t)
+	# inceleme hedefi bütün satırı kaplar
+	var h := _satir_yaz(s, "", y, genislik, yuk, k, Stil.MUREKKEP, anahtar)
+	h.etiket = "Kural"
+	return y + yuk + 3.0
 
 
 ## Arananlar sayfası: yan yana resimler, altlarında ad ve lakap. Her resim, inceleme modunda

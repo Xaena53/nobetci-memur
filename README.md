@@ -23,7 +23,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe |
-| Sürüm | 1.6.0 |
+| Sürüm | 1.7.0 |
 
 ---
 

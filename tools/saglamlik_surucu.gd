@@ -28,6 +28,7 @@ func _ready() -> void:
 	Oyun.kayit_yolu = "user://saglamlik_kayit.json"
 	Oyun.ayar_yolu = "user://saglamlik_ayarlar.json"
 	Oyun.ara_ekran_acik = false
+	Oyun.ogretici_acik = false
 	Oyun.dil_sabit = "tr"
 	Oyun.ayarlari_yukle()
 	_calistir.call_deferred()
@@ -1628,6 +1629,7 @@ func _ara_ekran_denetimi() -> void:
 	esit(Oyun.ara_ekran(), null, "\"kapalı\" ayarında geçiş ekranı açılmaz")
 	dogru(await sahneyi_bekle("Masa"), "  masa doğrudan açılır")
 	Oyun.ara_ekran_acik = false
+	Oyun.ogretici_acik = false
 	Oyun.ayarlari_sifirla()
 	await sahneye_git("menu")
 	await sahneyi_bekle("AnaMenu")

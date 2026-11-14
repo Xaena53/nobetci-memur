@@ -1,5 +1,14 @@
 # Sürüm notları
 
+## 1.7.0 — öğretici, düzgün tarife
+
+- **Öğretici.** İlk gün, gişe açılmadan masanın her parçası sırayla aydınlatılıp kısa bir notla anlatılır
+  (gişe, genelge defteri, sayfalar, evraklar, büyüteç, mühürler, müdüre havale, ihtarlar, mesai). Yeni bir
+  sayfa ya da araç geldiği gün (tarife, arananlar, yasak eşya, bilgi defteri) o da gösterilir. Her ders bir
+  kez görülür; ayarlar → OYUN → Öğretici yeniden açılınca dersler baştan gelir.
+- **Tarife sayfası.** Tutarlar sağ kenara yaslandı, aradaki noktalar satıra göre dolar; uzun işlem adları
+  hiçbir dilde tutarı kaydırmaz.
+
 ## 1.6.0 — üç dil
 
 - **İngilizce ve Rusça.** Oyunun bütün metinleri (arayüz, genelgeler, belgeler, konuşmalar, gazeteler,

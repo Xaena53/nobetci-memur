@@ -11,6 +11,10 @@ func _calistir() -> void:
 	Oyun.dil_sabit = _arg("dil", "tr")
 	Oyun.ayarlari_uygula()
 	var senaryo: String = arg[0] if arg.size() > 0 else "akis"
+	# öğretici yalnızca kendi senaryosunda gösterilir (öbür senaryolar gişeyi doğrudan açar)
+	Oyun.ogretici_acik = senaryo == "ogretici"
+	Oyun.ogretici_yolu = "user://cekim_ogretici.json"
+	Oyun.ogretici_sifirla()
 	var ad := "_senaryo_" + senaryo
 	if has_method(ad):
 		await call(ad)
@@ -883,6 +887,24 @@ func gorunen_metinler() -> PackedStringArray:
 ## Konuşma balonu denetimi: bütün metinler (ve en uzun selam + istek + laf birleşimleri) üç dilde balona
 ## konur; her sayfanın yazısı balonun kutusuna sığıyor mu bakılır. Gerçek pencerede çalışır (yazı
 ## yüksekliği başsız kipte yanlış ölçülür). Sonuç: "BALON <dil>: ..." satırları.
+## Öğretici: ilk günün tanıtım adımları (o_1_*), sonra yeni sayfaların geldiği günler (o_<gün>_*).
+func _senaryo_ogretici() -> void:
+	for g: int in [1, 3, 4, 5]:
+		var masa: Node = await _gune_git(g)
+		await bekle(1.2)
+		bas("GiseyiAc")
+		await bekle(0.8)
+		var r: Node = masa.find_child("Rehber", true, false)
+		var no := 0
+		while r != null and is_instance_valid(r) and not r.get("_kapaniyor"):
+			no += 1
+			await bekle(0.5)
+			await cek("o_%d_%02d" % [g, no])
+			r.call("ileri")
+			await bekle(0.15)
+		print("gün %d: %d adım" % [g, no])
+
+
 func _senaryo_balon() -> void:
 	var masa: Node = await _gune_git(1)
 	await bekle(0.5)
