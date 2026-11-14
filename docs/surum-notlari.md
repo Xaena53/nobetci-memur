@@ -1,5 +1,12 @@
 # Sürüm notları
 
+## 1.7.1 — yapımcı etiketi, herkese açık depo
+
+- **Yapımcı etiketi.** Ana menünün ve gün arası ekranının sağ alt köşesinde, web sürümünün yükleme
+  sayfasında "made by Xaena53" yazar.
+- **Yayın.** Depo herkese açıldı. Oyun tarayıcıda <https://xaena53.github.io/nobetci-memur/> adresinden
+  oynanır; Windows paketleri deponun Releases sayfasından iner. Lisansa bu iki kaynak eklendi.
+
 ## 1.7.0 — öğretici, düzgün tarife
 
 - **Öğretici.** İlk gün, gişe açılmadan masanın her parçası sırayla aydınlatılıp kısa bir notla anlatılır

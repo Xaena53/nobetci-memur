@@ -29,7 +29,7 @@ dakika sürer. Godot 4.3 ile yazılmıştır; Türkçe, İngilizce ve Rusça oyn
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
 | Dil | Türkçe, İngilizce, Rusça |
-| Sürüm | 1.7.0 |
+| Sürüm | 1.7.1 |
 
 ---
 

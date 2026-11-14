@@ -204,6 +204,14 @@ func _kunyeyi_kur() -> void:
 	add_child(kunye)
 	kunye.position = Vector2(16, 692)
 	kunye.rotation = deg_to_rad(-0.5)
+	# sağ alt köşede yapımcı etiketi: aynı kabartma şerit (her dilde aynı yazılır)
+	var yapimci := Stil.etiket("made by Xaena53", 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	yapimci.name = "Yapimci"
+	yapimci.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	yapimci.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Color("1d1b19"), Color(0, 0, 0, 0.5), 1, 2, 2), 8, 3))
+	add_child(yapimci)
+	yapimci.position = Vector2(Yerlesim.EKRAN.size.x - 16.0 - yapimci.get_combined_minimum_size().x, 692)
+	yapimci.rotation = deg_to_rad(0.5)
 
 
 func _process(delta: float) -> void:

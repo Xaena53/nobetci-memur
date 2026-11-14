@@ -138,6 +138,16 @@ func _kur() -> void:
 	_devam.visible = not kisa
 	add_child(_devam)
 
+	# sağ alt köşede yapımcı etiketi (ipucu kâğıdının bittiği yerde; her dilde aynı yazılır)
+	# (ana menüdeki kabartma şeridin aynısı)
+	var yapimci := Stil.etiket("made by Xaena53", 11, Stil.KAGIT_BEYAZ, Stil.daktilo_kalin())
+	yapimci.name = "Yapimci"
+	yapimci.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	yapimci.add_theme_stylebox_override("normal", Stil.bosluklu(Stil.kutu(Color("1d1b19"), Color(0, 0, 0, 0.5), 1, 2, 2), 8, 3))
+	yapimci.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(yapimci)
+	yapimci.position = Vector2(Yerlesim.EKRAN.size.x - 8.0 - yapimci.get_combined_minimum_size().x, 696)
+
 
 ## "09.01.1984" → "9 Ocak 1984, Pazartesi"
 func _tarih_metni() -> String:
