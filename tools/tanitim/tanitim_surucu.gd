@@ -286,9 +286,9 @@ func _film_menu() -> void:
 	await bekle(9.0)
 	iz("bos_son")
 	# ikinci tur: sahne baştan, başlık yazılırken
+	var eski := menu.get_instance_id()
 	Oyun.sahneye_gec("menu")
 	await bekle(0.2)
-	var eski := menu.get_instance_id()
 	await _bekle_kosul(func() -> bool: return not Oyun.geciste_mi() and sahne() != null and sahne().get_instance_id() != eski and sahne().name == "AnaMenu", 6.0)
 	iz("baslik")
 	await bekle(9.0)
