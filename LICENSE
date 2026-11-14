@@ -8,8 +8,14 @@ Bu depo ve içindeki oyun ("Yazılım") özel mülktür. Hak sahibinin yazılı 
   - Yazılımdan türev eser üretilemez; Yazılım başka bir ürünün parçası yapılamaz;
   - Yazılımın adı, logosu ve görsel kimliği kullanılamaz.
 
-Yazılımın, hak sahibinin yetkili kıldığı bir mağazadan (örneğin Steam ya da itch.io) edinilen
-derlenmiş sürümü, o mağazanın koşulları çerçevesinde kişisel ve ticari olmayan amaçla oynanabilir.
+Yazılımın derlenmiş sürümü, hak sahibinin yetkili kıldığı bir kaynaktan edinildiğinde kişisel ve
+ticari olmayan amaçla indirilip oynanabilir. Yetkili kaynaklar: bu deponun GitHub "Releases"
+sayfası, deponun GitHub Pages adresinde yayımlanan web sürümü ve hak sahibinin açtığı mağaza
+sayfaları (örneğin Steam ya da itch.io; bunlarda mağazanın koşulları da geçerlidir).
+
+Deponun herkese açık olması, kaynak kodun yalnız görüntülenmesine izin verir. GitHub'ın Hizmet
+Şartları'nın gerektirdiği haklar (depoyu GitHub içinde görüntülemek ve çatallamak) saklıdır; bunun
+dışında yukarıdaki yasaklar geçerlidir.
 Oynanış görüntülerinin (ekran görüntüsü, video, canlı yayın) paylaşılması serbesttir.
 
 Yazılım "olduğu gibi" sunulur; açık ya da örtük hiçbir garanti verilmez. Hak sahibi, Yazılımın
@@ -28,8 +34,14 @@ written permission of the copyright holder you may not copy, reproduce, distribu
 or rent the Software's source code, data, text, images, animations or builds; create derivative
 works from it or include it in another product; or use its name, logo or visual identity.
 
-A build of the Software obtained from a store authorised by the copyright holder (such as Steam or
-itch.io) may be played for personal, non-commercial purposes under that store's terms. Sharing
+A build of the Software obtained from a source authorised by the copyright holder may be downloaded
+and played for personal, non-commercial purposes. Authorised sources are this repository's GitHub
+"Releases" page, the web build published at this repository's GitHub Pages address, and store pages
+opened by the copyright holder (such as Steam or itch.io, where that store's terms also apply).
+
+The repository being public permits viewing the source code only. The rights required by GitHub's
+Terms of Service (viewing and forking the repository within GitHub) are preserved; otherwise the
+restrictions above apply. Sharing
 gameplay footage (screenshots, videos, live streams) is permitted.
 
 The Software is provided "as is", without warranty of any kind, express or implied. The copyright

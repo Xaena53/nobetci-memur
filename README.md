@@ -4,6 +4,12 @@
 
 > **1984. Bir gişe, bir mühür, bitmeyen bir kuyruk.**
 
+**[▶ Tarayıcıda oyna](https://xaena53.github.io/nobetci-memur/)** · **[⬇ Windows için indir](https://github.com/Xaena53/nobetci-memur/releases/latest)**
+
+Tarayıcı sürümü kurulum istemez; bilgisayarda Chrome, Firefox, Edge ya da Safari ile açılır (ilk
+açılışta ~80 MB yüklenir). Windows sürümünde zip'i açıp `NobetciMemur.exe`'yi çalıştırmanız yeter;
+eski 32 bit bilgisayarlar için ayrı bir paket de vardır.
+
 ![Ana menü: kar altında nüfus müdürlüğü binası, kapıdaki kuyruk ve müdürlük yazısı biçimindeki menü](docs/img/01_menu.jpg)
 
 Ardıçlı İlçesi Nüfus Müdürlüğü'nün 2 numaralı gişesine yeni atanan memursunuz. Camın öbür
@@ -15,14 +21,14 @@ eve dönünce maaşı kira, kömür, yiyecek, ilaç ve okul masrafı arasında b
 gününün sonunda başınıza gelen, gazetenin birinci sayfasında yazar.
 
 Evrak kontrolü türünde, hüzünlü ve komik, tek kişilik bir hikâye oyunudur. Bir oynanış 45–60
-dakika sürer. Godot 4.3 ile yazılmıştır; arayüzün tamamı Türkçedir.
+dakika sürer. Godot 4.3 ile yazılmıştır; Türkçe, İngilizce ve Rusça oynanabilir.
 
 | | |
 |---|---|
 | Motor | Godot 4.3 (GDScript), Compatibility çizici |
 | Platform | Windows, Web (HTML5) |
 | Çözünürlük | 1280 × 720 tasarım; her pencere boyutuna ölçeklenir |
-| Dil | Türkçe |
+| Dil | Türkçe, İngilizce, Rusça |
 | Sürüm | 1.7.0 |
 
 ---
@@ -684,5 +690,7 @@ python tools/ses/topla.py muhur zil  # yalnızca adı verilenleri
   - Bağlama, taksim ve ney kayıtları — Freesound, CC0 1.0.
 
 Oyunun kodu, verisi, metinleri ve görselleri özel mülktür: **tüm hakları saklıdır** ([`LICENSE`](LICENSE)).
+Depo herkese açıktır; kodu okuyabilirsiniz, ama kopyalamak, dağıtmak ya da başka bir üründe
+kullanmak izne bağlıdır. Oyunu bu depodaki Releases ve web sayfasından indirip oynamak serbesttir.
 Başkalarına ait bileşenlerin lisansları ve yükümlülükleri
-[`UCUNCU-TARAF-LISANSLARI.md`](UCUNCU-TARAF-LISANSLARI.md) dosyasındadır. Bu depo özeldir.
+[`UCUNCU-TARAF-LISANSLARI.md`](UCUNCU-TARAF-LISANSLARI.md) dosyasındadır.
