@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Tanıtım filmi yazı katmanı</title>
+<!-- Filmin üst katmanı: yazı şeritleri, kasaba görselleri ve kararmalar. Her kare yalnızca zamanın
+     işlevidir: kurgu.py `kare(t)` çağırır ve saydam PNG alır. Plan /plan.json adresinden gelir. -->
+<style>
+@font-face { font-family: "Daktilo"; src: url("/assets/font/CourierPrime-Bold.ttf"); font-weight: 700; }
+@font-face { font-family: "Serif"; src: url("/assets/font/OldStandard-Bold.ttf"); font-weight: 700; }
+html, body { margin: 0; background: transparent; overflow: hidden; }
+#sahne { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+.resim { position: absolute; inset: 0; width: 1920px; height: 1080px; object-fit: cover; transform-origin: 50% 50%; will-change: transform; }
+.golge { position: absolute; left: 0; right: 0; bottom: 0; height: 420px; background: linear-gradient(to top, rgba(20,16,12,.55), rgba(20,16,12,0)); }
+.serit { position: absolute; transform-origin: 50% 50%; padding: 20px 38px 14px; background: linear-gradient(#f4ebd2, #ecdfbe);
+	border: 2px solid rgba(74,50,34,.55); box-shadow: 0 10px 26px rgba(15,10,6,.5), 0 2px 0 rgba(255,255,255,.35) inset;
+	font: 700 62px/1.12 "Daktilo", monospace; color: #2a2622; white-space: nowrap; letter-spacing: -0.5px; }
+.serit .satir { display: block; }
+.serit .kucuk { font-size: 40px; color: #5c544b; margin-bottom: 6px; }
+.serit .vurgu { color: #7a1f2b; }
+.serit .not { font-size: 19px; letter-spacing: 0; color: #5c544b; margin-top: 12px; }
+.serit i { font-style: normal; visibility: hidden; }
+.serit i.acik { visibility: visible; }
+.yil { position: absolute; font: 700 300px/1 "Serif", serif; color: #f4efe0; letter-spacing: 6px;
+	text-shadow: 0 6px 0 rgba(31,27,23,.55), 0 14px 40px rgba(15,10,6,.6); }
+.yil i { font-style: normal; visibility: hidden; }
+.yil i.acik { visibility: visible; }
+.kunye { position: absolute; left: 0; right: 0; text-align: center; font: 700 22px/1 "Daktilo", monospace; color: #f4efe0;
+	text-shadow: 0 2px 4px rgba(15,10,6,.9), 0 0 12px rgba(15,10,6,.8); }
+#perde { position: absolute; inset: 0; background: #14100c; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="sahne"></div>
+<script>
+let plan = null;
+const sahne = document.getElementById("sahne");
+const ogeler = [];
+
+function harfler(metin, vurgu) {
+	// her harf ayrı <i>: yazılmamış harfler yer tutar, şerit yazarken oynamaz
+	return [...metin].map(h => "<i" + (vurgu ? ' class="v"' : "") + ">" + (h === " " ? "&nbsp;" : h) + "</i>").join("");
+}
+
+async function kur() {
+	plan = await (await fetch("/plan.json")).json();
+	for (const r of plan.resimler) {
+		const e = document.createElement("img");
+		e.className = "resim"; e.src = r.yol; e.style.display = "none";
+		sahne.appendChild(e); r.e = e;
+		await e.decode();
+	}
+	const golge = document.createElement("div");
+	golge.className = "golge"; golge.style.display = "none"; sahne.appendChild(golge); plan.golge = golge;
+	for (const y of plan.yazilar) {
+		const e = document.createElement("div");
+		e.className = y.tur === "yil" ? "yil" : y.tur === "kunye" ? "kunye" : "serit";
+		if (y.tur === "kunye") e.textContent = y.satirlar[0].metin;
+		else e.innerHTML = y.satirlar.map(s => '<span class="satir' + (s.kucuk ? " kucuk" : "") + (s.vurgu ? " vurgu" : "") + (s.not ? " not" : "") + '">' + (s.not ? s.metin : harfler(s.metin)) + "</span>").join("");
+		if (y.punto) e.style.fontSize = y.punto + "px";
+		e.style.display = "none";
+		sahne.appendChild(e);
+		y.e = e; y.h = [...e.querySelectorAll("i")];
+		// konum: (x, y) şeridin ortası
+		e.style.display = "block";
+		const k = e.getBoundingClientRect();
+		if (y.tur === "kunye") e.style.top = y.y + "px";
+		else { e.style.left = Math.round(y.x - k.width / 2) + "px"; e.style.top = Math.round(y.y - k.height / 2) + "px"; }
+		e.style.display = "none";
+	}
+	const p = document.createElement("div"); p.id = "perde"; sahne.appendChild(p); plan.perde = p;
+	await document.fonts.ready;
+	return "hazır";
+}
+
+function yumusak(k) { k = Math.max(0, Math.min(1, k)); return k * k * (3 - 2 * k); }
+
+// t anındaki kareyi kurar; değişmeyen karelerde aynı imzayı döndürür (kurgu.py dosyayı yeniden çekmez)
+function kare(t) {
+	const imza = [];
+	let resim_var = false;
+	for (const r of plan.resimler) {
+		const acik = t >= r.t0 && t < r.t1;
+		r.e.style.display = acik ? "block" : "none";
+		if (acik) {
+			const k = (t - r.t0) / (r.t1 - r.t0);
+			const o = r.olcek[0] + (r.olcek[1] - r.olcek[0]) * k;
+			const x = r.kay[0] * (1 - k) + r.kay[2] * k, y = r.kay[1] * (1 - k) + r.kay[3] * k;
+			r.e.style.transform = "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px) scale(" + o.toFixed(5) + ")";
+			imza.push("r" + r.yol + k.toFixed(5));
+			resim_var = true;
+		}
+	}
+	plan.golge.style.display = resim_var ? "block" : "none";
+	for (const y of plan.yazilar) {
+		const acik = t >= y.t0 && t < y.t1;
+		y.e.style.display = acik ? "block" : "none";
+		if (!acik) continue;
+		const gecen = t - y.t0;
+		let n = y.h.length;
+		if (y.hiz > 0) n = Math.min(n, Math.floor((gecen - (y.gecikme || 0)) * y.hiz) + 1);
+		if (gecen < (y.gecikme || 0)) n = 0;
+		y.h.forEach((h, i) => h.classList.toggle("acik", i < n));
+		// giriş: kısa bir düşme ve yerine oturma
+		const g = yumusak(gecen / 0.16);
+		const aci = (y.aci || 0);
+		if (y.tur === "kunye") { y.e.style.opacity = yumusak(gecen / 0.4).toFixed(3); imza.push("k" + y.e.style.opacity); continue; }
+		y.e.style.opacity = g.toFixed(3);
+		y.e.style.transform = "translateY(" + ((1 - g) * 26).toFixed(2) + "px) rotate(" + aci + "deg) scale(" + (1.04 - 0.04 * g).toFixed(4) + ")";
+		imza.push("y" + plan.yazilar.indexOf(y) + ":" + n + ":" + g.toFixed(3));
+	}
+	let p = 0;
+	for (const k of plan.kararmalar) {
+		if (t >= k.t0 && t <= k.t1) p = Math.max(p, k.yon > 0 ? yumusak((t - k.t0) / (k.t1 - k.t0)) : 1 - yumusak((t - k.t0) / (k.t1 - k.t0)));
+	}
+	plan.perde.style.opacity = p.toFixed(3);
+	imza.push("p" + p.toFixed(3));
+	return imza.join("|");
+}
+</script>
+</body>
+</html>
